@@ -108,12 +108,12 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                     // let id_info: Vec<&str> = line_collection[2].split(" ").collect();
 
                     if count<=1
-                    {messageperepochcount+=1;
+                    {
                         count+=1;
                         for ip in ip_address_clone.clone() // Broadcast to everyone. deliver to be used here.
                         {   
                             if ip!=self_ip.clone() 
-                            {
+                            {messageperepochcount+=1;
                                 let address;
                                 if args[5]=="dev"
                                 {
@@ -151,11 +151,11 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                     if count<=1
                     {
                         count+=1;
-                        messageperepochcount+=1;
+                        
                         for ip in ip_address_clone.clone() // Broadcast to everyone. deliver to be used here.
                         {   
                             if ip!=self_ip.clone() 
-                            {
+                            {messageperepochcount+=1;
                                 let address;
                                 if args[5]=="dev"
                                 {
