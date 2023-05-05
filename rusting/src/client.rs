@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, result};
 use tokio::fs::{OpenOptions};
 
 use tokio::net::TcpStream;
@@ -66,7 +66,7 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
         }
         
         write.write_all(sign.as_bytes()).await.unwrap(); // write signature to server.
-        let id = [self_ip.to_string(), "messageEOF".to_string()].join(" ");
+        let id = [self_ip.to_string(), "message".to_string()].join(" ");
         write.write_all(id.as_bytes()).await.unwrap();
 
     } 
@@ -74,8 +74,9 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     {
         write.write_all(types.as_bytes()).await.unwrap();
         write.write_all(types.as_bytes()).await.unwrap();
-        write.write_all(b"EOF").await.unwrap();
+        
     }
+    let _result = write.write_all(b"EOF").await.unwrap();
     Ok(())
 
 }

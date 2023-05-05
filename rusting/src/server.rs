@@ -130,7 +130,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
 
                                 let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
                                 
-                                let broadcast_about_false_leader = [message2.to_string(), "eof".to_string()].join(" ");
+                                let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
                                 
                                 let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
 
@@ -179,7 +179,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
 
                                 let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
                                 
-                                let broadcast_about_false_leader = [message2.to_string(), "eof".to_string()].join(" ");
+                                let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
                                 
                                 let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
 
