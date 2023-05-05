@@ -11,5 +11,6 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
     let mut std_tcp_stream = tokio_tcp_stream.into_std()?;
     std_tcp_stream.set_nonblocking(false)?;
     std_tcp_stream.read_exact(&mut data)?;
+    println!("{:?}", data);
     Ok(())
 }
