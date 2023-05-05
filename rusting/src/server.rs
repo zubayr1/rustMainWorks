@@ -105,7 +105,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                     file.write_all("Identity Verified".as_bytes()).await.unwrap();
                     file.write_all(b"\n").await.unwrap();
 
-                    // let id_info: Vec<&str> = line_collection[2].split(" ").collect();
+                    let id_info: Vec<&str> = line_collection[2].split(" ").collect();
 
                     if count<=1
                     {
@@ -126,10 +126,14 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                               
                                 let mut stream = TcpStream::connect(address).await?; 
                                 
-                                let message = ["Re: text EOF".to_string(), self_ip.to_string()].join(" ");
+                                let message1 = ["Re: Text".to_string(), self_ip.to_string().to_string()].join(" ");
 
-                                let finalmessage = [message, epoch.to_string()].join(" ");
+                                let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
                                 
+                                let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
+                                
+                                let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
+
                                 let _result = stream.write(finalmessage.as_bytes()).await;
 
                                     
