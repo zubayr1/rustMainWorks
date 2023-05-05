@@ -127,8 +127,10 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                                 let mut stream = TcpStream::connect(address).await?; 
                                 
                                 let message = ["Re: text EOF".to_string(), self_ip.to_string()].join(" ");
+
+                                let finalmessage = [message, epoch.to_string()].join(" ");
                                 
-                                let _result = stream.write(message.as_bytes()).await;
+                                let _result = stream.write(finalmessage.as_bytes()).await;
 
                                     
                             }                                
@@ -169,12 +171,15 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
             
                                 let mut stream = TcpStream::connect(address).await?; 
 
-                                let message = ["Re: Identity Verification Failed".to_string(), id_info[0].to_string().to_string()].join(" ");
-                                
-                                let broadcast_about_false_leader = [message.to_string(), "EOF".to_string()].join(" ");
-                                
+                                let message1 = ["Re: Identity Verification Failed".to_string(), self_ip.to_string().to_string()].join(" ");
 
-                                let _result = stream.write(broadcast_about_false_leader.as_bytes()).await;
+                                let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
+                                
+                                let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
+                                
+                                let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
+
+                                let _result = stream.write(finalmessage.as_bytes()).await;
                                             
                             }                                
                             
