@@ -82,12 +82,6 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 
                 thread::scope(|s| { // tokio thread, since leader is both client and server
                     s.spawn(|| {
-                            let _result = newserver::handle_server("otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count , _index, blacklisted.clone());
-                        
-                        // blacklisted.extend(blacklisted_child);
-                    });
-    
-                    s.spawn(|| {
                         let three_millis = time::Duration::from_millis(3);
                                     thread::sleep(three_millis);
 
@@ -95,6 +89,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                     
                         
                     });
+                    
+                    s.spawn(|| {
+                            let _result = newserver::handle_server("otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count , _index, blacklisted.clone());
+                        
+                        // blacklisted.extend(blacklisted_child);
+                    });
+    
+                    
                 });
 
             }     
