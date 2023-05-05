@@ -2,6 +2,7 @@
 use std::{thread};
 use futures::executor::block_on;
 use std::collections::HashSet;
+use std::{ time};
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -57,7 +58,10 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
   
 
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
-    {        
+    {   
+
+        let three_millis = time::Duration::from_millis(3);
+                                    thread::sleep(three_millis);     
         
         if args[5]=="prod" // in prod mode
         {
