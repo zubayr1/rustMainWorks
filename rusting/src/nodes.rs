@@ -56,7 +56,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     let  behavior = args[8].clone();
   
 
-    for _index in 1..(args[7].parse::<i32>().unwrap()) // iterate for all epoch
+    for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {        
         
         if args[5]=="prod" // in prod mode
