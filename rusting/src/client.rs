@@ -52,7 +52,7 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
 
     
 
-    if TcpStream::connect(addressclone.clone()).await.is_ok(){
+   // if TcpStream::connect(addressclone.clone()).await.is_ok(){
 
     let stream = TcpStream::connect(address).await.unwrap(); 
 
@@ -95,7 +95,7 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
         write.write_all(b"EOF").await.unwrap();
     }
 
-}
+//}
         
 
 }
