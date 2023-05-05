@@ -65,8 +65,6 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     
     println!("aaa{}", addressclone);
 
-    let mut v = vec![0; 1024];
-
 
     if types == "none" // types == "none": first time communication
     {   
