@@ -16,6 +16,11 @@ mod client;
 mod server;
 
 
+#[path = "./newclient.rs"]
+mod newclient;
+
+#[path = "./newserver.rs"]
+mod newserver;
 
 const INITIAL_PORT: u32 = 7281;
 
@@ -29,7 +34,7 @@ pub fn create_keys() // schnorr key generation
 
 async fn handle_client(ip: String, self_ip: String, types: String, port: u32, epoch: i32, behavior: String) // clinet: initiating data sending.
 {    
-    let _result = client::match_tcp_client([ip.to_string(), port.to_string()].join(":"), self_ip, types, epoch, behavior);   
+    let _result = newclient::match_tcp_client([ip.to_string(), port.to_string()].join(":"), self_ip, types, epoch, behavior);   
     
 }
 
@@ -77,13 +82,13 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 
                 thread::scope(|s| { // tokio thread, since leader is both client and server
                     s.spawn(|| {
-                            let _result = server::handle_server("otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count , _index, blacklisted.clone());
+                            let _result = newserver::handle_server("otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count , _index, blacklisted.clone());
                         
                         // blacklisted.extend(blacklisted_child);
                     });
     
                     s.spawn(|| {
-                        let three_millis = time::Duration::from_millis(30);
+                        let three_millis = time::Duration::from_millis(3);
                                     thread::sleep(three_millis);
 
                         let future = handle_client(ip.clone(), self_ip_clone.clone(), "none".to_string(), INITIAL_PORT+port_count, _index, behavior_clone.clone());
