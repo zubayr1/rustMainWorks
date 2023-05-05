@@ -89,7 +89,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                 
                 
             }
-            
+            println!("{}", line_clone);
             let line_collection: Vec<&str> = line_clone.split("//").collect();
 
             if line_collection.len()>=3
