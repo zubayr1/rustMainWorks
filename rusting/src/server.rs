@@ -2,7 +2,7 @@ use tokio::net::TcpListener;
 use tokio::net::TcpStream;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::tcp::ReadHalf;
-// use std::{thread, time};
+use std::{thread, time};
 
 use tokio::fs::{OpenOptions};
 
@@ -123,7 +123,8 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                                 {
                                     address = [ip.to_string(), port.to_string()].join(":")
                                 }
-
+                                let three_millis = time::Duration::from_millis(3);
+                                thread::sleep(three_millis);
                                 let mut stream = TcpStream::connect(address).await?; 
                                 
                                 let message = ["Re: text EOF".to_string(), self_ip.to_string()].join(" ");
@@ -165,7 +166,8 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                                 {
                                     address = [ip.to_string(), port.to_string()].join(":")
                                 }
-                                
+                                let three_millis = time::Duration::from_millis(3);
+                                    thread::sleep(three_millis);
             
                                 let mut stream = TcpStream::connect(address).await?; 
 
