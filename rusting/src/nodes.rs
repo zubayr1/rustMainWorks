@@ -1,5 +1,5 @@
 
-use std::{thread};
+use std::{thread, time};
 use futures::executor::block_on;
 use std::collections::HashSet;
 
@@ -83,7 +83,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     });
     
                     s.spawn(|| {
-                        
+                        let three_millis = time::Duration::from_millis(3);
+                                    thread::sleep(three_millis);
 
                         let future = handle_client(ip.clone(), self_ip_clone.clone(), "none".to_string(), INITIAL_PORT+port_count, _index, behavior_clone.clone());
 
