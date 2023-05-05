@@ -6,7 +6,7 @@ use std::error::Error;
 pub async fn match_tcp_client(address: String, self_ip: String, types: String, epoch: i32, behavior: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
     let mut stream = TcpStream::connect(address).await?;
-
+    println!("client done");
     // Write some data.
     stream.write_all(b"hello world!").await?;
 

@@ -8,6 +8,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
     let mut data = [0u8; 12];
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await?;
     let (tokio_tcp_stream, _) = listener.accept().await?;
+    println!("server done");
     let mut std_tcp_stream = tokio_tcp_stream.into_std()?;
     std_tcp_stream.set_nonblocking(false)?;
     std_tcp_stream.read_exact(&mut data)?;
