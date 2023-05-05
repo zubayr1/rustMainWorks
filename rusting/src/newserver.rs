@@ -18,7 +18,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
     std_tcp_stream.read_exact(&mut data)?;
     println!("{:?}", data);
 
-    if count==4
+    if count==3
     {
         break;
     }
