@@ -191,7 +191,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                     }
                 }
             }
-
+            println!("{}", messageperepochcount);
             if messageperepochcount==3
             {
                 break;
