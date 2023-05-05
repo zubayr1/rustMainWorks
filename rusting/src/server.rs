@@ -128,8 +128,8 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                                 
                                 let message = ["Re: text EOF".to_string(), self_ip.to_string()].join(" ");
                                 
-                                stream.write_all(message.as_bytes()).await.unwrap();
-            
+                                let _result = stream.write(message.as_bytes()).await;
+
                                     
                             }                                
                             
@@ -173,7 +173,8 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                                 
                                 let broadcast_about_false_leader = [message.to_string(), "EOF".to_string()].join(" ");
                                 
-                                stream.write_all(broadcast_about_false_leader.as_bytes()).await.unwrap();
+
+                                let _result = stream.write(broadcast_about_false_leader.as_bytes()).await;
                                             
                             }                                
                             
