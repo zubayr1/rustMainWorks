@@ -1,0 +1,22 @@
+[package]
+name = "rusting"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8.5"
+
+schnorr_fun = "0.8.2"
+
+chrono = "0.4.24"
+
+tokio = { version = "1.27.0", features = ["full"] }
+
+futures = "0.3.28"
+
+schnorrkel = "0.10.2"
+
+serde_json = "1.0.95"
+
