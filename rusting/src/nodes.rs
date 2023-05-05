@@ -2,7 +2,6 @@
 use std::{thread};
 use futures::executor::block_on;
 use std::collections::HashSet;
-use std::{ time};
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -51,7 +50,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     let self_ip = args[6].clone();
 
 
-    let  port_count: u32 = 0;
+    let mut port_count: u32 = 0;
 
 
     let  behavior = args[8].clone();
@@ -59,9 +58,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
-
-        let three_millis = time::Duration::from_millis(300);
-                                    thread::sleep(three_millis);     
+         
         
         if args[5]=="prod" // in prod mode
         {
@@ -72,6 +69,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 let self_ip_clone = self_ip.clone();
                 let behavior_clone =behavior.clone();
                 
+                port_count+=1;
                 
                 let ip_address_clone = ip_address.clone();
                 let args_clone1 = args_clone.clone();
@@ -79,7 +77,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 
                 thread::scope(|s| { // tokio thread, since leader is both client and server
                     s.spawn(|| {
-                            let _result = server::handle_server("otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count, _index, blacklisted.clone());
+                            let _result = server::handle_server("otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count , _index, blacklisted.clone());
                         
                         // blacklisted.extend(blacklisted_child);
                     });
