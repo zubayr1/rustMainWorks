@@ -45,11 +45,15 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     let addressclone = address.clone();
 
     
-    while TcpStream::connect(addressclone.clone()).await.is_err() {
-        let three_millis = time::Duration::from_millis(3);
+    // while TcpStream::connect(addressclone.clone()).await.is_err() {
+    //     let three_millis = time::Duration::from_millis(3);
+    //     thread::sleep(three_millis);
+    // }
+
+    let three_millis = time::Duration::from_millis(3);
         thread::sleep(three_millis);
-        println!("s");
-    }
+
+
     if TcpStream::connect(addressclone.clone()).await.is_ok(){
 
     let stream = TcpStream::connect(address).await.unwrap(); 
@@ -63,8 +67,7 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     
     println!("aaa{}", addressclone);
 
-    let three_millis = time::Duration::from_millis(30);
-        thread::sleep(three_millis);
+    let mut v = vec![0; 1024];
 
 
     if types == "none" // types == "none": first time communication
