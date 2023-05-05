@@ -17,7 +17,7 @@ mod server;
 
 
 
-const INITIAL_PORT: u32 = 7081;
+const INITIAL_PORT: u32 = 7281;
 
 pub fn create_keys() // schnorr key generation
 {

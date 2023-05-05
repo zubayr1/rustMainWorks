@@ -1,9 +1,9 @@
-folder="rustBeacon"
+folder="rustMainWorks"
 if [ -d "${folder}" ]; then
   cd "${folder}"
-  git pull https://github.com/zubayr1/rustBeacon.git
+  git pull https://github.com/zubayr1/rustMainWorks.git
 else
-  git clone https://github.com/zubayr1/rustBeacon.git
+  git clone https://github.com/zubayr1/rustMainWorks.git
   cd "${folder}"
 fi
 
