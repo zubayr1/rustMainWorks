@@ -37,7 +37,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
 
     let mut messageperepochcount = 0;
     
-   loop {
+   //loop {
         let (mut socket, _) = listener.accept().await.unwrap(); // starts listening
         println!("---continue---");
         
@@ -184,26 +184,27 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                     }
                 }
             }
+            return blacklisted;
             // early stop to get out of the loop. Stop when broadcast is done to all nodes. 
-            messageperepochcount+=1;
+            // messageperepochcount+=1;
             
-            if server_type=="selfserver"
-            {
-                if messageperepochcount>=args[3].clone().parse::<i32>().unwrap() - 1
-                {
-                   return blacklisted;
-                }
-            }
-            else 
-            {
-                if messageperepochcount>=args[3].clone().parse::<i32>().unwrap() - 1
-                {
-                    return blacklisted;
-                }
-            }
+            // if server_type=="selfserver"
+            // {
+            //     if messageperepochcount>=args[3].clone().parse::<i32>().unwrap() - 1
+            //     {
+            //        return blacklisted;
+            //     }
+            // }
+            // else 
+            // {
+            //     if messageperepochcount>=args[3].clone().parse::<i32>().unwrap() - 1
+            //     {
+            //         return blacklisted;
+            //     }
+            // }
             
             
             
 
-    }
+   // }
 }
