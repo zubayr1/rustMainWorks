@@ -3,7 +3,6 @@ use tokio::fs::{OpenOptions};
 
 use tokio::net::TcpStream;
 use tokio::io::{ AsyncWriteExt};
-use std::{thread, time};
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -40,11 +39,7 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     let pubkey = fs::read_to_string("../pubkey.txt").expect("Unable to read file");
     let sign = fs::read_to_string("../sign.txt").expect("Unable to read file");
 
-    // while TcpStream::connect(address.clone()).await.is_err() {
-    //     let three_millis = time::Duration::from_millis(3);
-    //     thread::sleep(three_millis);
-    // }
-
+   
 
     let stream = TcpStream::connect(address).await?; 
 

@@ -39,12 +39,10 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
 
     let mut messageperepochcount = 0;
 
-    let mut firstcount = 0;
     
    loop {
         let (mut socket, _) = listener.accept().await.unwrap(); // starts listening
         println!("---continue---");
-        firstcount+=1;
         file.write_all("---continue---".as_bytes()).await.unwrap();
         file.write_all(b"\n").await.unwrap();
 
@@ -185,7 +183,7 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
                 }
             }
 
-            if messageperepochcount==3
+            if messageperepochcount==4
             {
                 break;
             }

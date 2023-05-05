@@ -72,10 +72,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 let ip_address_clone = ip_address.clone();
                         let args_clone1 = args_clone.clone();
                         let self_ip_clone1 = self_ip.clone();  
-
-                        if ip!=self_ip.clone()
-                        {
-                            println!("{}", ip);
+                        
                         thread::scope(|s| { // tokio thread, since leader is both client and server
                             s.spawn(|| {
                                  let _result = server::handle_server("otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count, _index, blacklisted.clone());
@@ -92,7 +89,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             });
                         });
 
-                        }
+                        
                                 
             }
                
