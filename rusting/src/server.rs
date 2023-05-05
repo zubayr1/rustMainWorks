@@ -56,6 +56,15 @@ pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: V
 
 
         loop { //loop to get all the data from client until EOF is reached
+
+            if reader.read_line(&mut line).await.is_err()
+            {
+                println!("err");
+            }
+            if reader.read_line(&mut line).await.is_ok()
+            {
+                println!("ok");
+            }
                 
                 let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
                 
