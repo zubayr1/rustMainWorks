@@ -6,6 +6,7 @@ use std::collections::HashSet;
 #[tokio::main]
 pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: Vec<String>, self_ip: String, port: u32, epoch: i32, mut blacklisted: HashSet<String>) -> Result<(), Box<dyn Error>> {
     let mut data = [0u8; 12];
+    println!("server");
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await?;
     let (tokio_tcp_stream, _) = listener.accept().await?;
     println!("server done");
