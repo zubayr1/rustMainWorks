@@ -9,8 +9,11 @@ use std::{thread, time};
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
 
+type SomeResult<T> = Result<T, Box<dyn std::error::Error>>;
+
+
 #[tokio::main]
-pub async fn match_tcp_client(address: String, self_ip: String, types: String, epoch: i32, behavior: String)
+pub async fn match_tcp_client(address: String, self_ip: String, types: String, epoch: i32, behavior: String) -> SomeResult<()>
 {   
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
 
@@ -45,15 +48,15 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     let addressclone = address.clone();
 
     
-    while TcpStream::connect(addressclone.clone()).await.is_err() {
-        let three_millis = time::Duration::from_millis(3);
-        thread::sleep(three_millis);
-    }
+    // while TcpStream::connect(addressclone.clone()).await.is_err() {
+    //     let three_millis = time::Duration::from_millis(3);
+    //     thread::sleep(three_millis);
+    // }
    
 
    // if TcpStream::connect(addressclone.clone()).await.is_ok(){
 
-    let stream = TcpStream::connect(address).await.unwrap(); 
+    let stream = TcpStream::connect(address).await?; 
 
     let (_, mut write) = tokio::io::split(stream); 
 
@@ -64,7 +67,12 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     
     println!("aaa{}", addressclone);
 
-    write.write_all(b"EOF").await.unwrap();
+    let result = write.write_all(b"EOF").await;
+
+    println!("wrote to stream; success={:?}", result.is_ok());
+
+
+    Ok(())
     // if types == "none" // types == "none": first time communication
     // {   
     //     if behavior=="1" // if 1: can act as adversary and send false signature
