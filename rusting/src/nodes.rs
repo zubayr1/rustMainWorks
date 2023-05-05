@@ -91,8 +91,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         let three_millis = time::Duration::from_millis(3);
                                     thread::sleep(three_millis);
 
-                                    let _result= handle_client(ip.clone(), self_ip_clone.clone(), "none".to_string(), INITIAL_PORT+port_count, _index, behavior_clone.clone());
-
+                                    let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count).to_string()].join(":"), self_ip_clone, "none".to_string(), _index, behavior.clone());
+                                    
                         
                     });
                 });
