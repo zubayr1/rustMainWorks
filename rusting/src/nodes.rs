@@ -90,7 +90,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                         let self_ip_clone = self_ip.clone();
                 let behavior_clone =behavior.clone();
                 
-                println!("dsf");
+                println!("ccccccccccccccc");
                 let ip_address_clone = ip_address.clone();
                 let args_clone1 = args_clone.clone();
                 let self_ip_clone1 = self_ip.clone();  
@@ -109,7 +109,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                         let self_ip_clone = self_ip.clone();
                 let behavior_clone =behavior.clone();
                 
-                println!("dsf");
+                println!("sssssssssssssss");
                 let ip_address_clone = ip_address.clone();
                 let args_clone1 = args_clone.clone();
                 let self_ip_clone1 = self_ip.clone(); 
