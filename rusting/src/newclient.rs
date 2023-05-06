@@ -11,9 +11,12 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     println!("trying to connect from {} to address {}", self_ip, address);
 
     
-        loop{
-    if TcpStream::connect(address.clone()).await.is_ok(){
-    let mut stream = TcpStream::connect(address.clone()).await?;
+     //   loop{
+            let mut stream = TcpStream::connect(address.clone()).await?;
+
+            println!("aaaa{:?}", stream.ttl()?);
+   
+    
     stream.set_linger(None)?;
 
     println!("connected from {} to address {}", self_ip, address);
@@ -33,9 +36,9 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     stream.write_all(b"hello world!EOF").await?;
     
     stream.shutdown().await?;
-    break;
-    }
+//     break;
+//     }
 
-}
+// }
     Ok(())
 }
