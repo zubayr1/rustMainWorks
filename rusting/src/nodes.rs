@@ -98,7 +98,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     {
                                   println!("ddd");     
                         
-                        let _result = newserver::handle_server( INITIAL_PORT+port_count  );
+                       // let _result = newserver::handle_server( INITIAL_PORT+port_count  );
                     
                     }
                 });
