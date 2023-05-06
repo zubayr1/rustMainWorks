@@ -71,8 +71,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     
 
                     s.spawn(|| {
-                        // for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
-                        // {
+                        for _ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
+                        {
                 
                             let ip_address_clone = ip_address.clone();
                             let args_clone1 = args_clone.clone();
@@ -80,7 +80,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             
                             let _result = server::handle_server( "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count  , _index, blacklisted.clone());
                         
-                      //  }// blacklisted.extend(blacklisted_child);
+                        }// blacklisted.extend(blacklisted_child);
                     });
 
 
