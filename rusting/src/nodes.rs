@@ -37,8 +37,17 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
     let _result = newclient::match_tcp_client([ip.to_string(), port.to_string()].join(":"), self_ip);   
     
 }
-
-
+#[tokio::main]
+async fn handle_wait(ip_address: Vec<String> )
+{
+    for _ip in ip_address.clone()
+    {
+        while TcpStream::connect(_ip.clone()).await.is_err() {
+            let three_millis = time::Duration::from_millis(3);
+                            thread::sleep(three_millis);
+        }
+    }
+}
 
 
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
@@ -59,6 +68,9 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
 
     let  behavior = args[8].clone();
+
+
+    handle_wait(ip_address_clone.clone());
   
 
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
@@ -68,13 +80,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         if args[5]=="prod" // in prod mode
         {
 
-            for _ip in ip_address_clone.clone()
-            {
-                while TcpStream::connect(_ip.clone()).await.is_err() {
-                    let three_millis = time::Duration::from_millis(3);
-                                    thread::sleep(three_millis);
-                }
-            }
+            
         
                 thread::scope(|s| { 
                     
