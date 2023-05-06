@@ -33,7 +33,7 @@ pub fn create_keys() // schnorr key generation
 
 async fn handle_client(ip: String, self_ip: String, types: String, port: u32, epoch: i32, behavior: String) // clinet: initiating data sending.
 {    
-    let _result = newclient::match_tcp_client([ip.to_string(), port.to_string()].join(":"), self_ip, types, epoch, behavior);   
+    let _result = newclient::match_tcp_client([ip.to_string(), port.to_string()].join(":"), self_ip);   
     
 }
 
@@ -42,7 +42,7 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
 
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
-    let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
+    // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
 
 
 
@@ -67,20 +67,17 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         if args[5]=="prod" // in prod mode
         {
         
-                thread::scope(|s| { // tokio thread, since leader is both client and server
+                thread::scope(|s| { 
                     
 
                     s.spawn(|| {
-                        for _ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
+                        for _ip in ip_address_clone.clone() 
                         {
-                
-                            let ip_address_clone = ip_address.clone();
-                            let args_clone1 = args_clone.clone();
-                            let self_ip_clone1 = self_ip.clone(); 
+                                           
                             
-                            let _result = newserver::handle_server( "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count  , _index, blacklisted.clone());
+                            let _result = newserver::handle_server( INITIAL_PORT+port_count  );
                         
-                        }// blacklisted.extend(blacklisted_child);
+                        }
                     });
 
 
@@ -88,12 +85,12 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         let three_millis = time::Duration::from_millis(3);
                         thread::sleep(three_millis);
 
-                        for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
+                        for ip in ip_address_clone.clone() 
                         {
                             let self_ip_clone = self_ip.clone();
     
     
-                            let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone, "none".to_string(), _index, behavior.clone());
+                            let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
                         
                         }
                         
@@ -119,10 +116,10 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
     }
     
-    for i in blacklisted.iter()
-    {
-        println!("{}", i);
-    }
+    // for i in blacklisted.iter()
+    // {
+    //     println!("{}", i);
+    // }
     
     
 
