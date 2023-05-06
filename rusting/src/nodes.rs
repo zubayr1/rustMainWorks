@@ -1,6 +1,7 @@
 
 use std::{thread, time};
 use std::collections::HashSet;
+use tokio::net::TcpStream;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -66,6 +67,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
+
+            for _ip in ip_address_clone.clone()
+            {
+                while TcpStream::connect(_ip.clone()).await.is_err() {
+                    let three_millis = time::Duration::from_millis(3);
+                                    thread::sleep(three_millis);
+                }
+            }
         
                 thread::scope(|s| { 
                     
