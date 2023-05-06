@@ -12,9 +12,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
 
     
       loop{
-            let mut stream: TcpStream = TcpStream::connect(address.clone()).await.expect(
-                "except reached"
-            );
+            let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
 
    
     
