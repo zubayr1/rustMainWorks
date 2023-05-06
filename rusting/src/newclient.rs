@@ -35,7 +35,10 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     let result = stream.write_all(b"hello world!EOF").await;
     
    
-   println!("{:?}", result);
+   if  result.is_ok()
+   {
+    break;
+   }
 
 }
     Ok(())
