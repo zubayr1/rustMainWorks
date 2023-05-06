@@ -61,7 +61,6 @@ pub async fn handle_server(ip: String, server_type: String, ip_address: Vec<Stri
 
      
                 let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
-                println!("{}", line);
                                
                 if line.contains("EOF") //REACTOR to be used here
                 {

@@ -84,6 +84,8 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     
     println!("{:?}", _result.is_ok());
 
+    
+
     while stream.write([self_ip.to_string(), "EOF".to_string()].join(" ").as_bytes()).await.is_err()
     {
         println!("false {}", self_ip.to_string());
