@@ -7,8 +7,15 @@ use std::{ time};
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
+    
+
+    while TcpStream::connect(address.clone()).await.is_err()
+    {
+
+    }
     let mut stream = TcpStream::connect(address.clone()).await?;
 
+    
     println!("connected from {} to address {}", self_ip, address);
 
     let sock_ref = socket2::SockRef::from(&stream);
