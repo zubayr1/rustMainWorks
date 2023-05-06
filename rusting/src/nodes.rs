@@ -1,6 +1,5 @@
 
 use std::{thread, time};
-use futures::executor::block_on;
 use std::collections::HashSet;
 
 #[path = "../crypto/schnorrkel.rs"]
