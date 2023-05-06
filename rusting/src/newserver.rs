@@ -5,7 +5,7 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 
 #[tokio::main]
-pub async fn handle_server(ip: String, server_type: String, ip_address: Vec<String>, args: Vec<String>, self_ip: String, port: u32, epoch: i32, mut blacklisted: HashSet<String>) -> Result<(), Box<dyn Error>>{
+pub async fn handle_server(server_type: String, ip_address: Vec<String>, args: Vec<String>, self_ip: String, port: u32, epoch: i32, mut blacklisted: HashSet<String>) -> Result<(), Box<dyn Error>>{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     let text = ["server at port".to_string(), port.to_string()].join(": ");
 
