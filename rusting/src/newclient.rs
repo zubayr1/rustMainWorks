@@ -22,7 +22,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
    
     
 
-    println!("connected from {} to address {}", self_ip, address);
+  //  println!("connected from {} to address {}", self_ip, address);
 
 
 
@@ -32,14 +32,14 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     let result = stream.write_all(b"hello world!EOF").await;
     
    
-   if  result.is_ok()
-   {
-    println!("ok");
-   }
-   if result.is_err()
-   {
-    println!("some err");
-   }
+//    if  result.is_ok()
+//    {
+//     println!("ok");
+//    }
+//    if result.is_err()
+//    {
+//     println!("some err");
+//    }
 
 }
     Ok(())
