@@ -3,11 +3,17 @@ use tokio::io::AsyncWriteExt;
 use std::error::Error;
 use socket2;
 use std::{ time};
+use tokio::time::{interval, sleep, Duration, Instant};
 
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
     println!("trying to connect from {} to address {}", self_ip, address);
+
+    while TcpStream::connect(address.clone()).await.is_err()
+    {
+        sleep(Duration::from_millis(10)).await;
+    }
 
     let mut stream = TcpStream::connect(address.clone()).await?;
 
