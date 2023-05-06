@@ -31,6 +31,10 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
    {
     break;
    }
+   if result.is_err()
+   {
+    println!("some err");
+   }
 
 }
     Ok(())
