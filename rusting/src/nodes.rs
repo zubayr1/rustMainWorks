@@ -104,7 +104,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                     s.spawn(|| {
                         let mut count = 0;
-                        let three_millis = time::Duration::from_millis(3000);
+                        let three_millis = time::Duration::from_millis(3);
                                     thread::sleep(three_millis);
 
                                     for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
