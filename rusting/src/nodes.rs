@@ -79,7 +79,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
     handle_wait(ip_address_clone.clone());
   
-
+    println!("bb");
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
          
