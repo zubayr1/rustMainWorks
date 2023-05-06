@@ -41,6 +41,8 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
         
         
     }
+
+    println!("{}", line);
 //}
     Ok(())
 }
