@@ -92,7 +92,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
         
                 thread::scope(|s| { 
-                    
+
 
                     s.spawn(|| {
                         for _ip in ip_address_clone.clone() 
@@ -102,7 +102,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             
                         }
                     });
-                    
+
+                                      
 
 
                     s.spawn(|| {
