@@ -78,7 +78,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             let args_clone1 = args_clone.clone();
                             let self_ip_clone1 = self_ip.clone(); 
                             
-                            let _result = server::handle_server( "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count  , _index, blacklisted.clone());
+                            let _result = newserver::handle_server( "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count  , _index, blacklisted.clone());
                         
                         }// blacklisted.extend(blacklisted_child);
                     });
@@ -93,7 +93,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             let self_ip_clone = self_ip.clone();
     
     
-                            let _result = client::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone, "none".to_string(), _index, behavior.clone());
+                            let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone, "none".to_string(), _index, behavior.clone());
                         
                         }
                         
