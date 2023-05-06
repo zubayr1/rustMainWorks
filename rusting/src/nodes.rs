@@ -107,7 +107,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
 
                     s.spawn(|| {
-                        let three_millis = time::Duration::from_millis(3);
+                        let three_millis = time::Duration::from_millis(3000);
                         thread::sleep(three_millis);
 
                        // handle_wait(ip_address_clone.clone());
