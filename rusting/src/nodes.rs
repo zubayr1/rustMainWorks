@@ -38,15 +38,21 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
     
 }
 #[tokio::main]
-async fn handle_wait(ip_address: Vec<String> )
-{
-    for _ip in ip_address.clone()
-    {
-        while TcpStream::connect(_ip.clone()).await.is_err() {
-            let three_millis = time::Duration::from_millis(3);
-                            thread::sleep(three_millis);
+pub async fn handle_wait(ip_address: Vec<String>) {
+    // First wait for all nodes to be online.
+       let _result =  tokio::spawn(async move {
+            for address in ip_address{
+            while TcpStream::connect(address.clone()).await.is_err() {
+                let three_millis = time::Duration::from_millis(10);
+                                    thread::sleep(three_millis);
+            }
+
         }
-    }
+        })
+   
+    .await;
+
+    
 }
 
 
