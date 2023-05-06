@@ -90,20 +90,28 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         if args[5]=="prod" // in prod mode
         {
 
-            
+            thread::scope(|s| { 
+                    
+
+                s.spawn(|| {
+                    for _ip in ip_address_clone.clone() 
+                    {
+                                  println!("ddd");     
+                        
+                        let _result = newserver::handle_server( INITIAL_PORT+port_count  );
+                    
+                    }
+                });
+
+
+
+                
+
+                
+            });
         
                 thread::scope(|s| { 
                     
-
-                    s.spawn(|| {
-                        for _ip in ip_address_clone.clone() 
-                        {
-                                      println!("ddd");     
-                            
-                            let _result = newserver::handle_server( INITIAL_PORT+port_count  );
-                        
-                        }
-                    });
 
 
                     s.spawn(|| {
