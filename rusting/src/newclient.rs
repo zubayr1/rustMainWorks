@@ -12,7 +12,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
 
     while TcpStream::connect(address.clone()).await.is_err()
     {
-        println!("aa");
+       // println!("aa");
         sleep(Duration::from_millis(10)).await;
     }
     
