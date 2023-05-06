@@ -3,7 +3,7 @@ use tokio::io::AsyncWriteExt;
 use std::error::Error;
 use socket2;
 use std::{ time};
-use tokio::time::{interval, sleep, Duration, Instant};
+use tokio::time::{ sleep, Duration};
 
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
