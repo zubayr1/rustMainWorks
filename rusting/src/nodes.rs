@@ -79,61 +79,54 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
             //     let args_clone1 = args_clone.clone();
             //     let self_ip_clone1 = self_ip.clone();  
                 
-             //   thread::scope(|s| { // tokio thread, since leader is both client and server
+                thread::scope(|s| { // tokio thread, since leader is both client and server
+                    
 
-                let mut count = 0;
-                let ip_address_clone = ip_address.clone();
-                let self_ip_clone = self_ip.clone();
+                    s.spawn(|| {
+                        let mut count = 0;
+                        for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
+                                    {
+                                        count+=1;
+                                        let self_port = args[2].parse::<u32>().unwrap();
+                                        let self_ip_clone = self_ip.clone();
                 let behavior_clone =behavior.clone();
                 
                 println!("sssssssssssssss");
-
-                let blacklisted_clone = blacklisted.clone();
-                
+                let ip_address_clone = ip_address.clone();
                 let args_clone1 = args_clone.clone();
                 let self_ip_clone1 = self_ip.clone(); 
-
-
-                let behavior_clone =behavior.clone();
-                                    let ip_address_clone1 = ip_address.clone();
-                                    let self_ip_clone = self_ip.clone();
-                
-                
-                println!("ccccccccccccccc");
-                
-                let args_clone1 = args_clone.clone();
-                let self_ip_clone1 = self_ip.clone();  
-                    
-
-                    tokio::spawn(async move {
-                       
-                                    
-                        for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
-                                    {
-                                       
-                            let _result = server::handle_server(ip, "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone.clone(), INITIAL_PORT+port_count  , _index, blacklisted_clone.clone());
+                            
+                            let _result = server::handle_server(ip, "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count  , _index, blacklisted.clone());
                         
                                     }// blacklisted.extend(blacklisted_child);
                     });
 
 
-
-                    tokio::spawn(async move {
+                    s.spawn(|| {
+                        let mut count = 0;
                         let three_millis = time::Duration::from_millis(3);
                                     thread::sleep(three_millis);
-                                    
-                                    for ip in ip_address_clone1.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
-                                    {
-                                        
 
-                                    let _result = client::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone1.clone(), "none".to_string(), _index, behavior_clone.clone());
+                                    for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
+                                    {
+                                        count+=1;
+                                        let self_port = args[2].parse::<u32>().unwrap();
+                                        let self_ip_clone = self_ip.clone();
+                let behavior_clone =behavior.clone();
+                
+                println!("ccccccccccccccc");
+                let ip_address_clone = ip_address.clone();
+                let args_clone1 = args_clone.clone();
+                let self_ip_clone1 = self_ip.clone();  
+
+                                    let _result = client::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone, "none".to_string(), _index, behavior.clone());
                                     
                                     }
                         
                     });
     
                     
-              //  });
+                });
 
             //}    
                                 
