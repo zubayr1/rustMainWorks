@@ -1,5 +1,6 @@
 use std::{fs, result};
 use tokio::fs::{OpenOptions};
+use std::error::Error;
 
 use tokio::net::TcpStream;
 use tokio::io::{ AsyncWriteExt};
@@ -40,9 +41,11 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     let sign = fs::read_to_string("../sign.txt").expect("Unable to read file");
 
    
+    
+    let std_stream = std::net::TcpStream::connect(address)?; 
+    std_stream.set_nonblocking(true)?;
 
-    let stream = TcpStream::connect(address).await?; 
-
+    let stream = TcpStream::from_std(std_stream)?;
     let (_, mut write) = tokio::io::split(stream); 
 
     println!("connection done");
@@ -78,6 +81,7 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
     // }
     let _result = write.write_all([self_ip.to_string(), "EOF".to_string()].join(" ").as_bytes()).await?;
     // write.shutdown().await?;
+    
 
     Ok(())
 
