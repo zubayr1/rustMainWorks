@@ -83,10 +83,11 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     
 
                     s.spawn(|| {
-
+                        let mut count = 0;
                         for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
                                     {
-
+                                        count+=1;
+                                        let self_port = args[2].parse::<u32>().unwrap();
                                         let self_ip_clone = self_ip.clone();
                 let behavior_clone =behavior.clone();
                 
@@ -94,20 +95,22 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 let ip_address_clone = ip_address.clone();
                 let args_clone1 = args_clone.clone();
                 let self_ip_clone1 = self_ip.clone(); 
-
-                            let _result = server::handle_server(ip, "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count , _index, blacklisted.clone());
+                            
+                            let _result = server::handle_server(ip, "otherserver".to_string(), ip_address_clone.clone(), args_clone1.clone(), self_ip_clone1.clone(), INITIAL_PORT+port_count + count.clone() + self_port.clone() , _index, blacklisted.clone());
                         
                                     }// blacklisted.extend(blacklisted_child);
                     });
 
 
                     s.spawn(|| {
+                        let mut count = 0;
                         let three_millis = time::Duration::from_millis(3);
                                     thread::sleep(three_millis);
 
                                     for ip in ip_address_clone.clone() //LEADER SENDS TO EVERY IP (should change in recursion because in recursion, its distributed communication) 
                                     {
-
+                                        count+=1;
+                                        let self_port = args[2].parse::<u32>().unwrap();
                                         let self_ip_clone = self_ip.clone();
                 let behavior_clone =behavior.clone();
                 
@@ -116,7 +119,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 let args_clone1 = args_clone.clone();
                 let self_ip_clone1 = self_ip.clone();  
 
-                                    let _result = client::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count).to_string()].join(":"), self_ip_clone, "none".to_string(), _index, behavior.clone());
+                                    let _result = client::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count + count.clone() + self_port.clone()).to_string()].join(":"), self_ip_clone, "none".to_string(), _index, behavior.clone());
                                     
                                     }
                         
