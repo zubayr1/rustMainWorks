@@ -34,7 +34,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     stream.write_all(self_ip.as_bytes()).await?;
     stream.write_all(b"hello world!EOF").await?;
     
-    stream.shutdown().await?;
+   // stream.shutdown().await?;
    // break;
    // }
 
