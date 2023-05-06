@@ -83,6 +83,24 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     let  behavior = args[8].clone();
 
 
+    thread::scope(|s| { 
+
+
+        s.spawn(|| {
+            for i in 1..10
+            {
+                
+                let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+i  );
+                
+            }
+        });
+        
+
+        
+        
+    });
+
+
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
          
@@ -94,14 +112,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 thread::scope(|s| { 
 
 
-                    s.spawn(|| {
-                        for _ip in ip_address_clone.clone() 
-                        {
+                    // s.spawn(|| {
+                    //     for _ip in ip_address_clone.clone() 
+                    //     {
                             
-                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
+                    //         let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
                             
-                        }
-                    });
+                    //     }
+                    // });
                     
 
 
