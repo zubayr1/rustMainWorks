@@ -3,6 +3,7 @@ use tokio::net::TcpStream;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::net::tcp::ReadHalf;
 // use std::{thread, time};
+use std::{thread, time};
 
 use tokio::fs::{OpenOptions};
 
@@ -88,6 +89,44 @@ pub async fn handle_server(ip: String, server_type: String, ip_address: Vec<Stri
                 
                 
             }
+
+            tokio::spawn(async move
+            {
+                for ip in ip_address_clone.clone() // Broadcast to everyone. deliver to be used here.
+                {   
+                    if ip!=self_ip.clone() 
+                    {   messageperepochcount+=1;
+                        let address;
+                        if args[5]=="dev"
+                        {
+                            address = ["127.0.0.1".to_string(), port.to_string()].join(":");
+                        }
+                        else 
+                        {
+                            address = [ip.to_string(), port.to_string()].join(":")
+                        }
+                      
+                        let mut stream = TcpStream::connect(address).await.unwrap(); 
+                        
+                        let message1 = ["Re: Text".to_string(), self_ip.to_string().to_string()].join(" ");
+
+                        let message2 = [message1.to_string(), "id_info[0]".to_string().to_string()].join(" ");
+                        
+                        let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
+                        
+                        let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
+
+                        let _result = stream.write(finalmessage.as_bytes()).await;
+
+                            
+                    }                                
+                    
+                }
+            });
+
+
+
+
             let line_collection: Vec<&str> = line_clone.split("//").collect();
             
             if line_collection.len()>=3
@@ -108,36 +147,36 @@ pub async fn handle_server(ip: String, server_type: String, ip_address: Vec<Stri
                     if count<=1
                     {
                         count+=1;
-                        for ip in ip_address_clone.clone() // Broadcast to everyone. deliver to be used here.
-                        {   
-                            if ip!=self_ip.clone() 
-                            {   messageperepochcount+=1;
-                                let address;
-                                if args[5]=="dev"
-                                {
-                                    address = ["127.0.0.1".to_string(), port.to_string()].join(":");
-                                }
-                                else 
-                                {
-                                    address = [ip.to_string(), port.to_string()].join(":")
-                                }
+                        // for ip in ip_address_clone.clone() // Broadcast to everyone. deliver to be used here.
+                        // {   
+                        //     if ip!=self_ip.clone() 
+                        //     {   messageperepochcount+=1;
+                        //         let address;
+                        //         if args[5]=="dev"
+                        //         {
+                        //             address = ["127.0.0.1".to_string(), port.to_string()].join(":");
+                        //         }
+                        //         else 
+                        //         {
+                        //             address = [ip.to_string(), port.to_string()].join(":")
+                        //         }
                               
-                                let mut stream = TcpStream::connect(address).await?; 
+                        //         let mut stream = TcpStream::connect(address).await?; 
                                 
-                                let message1 = ["Re: Text".to_string(), self_ip.to_string().to_string()].join(" ");
+                        //         let message1 = ["Re: Text".to_string(), self_ip.to_string().to_string()].join(" ");
 
-                                let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
+                        //         let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
                                 
-                                let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
+                        //         let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
                                 
-                                let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
+                        //         let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
 
-                                let _result = stream.write(finalmessage.as_bytes()).await;
+                        //         let _result = stream.write(finalmessage.as_bytes()).await;
 
                                     
-                            }                                
+                        //     }                                
                             
-                        }
+                        // }
                     }
                 }
                 else 
@@ -156,36 +195,36 @@ pub async fn handle_server(ip: String, server_type: String, ip_address: Vec<Stri
                     {
                         count+=1;
                         
-                        for ip in ip_address_clone.clone() // Broadcast to everyone. deliver to be used here.
-                        {   
-                            if ip!=self_ip.clone() 
-                            {   messageperepochcount+=1;
-                                let address;
-                                if args[5]=="dev"
-                                {
-                                    address = ["127.0.0.1".to_string(), port.to_string()].join(":");
-                                }
-                                else 
-                                {
-                                    address = [ip.to_string(), port.to_string()].join(":")
-                                }
+                        // for ip in ip_address_clone.clone() // Broadcast to everyone. deliver to be used here.
+                        // {   
+                        //     if ip!=self_ip.clone() 
+                        //     {   messageperepochcount+=1;
+                        //         let address;
+                        //         if args[5]=="dev"
+                        //         {
+                        //             address = ["127.0.0.1".to_string(), port.to_string()].join(":");
+                        //         }
+                        //         else 
+                        //         {
+                        //             address = [ip.to_string(), port.to_string()].join(":")
+                        //         }
                               
             
-                                let mut stream = TcpStream::connect(address).await?; 
+                        //         let mut stream = TcpStream::connect(address).await?; 
 
-                                let message1 = ["Re: Identity Verification Failed".to_string(), self_ip.to_string().to_string()].join(" ");
+                        //         let message1 = ["Re: Identity Verification Failed".to_string(), self_ip.to_string().to_string()].join(" ");
 
-                                let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
+                        //         let message2 = [message1.to_string(), id_info[0].to_string().to_string()].join(" ");
                                 
-                                let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
+                        //         let broadcast_about_false_leader = [message2.to_string(), "EOF".to_string()].join(" ");
                                 
-                                let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
+                        //         let finalmessage = [broadcast_about_false_leader, epoch.to_string()].join(" ");
 
-                                let _result = stream.write(finalmessage.as_bytes()).await;
+                        //         let _result = stream.write(finalmessage.as_bytes()).await;
                                             
-                            }                                
+                        //     }                                
                             
-                        }
+                        // }
                     }
                 }
             }
