@@ -45,6 +45,7 @@ pub async fn handle_wait(ip_address: Vec<String>) {
             while TcpStream::connect(address.clone()).await.is_err() {
                 let three_millis = time::Duration::from_millis(10);
                                     thread::sleep(three_millis);
+                                    println!("a");
             }
 
         }
