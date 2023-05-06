@@ -10,10 +10,9 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
 
-    let (mut socket, _) = listener.accept().await.unwrap(); // accept listening
+    let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
-    
-    println!("---continue---");
+    println!("---continue---{}", addr);
 
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
         
