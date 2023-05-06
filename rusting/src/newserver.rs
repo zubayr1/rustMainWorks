@@ -6,11 +6,11 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 #[tokio::main]
 pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Box<dyn Error>>{
 
-    
+    loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
 
-    let (mut socket, _) = listener.accept().await.unwrap(); // starts listening
+    let (mut socket, _) = listener.accept().await.unwrap(); // accept listening
     println!("---continue---");
 
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
@@ -39,6 +39,6 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
         
         
     }
-    
+}
     Ok(())
 }
