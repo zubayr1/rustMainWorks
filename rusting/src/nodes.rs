@@ -83,7 +83,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     let  behavior = args[8].clone();
 
 
-    handle_wait(ip_address_clone.clone());
+    
   
     println!("bb");
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
@@ -112,6 +112,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     s.spawn(|| {
                         let three_millis = time::Duration::from_millis(3);
                         thread::sleep(three_millis);
+
+                        handle_wait(ip_address_clone.clone());
 
                         for ip in ip_address_clone.clone() 
                         {
