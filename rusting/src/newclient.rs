@@ -14,7 +14,6 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
      //   loop{
             let mut stream = TcpStream::connect(address.clone()).await?;
 
-            stream.set_ttl(12000)?;
    
     
     stream.set_linger(None)?;
