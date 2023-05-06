@@ -15,7 +15,7 @@ mod schnorrkel;
 type SomeResult<T> = Result<T, Box<dyn std::error::Error>>;
 
 #[tokio::main] //3 instances
-pub async fn handle_server(ip: String, server_type: String, ip_address: Vec<String>, args: Vec<String>, self_ip: String, port: u32, epoch: i32, mut blacklisted: HashSet<String>) -> SomeResult<()>{
+pub async fn handle_server( server_type: String, ip_address: Vec<String>, args: Vec<String>, self_ip: String, port: u32, epoch: i32, mut blacklisted: HashSet<String>) -> SomeResult<()>{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
