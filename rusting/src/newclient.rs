@@ -1,13 +1,15 @@
 use tokio::net::TcpStream;
 use tokio::io::AsyncWriteExt;
 use std::error::Error;
-use socket2::{Socket, Domain, Type};
-use std::{thread, time};
+use socket2;
+use std::{ time};
 
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
     let mut stream = TcpStream::connect(address.clone()).await?;
+
+    println!("connected from {} to address {}", self_ip, address);
 
     let sock_ref = socket2::SockRef::from(&stream);
 
