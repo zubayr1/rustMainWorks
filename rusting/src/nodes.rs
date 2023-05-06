@@ -83,9 +83,6 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     let  behavior = args[8].clone();
 
 
-    
-  
-    println!("bb");
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
          
@@ -101,7 +98,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     s.spawn(|| {
                         for _ip in ip_address_clone.clone() 
                         {
-                                           
+                                      println!("ddd");     
                             
                             let _result = newserver::handle_server( INITIAL_PORT+port_count  );
                         
