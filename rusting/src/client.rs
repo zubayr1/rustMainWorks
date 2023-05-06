@@ -77,7 +77,7 @@ pub async fn match_tcp_client(address: String, self_ip: String, types: String, e
         
     }
     let _result = write.write_all(b"EOF").await.unwrap();
-    write.shutdown().await?;
+    // write.shutdown().await?;
 
     Ok(())
 
