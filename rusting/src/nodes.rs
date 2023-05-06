@@ -95,13 +95,12 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
 
                     s.spawn(|| {
-                        // for _ip in ip_address_clone.clone() 
-                        // {
-                        //               println!("ddd");     
-                            
+                        for _ip in ip_address_clone.clone() 
+                        {
+                            if _ip!=self_ip.clone(){
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
-                        
-                       // }
+                            }
+                        }
                     });
                     
 
@@ -116,9 +115,9 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         {
                             let self_ip_clone = self_ip.clone();
     
-    
+                            if ip!=self_ip_clone.clone(){
                             let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
-                        
+                            }
                         }
                         
                     });
