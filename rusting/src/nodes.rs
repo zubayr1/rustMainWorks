@@ -85,14 +85,27 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
 
                     s.spawn(|| {
+
+                        let mut retry_ips = Vec::new();
+
                         for _ip in ip_address_clone.clone() 
                         {
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
                             
-                            println!("{}", _result);
+                            if _result!="NA"
+                            {
+                                retry_ips.push(_result.clone());
+                            }
                         }
-                        println!("aaa");
+                        
+                        for _ip in retry_ips.clone() 
+                        {
+                            
+                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
+                            
+                            
+                        }
                     });
 
                                       
