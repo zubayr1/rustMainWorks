@@ -7,7 +7,7 @@ use tokio::time::{ sleep, Duration};
 #[tokio::main]
 pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Box<dyn Error>>{
 
-   // loop{
+    loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
 
@@ -46,6 +46,6 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
     }
 
     println!("{}", line);
-//}
+}
     Ok(())
 }

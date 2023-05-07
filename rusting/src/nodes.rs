@@ -91,7 +91,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
 
-    initiate_server(INITIAL_PORT.clone());
+    // initiate_server(INITIAL_PORT.clone());
 
     let three_millis = time::Duration::from_millis(5);
                         thread::sleep(three_millis);
