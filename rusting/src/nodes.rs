@@ -126,7 +126,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                 }
                             }
 
-                            if check_connect(ip_clone.clone()).is_err() && count>=4
+                            if check_connect(ip_clone.clone()).is_err() && count>=400
                             {
                                 check =1;
                             }
