@@ -77,7 +77,7 @@ async fn initiate_server(initial_port: u32) {
                 port_count+=1;
                 let port = initial_port + port_count;
 
-                let _result = newserver::handle_server( INITIAL_PORT+port);
+                let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
                 
             }
       //  });
