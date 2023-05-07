@@ -87,7 +87,7 @@ async fn initiate_server(initial_port: u32) {
    // });
 }
 
-
+#[tokio::main(flavor = "multi_thread", worker_threads = 4)]
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)

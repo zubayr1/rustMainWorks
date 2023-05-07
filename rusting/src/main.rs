@@ -13,8 +13,8 @@ use chrono::prelude::*;
 mod nodes;
 mod nodes_test;
 
-
-fn run_nodes(args: Vec<String>)
+#[tokio::main(flavor = "multi_thread", worker_threads = 4)]
+async fn run_nodes(args: Vec<String>)
 {
 
     let _file = File::create("output.log"); // to create output log file where all logs will be stored
@@ -68,10 +68,10 @@ fn run_nodes(args: Vec<String>)
             let handle1 = thread::spawn(move || {  
             
     
-                let future = nodes::initiate(ip_clone, args_clone); //client
+                nodes::initiate(ip_clone, args_clone); //client
     
             
-                block_on(future);
+                // block_on(future);
                 
         
             });
@@ -96,10 +96,10 @@ fn run_nodes(args: Vec<String>)
         } 
         else  // run in prod mode
         {
-            let future = nodes::initiate(ip_clone, args.clone()); 
+            nodes::initiate(ip_clone, args.clone()); 
     
             
-            block_on(future);
+            // block_on(future);
         }
          
 
