@@ -32,6 +32,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
                 if _bytes_read == 0
                 {
                     writer.write_all(b"NAK").await.unwrap();
+                    break;
                 }
                 
                 
