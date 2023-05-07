@@ -1,5 +1,5 @@
 use tokio::net::TcpStream;
-use tokio::io::{AsyncWriteExt, AsyncReadExt};
+use tokio::io::AsyncWriteExt;
 use std::error::Error;
 use std::{ time};
 use tokio::time::{ sleep, Duration};
@@ -48,16 +48,6 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     stream.write_all([self_ip.to_string(), self_ip.to_string().to_string()].join(" ").as_bytes()).await.unwrap();
     let result = stream.write_all(b"hello world!EOF").await;
     
-    let mut data = [0u8; 12];
-    let res = stream.read_exact(&mut data);
-
-    println!("{:?}", data);
-
-    if data==[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    {   let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
-        stream.write_all([self_ip.to_string(), self_ip.to_string().to_string()].join(" ").as_bytes()).await.unwrap();
-        let result = stream.write_all(b"hello world!EOF").await;
-    }
    
     if  result.is_ok()
     {
