@@ -2,6 +2,7 @@ use std::error::Error;
 use tokio::net::TcpListener;
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::time::{ sleep, Duration};
 
 #[tokio::main]
 pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Box<dyn Error>>{
@@ -13,6 +14,8 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
     println!("---continue---{}, {:?}", addr, ip_address);
+
+    sleep(Duration::from_millis(10)).await;
 
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
         
