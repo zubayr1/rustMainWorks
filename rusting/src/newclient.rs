@@ -3,6 +3,8 @@ use tokio::io::AsyncWriteExt;
 use std::error::Error;
 use std::{ time};
 use tokio::time::{ sleep, Duration};
+use std::panic;
+use std::format;
 
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
@@ -29,11 +31,22 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     //         break;
     //     }
     // }
+    const CONNECTION_TIME: u64 = 10000;
+
+
+    let mut stream = match tokio::time::timeout(
+        Duration::from_secs(CONNECTION_TIME),
+        tokio::net::TcpStream::connect(address.clone())
+    )
+    .await
+    {
+        Ok(ok) => ok,
+        Err(e) => panic!("timeout"),
+    }
+    .expect("Error while connecting to server");
     
 
-
-
-    let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
+    // let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
     stream.set_linger(Some(Duration::from_secs(10))).expect("set_linger call failed");
 
    println!("connected from {} to address {}", self_ip, address);
