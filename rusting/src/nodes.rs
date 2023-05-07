@@ -124,14 +124,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 thread::scope(|s| { 
 
 
-                    // s.spawn(|| {
-                    //     for _ip in ip_address_clone.clone() 
-                    //     {
+                    s.spawn(|| {
+                        for _ip in ip_address_clone.clone() 
+                        {
                             
-                    //         let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
+                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
                             
-                    //     }
-                    // });
+                        }
+                    });
 
                                       
 
