@@ -16,7 +16,6 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
 
     println!("---continue---{}", addr);
 
-    sleep(Duration::from_millis(10)).await;
 
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
         
@@ -49,29 +48,29 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
    
 
 
-    for ip in ip_address.clone() // Broadcast to everyone. 
-    {   
+    // for ip in ip_address.clone() // Broadcast to everyone. 
+    // {   
 
-        // while TcpStream::connect(ip.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
-        // {
-        //     sleep(Duration::from_millis(10)).await;
-        // }
-        println!("aaa");
-            let address=  [ip.to_string(), port.to_string()].join(":");
+    //     // while TcpStream::connect(ip.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
+    //     // {
+    //     //     sleep(Duration::from_millis(10)).await;
+    //     // }
+    //     println!("aaa");
+    //         let address=  [ip.to_string(), port.to_string()].join(":");
             
             
-            let mut stream = TcpStream::connect(address.clone()).await?;             
+    //         let mut stream = TcpStream::connect(address.clone()).await?;             
           
             
-            let broadcast_about_false_leader = [address.clone().to_string(), "EOF".to_string()].join(" ");
+    //         let broadcast_about_false_leader = [address.clone().to_string(), "EOF".to_string()].join(" ");
             
 
-            let _result = stream.write(broadcast_about_false_leader.as_bytes()).await;
+    //         let _result = stream.write(broadcast_about_false_leader.as_bytes()).await;
 
                 
                                         
         
-    }
+    // }
 
     
 //}
