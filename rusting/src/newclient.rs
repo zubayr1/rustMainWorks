@@ -21,7 +21,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
    
     
 
-   println!("connected from {} to address {}", self_ip, address);
+   println!("connected from {} to address {}: local addr {:?}", self_ip, address, stream.local_addr());
 
 
 //    sleep(Duration::from_millis(300)).await;
