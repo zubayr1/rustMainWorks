@@ -116,7 +116,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             {
                                 let self_ip_clone = self_ip.clone();
 
-                                if  check_connect(ip.clone()).is_ok()
+                                if  check_connect([ip.clone().to_string(), (INITIAL_PORT+port_count ).to_string()].join(":")).is_ok()
                                 {
                                     accepted_ips.push(ip.clone());
                                     count+=1;
