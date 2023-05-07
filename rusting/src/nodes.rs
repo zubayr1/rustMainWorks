@@ -3,6 +3,7 @@ use std::{thread, time};
 use std::collections::HashSet;
 use tokio::net::TcpStream;
 use tokio::net::TcpListener;
+use std::error::Error;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -40,30 +41,13 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
 }
 
 
+#[tokio::main]
+pub async fn check_connect(address: String) -> Result<(), Box<dyn Error>> {
 
-#[tokio::main(flavor = "multi_thread", worker_threads = 4)]
-async fn initiate_server(initial_port: u32) {
-    let mut port_count =0;
-    
-
-    // thread::scope(|s| { 
-
-
-    //     s.spawn(|| {
-            for _i in 1..4
-            {
-                port_count+=1;
-                let port = initial_port + port_count;
-
-                let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
-                
-            }
-      //  });
-
-          
-        
-   // });
+    let _result = TcpStream::connect(address.clone()).await?;
+    Ok(())
 }
+
 
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
@@ -95,6 +79,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         if args[5]=="prod" // in prod mode
         {
 
+
         
                 thread::scope(|s| { 
 
@@ -122,7 +107,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         loop{
                         for ip in ip_address_clone.clone() 
                         {
-                            if !accepted_ips.contains(&ip)
+                            let ip_clone = ip.clone();
+                            if !accepted_ips.contains(&ip.clone())
                             {
                                 let self_ip_clone = self_ip.clone();
         
@@ -136,12 +122,16 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                     count+=1;
                                 }
                             }
+
+                            if check_connect(ip_clone.clone()).is_err()
+                            {
+                                break;
+                            }
+
                         }
-                        if count >=4
-                        {
-                            println!("going to next epoch");
-                            break;
-                        }
+
+                        
+                        
                     }
                     });
 
