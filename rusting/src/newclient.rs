@@ -44,8 +44,8 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
   loop{
   
     // Write some data.
-    stream.write([self_ip.to_string(), self_ip.to_string().to_string()].join(" ").as_bytes()).await.unwrap();
-    let result = stream.write(b"hello world!EOF").await;
+    stream.write_all([self_ip.to_string(), self_ip.to_string().to_string()].join(" ").as_bytes()).await.unwrap();
+    let result = stream.write_all(b"hello world!EOF").await;
     
    
    if  result.is_ok()
