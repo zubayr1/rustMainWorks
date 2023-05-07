@@ -135,6 +135,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                         if check==1
                         {
+                            println!("bbb");
                             break;
                         }
 
