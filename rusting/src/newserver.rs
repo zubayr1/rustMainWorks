@@ -8,12 +8,9 @@ use tokio::time::{ sleep, Duration};
 pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Box<dyn Error>>{
 
    // loop{
-    let std_listener = std::net::TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":"))?; // open connection
+    let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
     println!("server listening at port {}", port);
-
-    std_listener.set_nonblocking(true)?;
-    let listener = TcpListener::from_std(std_listener)?;
 
     match listener.accept().await
     {
@@ -34,7 +31,6 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
         
                 if _bytes_read == 0
                 {
-                    println!("0 bytes from {}", addr.clone());
                     writer.write_all(b"NAK").await.unwrap();
                     break;
                 }
