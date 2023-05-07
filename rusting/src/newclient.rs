@@ -1,11 +1,12 @@
 use tokio::net::TcpStream;
-use tokio::io::AsyncWriteExt;
+use tokio::io::{AsyncWriteExt, AsyncReadExt};
 use std::error::Error;
 use std::{ time};
 use tokio::time::{ sleep, Duration};
 use std::panic;
 use std::format;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use std::io;
 
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
@@ -61,16 +62,22 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     stream.write_all([self_ip.to_string(), self_ip.to_string().to_string()].join(" ").as_bytes()).await?;
     let result = stream.write_all(b"hello world!EOF").await;
     
-   
-    if  result.is_ok()
-    {
-        break;
-    }
-    if result.is_err()
-    {
-        println!("some err");
+    let mut data = vec![0; 1024];
+
+    match stream.try_read(&mut data) {
+        Ok(n) => {
+            data.truncate(n);
+            break;
+        }
+        Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => {
+            continue;
+        }
+        Err(e) => {
+            return Err(e.into());
+        }
     }
 
+    
  }
     Ok(())
 }

@@ -40,6 +40,8 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
 
             line.clear();
 
+            writer.write_all(b"ACK").await.unwrap();
+
             break;
         }
         
