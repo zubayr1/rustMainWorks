@@ -12,44 +12,53 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
     
     println!("server listening at port {}", port);
 
-    let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
-
-    println!("---continue---{}, {:?}", addr, ip_address);
-
-
-    let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
-        
-    let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
-    let mut line: String  = String :: new();
-
-    loop { //loop to get all the data from client until EOF is reached
-
-     
-        let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
-
-        if _bytes_read == 0
+    match listener.accept().await
+    {
+        Ok((mut socket, addr)) =>
         {
-            println!("0 bytes from {}", addr.clone());
-            break;
-        }
-        
-        
-        if line.contains("EOF")  //REACTOR to be used here
-        {
-            println!("EOF Reached");
-          
+            println!("---continue---{}, {:?}", addr, ip_address);
 
-            writer.write_all(line.as_bytes()).await.unwrap();
-            println!("{}", line);
-        
 
-            line.clear();
+            let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
+                
+            let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
+            let mut line: String  = String :: new();
+        
+            loop { //loop to get all the data from client until EOF is reached
+        
+             
+                let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
+        
+                if _bytes_read == 0
+                {
+                    println!("0 bytes from {}", addr.clone());
+                    break;
+                }
+                
+                
+                if line.contains("EOF")  //REACTOR to be used here
+                {
+                    println!("EOF Reached");
+                  
+        
+                    writer.write_all(line.as_bytes()).await.unwrap();
+                    println!("{}", line);
+                
+        
+                    line.clear();
+        
+                    break;
+                }
+                
+                
+            }
+        },
+        Err(e) => println!("couldn't get client: {:?}", e),
 
-            break;
-        }
-        
-        
     }
+
+
+    
 
 //}
     Ok(())
