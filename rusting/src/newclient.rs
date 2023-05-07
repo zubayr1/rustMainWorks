@@ -22,11 +22,13 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
 
         if stream.is_err()
         {   
+            println!("a");
             let result = stream.unwrap().shutdown().await;
             sleep(Duration::from_millis(10)).await;
         }
         else if stream.is_ok() 
         {
+            println!("b");
             let result = stream.unwrap().shutdown().await;
             break;
         }
