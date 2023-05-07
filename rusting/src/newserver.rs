@@ -52,7 +52,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
     }
 
 
-    for ip in ip_address.clone() // Broadcast to everyone. deliver to be used here.
+    for ip in ip_address.clone() // Broadcast to everyone. 
     {   
         
             let address=  [ip.to_string(), port.to_string()].join(":");
