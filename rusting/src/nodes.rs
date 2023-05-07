@@ -37,30 +37,7 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
     let _result = newclient::match_tcp_client([ip.to_string(), port.to_string()].join(":"), self_ip);   
     
 }
-#[tokio::main]
-pub async fn handle_wait(ip_address: Vec<String>) {
-    // First wait for all nodes to be online.
-       let _result =  tokio::spawn(async move {
-            for address in ip_address{
-            while TcpStream::connect(address.clone()).await.is_err() {
-                let three_millis = time::Duration::from_millis(10);
-                                    thread::sleep(three_millis);
-                                    
 
-                if TcpStream::connect(address.clone()).await.is_ok()
-                {
-                    println!("a");
-                    break;
-                }
-            }
-
-        }
-        })
-   
-    .await;
-
-    
-}
 
 
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
@@ -93,12 +70,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         
                 thread::scope(|s| { 
 
-
+                    
                     s.spawn(|| {
+                        let mut count = 0;
                         for _ip in ip_address_clone.clone() 
                         {
-                            
-                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
+                            count+=1;
+                            let self_port = args[2].parse::<u32>().unwrap();
+                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count + count.clone()+ self_port.clone() );
                             
                         }
                     });
@@ -111,13 +90,16 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         thread::sleep(three_millis);
 
                        // handle_wait(ip_address_clone.clone());
-
+                        let mut count=0;
                         for ip in ip_address_clone.clone() 
                         {
                             let self_ip_clone = self_ip.clone();
+
+                            count+=1;
+                            let self_port = args[2].parse::<u32>().unwrap();
     
                             
-                            let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
+                            let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count + count.clone()+ self_port.clone()).to_string()].join(":"), self_ip_clone);
                             
                         }
                         
