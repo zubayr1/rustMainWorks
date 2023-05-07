@@ -2,6 +2,7 @@
 use std::{thread, time};
 use std::collections::HashSet;
 use tokio::net::TcpStream;
+use tokio::net::TcpListener;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -62,11 +63,16 @@ pub async fn handle_wait(ip_address: Vec<String>) {
     
 }
 
-#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
-async fn initiate_server() {
-    // your code here
-    loop {
-        
+#[tokio::main(flavor = "multi_thread", worker_threads = 4)]
+async fn initiate_server(initial_port: u32) {
+    let mut port_count =0;
+    for _i in 1..4
+    {
+        port_count+=1;
+        let port = initial_port + port_count;
+
+        let _listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap();
+
     }
 }
 
@@ -75,7 +81,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
 
-    initiate_server();
+    initiate_server(INITIAL_PORT.clone());
 
     let ip_address_clone = ip_address.clone();
 
