@@ -138,6 +138,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         }
                         if count >=4
                         {
+                            println!("going to next epoch");
                             break;
                         }
                     }
