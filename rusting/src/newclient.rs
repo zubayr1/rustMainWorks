@@ -10,10 +10,10 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     // Connect to a peer
     println!("trying to connect from {} to address {}", self_ip, address);
 
-    while TcpStream::connect(address.clone()).await.is_err()
-    {
-        sleep(Duration::from_millis(10)).await;
-    }
+    // while TcpStream::connect(address.clone()).await.is_err()
+    // {
+    //     sleep(Duration::from_millis(10)).await;
+    // }
     
   //  loop{
             let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
@@ -21,7 +21,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
    
     
 
-   println!("connected from {} to address {}: local addr {:?}", self_ip, address, stream.local_addr());
+   println!("connected from {} to address {}", self_ip, address);
 
 
 //    sleep(Duration::from_millis(300)).await;
