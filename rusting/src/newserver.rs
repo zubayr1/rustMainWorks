@@ -50,11 +50,16 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
         
         
     }
+   
 
-    sleep(Duration::from_millis(5000)).await;
 
     for ip in ip_address.clone() // Broadcast to everyone. 
     {   
+
+        while TcpStream::connect(ip.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
+        {
+            sleep(Duration::from_millis(10)).await;
+        }
         println!("aaa");
             let address=  [ip.to_string(), port.to_string()].join(":");
             
