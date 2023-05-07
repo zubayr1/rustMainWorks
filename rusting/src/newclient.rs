@@ -16,10 +16,9 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
 
     loop 
     {
+        let stream = TcpStream::connect(address.clone()).await;
 
-        let std_stream = std::net::TcpStream::connect(address.clone())?;
-        std_stream.set_nonblocking(true)?;
-        let stream = TcpStream::from_std(std_stream);
+
 
         if stream.is_err()
         {   
@@ -37,9 +36,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
 
 
 
-    let std_stream = std::net::TcpStream::connect(address.clone())?;
-    std_stream.set_nonblocking(true)?;
-    let mut stream = TcpStream::from_std(std_stream)?;
+    let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
       
 
    println!("connected from {} to address {}", self_ip, address);
@@ -54,7 +51,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     let mut data = [0u8; 12];
     let res = stream.read_exact(&mut data);
 
-    println!("{:?}", res);
+    println!("{:?}", data);
    
     if  result.is_ok()
     {
