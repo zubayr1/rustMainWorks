@@ -30,14 +30,14 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     let result = stream.write(b"hello world!EOF").await;
     
    
-   if  result.is_ok()
-   {
-    println!("ok");
-   }
-   if result.is_err()
-   {
-    println!("some err");
-   }
+//    if  result.is_ok()
+//    {
+//     println!("ok");
+//    }
+//    if result.is_err()
+//    {
+//     println!("some err");
+//    }
 
  }
     Ok(())
