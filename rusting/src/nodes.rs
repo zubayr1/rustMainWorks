@@ -101,7 +101,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         
                         for _ip in retry_ips.clone() 
                         {
-                            
+                            println!("{:?}", retry_ips);
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
                             
                             
