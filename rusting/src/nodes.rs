@@ -130,6 +130,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                 
                                 if _result.is_ok()
                                 {
+                                    println!("{:?}", accepted_ips);
                                     accepted_ips.push(ip);
                                     count+=1;
                                 }
