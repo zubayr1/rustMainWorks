@@ -74,6 +74,24 @@ async fn initiate_server(initial_port: u32) {
         let _listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap();
 
     }
+
+    thread::scope(|s| { 
+
+
+        s.spawn(|| {
+            for _i in 1..4
+            {
+                port_count+=1;
+                let port = initial_port + port_count;
+
+                let _result = newserver::handle_server( INITIAL_PORT+port);
+                
+            }
+        });
+
+          
+        
+    });
 }
 
 
@@ -111,14 +129,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                 thread::scope(|s| { 
 
 
-                    s.spawn(|| {
-                        for _ip in ip_address_clone.clone() 
-                        {
+                    // s.spawn(|| {
+                    //     for _ip in ip_address_clone.clone() 
+                    //     {
                             
-                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
+                    //         let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
                             
-                        }
-                    });
+                    //     }
+                    // });
 
                                       
 
