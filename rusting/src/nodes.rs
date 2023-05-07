@@ -92,9 +92,10 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         {
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
-                            
+                            println!("{}", _result);
                             if _result!="NA"
                             {
+                                
                                 retry_ips.push(_result.clone());
                             }
                         }
