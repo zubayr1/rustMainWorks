@@ -51,6 +51,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
         
     }
 
+    sleep(Duration::from_millis(5000)).await;
 
     for ip in ip_address.clone() // Broadcast to everyone. 
     {   
