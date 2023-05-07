@@ -27,11 +27,11 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
      
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
-        if _bytes_read == 0
-        {
-            println!("0 bytes");
-            break;
-        }
+        // if _bytes_read == 0
+        // {
+        //     println!("0 bytes");
+        //     break;
+        // }
         
         println!("{}", _bytes_read);
         
