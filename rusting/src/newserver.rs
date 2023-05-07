@@ -29,6 +29,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
 
         if _bytes_read == 0
         {
+            println!("0 bytes");
             break;
         }
         
