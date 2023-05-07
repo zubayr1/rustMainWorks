@@ -77,6 +77,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         {
                             count+=1;
                             let self_port = args[2].parse::<u32>().unwrap();
+                            println!("ip server {} at port {}", _ip.clone(), (INITIAL_PORT+port_count + count.clone()+ self_port.clone()));
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count + count.clone()+ self_port.clone() );
                             
                         }
@@ -97,7 +98,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                             count+=1;
                             let self_port = args[2].parse::<u32>().unwrap();
-    
+                            println!("ip client {} at port {}", ip.clone(), (INITIAL_PORT+port_count + count.clone()+ self_port.clone()));
+
                             
                             let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count + count.clone()+ self_port.clone()).to_string()].join(":"), self_ip_clone);
                             
