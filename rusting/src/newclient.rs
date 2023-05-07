@@ -18,8 +18,6 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     {
         let stream = TcpStream::connect(address.clone()).await;
 
-
-
         if stream.is_err()
         {   
            // let result = stream.unwrap().shutdown().await;
@@ -27,7 +25,6 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
         }
         else if stream.is_ok() 
         {
-            println!("b");
             let result = stream.unwrap().shutdown().await;
             break;
         }
