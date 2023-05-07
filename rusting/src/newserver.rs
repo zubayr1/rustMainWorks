@@ -10,6 +10,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
    // loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
+    println!("server listening at port {}", port);
 
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
