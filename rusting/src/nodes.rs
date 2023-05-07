@@ -62,12 +62,20 @@ pub async fn handle_wait(ip_address: Vec<String>) {
     
 }
 
+#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
+async fn initiate_server() {
+    // your code here
+    loop {
+        
+    }
+}
+
 
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
 
-
+    initiate_server();
 
     let ip_address_clone = ip_address.clone();
 

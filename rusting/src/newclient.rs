@@ -1,7 +1,6 @@
 use tokio::net::TcpStream;
 use tokio::io::AsyncWriteExt;
 use std::error::Error;
-use socket2;
 use std::{ time};
 use tokio::time::{ sleep, Duration};
 
