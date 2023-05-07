@@ -126,14 +126,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                 }
                             }
 
-                            if  count>=400
+                            if  check_connect(ip_clone.clone()).is_ok()
                             {
-                                check =1;
+                                count+=1;
                             }
 
                         }
 
-                        if check==1
+                        if count>=4
                         {
                             println!("bbb");
                             break;
