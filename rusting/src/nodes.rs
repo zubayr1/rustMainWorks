@@ -105,7 +105,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                        // handle_wait(ip_address_clone.clone());
                        let mut count = 0;
                        let mut accepted_ips = Vec::new(); 
-                       let mut check = 0;
+                       
+                       
                        loop{
 
                         for ip in ip_address_clone.clone() 
@@ -119,6 +120,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                 {
                                     accepted_ips.push(ip.clone());
                                     count+=1;
+                                    println!("{}", count);
                                 }
                                         
                                 let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
