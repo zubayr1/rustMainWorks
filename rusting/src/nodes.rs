@@ -111,8 +111,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         for ip in ip_address_clone.clone() 
                         {
                             let ip_clone = ip.clone();
-                            // if !accepted_ips.contains(&ip.clone())
-                            // {
+                            if !accepted_ips.contains(&ip.clone())
+                            {
                                 let self_ip_clone = self_ip.clone();
         
                                 
@@ -121,13 +121,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                 if _result.is_ok()
                                 {
                                     println!("{:?}", accepted_ips);
-                                    accepted_ips.push(ip);
+                                    
                                     count+=1;
                                 }
-                           // }
+                           }
 
                             if  check_connect(ip_clone.clone()).is_ok()
                             {
+                                accepted_ips.push(ip_clone.clone());
                                 count+=1;
                             }
 
