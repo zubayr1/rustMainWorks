@@ -124,13 +124,15 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                     
                                     count+=1;
                                 }
+
+                                if  check_connect(ip.clone()).is_ok()
+                                {
+                                    accepted_ips.push(ip.clone());
+                                    count+=1;
+                                }
                            }
 
-                            if  check_connect(ip_clone.clone()).is_ok()
-                            {
-                                accepted_ips.push(ip_clone.clone());
-                                count+=1;
-                            }
+                            
 
                         }
 
