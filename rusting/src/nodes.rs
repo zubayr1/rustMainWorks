@@ -83,6 +83,9 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
     initiate_server(INITIAL_PORT.clone());
 
+    let three_millis = time::Duration::from_millis(5000);
+                        thread::sleep(three_millis);
+
     let ip_address_clone = ip_address.clone();
 
 
