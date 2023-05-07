@@ -79,9 +79,6 @@ async fn initiate_server(initial_port: u32) {
 
                 let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
                 
-                let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
-
-                println!("---continue---{}", addr);
             }
       //  });
 
