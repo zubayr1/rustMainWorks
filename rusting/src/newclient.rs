@@ -5,6 +5,7 @@ use std::{ time};
 use tokio::time::{ sleep, Duration};
 use std::panic;
 use std::format;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
@@ -31,43 +32,44 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     //         break;
     //     }
     // }
-    const CONNECTION_TIME: u64 = 10000;
+    // const CONNECTION_TIME: u64 = 10000;
 
 
-    let mut stream = match tokio::time::timeout(
-        Duration::from_secs(CONNECTION_TIME),
-        TcpStream::connect(address.clone())
-    )
-    .await
-    {
-        Ok(ok) => ok,
-        Err(e) => panic!("timeout"),
-    }
-    .expect("Error while connecting to server");
+    // let mut stream = match tokio::time::timeout(
+    //     Duration::from_secs(CONNECTION_TIME),
+    //     TcpStream::connect(address.clone())
+    // )
+    // .await
+    // {
+    //     Ok(ok) => ok,
+    //     Err(e) => panic!("timeout"),
+    // }
+    // .expect("Error while connecting to server");
+
+    let addr = std::net::SocketAddr::new(IpAddr::V4(Ipv4Addr::new(44, 204, 90, 157)), 7082);
     
-    
+    let mut stream = std::net::TcpStream::connect_timeout(&addr, Duration::from_secs(10));
     // let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
-    stream.set_linger(Some(Duration::from_secs(10))).expect("set_linger call failed");
+    // stream.set_linger(Some(Duration::from_secs(10))).expect("set_linger call failed");
 
    println!("connected from {} to address {}", self_ip, address);
 
 
-  loop{
-  
-    // Write some data.
-    stream.write_all([self_ip.to_string(), self_ip.to_string().to_string()].join(" ").as_bytes()).await.unwrap();
-    let result = stream.write_all(b"hello world!EOF").await;
+//   loop{
+//     // Write some data.
+//     stream.unwrap().write_all([self_ip.to_string(), self_ip.to_string().to_string()].join(" ").as_bytes());
+//     let result = stream.unwrap().write_all(b"hello world!EOF").await;
     
    
-    if  result.is_ok()
-    {
-        break;
-    }
-    if result.is_err()
-    {
-        println!("some err");
-    }
+//     if  result.is_ok()
+//     {
+//         break;
+//     }
+//     if result.is_err()
+//     {
+//         println!("some err");
+//     }
 
- }
+//  }
     Ok(())
 }
