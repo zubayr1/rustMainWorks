@@ -5,6 +5,20 @@ use socket2;
 use std::{ time};
 use tokio::time::{ sleep, Duration};
 
+
+pub async fn wait(address: String) {
+    // First wait for all nodes to be online.
+      let result =  tokio::spawn(async move {
+            while TcpStream::connect(address.clone()).await.is_err() {
+                sleep(Duration::from_millis(10)).await;
+            }
+        })
+    .await;
+
+   
+}
+
+
 #[tokio::main]
 pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
@@ -14,7 +28,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
     // {
     //     sleep(Duration::from_millis(10)).await;
     // }
-    
+    wait(address.clone()).await;
   //  loop{
             let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
 
