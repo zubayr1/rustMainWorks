@@ -105,7 +105,9 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                        // handle_wait(ip_address_clone.clone());
                        let mut count = 0;
                        let mut accepted_ips = Vec::new(); 
+                       let mut check = 0;
                         loop{
+
                         for ip in ip_address_clone.clone() 
                         {
                             let ip_clone = ip.clone();
@@ -126,10 +128,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                             if check_connect(ip_clone.clone()).is_err() && count>=4
                             {
-                                println!("bbb");
-                                break;
+                                check =1;
                             }
 
+                        }
+
+                        if check==1
+                        {
+                            break;
                         }
 
                         
