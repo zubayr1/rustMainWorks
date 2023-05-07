@@ -116,7 +116,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         thread::sleep(three_millis);
 
                        // handle_wait(ip_address_clone.clone());
-
+                        loop{
                         for ip in ip_address_clone.clone() 
                         {
                             let self_ip_clone = self_ip.clone();
@@ -125,7 +125,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             let _result = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
                             
                         }
-                        
+                    }
                     });
 
                     
