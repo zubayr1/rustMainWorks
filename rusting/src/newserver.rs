@@ -16,7 +16,6 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
 
     println!("---continue---{}, {:?}", addr, ip_address);
 
-    sleep(Duration::from_millis(10)).await;
 
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
         
@@ -30,7 +29,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
 
         if _bytes_read == 0
         {
-            println!("0 bytes");
+            println!("0 bytes from {}", addr.clone());
             break;
         }
         
