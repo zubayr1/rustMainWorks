@@ -66,19 +66,12 @@ pub async fn handle_wait(ip_address: Vec<String>) {
 #[tokio::main(flavor = "multi_thread", worker_threads = 4)]
 async fn initiate_server(initial_port: u32) {
     let mut port_count =0;
-    for _i in 1..4
-    {
-        port_count+=1;
-        let port = initial_port + port_count;
+    
 
-        let _listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap();
-
-    }
-
-    thread::scope(|s| { 
+    // thread::scope(|s| { 
 
 
-        s.spawn(|| {
+    //     s.spawn(|| {
             for _i in 1..4
             {
                 port_count+=1;
@@ -87,11 +80,11 @@ async fn initiate_server(initial_port: u32) {
                 let _result = newserver::handle_server( INITIAL_PORT+port);
                 
             }
-        });
+      //  });
 
           
         
-    });
+   // });
 }
 
 
