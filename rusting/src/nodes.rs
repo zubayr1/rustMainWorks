@@ -92,6 +92,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             
                             println!("{:?}", _result);
                         }
+                        println!("aaa");
                     });
 
                                       
