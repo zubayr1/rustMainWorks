@@ -3,6 +3,7 @@ use tokio::net::TcpListener;
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::time::{ sleep, Duration};
+use tokio::net::TcpStream;
 
 #[tokio::main]
 pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Box<dyn Error>>{
@@ -13,7 +14,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
 
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
-    println!("---continue---{}, {:?}", addr, ip_address);
+    println!("---continue---{}", addr);
 
     sleep(Duration::from_millis(10)).await;
 
@@ -45,7 +46,27 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
         
     }
 
-    println!("{}", line);
+
+    for ip in ip_address.clone() // Broadcast to everyone. deliver to be used here.
+    {   
+        
+            let address=  [ip.to_string(), port.to_string()].join(":");
+            
+            
+            let mut stream = TcpStream::connect(address.clone()).await?;             
+          
+            
+            let broadcast_about_false_leader = [address.clone().to_string(), "EOF".to_string()].join(" ");
+            
+
+            let _result = stream.write(broadcast_about_false_leader.as_bytes()).await;
+
+                
+                                        
+        
+    }
+
+    
 //}
     Ok(())
 }
