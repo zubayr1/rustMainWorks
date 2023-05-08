@@ -47,20 +47,10 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
 
 
 
-
-pub fn removeelement(mut all_ips: Vec<String>, ip: String) -> Vec<String>
-{
-    let index = all_ips.iter().position(|x| *x == ip).unwrap();
-    all_ips.remove(index);
-
-    return all_ips;
-}
-
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
 
-    // initiate_server(INITIAL_PORT.clone());
 
     let ip_address_clone = ip_address.clone();
 
@@ -108,7 +98,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                                  
                     s.spawn(|| {
-                        let three_millis = time::Duration::from_millis(10);
+                        let three_millis = time::Duration::from_millis(3);
                         thread::sleep(three_millis);
 
                         let mut count=1;
