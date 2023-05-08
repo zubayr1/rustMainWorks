@@ -16,41 +16,9 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
     {
         sleep(Duration::from_millis(3)).await;
     }
-    // println!("test connection done to {}", test_address);
+    println!("test connection done to {}", test_address);
 
-    // loop 
-    // {
-    //     let stream = TcpStream::connect(test_address.clone()).await;
-
-    //     if stream.is_err()
-    //     {   
-    //        // let result = stream.unwrap().shutdown().await;
-    //         sleep(Duration::from_millis(10)).await;
-    //     }
-    //     else if stream.is_ok() 
-    //     {
-    //         let result = stream.unwrap().shutdown().await;
-    //         println!("test connection done to {}", test_address);
-    //         break;
-    //     }
-    // }
-    // const CONNECTION_TIME: u64 = 10000;
-
-
-    // let mut stream = match tokio::time::timeout(
-    //     Duration::from_secs(CONNECTION_TIME),
-    //     TcpStream::connect(address.clone())
-    // )
-    // .await
-    // {
-    //     Ok(ok) => ok,
-    //     Err(e) => panic!("timeout"),
-    // }
-    // .expect("Error while connecting to server");
-
-    // let addr = std::net::SocketAddr::new(IpAddr::V4(Ipv4Addr::new(44, 204, 90, 157)), 7082);
     
-    // let mut stream = std::net::TcpStream::connect_timeout(&addr, Duration::from_secs(10));
     
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
     // stream.set_linger(Some(Duration::from_secs(10))).expect("set_linger call failed");
