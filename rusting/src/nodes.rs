@@ -97,11 +97,12 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     s.spawn(|| {
 
                         // let mut retry_ips = Vec::new();
-
+                        let mut count=1;
                         for _ip in ip_address_clone.clone() 
                         {
                             println!("start server for {}", _ip);
-                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count  );
+                            let additional_port = count*100;
+                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count +additional_port );
 
                             println!("------------------{}-----------------------", _result);
 
@@ -118,15 +119,16 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         let three_millis = time::Duration::from_millis(10);
                         thread::sleep(three_millis);
 
-                        
+                        let mut count=1;
 
                         for ip in ip_address_clone.clone() 
                         {
+                            let additional_port = count*100;
                             println!("start client for {}", ip);
                             let self_ip_clone = self_ip.clone();
 
                             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
-                            [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone, "first".to_string());
+                            [ip.to_string(), (TEST_PORT+port_count+additional_port ).to_string()].join(":"), self_ip_clone, "first".to_string());
 
                             
                         }
