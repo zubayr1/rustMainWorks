@@ -158,7 +158,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                         }
 
-                        if count>=1000
+                        if count>=4
                         {
                             println!("bbb");
                             break;
