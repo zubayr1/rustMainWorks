@@ -1,6 +1,7 @@
 
 use std::{thread, time};
 use std::collections::HashSet;
+use tokio::io::AsyncReadExt;
 use tokio::net::TcpStream;
 use tokio::net::TcpListener;
 use std::error::Error;
@@ -45,7 +46,15 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
 #[tokio::main]
 pub async fn check_connect(address: String) -> Result<(), Box<dyn Error>> {
 
-    let _result = TcpStream::connect(address.clone()).await?;
+    let mut stream = TcpStream::connect(address.clone()).await?;
+
+    let mut resp = [0u8; 100];
+
+    let (mut reader, writer) = stream.split();
+
+    let buf_len = reader.read_u8().await.unwrap();
+
+    println!("{:?}", buf_len);
 
     // let ip_port: Vec<&str> = address.split(":").collect();
 
