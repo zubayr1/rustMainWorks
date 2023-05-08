@@ -10,29 +10,30 @@ use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 #[tokio::main]
 pub async fn match_tcp_client(address: String, test_address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
-   // println!("trying to connect from {} to address {}", self_ip, address);
+   println!("trying to connect from {} to address {}", self_ip, address);
 
-    // while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
-    // {
-    //     sleep(Duration::from_millis(10)).await;
-    // }
-
-    loop 
+    while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
     {
-        let stream = TcpStream::connect(test_address.clone()).await;
-
-        if stream.is_err()
-        {   
-           // let result = stream.unwrap().shutdown().await;
-            sleep(Duration::from_millis(10)).await;
-        }
-        else if stream.is_ok() 
-        {
-            let result = stream.unwrap().shutdown().await;
-            println!("test connection done to {}", test_address);
-            break;
-        }
+        sleep(Duration::from_millis(10)).await;
     }
+    println!("test connection done to {}", test_address);
+
+    // loop 
+    // {
+    //     let stream = TcpStream::connect(test_address.clone()).await;
+
+    //     if stream.is_err()
+    //     {   
+    //        // let result = stream.unwrap().shutdown().await;
+    //         sleep(Duration::from_millis(10)).await;
+    //     }
+    //     else if stream.is_ok() 
+    //     {
+    //         let result = stream.unwrap().shutdown().await;
+    //         println!("test connection done to {}", test_address);
+    //         break;
+    //     }
+    // }
     // const CONNECTION_TIME: u64 = 10000;
 
 
