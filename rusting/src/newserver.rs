@@ -6,11 +6,12 @@ use tokio::time::{ sleep, Duration};
 use tokio::net::TcpStream;
 
 #[tokio::main]
-pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Box<dyn Error>>{
+pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -> Result<(), Box<dyn Error>>{
 
    // loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
+    let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
 
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
@@ -27,10 +28,10 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Bo
      
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
-       if _bytes_read==0
-       {       
-        break;
-       }
+    //    if _bytes_read==0
+    //    {       
+    //     break;
+    //    }
         
         if line.contains("EOF")  //REACTOR to be used here
         {

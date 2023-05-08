@@ -8,7 +8,7 @@ use std::format;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 #[tokio::main]
-pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
+pub async fn match_tcp_client(address: String, test_address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
    // println!("trying to connect from {} to address {}", self_ip, address);
 
@@ -19,7 +19,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
 
     loop 
     {
-        let stream = TcpStream::connect(address.clone()).await;
+        let stream = TcpStream::connect(test_address.clone()).await;
 
         if stream.is_err()
         {   
