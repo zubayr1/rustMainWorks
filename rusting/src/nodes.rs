@@ -48,13 +48,13 @@ pub async fn check_connect(address: String) -> Result<(), Box<dyn Error>> {
 
     let mut stream = TcpStream::connect(address.clone()).await?;
 
-    let mut resp = [0u8; 100];
+    // let mut resp = [0u8; 100];
 
-    let (mut reader, writer) = stream.split();
+    // let (mut reader, writer) = stream.split();
 
-    let buf_len = reader.read_u8().await.unwrap();
+    // let buf_len = reader.read_u8().await.unwrap();
 
-    println!("{:?}", buf_len);
+    // println!("{:?}", buf_len);
 
     // let ip_port: Vec<&str> = address.split(":").collect();
 
