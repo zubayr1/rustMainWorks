@@ -46,30 +46,7 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
 }
 
 
-#[tokio::main]
-pub async fn check_connect(address: String) -> Result<(), Box<dyn Error>> {
 
-    let mut stream = TcpStream::connect(address.clone()).await?;
-
-    Ok(())
-}
-
-
-pub fn getindex(all_ips: Vec<String>, ip: String) -> u32
-{
-    let mut index=0;
-
-    for i in all_ips.iter()
-    {
-        if i == &ip
-        {
-            return index;
-        }
-        index+=1;
-    }
-
-    return index;
-}
 
 pub fn removeelement(mut all_ips: Vec<String>, ip: String) -> Vec<String>
 {
@@ -101,7 +78,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
-         
+         println!("epoch {}", _index);
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
@@ -123,7 +100,6 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                         for _ip in ip_address_clone.clone() 
                         {
-                            println!("server up for {}", _ip);
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count  );
 
                             println!("------------------{}-----------------------", _result);
@@ -157,7 +133,6 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
                             [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone, "first".to_string());
 
-                            println!("client up for {}", ip);
 
                         }
 
