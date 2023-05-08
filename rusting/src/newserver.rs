@@ -45,7 +45,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
             println!("{}", line);
         
 
-            line.clear();
+           // line.clear();
 
             break;
            // return "NA".to_string();
