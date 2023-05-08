@@ -55,6 +55,22 @@ pub async fn check_connect(address: String) -> Result<(), Box<dyn Error>> {
 }
 
 
+pub fn getindex(all_ips: Vec<String>, ip: String) -> u32
+{
+    let mut index=0;
+
+    for i in all_ips.iter()
+    {
+        if i == &ip
+        {
+            return index;
+        }
+        index+=1;
+    }
+
+    return index;
+}
+
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
@@ -81,7 +97,15 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
-        
+            let all_ips = ip_address_clone.clone();
+
+            loop{
+
+                if all_ips.len()==0
+                {
+                    break;
+                }
+
                 thread::scope(|s| { 
 
 
@@ -96,8 +120,11 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                             println!("------------------{}-----------------------", _result);
 
+                            let successful_ip: Vec<&str> = _result.split(" ").collect();
 
-                            
+                            let index = getindex(all_ips.clone(), successful_ip[0].clone().to_string());
+
+                            println!("{}", index);
                         }
                         
                        
@@ -129,7 +156,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     
                 });
 
-            //}    
+            }    
                                 
             
                

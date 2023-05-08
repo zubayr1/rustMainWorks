@@ -30,15 +30,15 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
     loop { //loop to get all the data from client until EOF is reached
 
-        let duration = start.elapsed(); 
+        // let duration = start.elapsed(); 
 
-        println!("{:?}", duration.as_millis());
-        println!("{:?}", Duration::from_millis(10000).as_millis());
+        // println!("{:?}", duration.as_millis());
+        // println!("{:?}", Duration::from_millis(10000).as_millis());
 
-        if duration.as_millis() >=Duration::from_millis(10000).as_millis()
-        {
-            break;
-        }
+        // if duration.as_millis() >=Duration::from_millis(10000).as_millis()
+        // {
+        //     break;
+        // }
         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
