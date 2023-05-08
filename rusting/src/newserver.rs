@@ -17,19 +17,12 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
     let (_, _) = test_listener.accept().await.unwrap();
 
-    println!("test connection done to {}", testport.to_string());
 
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
     let duration = start.elapsed(); 
 
-    // println!("{:?}", duration.as_millis());
-    // println!("{:?}", Duration::from_millis(10000).as_millis());
-
-    // if duration.as_millis() >=Duration::from_millis(10000).as_millis()
-    // {
-    //     return "".to_string();
-    // }
+    
 
 
     println!("---continue---");
@@ -40,38 +33,19 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
     let mut line: String  = String :: new();
 
-    loop { //loop to get all the data from client until EOF is reached
-
-        // let duration = start.elapsed(); 
-
-        // println!("{:?}", duration.as_millis());
-        // println!("{:?}", Duration::from_millis(10000).as_millis());
-
-        // if duration.as_millis() >=Duration::from_millis(10000).as_millis()
-        // {
-        //     break;
-        // }
+    loop { 
         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
-    //    if _bytes_read==0
-    //    {       
-    //     break;
-    //    }
-        
+    
         if line.contains("EOF")  //REACTOR to be used here
         {
-            // println!("EOF Reached");
           
 
             writer.write_all(line.as_bytes()).await.unwrap();
-            // println!("{}", line);
-        
-
-           // line.clear();
+            
 
             break;
-           // return "NA".to_string();
         }
         
         
