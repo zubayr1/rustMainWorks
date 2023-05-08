@@ -71,6 +71,14 @@ pub fn getindex(all_ips: Vec<String>, ip: String) -> u32
     return index;
 }
 
+pub fn removeelement(mut all_ips: Vec<String>, ip: String) -> Vec<String>
+{
+    let index = all_ips.iter().position(|x| *x == ip).unwrap();
+    all_ips.remove(index);
+
+    return all_ips;
+}
+
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
@@ -97,7 +105,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
-            let all_ips = ip_address_clone.clone();
+            let mut all_ips = ip_address_clone.clone();
 
             loop{
 
@@ -122,9 +130,13 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                             let successful_ip: Vec<&str> = _result.split(" ").collect();
 
-                            let index = getindex(all_ips.clone(), successful_ip[0].clone().to_string());
+                            // let index = getindex(all_ips.clone(), successful_ip[0].clone().to_string());
 
-                            println!("{}", index);
+                            // println!("{}", index);
+
+                            // all_ips.remove(index);
+
+                            all_ips = removeelement(all_ips.clone(), successful_ip[0].clone().to_string());
                         }
                         
                        
