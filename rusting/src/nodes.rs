@@ -101,11 +101,11 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         for _ip in ip_address_clone.clone() 
                         {
                             count+=1;
-                            let additional_port = count*100;
+                            let additional_port = (count + args[2].parse::<u32>().unwrap())*100;
                             println!("start server for {}, testport: {}", _ip, (TEST_PORT+port_count + additional_port));
                             
                             
-                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count  );
+                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
 
                             println!("------------------{}-----------------------", _result);
 
@@ -127,11 +127,11 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         for ip in ip_address_clone.clone() 
                         {
                             count+=1;
-                            let additional_port = count*100;
+                            let additional_port = (count + args[2].parse::<u32>().unwrap())*100;
                             println!("start client for {}, testport: {}", ip, (TEST_PORT+port_count + additional_port));
                             let self_ip_clone = self_ip.clone();
 
-                            let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
+                            let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count + additional_port ).to_string()].join(":"),
                             [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone, "first".to_string());
 
                             
