@@ -79,7 +79,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         if args[5]=="prod" // in prod mode
         {
 
-
+            let mut total_num_client =4;
         
                 thread::scope(|s| { 
 
@@ -92,10 +92,10 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         {
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
-                            println!("{}", _result);
+
                             if _result!="NA"
                             {
-                                
+                                total_num_client+=1;
                                 retry_ips.push(_result.clone());
                             }
                         }
@@ -115,6 +115,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     s.spawn(|| {
                         let three_millis = time::Duration::from_millis(10);
                         thread::sleep(three_millis);
+
+                        // let total_num_client_clone = total_num_client.clone();
 
                        // handle_wait(ip_address_clone.clone());
                        let mut count = 0;
@@ -148,7 +150,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                         }
 
-                        if count>=4
+                        if count>=1000
                         {
                             println!("bbb");
                             break;
