@@ -34,7 +34,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
         println!("{:?}", duration);
 
-        if duration >=Duration::from_secs(10)
+        if duration >=Duration::from_millis(10000)
         {
             break;
         }
