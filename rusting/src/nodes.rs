@@ -51,22 +51,6 @@ pub async fn check_connect(address: String) -> Result<(), Box<dyn Error>> {
 
     let mut stream = TcpStream::connect(address.clone()).await?;
 
-    // let mut resp = [0u8; 100];
-
-    // let (mut reader, writer) = stream.split();
-
-    // let buf_len = reader.read_u8().await.unwrap();
-
-    // println!("{:?}", buf_len);
-
-    // let ip_port: Vec<&str> = address.split(":").collect();
-
-    // let ip: Vec<&str> = ip_port[0].split(".").collect();
-
-    // let addr = std::net::SocketAddr::from(([ip[0].parse::<u8>().unwrap(), ip[1].parse::<u8>().unwrap()
-    // , ip[2].parse::<u8>().unwrap(), ip[3].parse::<u8>().unwrap()], ip_port[1].parse::<u16>().unwrap()));
-
-    // let _result = std::net::TcpStream::connect_timeout(&addr, Duration::from_millis(10));
     Ok(())
 }
 
@@ -97,8 +81,6 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
-
-            let mut total_num_client =4;
         
                 thread::scope(|s| { 
 
@@ -115,35 +97,10 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             println!("------------------{}-----------------------", _result);
 
 
-                            // for ip in ip_address_clone.clone() 
-                            // {
-                            //     if ip!=_ip{
-                            //     let self_ip_clone = self_ip.clone();
-
-                            //     let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
-                            //     [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone,"second".to_string());
-
-                            //     }
-
-                            // }
-
-
-
-                            // if _result!="NA"
-                            // {
-                            //     println!("server hit for test purposes");
-                            //     total_num_client+=1;
-                            //     retry_ips.push(_result.clone());
-                            // }
+                            
                         }
                         
-                        // for _ip in ip_address_clone.clone() 
-                        // {
-                        //     println!("{:?}", retry_ips);
-                        //     let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
-                            
-                            
-                        // }
+                       
                     });
 
                                       
@@ -153,14 +110,9 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         let three_millis = time::Duration::from_millis(10);
                         thread::sleep(three_millis);
 
-                        // let total_num_client_clone = total_num_client.clone();
-
-                       // handle_wait(ip_address_clone.clone());
+                        
                        let mut count = 0;
-                    //    let mut accepted_ips = Vec::new(); 
-                       
-                       
-                     //  loop{
+                    
 
                         for ip in ip_address_clone.clone() 
                         {
@@ -170,67 +122,10 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
                             [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone, "first".to_string());
 
-
-                        //     if !accepted_ips.contains(&ip.clone())
-                        //     {
-                        //         let self_ip_clone = self_ip.clone();
-
-                        //         if  check_connect([ip.clone().to_string(), (INITIAL_PORT+port_count ).to_string()].join(":")).is_ok()
-                        //         {
-                        //             accepted_ips.push(ip.clone());
-                        //             count+=1;
-                        //             println!("{}", count);
-
-                        //             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
-
-                        //         }
- 
-                                
-                                
-                        //    }
-
-                            
+                      
 
                         }
 
-                        // if count>=4
-                        // {
-                        //     count =0;
-                        //     accepted_ips = Vec::new();
-                        //     for ip in ip_address_clone.clone() 
-                        //     {
-                                
-                        //         if !accepted_ips.contains(&ip.clone())
-                        //         {
-                        //             let self_ip_clone = self_ip.clone();
-
-                        //             if  check_connect([ip.clone().to_string(), (INITIAL_PORT+port_count ).to_string()].join(":")).is_ok()
-                        //             {
-                        //                 accepted_ips.push(ip.clone());
-                        //                 count+=1;
-                        //                 println!("{}", count);
-
-                        //                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
-
-                        //             }
-    
-                                    
-                                    
-                        //     }
-
-                        //     if count>=4
-                        //     {
-                        //         break;
-                        //     }
-
-                                
-
-                        //     }
-                       // }
-
-                        
-                        
-                    //}
                     });
 
                     
