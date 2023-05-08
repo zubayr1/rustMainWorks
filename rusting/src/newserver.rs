@@ -73,7 +73,6 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
         // {
         //     sleep(Duration::from_millis(10)).await;
         // }
-        println!("aaa");
             let address=  [ip.to_string(), port.to_string()].join(":");
             
             
