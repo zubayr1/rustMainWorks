@@ -115,17 +115,17 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             println!("------------------{}-----------------------", _result);
 
 
-                            // for ip in ip_address_clone.clone() 
-                            // {
-                            //     if ip!=_ip{
-                            //     let self_ip_clone = self_ip.clone();
+                            for ip in ip_address_clone.clone() 
+                            {
+                                if ip!=_ip{
+                                let self_ip_clone = self_ip.clone();
 
-                            //     let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
-                            //     [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone);
+                                let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
+                                [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone);
 
-                            //     }
+                                }
 
-                            // }
+                            }
 
 
 

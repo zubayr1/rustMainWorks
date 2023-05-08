@@ -13,7 +13,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     
     let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
 
-    let (mut sock1, _) = test_listener.accept().await.unwrap();
+    let (_, _) = test_listener.accept().await.unwrap();
 
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
@@ -47,7 +47,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
            // line.clear();
 
-            break;
+           // break;
            // return "NA".to_string();
         }
         
@@ -57,29 +57,29 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     
 
 
-    for ip in ip_address.clone() // Broadcast to everyone. 
-    {   
+    // for ip in ip_address.clone() // Broadcast to everyone. 
+    // {   
 
-        // while TcpStream::connect(ip.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
-        // {
-        //     sleep(Duration::from_millis(10)).await;
-        // }
-            let address=  [ip.to_string(), port.to_string()].join(":");
+    //     // while TcpStream::connect(ip.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
+    //     // {
+    //     //     sleep(Duration::from_millis(10)).await;
+    //     // }
+    //         let address=  [ip.to_string(), port.to_string()].join(":");
             
             
-            let mut stream = TcpStream::connect(address.clone()).await.unwrap();             
+    //         let mut stream = TcpStream::connect(address.clone()).await.unwrap();             
           
             
-            let broadcast_about_false_leader = [address.clone().to_string(), "EOF".to_string()].join(" ");
+    //         let broadcast_about_false_leader = [address.clone().to_string(), "EOF".to_string()].join(" ");
             
 
-            let _result = stream.write(broadcast_about_false_leader.as_bytes()).await;
+    //         let _result = stream.write(broadcast_about_false_leader.as_bytes()).await;
 
                 
                                         
         
-    }
-    return line;
+    // }
+   // return line;
     
 //}
 }
