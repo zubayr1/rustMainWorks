@@ -6,7 +6,7 @@ use tokio::time::{ sleep, Duration};
 use tokio::net::TcpStream;
 
 #[tokio::main]
-pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -> Result<(), Box<dyn Error>>{
+pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -> String{
 
    // loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
@@ -16,16 +16,6 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     let (mut sock1, _) = test_listener.accept().await.unwrap();
 
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
-
-
-    
-    // runtime.spawn(sock1);
-    // runtime.spawn(socket);
-
-    // runtime.shutdown_on_idle().wait().unwrap();
-
-
-
 
 
     println!("---continue---");
@@ -63,7 +53,8 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
         
         
     }
-   
+    
+    return line;
 
 
     // for ip in ip_address.clone() // Broadcast to everyone. 
@@ -91,5 +82,4 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
     
 //}
-     Ok(())
 }
