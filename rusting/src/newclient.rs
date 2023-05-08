@@ -63,7 +63,6 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
     stream.write_all([self_ip.to_string(), address.to_string().to_string()].join(" ").as_bytes()).await?;
     let result = stream.write_all(b"hello world!EOF").await;
     
-    sleep(Duration::from_millis(1000)).await;
     if  result.is_ok()
     {
         println!("ok");
