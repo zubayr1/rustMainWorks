@@ -19,6 +19,16 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
+    let duration = start.elapsed(); 
+
+    println!("{:?}", duration.as_millis());
+    println!("{:?}", Duration::from_millis(10000).as_millis());
+
+    if duration.as_millis() >=Duration::from_millis(10000).as_millis()
+    {
+        return "".to_string();
+    }
+
 
     println!("---continue---");
 
