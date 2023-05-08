@@ -7,7 +7,7 @@ use std::time::{Duration, Instant};
 
 #[tokio::main]
 pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -> String{
-
+    println!("start server");
    // loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
