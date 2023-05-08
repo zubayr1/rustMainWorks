@@ -85,7 +85,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
             let mut all_ips = ip_address_clone.clone();
 
             loop{
-
+                println!("{:?}", all_ips);
                 if all_ips.len()==0
                 {
                     break;
@@ -105,13 +105,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             println!("------------------{}-----------------------", _result);
 
                             let successful_ip: Vec<&str> = _result.split(" ").collect();
-
-                            // let index = getindex(all_ips.clone(), successful_ip[0].clone().to_string());
-
-                            // println!("{}", index);
-
-                            // all_ips.remove(index);
-
+                            
                             all_ips = removeelement(all_ips.clone(), successful_ip[0].clone().to_string());
                         }
                         
