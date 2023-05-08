@@ -45,14 +45,16 @@ async fn handle_client(ip: String, self_ip: String, types: String, port: u32, ep
 #[tokio::main]
 pub async fn check_connect(address: String) -> Result<(), Box<dyn Error>> {
 
-    let ip_port: Vec<&str> = address.split(":").collect();
+    let _result = TcpStream::connect(address.clone()).await?;
 
-    let ip: Vec<&str> = ip_port[0].split(".").collect();
+    // let ip_port: Vec<&str> = address.split(":").collect();
 
-    let addr = std::net::SocketAddr::from(([ip[0].parse::<u8>().unwrap(), ip[1].parse::<u8>().unwrap()
-    , ip[2].parse::<u8>().unwrap(), ip[3].parse::<u8>().unwrap()], ip_port[1].parse::<u16>().unwrap()));
+    // let ip: Vec<&str> = ip_port[0].split(".").collect();
 
-    let _result = std::net::TcpStream::connect_timeout(&addr, Duration::from_millis(10));
+    // let addr = std::net::SocketAddr::from(([ip[0].parse::<u8>().unwrap(), ip[1].parse::<u8>().unwrap()
+    // , ip[2].parse::<u8>().unwrap(), ip[3].parse::<u8>().unwrap()], ip_port[1].parse::<u16>().unwrap()));
+
+    // let _result = std::net::TcpStream::connect_timeout(&addr, Duration::from_millis(10));
     Ok(())
 }
 
