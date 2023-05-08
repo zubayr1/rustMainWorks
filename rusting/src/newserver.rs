@@ -31,10 +31,10 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
      
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
-    //    if _bytes_read==0
-    //    {       
-    //     break;
-    //    }
+       if _bytes_read==0
+       {       
+        break;
+       }
         
         if line.contains("EOF")  //REACTOR to be used here
         {
