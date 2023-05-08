@@ -36,9 +36,9 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     //     break;
     //    }
         
-        if line.contains("EOFEOF")  //REACTOR to be used here
+        if line.contains("EOF")  //REACTOR to be used here
         {
-            println!("2nd EOF Reached");
+            println!("EOF Reached");
           
 
             writer.write_all(line.as_bytes()).await.unwrap();
