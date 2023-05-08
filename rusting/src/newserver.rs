@@ -29,7 +29,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> String{
 
        if _bytes_read==0
        {       
-        writer.write_all(b"test").await.unwrap();
+       // writer.write_all(b"test").await.unwrap();
         return addr.ip().to_string();
        }
         
