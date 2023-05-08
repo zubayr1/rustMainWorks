@@ -7,7 +7,7 @@ use std::time::{Duration, Instant};
 
 #[tokio::main]
 pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -> String{
-    println!("start server");
+    println!("started server");
    // loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
@@ -21,13 +21,13 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
     let duration = start.elapsed(); 
 
-    println!("{:?}", duration.as_millis());
-    println!("{:?}", Duration::from_millis(10000).as_millis());
+    // println!("{:?}", duration.as_millis());
+    // println!("{:?}", Duration::from_millis(10000).as_millis());
 
-    if duration.as_millis() >=Duration::from_millis(10000).as_millis()
-    {
-        return "".to_string();
-    }
+    // if duration.as_millis() >=Duration::from_millis(10000).as_millis()
+    // {
+    //     return "".to_string();
+    // }
 
 
     println!("---continue---");
