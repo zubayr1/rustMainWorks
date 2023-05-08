@@ -2,8 +2,8 @@ use std::error::Error;
 use tokio::net::TcpListener;
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
-use tokio::time::{ sleep, Duration};
 use tokio::net::TcpStream;
+use std::time::{Duration, Instant};
 
 #[tokio::main]
 pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -> String{
@@ -12,6 +12,8 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
     let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
+
+    let start = Instant::now();
 
     let (_, _) = test_listener.accept().await.unwrap();
 
@@ -28,13 +30,19 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
     loop { //loop to get all the data from client until EOF is reached
 
-     
+        let duration = start.elapsed();
+
+        if duration >=Duration::from_secs(10)
+        {
+            break;
+        }
+        
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
-       if _bytes_read==0
-       {       
-        break;
-       }
+    //    if _bytes_read==0
+    //    {       
+    //     break;
+    //    }
         
         if line.contains("EOF")  //REACTOR to be used here
         {
