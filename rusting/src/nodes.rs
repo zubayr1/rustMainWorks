@@ -102,6 +102,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         {
                             println!("start server for {}", _ip);
                             let additional_port = count*100;
+                            count+=1;
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count +additional_port );
 
                             println!("------------------{}-----------------------", _result);
@@ -124,6 +125,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         for ip in ip_address_clone.clone() 
                         {
                             let additional_port = count*100;
+                            count+=1;
                             println!("start client for {}", ip);
                             let self_ip_clone = self_ip.clone();
 
