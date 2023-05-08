@@ -114,6 +114,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                             if _result!="NA"
                             {
+                                println!("server hit for test purposes");
                                 total_num_client+=1;
                                 retry_ips.push(_result.clone());
                             }
