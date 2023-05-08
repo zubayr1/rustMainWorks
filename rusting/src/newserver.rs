@@ -6,7 +6,7 @@ use tokio::time::{ sleep, Duration};
 use tokio::net::TcpStream;
 
 #[tokio::main]
-pub async fn handle_server( ip_address: Vec<String>, port: u32) -> String{
+pub async fn handle_server( ip_address: Vec<String>, port: u32) -> Result<(), Box<dyn Error>>{
 
    // loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
@@ -27,11 +27,11 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> String{
      
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
-       if _bytes_read==0
-       {       
-       // writer.write_all(b"test").await.unwrap();
-        return addr.ip().to_string();
-       }
+    //    if _bytes_read==0
+    //    {       
+    //    // writer.write_all(b"test").await.unwrap();
+    //     return addr.ip().to_string();
+    //    }
         
         if line.contains("EOF")  //REACTOR to be used here
         {
@@ -44,7 +44,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> String{
 
             line.clear();
 
-            return "NA".to_string();
+           // return "NA".to_string();
         }
         
         
@@ -78,5 +78,5 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32) -> String{
 
     
 //}
-    // Ok(())
+     Ok(())
 }

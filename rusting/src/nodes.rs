@@ -105,28 +105,28 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                     s.spawn(|| {
 
-                        let mut retry_ips = Vec::new();
+                        // let mut retry_ips = Vec::new();
 
                         for _ip in ip_address_clone.clone() 
                         {
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
 
-                            if _result!="NA"
-                            {
-                                println!("server hit for test purposes");
-                                total_num_client+=1;
-                                retry_ips.push(_result.clone());
-                            }
+                            // if _result!="NA"
+                            // {
+                            //     println!("server hit for test purposes");
+                            //     total_num_client+=1;
+                            //     retry_ips.push(_result.clone());
+                            // }
                         }
                         
-                        for _ip in ip_address_clone.clone() 
-                        {
-                            println!("{:?}", retry_ips);
-                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
+                        // for _ip in ip_address_clone.clone() 
+                        // {
+                        //     println!("{:?}", retry_ips);
+                        //     let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count  );
                             
                             
-                        }
+                        // }
                     });
 
                                       
@@ -140,74 +140,79 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                        // handle_wait(ip_address_clone.clone());
                        let mut count = 0;
-                       let mut accepted_ips = Vec::new(); 
+                    //    let mut accepted_ips = Vec::new(); 
                        
                        
-                       loop{
+                     //  loop{
 
                         for ip in ip_address_clone.clone() 
                         {
                             
-                            if !accepted_ips.contains(&ip.clone())
-                            {
-                                let self_ip_clone = self_ip.clone();
+                            let self_ip_clone = self_ip.clone();
 
-                                if  check_connect([ip.clone().to_string(), (INITIAL_PORT+port_count ).to_string()].join(":")).is_ok()
-                                {
-                                    accepted_ips.push(ip.clone());
-                                    count+=1;
-                                    println!("{}", count);
+                            let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
 
-                                    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
 
-                                }
+                        //     if !accepted_ips.contains(&ip.clone())
+                        //     {
+                        //         let self_ip_clone = self_ip.clone();
+
+                        //         if  check_connect([ip.clone().to_string(), (INITIAL_PORT+port_count ).to_string()].join(":")).is_ok()
+                        //         {
+                        //             accepted_ips.push(ip.clone());
+                        //             count+=1;
+                        //             println!("{}", count);
+
+                        //             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
+
+                        //         }
  
                                 
                                 
-                           }
+                        //    }
 
                             
 
                         }
 
-                        if count>=4
-                        {
-                            count =0;
-                            accepted_ips = Vec::new();
-                            for ip in ip_address_clone.clone() 
-                            {
+                        // if count>=4
+                        // {
+                        //     count =0;
+                        //     accepted_ips = Vec::new();
+                        //     for ip in ip_address_clone.clone() 
+                        //     {
                                 
-                                if !accepted_ips.contains(&ip.clone())
-                                {
-                                    let self_ip_clone = self_ip.clone();
+                        //         if !accepted_ips.contains(&ip.clone())
+                        //         {
+                        //             let self_ip_clone = self_ip.clone();
 
-                                    if  check_connect([ip.clone().to_string(), (INITIAL_PORT+port_count ).to_string()].join(":")).is_ok()
-                                    {
-                                        accepted_ips.push(ip.clone());
-                                        count+=1;
-                                        println!("{}", count);
+                        //             if  check_connect([ip.clone().to_string(), (INITIAL_PORT+port_count ).to_string()].join(":")).is_ok()
+                        //             {
+                        //                 accepted_ips.push(ip.clone());
+                        //                 count+=1;
+                        //                 println!("{}", count);
 
-                                        let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
+                        //                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"), self_ip_clone);
 
-                                    }
+                        //             }
     
                                     
                                     
-                            }
+                        //     }
 
-                            if count>=4
-                            {
-                                break;
-                            }
+                        //     if count>=4
+                        //     {
+                        //         break;
+                        //     }
 
                                 
 
-                            }
-                        }
+                        //     }
+                       // }
 
                         
                         
-                    }
+                    //}
                     });
 
                     
