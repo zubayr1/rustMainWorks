@@ -12,6 +12,8 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     
     let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
 
+    println!("test connection done to {}", testport.to_string());
+
     let start = Instant::now();
 
     let (_, _) = test_listener.accept().await.unwrap();
