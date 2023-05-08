@@ -29,6 +29,7 @@ pub async fn match_tcp_client(address: String, self_ip: String) -> Result<(), Bo
         else if stream.is_ok() 
         {
             let result = stream.unwrap().shutdown().await;
+            println!("aa");
             break;
         }
     }
