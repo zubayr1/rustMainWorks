@@ -51,7 +51,7 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
     // let addr = std::net::SocketAddr::new(IpAddr::V4(Ipv4Addr::new(44, 204, 90, 157)), 7082);
     
     // let mut stream = std::net::TcpStream::connect_timeout(&addr, Duration::from_secs(10));
-    sleep(Duration::from_millis(10)).await;
+    sleep(Duration::from_millis(1000)).await;
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
     // stream.set_linger(Some(Duration::from_secs(10))).expect("set_linger call failed");
 
