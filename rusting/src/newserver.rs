@@ -32,10 +32,10 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
         let duration = start.elapsed(); 
 
-        println!("{:?}", duration);
+        println!("{:?}", duration.as_millis());
         println!("{:?}", Duration::from_millis(10000));
 
-        if duration >=Duration::from_millis(10000)
+        if duration.as_millis() >=Duration::from_millis(10000).as_millis()
         {
             break;
         }
