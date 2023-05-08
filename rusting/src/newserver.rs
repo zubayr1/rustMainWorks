@@ -13,6 +13,8 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     
     let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
 
+    let (_, _) = test_listener.accept().await.unwrap();
+
     let (mut socket, addr) = listener.accept().await.unwrap(); // accept listening
 
     println!("---continue---");
