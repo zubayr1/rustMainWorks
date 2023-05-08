@@ -84,12 +84,12 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         {
             let mut all_ips = ip_address_clone.clone();
 
-            loop{
-                println!("{:?}", all_ips);
-                if all_ips.len()==0
-                {
-                    break;
-                }
+            // loop{
+            //     println!("{:?}", all_ips);
+            //     if all_ips.len()==0
+            //     {
+            //         break;
+            //     }
 
                 thread::scope(|s| { 
 
@@ -100,16 +100,18 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         let mut count=1;
                         for _ip in ip_address_clone.clone() 
                         {
-                            println!("start server for {}", _ip);
-                            let additional_port = count*100;
                             count+=1;
+                            let additional_port = count*100;
+                            println!("start server for {}, testport: {}", _ip, (TEST_PORT+port_count +additional_port));
+                            
+                            
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count +additional_port );
 
                             println!("------------------{}-----------------------", _result);
 
-                            let successful_ip: Vec<&str> = _result.split(" ").collect();
+                            // let successful_ip: Vec<&str> = _result.split(" ").collect();
                             
-                            all_ips = removeelement(all_ips.clone(), successful_ip[0].clone().to_string());
+                            // all_ips = removeelement(all_ips.clone(), successful_ip[0].clone().to_string());
                         }
                         
                        
@@ -126,7 +128,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         {
                             let additional_port = count*100;
                             count+=1;
-                            println!("start client for {}", ip);
+                            println!("start client for {}, testport: {}", ip, (TEST_PORT+port_count+additional_port ));
                             let self_ip_clone = self_ip.clone();
 
                             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
@@ -142,7 +144,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     
                 });
 
-            }    
+          //  }    
                                 
             
                
