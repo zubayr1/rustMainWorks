@@ -36,9 +36,9 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
     //     break;
     //    }
         
-        if line.contains("EOF")  //REACTOR to be used here
+        if line.contains("EOFEOF")  //REACTOR to be used here
         {
-            println!("EOF Reached");
+            println!("2nd EOF Reached");
           
 
             writer.write_all(line.as_bytes()).await.unwrap();
@@ -47,7 +47,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
 
            // line.clear();
 
-           // break;
+            break;
            // return "NA".to_string();
         }
         
@@ -79,7 +79,7 @@ pub async fn handle_server( ip_address: Vec<String>, port: u32, testport: u32) -
                                         
         
     // }
-   // return line;
+    return line;
     
 //}
 }

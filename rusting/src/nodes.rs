@@ -41,7 +41,7 @@ pub fn create_keys() // schnorr key generation
 async fn handle_client(ip: String, self_ip: String, types: String, port: u32, epoch: i32, behavior: String) // clinet: initiating data sending.
 {    
     let _result = newclient::match_tcp_client([ip.to_string(), port.to_string()].join(":"), 
-    [ip.to_string(), port.to_string()].join(":"), self_ip);   
+    [ip.to_string(), port.to_string()].join(":"), self_ip, "first".to_string());   
     
 }
 
@@ -121,7 +121,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                                 let self_ip_clone = self_ip.clone();
 
                                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
-                                [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone);
+                                [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone,"second".to_string());
 
                                 }
 
@@ -168,7 +168,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             let self_ip_clone = self_ip.clone();
 
                             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
-                            [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone);
+                            [ip.to_string(), (TEST_PORT+port_count ).to_string()].join(":"), self_ip_clone, "first".to_string());
 
 
                         //     if !accepted_ips.contains(&ip.clone())

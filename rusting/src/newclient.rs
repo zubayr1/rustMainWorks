@@ -8,7 +8,7 @@ use std::format;
 use std::net::{IpAddr, Ipv4Addr, SocketAddr};
 
 #[tokio::main]
-pub async fn match_tcp_client(address: String, test_address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
+pub async fn match_tcp_client(address: String, test_address: String, self_ip: String, types: String) -> Result<(), Box<dyn Error>> {
     // Connect to a peer
 //    println!("trying to connect from {} to address {}", self_ip, address);
 
@@ -61,17 +61,36 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
   loop{
     // Write some data.
     stream.write_all([self_ip.to_string(), address.to_string().to_string()].join(" ").as_bytes()).await?;
-    let result = stream.write_all(b"hello world!EOF").await;
     
-    if  result.is_ok()
+    
+    if types=="first"
     {
-        println!("ok");
-        break;
+        let result = stream.write_all(b"hello world!EOF").await;
+        if  result.is_ok()
+        {
+            println!("ok");
+            break;
+        }
+        if result.is_err()
+        {
+            continue;
+        }
     }
-    if result.is_err()
-    {
-        continue;
+    else {
+        let result = stream.write_all(b"hello world!EOFEOF").await;
+        if  result.is_ok()
+        {
+            println!("ok");
+            break;
+        }
+        if result.is_err()
+        {
+            continue;
+        }
     }
+    
+    
+    
 
  }
 
