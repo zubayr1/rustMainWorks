@@ -126,8 +126,8 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
                         for ip in ip_address_clone.clone() 
                         {
-                            let additional_port = count*100;
                             count+=1;
+                            let additional_port = count*100;
                             println!("start client for {}, testport: {}", ip, (TEST_PORT+port_count+additional_port ));
                             let self_ip_clone = self_ip.clone();
 
