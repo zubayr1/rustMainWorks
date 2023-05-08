@@ -101,7 +101,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         for _ip in ip_address_clone.clone() 
                         {
                             count+=1;
-                            let additional_port = (count + args[2].parse::<u32>().unwrap())*100;
+                            let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
                             println!("start server for {}, testport: {}", _ip, (TEST_PORT+port_count + additional_port));
                             
                             
@@ -127,7 +127,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                         for ip in ip_address_clone.clone() 
                         {
                             count+=1;
-                            let additional_port = (count + args[2].parse::<u32>().unwrap())*100;
+                            let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
                             println!("start client for {}, testport: {}", ip, (TEST_PORT+port_count + additional_port));
                             let self_ip_clone = self_ip.clone();
 
