@@ -1,6 +1,7 @@
 use tokio::net::TcpListener;
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::fs::{OpenOptions};
 
 #[tokio::main]
 pub async fn handle_server( _ip_address: Vec<String>, port: u32, testport: u32) -> String{
@@ -24,6 +25,15 @@ pub async fn handle_server( _ip_address: Vec<String>, port: u32, testport: u32) 
     let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
     let mut line: String  = String :: new();
 
+    let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
+
+    let mut text;
+
+    text = ["server at port".to_string(), port.to_string()].join(": ");
+
+    file.write_all(text.as_bytes()).await.unwrap();
+    file.write_all(b"\n").await.unwrap();
+
     loop { 
         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
@@ -34,6 +44,11 @@ pub async fn handle_server( _ip_address: Vec<String>, port: u32, testport: u32) 
           
 
             writer.write_all(line.as_bytes()).await.unwrap();
+
+            text = line.clone();
+
+            file.write_all(text.as_bytes()).await.unwrap();
+            file.write_all(b"\n").await.unwrap();
             
 
             break;

@@ -2,12 +2,15 @@ use tokio::net::TcpStream;
 use tokio::io::AsyncWriteExt;
 use std::error::Error;
 use tokio::time::{ sleep, Duration};
+use tokio::fs::{OpenOptions};
 
 
 #[tokio::main]
 pub async fn match_tcp_client(address: String, test_address: String, self_ip: String, types: String) -> Result<(), Box<dyn Error>> {
+
+    let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
+
     // Connect to a peer
-//    println!("trying to connect from {} to address {}", self_ip, address);
 
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
     {
@@ -31,6 +34,9 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
         let result = stream.write_all(b"hello world!EOF").await;
         if  result.is_ok()
         {
+            let text = ["client at: ".to_string(), self_ip.to_string()].join(": ");
+            file.write_all(text.as_bytes()).await.unwrap();
+            file.write_all(b"\n").await.unwrap();
             break;
         }
         if result.is_err()
