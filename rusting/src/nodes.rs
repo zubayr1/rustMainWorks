@@ -1,11 +1,10 @@
 
 use std::{thread, time};
-use std::collections::HashSet;
-use tokio::io::AsyncReadExt;
-use tokio::net::TcpStream;
-use tokio::net::TcpListener;
+// use std::collections::HashSet;
+// use tokio::io::AsyncReadExt;
+// use tokio::net::TcpStream;
+// use tokio::net::TcpListener;
 use std::error::Error;
-use tokio::time::{ sleep, Duration};
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -13,11 +12,11 @@ mod schnorrkel;
 #[path = "../probability/create_adv_prob.rs"]
 mod create_adv_prob;
 
-#[path = "./client.rs"]
-mod client;
+// #[path = "./client.rs"]
+// mod client;
 
-#[path = "./server.rs"]
-mod server;
+// #[path = "./server.rs"]
+// mod server;
 
 
 #[path = "./newclient.rs"]
@@ -38,15 +37,6 @@ pub fn create_keys() // schnorr key generation
 }
 
 
-async fn handle_client(ip: String, self_ip: String, types: String, port: u32, epoch: i32, behavior: String) // clinet: initiating data sending.
-{    
-    let _result = newclient::match_tcp_client([ip.to_string(), port.to_string()].join(":"), 
-    [ip.to_string(), port.to_string()].join(":"), self_ip, "first".to_string());   
-    
-}
-
-
-
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
@@ -55,7 +45,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     let ip_address_clone = ip_address.clone();
 
 
-    let args_clone = args.clone();
+    // let args_clone = args.clone();
 
     let self_ip = args[6].clone();
 
@@ -63,12 +53,12 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     let mut port_count: u32 = 0;
 
 
-    let  behavior = args[8].clone();
+    // let  behavior = args[8].clone();
 
 
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
-         println!("epoch {}", _index);
+        println!("epoch {}", _index);
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
@@ -122,14 +112,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                     
                 });
 
-          //  }    
-                                
-            
                
         }
         else 
         {                
-            handle_client("127.0.0.1".to_string(), self_ip.clone(), "none".to_string(), INITIAL_PORT+port_count, _index, behavior.clone()).await;
+        
+            let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(["127.0.0.1".to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
+                ["127.0.0.1".to_string(), (TEST_PORT+port_count ).to_string()].join(":"), "127.0.0.1".to_string(), "first".to_string());
+
         }
 
 

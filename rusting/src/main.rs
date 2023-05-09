@@ -11,8 +11,8 @@ use chrono::prelude::*;
 
 //import own files
 mod nodes;
-mod nodes_test;
-
+// mod nodes_test;
+mod nodes_test1;
 
 fn run_nodes(args: Vec<String>)
 {
@@ -80,7 +80,7 @@ fn run_nodes(args: Vec<String>)
             let handle2 = thread::spawn(move || {
                 
         
-                let future1 = nodes_test::initiate(ip_clone_new, args_clone_new); //server
+                let future1 = nodes_test1::initiate(ip_clone_new, args_clone_new); //server
     
             
                 block_on(future1);
