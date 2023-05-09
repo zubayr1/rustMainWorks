@@ -5,6 +5,8 @@ use std::{thread, time};
 // use tokio::net::TcpStream;
 // use tokio::net::TcpListener;
 use std::error::Error;
+use tokio::fs::{OpenOptions};
+use tokio::io::AsyncWriteExt;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -36,11 +38,19 @@ pub fn create_keys() // schnorr key generation
 
 }
 
+#[tokio::main]
+pub async fn write_to_file(text: String, mut file: tokio::fs::File) -> tokio::fs::File
+{
+    file.write_all(text.as_bytes()).await.unwrap();
+    file.write_all(b"\n").await.unwrap();
+    return file;
+}
+
 
 pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
-
+    let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
 
     let ip_address_clone = ip_address.clone();
 
@@ -59,6 +69,14 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
         println!("epoch {}", _index);
+
+        let mut text;
+
+        text = ["epoch ".to_string(), _index.to_string()].join(": ");
+
+        file = write_to_file(text, file);
+
+
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
@@ -122,19 +140,16 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
         }
 
+        text = "--------------------------------".to_string();
+
+        file = write_to_file(text, file);
 
         println!("--------------------------------");
 
     }
     
     println!("End by {}", args[6]);
-    // for i in blacklisted.iter()
-    // {
-    //     println!("{}", i);
-    // }
     
-    
-
     
 
 }

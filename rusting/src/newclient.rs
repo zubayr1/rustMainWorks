@@ -15,14 +15,9 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
     {
         sleep(Duration::from_millis(3)).await;
-    }
-
-    
+    }    
     
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
-    // stream.set_linger(Some(Duration::from_secs(10))).expect("set_linger call failed");
-
-
 
   loop{
     // Write some data.
