@@ -1,0 +1,30 @@
+epoch : 1
+client at: : 127.0.0.1
+--------------------------------
+server at port: 7082
+epoch : 2
+127.0.0.1 127.0.0.1:7082hello world!EOF
+client at: : 127.0.0.1
+--------------------------------
+server at port: 7083
+epoch : 3
+127.0.0.1 127.0.0.1:7083hello world!EOF
+client at: : 127.0.0.1
+--------------------------------
+server at port: 7084
+epoch : 4
+127.0.0.1 127.0.0.1:7084hello world!EOF
+client at: : 127.0.0.1
+--------------------------------
+server at port: 7085
+epoch : 5127.0.0.1 127.0.0.1:7085hello world!EOF
+
+client at: : 127.0.0.1
+--------------------------------
+server at port: 7086
+epoch : 6
+127.0.0.1 127.0.0.1:7086hello world!EOF
+client at: : 127.0.0.1
+--------------------------------
+server at port: 7087
+127.0.0.1 127.0.0.1:7087hello world!EOF
