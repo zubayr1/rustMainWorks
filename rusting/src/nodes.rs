@@ -127,6 +127,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
 
     }
     
+    println!("End by {}", args[6]);
     // for i in blacklisted.iter()
     // {
     //     println!("{}", i);
