@@ -12,8 +12,8 @@ def committee():
     count_groupid = 1
     count_entries = MINGROUPCOUNT
 
-    total_count = 4
-    read_count = 8 # number of nodes
+    total_count = 3
+    read_count = 4 # number of nodes
 
     while(total_count >0):
         for f in file:

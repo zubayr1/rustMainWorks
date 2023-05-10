@@ -7,12 +7,13 @@ use std::{thread, time};
 // use tokio::net::TcpListener;
 use std::error::Error;
 use std::fs::OpenOptions;
+use std::collections::HashMap;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
 
-#[path = "../probability/create_adv_prob.rs"]
-mod create_adv_prob;
+// #[path = "../probability/create_adv_prob.rs"]
+// mod create_adv_prob;
 
 // #[path = "./client.rs"]
 // mod client;
@@ -40,12 +41,11 @@ pub fn create_keys() // schnorr key generation
 
 
 
-pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
+pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
 
-    let ip_address_clone = ip_address.clone();
 
 
     // let args_clone = args.clone();
@@ -73,10 +73,15 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
+            for (_i, ip_addresses_comb) in filtered_committee.clone()
+            {
+                let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
-           
+                let ip_address_clone = ip_address.clone();
+
+                println!("{:?}", ip_address_clone);
+                       
                 thread::scope(|s| { 
-
 
                     s.spawn(|| {
 
@@ -89,8 +94,6 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
                             
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
-
-                            println!("------------------{}-----------------------", _result);
 
                         }
                         
@@ -122,7 +125,7 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
     
                     
                 });
-
+            }
                
         }
         else 
@@ -138,7 +141,6 @@ pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
         file.write_all(text.as_bytes()).unwrap();
         file.write_all(b"\n").unwrap();
 
-        println!("--------------------------------");
 
     }
     

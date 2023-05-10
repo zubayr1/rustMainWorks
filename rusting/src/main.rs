@@ -7,6 +7,7 @@ use futures::executor::block_on;
 
 use std::env::{self};
 use chrono::prelude::*;
+use std::collections::HashMap;
 
 
 //import own files
@@ -22,33 +23,63 @@ fn run_nodes(args: Vec<String>)
     let mut ids: Vec<String> = Vec::new();
     let mut ip_address: Vec<String> = Vec::new();
 
-    // get nodes information.
+    let mut committee: HashMap<u32, String> = HashMap::new();
+
+    // get nodes information: with committees.
     
-    let nodesfile = File::open("./nodes_information.txt").expect("cant open the file"); // get all nodes information from nodes_information file
+    let nodesfile = File::open("./updatednodeinfo.txt").expect("cant open the file"); // get all nodes information from nodes_information file
     let reader = BufReader::new(nodesfile);
 
         
     for line in reader.lines() 
     {
-        let line_uw = line.unwrap();
+        let line_uw = line.unwrap();       
         
-        let textsplit: Vec<&str> = line_uw.split("-").collect(); 
+        let textsplit: Vec<&str> = line_uw.split("-").collect();      
 
         ids.push(textsplit[0].to_string());
 
-        ip_address.push(textsplit[1].to_string());
+        let committeesplit: Vec<&str> = textsplit[1].split(" ").collect();
+
+        ip_address.push(committeesplit[0].to_string());
+
+       
+        for _i in 1..committeesplit.len() 
+        {   
+            let committee_id = committeesplit[_i];
+            if !committee.contains_key(&committee_id.clone().parse::<u32>().unwrap())
+            {
+                committee.insert(committeesplit[_i].parse::<u32>().unwrap(), committeesplit[0].to_string());
+            }   
+            else 
+            {   
+                let participants = [committee[&committeesplit[_i].parse::<u32>().unwrap()].to_string(), committeesplit[0].to_string()].join(" ");
+                committee.insert(committeesplit[_i].parse::<u32>().unwrap(),   participants);     
+            }     
+            
+        }
     
     }  
+    let mut sorted: Vec<(&u32, &String)> = committee.iter().collect();
 
-    let ip_clone = ip_address.clone();
-    let ip_clone_new = ip_address.clone();
+    sorted.sort_by_key(|a| a.0);
 
 
 
-    // create committee.
-  
+    // filter committees: based on self ip being exist
+    let self_ip = args[6].to_string();
 
+    let mut filtered_committee: HashMap<u32, String> = HashMap::new();
     
+    for (i, j) in sorted
+    {
+        if j.contains(&self_ip.to_string())
+        {
+            filtered_committee.insert(*i, j.to_string());
+        }
+    }
+
+
 
     if args[5]=="dev" // run in dev mode
     {
@@ -60,7 +91,7 @@ fn run_nodes(args: Vec<String>)
         let handle1 = thread::spawn(move || {  
         
 
-            let future = nodes::initiate(ip_clone, args_clone); //client
+            let future = nodes::initiate(filtered_committee.clone(), args_clone); //client
 
         
             block_on(future);
@@ -72,7 +103,7 @@ fn run_nodes(args: Vec<String>)
         let handle2 = thread::spawn(move || {
             
     
-            let future1 = nodes_test1::initiate(ip_clone_new, args_clone_new); //server
+            let future1 = nodes_test1::initiate("127.0.0.1".to_string(), args_clone_new); //server
 
         
             block_on(future1);
@@ -88,7 +119,7 @@ fn run_nodes(args: Vec<String>)
     } 
     else  // run in prod mode
     {
-        let future = nodes::initiate(ip_clone, args.clone()); 
+        let future = nodes::initiate(filtered_committee.clone(), args.clone()); 
 
         
         block_on(future);

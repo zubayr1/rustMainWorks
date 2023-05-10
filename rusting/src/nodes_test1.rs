@@ -9,7 +9,7 @@ const INITIAL_PORT: u32 = 7081;
 const TEST_PORT: u32 = 7481;
 
 #[tokio::main]
-pub async fn handle_server( _: Vec<String>, port: u32, testport: u32) -> String{
+pub async fn handle_server( _: String, port: u32, testport: u32) -> String{
    // loop{
     let listener = TcpListener::bind(["127.0.0.1".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
@@ -69,7 +69,7 @@ pub async fn handle_server( _: Vec<String>, port: u32, testport: u32) -> String{
 
 
 
-pub async fn initiate(ip_address: Vec<String>, args: Vec<String>)
+pub async fn initiate(ip_address: String, args: Vec<String>)
 {
     let ip_address_clone = ip_address.clone();
 
