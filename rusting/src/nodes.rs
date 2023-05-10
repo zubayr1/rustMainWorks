@@ -28,9 +28,9 @@ mod newclient;
 #[path = "./newserver.rs"]
 mod newserver;
 
-const INITIAL_PORT: u32 = 7281;
+const INITIAL_PORT: u32 = 7081;
 
-const TEST_PORT: u32 = 7581;
+const TEST_PORT: u32 = 7481;
 
 pub fn create_keys() // schnorr key generation
 {
