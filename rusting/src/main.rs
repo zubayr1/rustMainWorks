@@ -24,6 +24,7 @@ fn run_nodes(args: Vec<String>)
     let mut ip_address: Vec<String> = Vec::new();
 
     let mut committee: HashMap<u32, String> = HashMap::new();
+    let mut filtered_committee: HashMap<u32, String> = HashMap::new();
 
     // get nodes information: with committees.
     
@@ -60,27 +61,22 @@ fn run_nodes(args: Vec<String>)
         }
     
     }  
-    let mut sorted: Vec<(&u32, &String)> = committee.iter().collect();
-
-    sorted.sort_by_key(|a| a.0);
-
-
+    
 
     // filter committees: based on self ip being exist
     let self_ip = args[6].to_string();
 
-    let mut filtered_committee: HashMap<u32, String> = HashMap::new();
     
-    for (i, j) in sorted
+    
+    for (i, j) in committee
     {
         if j.contains(&self_ip.to_string())
         {
-            filtered_committee.insert(*i, j.to_string());
+            filtered_committee.insert(i, j.to_string());
         }
     }
-
-
-
+    
+   
     if args[5]=="dev" // run in dev mode
     {
         let args_clone = args.clone();

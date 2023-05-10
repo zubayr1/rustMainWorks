@@ -58,6 +58,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     // let  behavior = args[8].clone();
 
+    let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
+
+    sorted.sort_by_key(|a| a.0);
+
 
     for _index in 1..(args[7].parse::<i32>().unwrap()+1) // iterate for all epoch
     {   
@@ -73,7 +77,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         port_count+=1;
         if args[5]=="prod" // in prod mode
         {
-            for (_i, ip_addresses_comb) in filtered_committee.clone()
+            for (_i, ip_addresses_comb) in sorted.clone()
             {
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
