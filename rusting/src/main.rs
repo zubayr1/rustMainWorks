@@ -22,85 +22,77 @@ fn run_nodes(args: Vec<String>)
     let mut ids: Vec<String> = Vec::new();
     let mut ip_address: Vec<String> = Vec::new();
 
-    // create committee.
+    // get nodes information.
     
     let nodesfile = File::open("./nodes_information.txt").expect("cant open the file"); // get all nodes information from nodes_information file
     let reader = BufReader::new(nodesfile);
-    
+
+        
     for line in reader.lines() 
     {
         let line_uw = line.unwrap();
         
-        let textsplit = line_uw.split("-"); 
+        let textsplit: Vec<&str> = line_uw.split("-").collect(); 
 
-        let mut count=0;
-        for db in textsplit {
-            count+=1;
+        ids.push(textsplit[0].to_string());
 
-            if count==1
-            {   
-                ids.push(db.to_string()); // store node ids
-            }
-            if count==2
-            {
-                ip_address.push(db.to_string()); // store nodes ip address
-            }
-
-            
-            
-      }
-    }
+        ip_address.push(textsplit[1].to_string());
     
+    }  
+
+    let ip_clone = ip_address.clone();
+    let ip_clone_new = ip_address.clone();
 
 
-        let ip_clone = ip_address.clone();
-        let ip_clone_new = ip_address.clone();
+
+    // create committee.
+  
 
     
 
-        if args[5]=="dev" // run in dev mode
-        {
-            let args_clone = args.clone();
+    if args[5]=="dev" // run in dev mode
+    {
+        let args_clone = args.clone();
 
-            // since in dev mode, localhost runs as both client and server, need to use threading so that client and 
-            // server runs concurrently
+        // since in dev mode, localhost runs as both client and server, need to use threading so that client and 
+        // server runs concurrently
 
-            let handle1 = thread::spawn(move || {  
-            
-    
-                let future = nodes::initiate(ip_clone, args_clone); //client
-    
-            
-                block_on(future);
-                
+        let handle1 = thread::spawn(move || {  
         
-            });
-            let args_clone_new = args.clone();
 
-            let handle2 = thread::spawn(move || {
-                
+            let future = nodes::initiate(ip_clone, args_clone); //client
+
         
-                let future1 = nodes_test1::initiate(ip_clone_new, args_clone_new); //server
-    
-            
-                block_on(future1);
-                
-        
-            });
-                
-            
-            handle1.join().unwrap();
-                
-            
-            handle2.join().unwrap();
-        } 
-        else  // run in prod mode
-        {
-            let future = nodes::initiate(ip_clone, args.clone()); 
-    
-            
             block_on(future);
-        }
+            
+    
+        });
+        let args_clone_new = args.clone();
+
+        let handle2 = thread::spawn(move || {
+            
+    
+            let future1 = nodes_test1::initiate(ip_clone_new, args_clone_new); //server
+
+        
+            block_on(future1);
+            
+    
+        });
+            
+        
+        handle1.join().unwrap();
+            
+        
+        handle2.join().unwrap();
+    } 
+    else  // run in prod mode
+    {
+        let future = nodes::initiate(ip_clone, args.clone()); 
+
+        
+        block_on(future);
+    }
          
 
 
