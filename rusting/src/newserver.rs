@@ -16,7 +16,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let (mut socket, _) = listener.accept().await.unwrap(); // accept listening
 
    
-    println!("---continue---");
+    // println!("---continue---");
 
 
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently

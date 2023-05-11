@@ -1,4 +1,9 @@
+import math
+
 def committee():
+    read_count = 4 # number of nodes
+
+
     file = open("nodes_information.txt", "r")
 
     filew = open("updatednodeinfo.txt", "w")
@@ -11,11 +16,11 @@ def committee():
 
     count_groupid = 1
     count_entries = MINGROUPCOUNT
+    
+    height = math.log(read_count,2) + 1
 
-    total_count = 3
-    read_count = 4 # number of nodes
-
-    while(total_count >0):
+    
+    while(height >0):
         for f in file:
             s = f.rstrip() + " " + str(count_groupid) + "\n"
             #print(s)
@@ -27,7 +32,7 @@ def committee():
                 count_entries = MINGROUPCOUNT
                 count_groupid +=1
             
-        total_count -=1
+        height -=1
         
         MINGROUPCOUNT*=2
         count_entries = MINGROUPCOUNT
