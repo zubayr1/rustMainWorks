@@ -73,12 +73,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         file.write_all(text.as_bytes()).unwrap();
         file.write_all(b"\n").unwrap();
 
-
-        port_count+=1;
+        
         if args[5]=="prod" // in prod mode
         {
             for (_i, ip_addresses_comb) in sorted.clone()
             {
+                port_count+=1;
+                
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
                 let ip_address_clone = ip_address.clone();
