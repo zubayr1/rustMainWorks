@@ -96,9 +96,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                         let mut count=1;
                         for _ip in ip_address_clone.clone() 
                         {
-                          //  count+=1;
+                            count+=1;
                             let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                            println!("server  {} {}", INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port);
+                            println!("server {} {} {}",_ip, INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port);
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
                         }
@@ -115,10 +115,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
                         for ip in ip_address_clone.clone() 
                         {
-                          //  count+=1;
+                            count+=1;
                             let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
                             let self_ip_clone = self_ip.clone();
-                            println!("client {} {}", INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port);
+                            println!("client {} {} {}", ip, INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port);
                             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
                             [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"), self_ip_clone, "first".to_string());
 
