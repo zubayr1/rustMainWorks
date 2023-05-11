@@ -84,7 +84,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
                 let ip_address_clone = ip_address.clone();
 
-                println!("{:?}", ip_address_clone);
+                println!("Level {}", _i);
                        
                 thread::scope(|s| { 
 
