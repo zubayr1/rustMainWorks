@@ -79,7 +79,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             for (_i, ip_addresses_comb) in sorted.clone()
             {
                 port_count+=1;
-                
+
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
                 let ip_address_clone = ip_address.clone();
@@ -99,7 +99,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                             
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
-                            println!("{}", _result);
                         }
                         
                        
