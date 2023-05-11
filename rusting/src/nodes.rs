@@ -98,7 +98,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                         {
                             count+=1;
                             let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                            // let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
                             println!("server {} {} {}",_ip, INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port);
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
