@@ -11,12 +11,12 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
 
     // Connect to a peer
-    println!("adress{}", address);
+    
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
     {
         sleep(Duration::from_millis(3)).await;
     }    
-    
+    println!("adress{}", address);
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
 
   loop{
