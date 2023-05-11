@@ -76,6 +76,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
         if args[5]=="prod" // in prod mode
         {
+            let mut level=0;
             for (_i, ip_addresses_comb) in sorted.clone()
             {
                 port_count+=1;
@@ -84,7 +85,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
                 let ip_address_clone = ip_address.clone();
 
-                println!("Level {}", _i);
+                println!("Level {}", level);
+                level+=1;
                        
                 thread::scope(|s| { 
 
@@ -96,7 +98,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                         {
                             count+=1;
                             let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                            
+                            println!("{} {}", INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port);
                             
                             let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
                         }
