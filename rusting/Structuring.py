@@ -39,21 +39,28 @@ def committee():
         filew = open("tempnodeinfo.txt", "a")
 
         #print("------------------------")
-        
-
-        
+              
 
     filew = open("updatednodeinfo.txt", "a")
 
 
+    total_len=0
+    with open("tempnodeinfo.txt", "r") as fp:
+        total_len = len(fp.readlines())
 
-    for f in reversed(open("tempnodeinfo.txt", "r").readlines()):
-        filew.write(f)
-        read_count-=1
+    total_len = total_len - read_count
+
+    for f in open("tempnodeinfo.txt", "r").readlines():
         
-        if read_count==0:
-            break
+        if total_len<=0:
+            filew.write(f)
+            read_count-=1
+            
+            if read_count==0:
+                break
+        total_len-=1
 
+    
     print("Creating Committees: Done")
 
 
