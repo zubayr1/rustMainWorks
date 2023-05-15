@@ -12,4 +12,5 @@ fi
 
 # run script
 cd "rusting"
-/home/ubuntu/.cargo/bin/cargo run -- nok {1} 4 03282129 prod {18.117.92.19} 4 0
+python3 Structuring.py
+/home/ubuntu/.cargo/bin/cargo run -- keys {1} 4 03282129 prod {18.117.92.19} 4 0
