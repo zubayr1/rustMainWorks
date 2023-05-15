@@ -4,7 +4,7 @@ use std::{thread, time};
 use std::error::Error;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
-
+use chrono::Utc;
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
 
@@ -51,6 +51,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     sorted.sort_by_key(|a| a.0);
 
+    let start_time = Utc::now().time();
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
@@ -134,8 +135,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     }
+
+    let end_time = Utc::now().time();
+
+    let diff = end_time - start_time;
     
-    println!("End by {}", args[6]);
+    println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
     
     
 
