@@ -6,7 +6,7 @@ use tokio::fs::{OpenOptions};
 
 
 #[tokio::main]
-pub async fn match_tcp_client(address: String, test_address: String, self_ip: String, types: String) -> Result<(), Box<dyn Error>> {
+pub async fn match_tcp_client(address: String, test_address: String, self_ip: String) -> Result<(), Box<dyn Error>> {
 
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
 
@@ -23,34 +23,18 @@ pub async fn match_tcp_client(address: String, test_address: String, self_ip: St
     stream.write_all([self_ip.to_string(), address.to_string().to_string()].join(" ").as_bytes()).await?;
     
     
-    if types=="first"
+    let result = stream.write_all(b"hello world!EOF").await;
+    if  result.is_ok()
     {
-        let result = stream.write_all(b"hello world!EOF").await;
-        if  result.is_ok()
-        {
-            let text = ["client at: ".to_string(), self_ip.to_string()].join(": ");
-            file.write_all(text.as_bytes()).await.unwrap();
-            file.write_all(b"\n").await.unwrap();
-            break;
-        }
-        if result.is_err()
-        {
-            continue;
-        }
+        let text = ["client at: ".to_string(), self_ip.to_string()].join(": ");
+        file.write_all(text.as_bytes()).await.unwrap();
+        file.write_all(b"\n").await.unwrap();
+        break;
     }
-    else {
-        let result = stream.write_all(b"hello world!EOFEOF").await;
-        if  result.is_ok()
-        {
-            break;
-        }
-        if result.is_err()
-        {
-            continue;
-        }
+    if result.is_err()
+    {
+        continue;
     }
-    
-    
     
 
  }

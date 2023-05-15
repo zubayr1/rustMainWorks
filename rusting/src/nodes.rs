@@ -109,16 +109,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                             let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
                             let self_ip_clone = self_ip.clone();
                             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
-                            [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"), self_ip_clone, "first".to_string());
+                            [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"), self_ip_clone);
 
                             
                         }
 
                     });
 
-                    
-    
-                    
                 });
             }
                
@@ -127,7 +124,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         {                
         
             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(["127.0.0.1".to_string(), (INITIAL_PORT+port_count ).to_string()].join(":"),
-                ["127.0.0.1".to_string(), (TEST_PORT+port_count ).to_string()].join(":"), "127.0.0.1".to_string(), "first".to_string());
+                ["127.0.0.1".to_string(), (TEST_PORT+port_count ).to_string()].join(":"), "127.0.0.1".to_string());
 
         }
 
