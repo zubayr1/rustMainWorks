@@ -13,3 +13,5 @@ do
     echo $ip
     ssh -i "randpiper.pem" ubuntu@$ip "bash setup.sh"
 done
+
+echo "done"

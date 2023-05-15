@@ -11,4 +11,5 @@ done < $FILE
 for ip in "${IPS[@]}"
 do
     echo $ip
+    ssh -i "randpiper.pem" ubuntu@$ip "bash run.sh"
 done
