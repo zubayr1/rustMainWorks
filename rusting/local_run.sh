@@ -2,14 +2,18 @@
 IPS=()
 FILE="${1:-nodes_information.txt}"
 
-# NOTE: format inside file NEEDS to be id-ip
+# Read ip file
 while IFS= read -r line; do
-    IPS+="$(echo "${line}" | cut -d "-" -f 2) "
+    IPS+=($line)
 done < $FILE
 
-# Connect to every IP and run local run.sh
-for ip in "${IPS[@]}"
+
+# Connect to every IP and run run.sh on instance
+for _ip in "${IPS[@]}"
 do
+    # Format of ip file NEEDS to be id-ip
+    tmp=(${_ip//-/ })
+    ip=${tmp[1]}
     echo $ip
-    ssh -i "randpiper.pem" ubuntu@$ip "bash run.sh"
+    ssh -i "randpiper.pem" ubuntu@$ip "bash run.sh" &
 done

@@ -2,16 +2,18 @@
 IPS=()
 FILE="${1:-nodes_information.txt}"
 
-# NOTE: format inside file NEEDS to be id-ip
+# Read ip file
 while IFS= read -r line; do
-    IPS+="$(echo "${line}" | cut -d "-" -f 2) "
+    IPS+=($line)
 done < $FILE
 
-# Connect to every IP and run local setup.sh
-for ip in "${IPS[@]}"
-do
-    echo $ip
-    ssh -i "randpiper.pem" ubuntu@$ip "bash setup.sh"
-done
 
-echo "done"
+# Connect to every IP and run setup.sh on instance
+for _ip in "${IPS[@]}"
+do
+    # Format of ip file NEEDS to be id-ip
+    tmp=(${_ip//-/ })
+    ip=${tmp[1]}
+    echo $ip
+    ssh -i "randpiper.pem" ubuntu@$ip "bash setup.sh" &
+done
