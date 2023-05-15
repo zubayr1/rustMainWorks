@@ -4,9 +4,9 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::{OpenOptions};
 
-const INITIAL_PORT: u32 = 7081;
+const INITIAL_PORT: u32 = 7321;
 
-const TEST_PORT: u32 = 7481;
+const TEST_PORT: u32 = 7621;
 
 #[tokio::main]
 pub async fn handle_server( _: String, port: u32, testport: u32) -> String{
@@ -15,7 +15,6 @@ pub async fn handle_server( _: String, port: u32, testport: u32) -> String{
     
     let test_listener = TcpListener::bind(["127.0.0.1".to_string(), testport.to_string()].join(":")).await.unwrap();
     
-
     let (_, _) = test_listener.accept().await.unwrap();
 
 
