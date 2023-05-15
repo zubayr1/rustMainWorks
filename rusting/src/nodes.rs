@@ -1,10 +1,6 @@
 
 use std::io::Write;
 use std::{thread, time};
-// use std::collections::HashSet;
-// use tokio::io::AsyncReadExt;
-// use tokio::net::TcpStream;
-// use tokio::net::TcpListener;
 use std::error::Error;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
@@ -21,11 +17,10 @@ mod schnorrkel;
 // #[path = "./server.rs"]
 // mod server;
 
-
-#[path = "./newclient.rs"]
+#[path = "../networking/newclient.rs"]
 mod newclient;
 
-#[path = "./newserver.rs"]
+#[path = "../networking/newserver.rs"]
 mod newserver;
 
 const INITIAL_PORT: u32 = 7321;
@@ -43,15 +38,9 @@ pub fn create_keys() // schnorr key generation
 
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
-    // let  blacklisted = HashSet::new(); // create blacklisted list (should change in recursion)
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
 
-
-
-    // let args_clone = args.clone();
-
     let self_ip = args[6].clone();
-
 
     let mut port_count: u32 = 0;
 
