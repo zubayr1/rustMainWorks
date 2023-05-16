@@ -1,24 +1,24 @@
 epoch : 1
 client at: : 127.0.0.1
---------------------------------server at port: 7322
+server at port: 7322
+--------------------------------
+127.0.0.1 127.0.0.1:7322hello world!EOFepoch : 2
 
-epoch : 2
-127.0.0.1 127.0.0.1:7322hello world!EOF
 client at: : 127.0.0.1
 --------------------------------
-server at port: 7323
 epoch : 3
+server at port: 7323
 127.0.0.1 127.0.0.1:7323hello world!EOF
 client at: : 127.0.0.1
 --------------------------------
-epoch : 4
 server at port: 7324
+epoch : 4
 127.0.0.1 127.0.0.1:7324hello world!EOF
 client at: : 127.0.0.1
 --------------------------------
-epoch : 5
 server at port: 7325
-127.0.0.1 127.0.0.1:7325hello world!EOF
+127.0.0.1 127.0.0.1:7325hello world!EOFepoch : 5
+
 client at: : 127.0.0.1
 --------------------------------
 server at port: 7326epoch : 6
