@@ -83,8 +83,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 thread::scope(|s| { 
 
                     s.spawn(|| {
-
-                        // let mut retry_ips = Vec::new();
+                        
                         let mut count=1;
                         for _ip in ip_address_clone.clone() 
                         {

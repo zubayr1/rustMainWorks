@@ -13,7 +13,7 @@ use std::collections::HashMap;
 //import own files
 mod nodes;
 // mod nodes_test;
-mod nodes_test1;
+mod nodes_test;
 
 fn run_nodes(args: Vec<String>)
 {
@@ -99,7 +99,7 @@ fn run_nodes(args: Vec<String>)
         let handle2 = thread::spawn(move || {
             
     
-            let future1 = nodes_test1::initiate("127.0.0.1".to_string(), args_clone_new); //server
+            let future1 = nodes_test::initiate("127.0.0.1".to_string(), args_clone_new); //server
 
         
             block_on(future1);

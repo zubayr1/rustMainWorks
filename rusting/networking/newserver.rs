@@ -3,6 +3,9 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::{OpenOptions};
 
+#[path = "../consensus/reactor.rs"]
+mod reactor;
+
 #[tokio::main]
 pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> String{
    // loop{
