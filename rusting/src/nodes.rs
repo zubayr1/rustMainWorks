@@ -35,17 +35,80 @@ pub fn create_keys() // schnorr key generation
 }
 
 
+async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _index:u32, args: Vec<String>)
+{
+    let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
+
+    let mut level=0;
+
+    let mut text;
+
+    text = ["epoch ".to_string(), _index.to_string()].join(": ");
+    file.write_all(text.as_bytes()).unwrap();
+    file.write_all(b"\n").unwrap();
+
+    for (_i, ip_addresses_comb) in sorted.clone()
+    {
+        port_count+=1;
+
+        let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
+
+        let ip_address_clone = ip_address.clone();
+        
+        text = ["Level ".to_string(), level.to_string()].join(": ");
+        file.write_all(text.as_bytes()).unwrap();
+        file.write_all(b"\n").unwrap();
+        level+=1;
+                
+        thread::scope(|s| { 
+
+            s.spawn(|| {
+                
+                let mut count=1;
+                for _ip in ip_address_clone.clone() 
+                {
+                    count+=1;
+                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+                    
+                    let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
+                }
+                
+                
+            });
+
+                            
+            s.spawn(|| {
+                let three_millis = time::Duration::from_millis(3);
+                thread::sleep(three_millis);
+
+                let mut count=1;
+
+                for ip in ip_address_clone.clone() 
+                {
+                    count+=1;
+                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+
+                    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count).to_string()].join(":"),
+                    [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"));
+
+                    
+                }
+
+            });
+
+        });
+    }
+
+
+}
+
 
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
+    let port_count: u32 = 0;
+
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
 
-    let self_ip = args[6].clone();
-
-    let mut port_count: u32 = 0;
-
-
-    // let  behavior = args[8].clone();
 
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
 
@@ -66,64 +129,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
         if args[5]=="prod" // in prod mode
         {
-            let mut level=0;
-            for (_i, ip_addresses_comb) in sorted.clone()
-            {
-                port_count+=1;
-
-                let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
-
-                let ip_address_clone = ip_address.clone();
-                
-                text = ["Level ".to_string(), level.to_string()].join(": ");
-                file.write_all(text.as_bytes()).unwrap();
-                file.write_all(b"\n").unwrap();
-                level+=1;
-                       
-                thread::scope(|s| { 
-
-                    s.spawn(|| {
-                        
-                        let mut count=1;
-                        for _ip in ip_address_clone.clone() 
-                        {
-                            count+=1;
-                            let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                            
-                            let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
-                        }
-                        
-                       
-                    });
-
-                                 
-                    s.spawn(|| {
-                        let three_millis = time::Duration::from_millis(3);
-                        thread::sleep(three_millis);
-
-                        let mut count=1;
-
-                        for ip in ip_address_clone.clone() 
-                        {
-                            count+=1;
-                            let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                            let self_ip_clone = self_ip.clone();
-                            let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count).to_string()].join(":"),
-                            [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"), self_ip_clone);
-
-                            
-                        }
-
-                    });
-
-                });
-            }
+            prod_communication(sorted.clone(), port_count, _index, args.clone()).await;
                
         }
         else 
         {                
             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"),
-                ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "127.0.0.1".to_string());
+                ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"));
 
         }
 

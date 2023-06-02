@@ -99,7 +99,7 @@ fn run_nodes(args: Vec<String>)
         let handle2 = thread::spawn(move || {
             
     
-            let future1 = nodes_test::initiate("127.0.0.1".to_string(), args_clone_new); //server
+            let future1 = nodes_test::initiate(args_clone_new); //server
 
         
             block_on(future1);
