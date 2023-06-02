@@ -29,12 +29,13 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    loop { 
+    loop 
+    { 
         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
     
-        if line.contains("EOF")  //REACTOR to be used here
+        if line.contains("EOF")  
         {
           
 
@@ -51,6 +52,8 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         
         
     }
+
+    // call reactor and react based on message type...
     
     
     return line;
