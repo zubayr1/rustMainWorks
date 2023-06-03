@@ -35,7 +35,7 @@ pub fn create_keys() // schnorr key generation
 }
 
 
-async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _index:u32, args: Vec<String>)
+async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _index:u32, args: Vec<String>, message_type: String)
 {
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
 
@@ -89,7 +89,7 @@ async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _
                     let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
                     let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count).to_string()].join(":"),
-                    [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"));
+                    [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"), message_type.clone());
 
                     
                 }
@@ -129,13 +129,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
         if args[5]=="prod" // in prod mode
         {
-            prod_communication(sorted.clone(), port_count, _index, args.clone()).await;
+            prod_communication(sorted.clone(), port_count, _index, args.clone(), "echo".to_string()).await;
                
         }
         else 
         {                
             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"),
-                ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"));
+                ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "echo".to_string());
 
         }
 

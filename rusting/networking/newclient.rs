@@ -6,7 +6,7 @@ use tokio::fs::{OpenOptions};
 
 
 #[tokio::main]
-pub async fn match_tcp_client(address: String, test_address: String) -> Result<(), Box<dyn Error>> {
+pub async fn match_tcp_client(address: String, test_address: String, message_type: String) -> Result<(), Box<dyn Error>> {
 
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
 
@@ -26,7 +26,7 @@ pub async fn match_tcp_client(address: String, test_address: String) -> Result<(
         stream.write_all([self_ip.to_string(), address.to_string().to_string()].join(" ").as_bytes()).await?;
         
         
-        let result = stream.write_all(b"hello world!EOF").await;
+        let result = stream.write_all([message_type.clone(), "EOF".to_string().to_string()].join(" ").as_bytes()).await;
         if  result.is_ok()
         {
             let text = ["client at: ".to_string(), self_ip.to_string()].join(": ");
