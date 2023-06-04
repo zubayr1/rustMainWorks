@@ -15,5 +15,6 @@ do
     tmp=(${_ip//-/ })
     ip=${tmp[1]}
     echo $ip
-    ssh -i "randpiper.pem" ubuntu@$ip "bash setup.sh" &
+    scp -i "randpiper.pem" /home/zake/newrand/nodes_information.txt /home/zake/newrand/setup.sh /home/zake/newrand/run.sh ubuntu@$ip:/home/ubuntu
+    ssh -i "randpiper.pem" ubuntu@$ip  "bash setup.sh" &
 done

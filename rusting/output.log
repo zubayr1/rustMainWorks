@@ -6,7 +6,7 @@ epoch : 2
 127.0.0.1 127.0.0.1:7822echo EOF
 client at: : 127.0.0.1
 --------------------------------
-epoch : 3server at port: 7823
+server at port: 7823epoch : 3
 
 127.0.0.1 127.0.0.1:7823echo EOF
 client at: : 127.0.0.1
@@ -16,14 +16,14 @@ server at port: 7824epoch : 4
 127.0.0.1 127.0.0.1:7824echo EOF
 client at: : 127.0.0.1
 --------------------------------
+epoch : 5
 server at port: 7825
-epoch : 5127.0.0.1 127.0.0.1:7825echo EOF
-
+127.0.0.1 127.0.0.1:7825echo EOF
 client at: : 127.0.0.1
 --------------------------------
-server at port: 7826epoch : 6
+server at port: 7826
+epoch : 6127.0.0.1 127.0.0.1:7826echo EOF
 
-127.0.0.1 127.0.0.1:7826echo EOF
 client at: : 127.0.0.1
 --------------------------------
 server at port: 7827
