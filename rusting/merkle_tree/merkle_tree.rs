@@ -127,8 +127,6 @@ fn merkle_proof(proof_bytes: Vec<u8>, indices_to_prove: Vec<usize>, leaf_values_
 //     let proof = merkle_proof(proof_bytes, indices_to_prove, leaf_values_to_prove, merkle_root, merkle_tree.leaves_len());
 
 //     println!("{}", proof);
-
-
-   
+  
 
 // }
