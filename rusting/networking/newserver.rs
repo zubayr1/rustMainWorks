@@ -41,7 +41,6 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         if line.contains("EOF")  
         {
           
-
             writer.write_all(line.as_bytes()).await.unwrap();
 
             text = line.clone();
@@ -58,6 +57,9 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
     // call reactor and react based on message type...
     
+    let line1 = reactor::reactor_init(line.clone()).await;
+
+    println!("{}", line1);
     
     return line;
     

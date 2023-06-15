@@ -62,7 +62,8 @@ async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _
                 
         thread::scope(|s| { 
 
-            s.spawn(|| {
+            s.spawn(|| 
+            {
                 
                 let mut count=1;
                 for _ip in ip_address_clone.clone() 
