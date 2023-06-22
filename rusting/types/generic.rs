@@ -44,13 +44,29 @@ impl Committee
 pub struct Codeword
 {
     pub sign: String,
-    pub value: String
+    pub codewords: String,
+    pub witness: String,
+    pub accumulation_value: String
 }
 
 impl Codeword
 {
-    pub fn create_codeword(sign: String, value: String) -> Self
+    pub fn create_codeword(sign: String, codewords: String, witness: String, accumulation_value: String) -> Self
     {
-        Codeword{sign:sign, value: value}
+        Codeword{sign:sign, codewords: codewords, witness: witness, accumulation_value: accumulation_value}
+    }
+}
+
+pub struct Accum
+{
+    pub sign: String,
+    pub accumulation_value: String
+}
+
+impl Accum
+{
+    pub fn create_accum(sign: String, accumulation_value: String) -> Self
+    {
+        Accum{sign:sign, accumulation_value: accumulation_value}
     }
 }

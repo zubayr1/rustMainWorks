@@ -39,10 +39,13 @@ pub async fn reactor_init(line: String) -> String
     }
     else if line.contains("codeword")
     {
+        let codeword = generic::Codeword::create_codeword("".to_string(), "".to_string(), "".to_string(),
+        "".to_string());
         return "codeword".to_string();
     }
     else 
     {
+        let accum = generic::Accum::create_accum("".to_string(), "".to_string());
         return "accum".to_string();
     }
      
