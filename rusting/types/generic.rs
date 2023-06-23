@@ -28,7 +28,6 @@ impl Vote
     }
 }
 
-
 pub struct Committee
 {
     pub sign: String,
