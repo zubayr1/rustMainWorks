@@ -6,6 +6,9 @@ mod communication;
 #[path = "../types/generic.rs"]
 mod generic; 
 
+#[path = "./timer.rs"]
+mod timer; 
+
 enum Phase 
 {
     echo, vote, committee, codeword, accum
@@ -25,9 +28,11 @@ impl Phase
 
 
 
-pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String, types: String)
-{    
-    reactor(sorted, _index, args, line, types).await;
+pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>,types: String)
+{   
+    // call pvss
+    timer::wait(1);
+    reactor(sorted, _index, args, "accum".to_string(), types).await;
 }
 
 
