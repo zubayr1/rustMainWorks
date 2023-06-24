@@ -103,6 +103,10 @@ async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _
 
 }
 
+async fn dev_communication(working_port: String, test_port: String, message_type: String)
+{
+    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, message_type);
+}
 
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
@@ -135,8 +139,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         }
         else 
         {                
-            let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"),
-                ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "echo".to_string());
+            dev_communication(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"), 
+                ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "echo".to_string()).await;
 
         }
 
