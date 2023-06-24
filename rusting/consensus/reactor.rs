@@ -71,7 +71,6 @@ async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _
                     
                     let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
                 
-                    println!("{:?}", _result);
                 }
                 
                 
@@ -108,13 +107,39 @@ async fn dev_communication(working_port: String, test_port: String, message_type
 {
     let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, message_type);
 
-    println!("{:?}", _result);
 }
 
 
-pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String)
-{
+pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String, types: String)
+{    
+    reactor(sorted, _index, args, line, types).await;
+}
+
+pub async fn reactor(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String, types: String) 
+{    
     let port_count: u32 = 0;
+
+    if line.contains("echo")
+    {
+        let echo = generic::Echo::create_echo("".to_string(), "".to_string());
+    }
+    else if line.contains("vote")
+    {
+        let vote: generic::Vote = generic::Vote::create_vote("".to_string(), "".to_string());
+    }
+    if line.contains("committee")
+    {
+        let committee = generic::Committee::create_committee("".to_string(), "".to_string());
+    }
+    else if line.contains("codeword")
+    {
+        let codeword = generic::Codeword::create_codeword("".to_string(), "".to_string(), "".to_string(),
+        "".to_string());
+    }
+    else 
+    {
+        let accum = generic::Accum::create_accum("".to_string(), "".to_string());
+    }
 
     if line=="prod_init"
     {
@@ -125,37 +150,6 @@ pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<S
     {
         dev_communication(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"), 
             ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "echo".to_string()).await;
-    }
-}
-
-pub async fn reactor(line: String) -> String
-{
-    
-    if line.contains("echo")
-    {
-        let echo = generic::Echo::create_echo("".to_string(), "".to_string());
-        return "echo".to_string();
-    }
-    else if line.contains("vote")
-    {
-        let vote = generic::Vote::create_vote("".to_string(), "".to_string());
-        return "vote".to_string();
-    }
-    if line.contains("committee")
-    {
-        let committee = generic::Committee::create_committee("".to_string(), "".to_string());
-        return "committee".to_string();
-    }
-    else if line.contains("codeword")
-    {
-        let codeword = generic::Codeword::create_codeword("".to_string(), "".to_string(), "".to_string(),
-        "".to_string());
-        return "codeword".to_string();
-    }
-    else 
-    {
-        let accum = generic::Accum::create_accum("".to_string(), "".to_string());
-        return "accum".to_string();
     }
      
 }

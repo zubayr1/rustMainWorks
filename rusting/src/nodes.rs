@@ -43,13 +43,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         if args[5]=="prod" // in prod mode
         {
 
-            reactor::reactor_init(sorted.clone(), _index, args.clone(), "prod_init".to_string()).await;
+            reactor::reactor_init(sorted.clone(), _index, args.clone(), "prod_init".to_string(), "prod_init".to_string()).await;
                
         }
         else 
         {                
            
-            reactor::reactor_init(sorted.clone(), _index, args.clone(), "dev_init".to_string()).await;
+            reactor::reactor_init(sorted.clone(), _index, args.clone(), "dev_init".to_string(), "dev_init".to_string()).await;
 
         }
 
