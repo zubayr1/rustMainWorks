@@ -70,6 +70,8 @@ async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _
                     let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
                     
                     let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
+                
+                    println!("{:?}", _result);
                 }
                 
                 
@@ -105,6 +107,8 @@ async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _
 async fn dev_communication(working_port: String, test_port: String, message_type: String)
 {
     let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, message_type);
+
+    println!("{:?}", _result);
 }
 
 
