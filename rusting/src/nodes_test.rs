@@ -3,14 +3,14 @@ use tokio::net::TcpListener;
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::{OpenOptions};
+use std::env;
 
 
-const INITIAL_PORT: u32 = 7821;
-
-const TEST_PORT: u32 = 7921;
 
 #[tokio::main]
 pub async fn handle_server(port: u32, testport: u32) -> String{
+
+    
    // loop{
     let listener = TcpListener::bind(["127.0.0.1".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
@@ -74,13 +74,25 @@ pub async fn initiate(args: Vec<String>)
 {
     let mut port_count = 0;
 
+    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
+        println!("INITIAL_PORT_STR is not set.");
+        String::new()
+    });
+    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
+        println!("TEST_PORT_STR is not set.");
+        String::new()
+    });
+   
+    let initial_port: u32 = initial_port_str.parse().unwrap();
+    let test_port: u32 = test_port_str.parse().unwrap();
+
     for _index in 1..(args[7].parse::<i32>().unwrap()+1)
     {
         port_count+=1;
         if args[2]<args[3]
         {            
 
-            let _result = handle_server(INITIAL_PORT+port_count, TEST_PORT+port_count );
+            let _result = handle_server(initial_port+port_count, test_port+port_count );
             
             println!("------------------{}-----------------------", _result);
 

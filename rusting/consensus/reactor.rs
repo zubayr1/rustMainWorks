@@ -1,19 +1,10 @@
-use std::{thread, time};
-use std::error::Error;
-use std::fs::OpenOptions;
-use std::io::Write;
+use std::env;
 
-#[path = "../networking/newclient.rs"]
-mod newclient;
-
-#[path ="../networking/newserver.rs"]
-mod newserver;
+#[path = "../networking/communication.rs"]
+mod communication;
 
 #[path = "../types/generic.rs"]
 mod generic; 
-
-const INITIAL_PORT: u32 = 7821;
-const TEST_PORT: u32 = 7921;
 
 enum Phase 
 {
@@ -33,88 +24,6 @@ impl Phase
 }
 
 
-async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _index:u32, args: Vec<String>, message_type: String) -> Vec<String>
-{
-    let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
-
-    let mut level=0;
-
-    let mut text;
-
-    let mut output: Vec<String> = Vec::new();
-
-
-    text = ["epoch ".to_string(), _index.to_string()].join(": ");
-    file.write_all(text.as_bytes()).unwrap();
-    file.write_all(b"\n").unwrap();
-
-    for (_i, ip_addresses_comb) in sorted.clone()
-    {
-        port_count+=1;
-
-        let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
-
-        let ip_address_clone = ip_address.clone();
-        
-        text = ["Level ".to_string(), level.to_string()].join(": ");
-        file.write_all(text.as_bytes()).unwrap();
-        file.write_all(b"\n").unwrap();
-        level+=1;
-                
-        thread::scope(|s| { 
-
-            s.spawn(|| 
-            {
-                
-                let mut count=1;
-                for _ip in ip_address_clone.clone() 
-                {
-                    count+=1;
-                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                    
-                    let _result = newserver::handle_server( ip_address_clone.clone(), INITIAL_PORT+port_count, TEST_PORT+port_count + additional_port );
-                    
-                    output.push(_result);
-                }
-                
-                
-            });
-
-                            
-            s.spawn(|| {
-                let three_millis = time::Duration::from_millis(3);
-                thread::sleep(three_millis);
-
-                let mut count=1;
-
-                for ip in ip_address_clone.clone() 
-                {
-                    count+=1;
-                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-
-                    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (INITIAL_PORT+port_count).to_string()].join(":"),
-                    [ip.to_string(), (TEST_PORT+port_count + additional_port).to_string()].join(":"), message_type.clone());
-
-                    
-                }
-
-            });
-
-        });
-    }
-
-    return output;
-
-}
-
-
-async fn dev_communication(working_port: String, test_port: String, message_type: String) -> String
-{
-    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, message_type.clone());
-
-    return message_type;
-}
-
 
 pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String, types: String)
 {    
@@ -130,12 +39,25 @@ pub async fn reaction(output: Vec<String>, message_type: String, types: String)
     }
     else 
     {
-        println!("{}", message_type);    
+        println!("{}", message_type);            
     }
 }
 
 pub async fn reactor(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String, types: String) 
-{    
+{ 
+
+    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
+        println!("INITIAL_PORT_STR is not set.");
+        String::new()
+    });
+    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
+        println!("TEST_PORT_STR is not set.");
+        String::new()
+    });
+   
+    let initial_port: u32 = initial_port_str.parse().unwrap();
+    let test_port: u32 = test_port_str.parse().unwrap();
+
     let port_count: u32 = 0;
 
     let mut message_type ="".to_string();
@@ -165,15 +87,15 @@ pub async fn reactor(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String
 
     if types=="prod_init"
     {
-        output = prod_communication(sorted.clone(), port_count, _index, args.clone(), line.clone()).await;
+        output = communication::prod_communication(sorted.clone(), port_count, _index, args.clone(), line.clone()).await;
 
         reaction(output.clone(), message_type, types.clone()).await;
 
     }
     if types=="dev_init"
     {
-        message_type = dev_communication(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"), 
-            ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), line.clone()).await;
+        message_type = communication::dev_communication(["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
+            ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), line.clone()).await;
 
         reaction(output.clone(), message_type, types.clone()).await;
     }
