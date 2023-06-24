@@ -3,8 +3,8 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::{OpenOptions};
 
-#[path = "../consensus/reactor.rs"]
-mod reactor;
+// #[path = "../consensus/reactor.rs"]
+// mod reactor;
 
 #[tokio::main]
 pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> String{
@@ -55,12 +55,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         
     }
 
-    // call reactor and react based on message type...
-    
-    let line1 = reactor::reactor_init(line.clone()).await;
-
-    println!("{}", line1);
-    
+        
     return line;
     
 //}

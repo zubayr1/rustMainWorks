@@ -1,11 +1,12 @@
 use std::{thread, time};
 use std::error::Error;
 use std::fs::OpenOptions;
+use std::io::Write;
 
 #[path = "../networking/newclient.rs"]
 mod newclient;
 
-#[path = "../networking/newserver.rs"]
+#[path ="../networking/newserver.rs"]
 mod newserver;
 
 #[path = "../types/generic.rs"]
@@ -107,9 +108,25 @@ async fn dev_communication(working_port: String, test_port: String, message_type
 }
 
 
-pub async fn reactor_init(line: String) -> String
+pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String)
 {
+    let port_count: u32 = 0;
 
+    if line=="prod_init"
+    {
+        prod_communication(sorted.clone(), port_count, _index, args.clone(), "echo".to_string()).await;
+
+    }
+    if line=="dev_init"
+    {
+        dev_communication(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"), 
+            ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "echo".to_string()).await;
+    }
+}
+
+pub async fn reactor(line: String) -> String
+{
+    
     if line.contains("echo")
     {
         let echo = generic::Echo::create_echo("".to_string(), "".to_string());

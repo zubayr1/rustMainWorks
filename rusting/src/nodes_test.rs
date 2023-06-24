@@ -4,8 +4,6 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::{OpenOptions};
 
-#[path = "../consensus/reactor.rs"]
-mod reactor;
 
 const INITIAL_PORT: u32 = 7821;
 
@@ -63,10 +61,7 @@ pub async fn handle_server(port: u32, testport: u32) -> String{
         
     }
 
-    let line1 = reactor::reactor_init(line.clone()).await;
-
-    println!("{}", line1);
-    
+        
     return line;
        
     

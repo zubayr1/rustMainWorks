@@ -9,36 +9,19 @@ mod schnorrkel;
 // #[path = "../probability/create_adv_prob.rs"]
 // mod create_adv_prob;
 
-// #[path = "./client.rs"]
-// mod client;
 
-// #[path = "./server.rs"]
-// mod server;
-
-#[path = "../networking/newclient.rs"]
-mod newclient;
-
-#[path = "../networking/newserver.rs"]
-mod newserver;
-
-const INITIAL_PORT: u32 = 7821;
-
-const TEST_PORT: u32 = 7921;
+#[path = "../consensus/reactor.rs"]
+mod reactor;
 
 pub fn create_keys() // schnorr key generation
 {
-
     schnorrkel::_create_keys_schnorrkel();
 
 }
 
-
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
-    let port_count: u32 = 0;
-
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
-
 
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
 
@@ -59,13 +42,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
         if args[5]=="prod" // in prod mode
         {
-            prod_communication(sorted.clone(), port_count, _index, args.clone(), "echo".to_string()).await;
+
+            reactor::reactor_init(sorted.clone(), _index, args.clone(), "prod_init".to_string()).await;
                
         }
         else 
         {                
-            dev_communication(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"), 
-                ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "echo".to_string()).await;
+           
+            reactor::reactor_init(sorted.clone(), _index, args.clone(), "dev_init".to_string()).await;
 
         }
 
