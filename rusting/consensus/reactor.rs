@@ -141,15 +141,15 @@ pub async fn reactor(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String
         let accum = generic::Accum::create_accum("".to_string(), "".to_string());
     }
 
-    if line=="prod_init"
+    if types=="prod_init"
     {
-        prod_communication(sorted.clone(), port_count, _index, args.clone(), "echo".to_string()).await;
+        prod_communication(sorted.clone(), port_count, _index, args.clone(), line.clone()).await;
 
     }
-    if line=="dev_init"
+    if types=="dev_init"
     {
         dev_communication(["127.0.0.1".to_string(), (INITIAL_PORT + _index).to_string()].join(":"), 
-            ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), "echo".to_string()).await;
+            ["127.0.0.1".to_string(), (TEST_PORT + _index).to_string()].join(":"), line.clone()).await;
     }
      
 }
