@@ -44,7 +44,7 @@ pub async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u3
     for (_i, ip_addresses_comb) in sorted.clone()
     {
         port_count+=1;
-        println!("{:?} {:?}", _i, ip_addresses_comb);
+
         let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
         let ip_address_clone = ip_address.clone();
@@ -53,7 +53,8 @@ pub async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u3
         file.write_all(text.as_bytes()).unwrap();
         file.write_all(b"\n").unwrap();
         level+=1;
-                
+        println!("{:?}", ip_address_clone);
+        
         thread::scope(|s| { 
 
             s.spawn(|| 
