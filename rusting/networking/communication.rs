@@ -53,7 +53,6 @@ pub async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u3
         file.write_all(text.as_bytes()).unwrap();
         file.write_all(b"\n").unwrap();
         level+=1;
-        println!("{:?}", ip_address_clone);
         
         thread::scope(|s| { 
 
