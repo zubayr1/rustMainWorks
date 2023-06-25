@@ -40,7 +40,7 @@ pub async fn reaction(output: Vec<String>, message_type: String, types: String)
 {
     if types=="prod_init"
     {
-        println!("{:?}", output);
+        //println!("{:?}", output);
     }
     else 
     {
