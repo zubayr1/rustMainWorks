@@ -39,13 +39,12 @@ pub async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u3
     text = ["epoch ".to_string(), _index.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
-
-    println!("{:?}", sorted);
+    
 
     for (_i, ip_addresses_comb) in sorted.clone()
     {
         port_count+=1;
-
+        println!("{:?} {:?}", _i, ip_addresses_comb);
         let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
         let ip_address_clone = ip_address.clone();
