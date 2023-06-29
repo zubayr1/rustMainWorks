@@ -48,6 +48,7 @@ pub async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u3
         let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
         let ip_address_clone = ip_address.clone();
+        println!("{:?}", ip_address);
         
         text = ["Level ".to_string(), level.to_string()].join(": ");
         file.write_all(text.as_bytes()).unwrap();
