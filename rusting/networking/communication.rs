@@ -12,7 +12,7 @@ mod newserver;
 
 
 
-pub async fn prod_communication(ip_address: Vec<&str>, mut port_count: u32, _index:u32, args: Vec<String>, message_type: String) -> Vec<String>
+pub async fn prod_communication(ip_address: Vec<&str>, level: u32, mut port_count: u32, _index:u32, args: Vec<String>, message_type: String) -> Vec<String>
 {
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -29,25 +29,22 @@ pub async fn prod_communication(ip_address: Vec<&str>, mut port_count: u32, _ind
 
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
 
-    let mut level=0;
-
     let mut text;
 
     let mut output: Vec<String> = Vec::new();
-
 
     text = ["epoch ".to_string(), _index.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
     
-
     
+    port_count+=1;
+
     let ip_address_clone = ip_address.clone();
     
     text = ["Level ".to_string(), level.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
-    level+=1;
     
     thread::scope(|s| { 
 

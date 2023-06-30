@@ -42,19 +42,21 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
         if args[5]=="prod" // in prod mode
         {
+            let mut level = 0;
             for (_i, ip_addresses_comb) in sorted.clone()
             {
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
-                reactor::reactor_init(ip_address.clone(), _index, args.clone(), "prod_init".to_string()).await;
+                reactor::reactor_init(ip_address.clone(), level, _index, args.clone(), "prod_init".to_string()).await;
+                level+=1;
             }
                            
         }
         else 
         {                
             let ip_address: Vec<&str> = Vec::new();
-
-            reactor::reactor_init(ip_address.clone(), _index, args.clone(), "dev_init".to_string()).await;
+            let level = 0;
+            reactor::reactor_init(ip_address.clone(), level, _index, args.clone(), "dev_init".to_string()).await;
 
         }
 
