@@ -31,12 +31,12 @@ impl Phase
 
 
 
-pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>,types: String)
+pub async fn reactor_init(ip_address: Vec<&str>, _index: u32, args: Vec<String>,types: String)
 {   
     //encoder::encoder(b"pvss_data", 4);
     // call pvss
     timer::wait(1);
-    reactor(sorted, _index, args, "accum".to_string(), types).await;
+    reactor(ip_address, _index, args, "accum".to_string(), types).await;
 }
 
 
@@ -52,7 +52,7 @@ pub async fn reaction(output: Vec<String>, message_type: String, types: String)
     }
 }
 
-pub async fn reactor(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>, line: String, types: String) 
+pub async fn reactor(ip_address: Vec<&str>, _index: u32, args: Vec<String>, line: String, types: String) 
 { 
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -96,7 +96,7 @@ pub async fn reactor(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String
 
     if types=="prod_init"
     {
-        output = communication::prod_communication(sorted.clone(), port_count, _index, args.clone(), line.clone()).await;
+        output = communication::prod_communication(ip_address.clone(), port_count, _index, args.clone(), line.clone()).await;
 
         reaction(output.clone(), message_type, types.clone()).await;
 

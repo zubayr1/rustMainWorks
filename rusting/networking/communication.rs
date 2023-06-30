@@ -12,7 +12,7 @@ mod newserver;
 
 
 
-pub async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u32, _index:u32, args: Vec<String>, message_type: String) -> Vec<String>
+pub async fn prod_communication(ip_address: Vec<&str>, mut port_count: u32, _index:u32, args: Vec<String>, message_type: String) -> Vec<String>
 {
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -41,60 +41,55 @@ pub async fn prod_communication(sorted: Vec<(&u32, &String)>, mut port_count: u3
     file.write_all(b"\n").unwrap();
     
 
-    for (_i, ip_addresses_comb) in sorted.clone()
-    {
-        port_count+=1;
+    
+    let ip_address_clone = ip_address.clone();
+    
+    text = ["Level ".to_string(), level.to_string()].join(": ");
+    file.write_all(text.as_bytes()).unwrap();
+    file.write_all(b"\n").unwrap();
+    level+=1;
+    
+    thread::scope(|s| { 
 
-        let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
-
-        let ip_address_clone = ip_address.clone();
-        
-        text = ["Level ".to_string(), level.to_string()].join(": ");
-        file.write_all(text.as_bytes()).unwrap();
-        file.write_all(b"\n").unwrap();
-        level+=1;
-        
-        thread::scope(|s| { 
-
-            s.spawn(|| 
+        s.spawn(|| 
+        {
+            
+            let mut count=1;
+            for _ip in ip_address_clone.clone() 
             {
+                count+=1;
+                let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
                 
-                let mut count=1;
-                for _ip in ip_address_clone.clone() 
-                {
-                    count+=1;
-                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                    
-                    let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, test_port+port_count + additional_port );
-                    //println!("{:?}", _result);
-                    output.push(_result);
-                }
+                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, test_port+port_count + additional_port );
+                //println!("{:?}", _result);
+                output.push(_result);
+            }
+            
+            
+        });
+
+                        
+        s.spawn(|| {
+            let three_millis = time::Duration::from_millis(3);
+            thread::sleep(three_millis);
+
+            let mut count=1;
+
+            for ip in ip_address_clone.clone() 
+            {
+                count+=1;
+                let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+
+                let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
+                [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), message_type.clone());
+
                 
-                
-            });
-
-                            
-            s.spawn(|| {
-                let three_millis = time::Duration::from_millis(3);
-                thread::sleep(three_millis);
-
-                let mut count=1;
-
-                for ip in ip_address_clone.clone() 
-                {
-                    count+=1;
-                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-
-                    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
-                    [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), message_type.clone());
-
-                    
-                }
-
-            });
+            }
 
         });
-    }
+
+    });
+
 
     return output;
 
