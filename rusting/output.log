@@ -2,29 +2,29 @@ epoch : 1
 client at: : 127.0.0.1
 server at port: 7822
 --------------------------------
-127.0.0.1 127.0.0.1:7822accum EOF
-epoch : 2
-client at: : 127.0.0.1
-server at port: 7823
---------------------------------
-127.0.0.1 127.0.0.1:7823accum EOF
-epoch : 3
-client at: : 127.0.0.1
-server at port: 7824
---------------------------------
-127.0.0.1 127.0.0.1:7824accum EOF
-epoch : 4
-client at: : 127.0.0.1
-server at port: 7825--------------------------------
+127.0.0.1 127.0.0.1:7822accum EOFepoch : 2
 
+client at: : 127.0.0.1
+--------------------------------
+server at port: 7823
+epoch : 3
+127.0.0.1 127.0.0.1:7823accum EOF
+client at: : 127.0.0.1
+server at port: 7824--------------------------------
+
+127.0.0.1 127.0.0.1:7824accum EOFepoch : 4
+
+client at: : 127.0.0.1
+server at port: 7825
+--------------------------------
 127.0.0.1 127.0.0.1:7825accum EOFepoch : 5
 
 client at: : 127.0.0.1
 --------------------------------
-epoch : 6
-server at port: 7826
+server at port: 7826epoch : 6
+
 127.0.0.1 127.0.0.1:7826accum EOF
 client at: : 127.0.0.1
-server at port: 7827
 --------------------------------
+server at port: 7827
 127.0.0.1 127.0.0.1:7827accum EOF

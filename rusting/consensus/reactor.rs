@@ -6,6 +6,9 @@ mod communication;
 #[path = "../types/generic.rs"]
 mod generic; 
 
+#[path = "../algos/pvss_agreement.rs"]
+mod encoder;
+
 #[path = "./timer.rs"]
 mod timer; 
 
@@ -30,6 +33,7 @@ impl Phase
 
 pub async fn reactor_init(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String>,types: String)
 {   
+    //encoder::encoder(b"pvss_data", 4);
     // call pvss
     timer::wait(1);
     reactor(sorted, _index, args, "accum".to_string(), types).await;
@@ -76,7 +80,7 @@ pub async fn reactor(sorted: Vec<(&u32, &String)>, _index: u32, args: Vec<String
     {
         let vote: generic::Vote = generic::Vote::create_vote("".to_string(), "".to_string());
     }
-    if line.contains("committee")
+    else if line.contains("committee")
     {
         let committee = generic::Committee::create_committee("".to_string(), "".to_string());
     }

@@ -27,8 +27,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     sorted.sort_by_key(|a| a.0);
 
-    println!("{:?}", sorted);
-
     let start_time = Utc::now().time();
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch

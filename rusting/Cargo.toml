@@ -24,3 +24,5 @@ tokio-core = "0.1.18"
 
 sha2 = "0.10.6"
 rs_merkle = "1.4.1"
+
+reed-solomon = "0.2.1"
