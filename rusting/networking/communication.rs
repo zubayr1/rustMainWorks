@@ -12,7 +12,7 @@ mod newserver;
 
 
 
-pub async fn prod_communication(ip_address: Vec<&str>, level: u32, mut port_count: u32, _index:u32, args: Vec<String>, message_type: String) -> Vec<String>
+pub async fn prod_communication(ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, args: Vec<String>, message_type: String) -> Vec<String>
 {
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -37,8 +37,7 @@ pub async fn prod_communication(ip_address: Vec<&str>, level: u32, mut port_coun
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
     
-    
-    port_count+=1;
+        
 
     let ip_address_clone = ip_address.clone();
     

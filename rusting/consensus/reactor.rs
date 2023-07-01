@@ -31,12 +31,12 @@ impl Phase
 
 
 
-pub async fn reactor_init(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>,types: String)
+pub async fn reactor_init(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, types: String)
 {   
     //encoder::encoder(b"pvss_data", 4);
     // call pvss
     timer::wait(1);
-    reactor(ip_address, level, _index, args, "accum".to_string(), types).await;
+    reactor(ip_address, level, _index, args, port_count, "accum".to_string(), types).await;
 }
 
 
@@ -52,7 +52,7 @@ pub async fn reaction(output: Vec<String>, message_type: String, types: String)
     }
 }
 
-pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, line: String, types: String) 
+pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, line: String, types: String) 
 { 
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -66,8 +66,7 @@ pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<S
    
     let initial_port: u32 = initial_port_str.parse().unwrap();
     let test_port: u32 = test_port_str.parse().unwrap();
-
-    let port_count: u32 = 0;
+    
 
     let mut message_type ="".to_string();
     let mut output: Vec<String> = Vec::new();
