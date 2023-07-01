@@ -55,7 +55,7 @@ pub async fn prod_communication(ip_address: Vec<&str>, level: u32, port_count: u
             {
                 count+=1;
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                println!("Server {:?} {:?}", initial_port+port_count, test_port+port_count + additional_port);
+
                 let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, test_port+port_count + additional_port );
                 //println!("{:?}", _result);
                 output.push(_result);
@@ -75,7 +75,7 @@ pub async fn prod_communication(ip_address: Vec<&str>, level: u32, port_count: u
             {
                 count+=1;
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-                println!("Client {:?} {:?}", initial_port+port_count, test_port+port_count + additional_port);
+
                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
                 [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), message_type.clone());
 
