@@ -33,8 +33,8 @@ impl Phase
 
 pub async fn reactor_init(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, types: String)
 {   
-    // encoder::encoder(b"pvss_data", 4);
-    println!("{:?}", ip_address.len());
+    encoder::encoder(b"pvss_data", ip_address.len());
+    
     // call pvss
     timer::wait(1);
     reactor(ip_address, level, _index, args, port_count, "accum".to_string(), types).await;
