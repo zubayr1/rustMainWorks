@@ -17,10 +17,10 @@ pub fn encoder(pvss_data: &[u8], e: usize) -> String
     let encoded = enc.encode(&pvss_data[..]);
 
     // Simulate some transmission errors
-    let mut corrupted = *encoded;
-    for i in 0..e {
-        corrupted[i] = 0x0;
-    }
+    // let mut corrupted = *encoded;
+    // for i in 0..e {
+    //     corrupted[i] = 0x0;
+    // }
 
 
     let orig_str = std::str::from_utf8(pvss_data).unwrap();

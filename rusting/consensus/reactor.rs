@@ -30,16 +30,16 @@ impl Phase
 }
 
 
-async fn communication(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, 
-    initial_port: u32, test_port: u32, value: Vec<String>)
+async fn communication(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
+    initial_port: u32, test_port: u32, value: Vec<String>, length: usize)
 {
-    let mut output: Vec<String> = Vec::new();
+    let mut output: Vec<String>;
     
     if medium=="prod_init"
     {
         output = communication::prod_communication(ip_address.clone(), level, port_count, _index, args.clone(), value.clone()).await;
 
-        reaction(output.clone(), medium.clone()).await;
+        reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;
 
     }
     if medium=="dev_init"
@@ -47,34 +47,37 @@ async fn communication(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec
         output = communication::dev_communication(["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
             ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone()).await;
 
-        reaction(output.clone(), medium.clone()).await;
+        reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;
     }
 }
 
 
 pub async fn reactor_init(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
 {   
-    let accul_value = encoder::encoder(b"pvss_data", ip_address.len());
+    let length = ip_address.len();
+
+    let acc_value = encoder::encoder(b"pvss_data", length.clone());
    
     // call pvss
     timer::wait(1);
-    reactor(ip_address, level, _index, args, port_count, accul_value, "accum".to_string(), medium).await;
+    reactor(ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, length).await;
 }
 
 
-pub async fn reaction(output: Vec<String>, medium: String)
+pub async fn reaction(output: Vec<String>, medium: String, mode: String, length: usize)
 {
     if medium=="prod_init"
     {
-        //println!("{:?}", output);
+        println!("{:?} {}", output, length);
     }
     else 
     {
-        println!("{:?}", output);           
+        println!("{:?} {}", output, length);           
     }
 }
 
-pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, value: String, mode: String, medium: String) 
+pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+    value: String, mode: String, medium: String, length: usize) 
 { 
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -114,7 +117,7 @@ pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<S
         let accum = generic::Accum::create_accum("".to_string(), value);
         let accum_vec = accum.to_vec();
 
-        communication(ip_address, level, _index, args, port_count, medium, initial_port, test_port, accum_vec).await;
+        communication(ip_address, level, _index, args, port_count, medium, mode, initial_port, test_port, accum_vec, length).await;
     }
 
     
