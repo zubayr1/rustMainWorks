@@ -11,6 +11,10 @@ impl Echo
     {
         Echo{sign:sign, value: value, types: "echo".to_string()}
     }
+
+    pub fn to_vec(self) -> Vec<String> {
+        vec![self.sign, self.value, self.types]
+    }
 }
 
 pub struct Vote
@@ -72,5 +76,9 @@ impl Accum
     pub fn create_accum(sign: String, accumulation_value: String) -> Self
     {
         Accum{sign:sign, accumulation_value: accumulation_value, types: "accum".to_string()}
+    }
+
+    pub fn to_vec(self) -> Vec<String> {
+        vec![self.sign, self.accumulation_value, self.types]
     }
 }
