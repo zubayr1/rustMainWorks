@@ -6,6 +6,9 @@ mod communication;
 #[path = "../types/generic.rs"]
 mod generic; 
 
+#[path = "../types/accum.rs"]
+mod accum;
+
 #[path = "../algos/pvss_agreement.rs"]
 mod encoder;
 
@@ -58,7 +61,6 @@ pub async fn reactor_init(ip_address: Vec<&str>, level: u32, _index: u32, args: 
 
     let acc_value = encoder::encoder(b"pvss_data", length.clone());
    
-    // call pvss
     timer::wait(1);
     reactor(ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, length).await;
 }
@@ -68,11 +70,20 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
 {
     if medium=="prod_init"
     {
-        println!("{:?} {}", output.len(), length);
+        if mode=="accum"
+        {
+            timer::wait(1);
+            accum::accum_reaction(output, length);
+        }
+        
     }
     else 
     {
-        println!("{:?} {}", output.len(), length);           
+        if mode=="accum"
+        {
+            timer::wait(1);
+            accum::accum_reaction(output, length);
+        }
     }
 }
 
