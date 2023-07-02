@@ -68,11 +68,11 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
 {
     if medium=="prod_init"
     {
-        println!("{:?} {}", output, length);
+        println!("{:?} {}", output.len(), length);
     }
     else 
     {
-        println!("{:?} {}", output, length);           
+        println!("{:?} {}", output.len(), length);           
     }
 }
 

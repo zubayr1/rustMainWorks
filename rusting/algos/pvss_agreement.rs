@@ -23,19 +23,17 @@ pub fn encoder(pvss_data: &[u8], e: usize) -> String
     // }
 
 
-    let orig_str = std::str::from_utf8(pvss_data).unwrap();
+    // let orig_str = std::str::from_utf8(pvss_data).unwrap();
 
-    // println!("message:               {:?}", orig_str);
-    // println!("original data:         {:?}", pvss_data);
-    // println!("error correction code: {:?}", encoded.ecc());
-    // println!("corrupted:             {:?}", corrupted);
-
+    
     let mut leaves: Vec<String> = Vec::new();
 
     for i in encoded.ecc()
     {
         leaves.push(i.to_string());
     }
+
+    // println!("{:?}", leaves);
 
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
