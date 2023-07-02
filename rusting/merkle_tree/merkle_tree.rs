@@ -11,7 +11,7 @@ fn hash(data: &[u8]) -> [u8; 32]
     <[u8; 32]>::from(hasher.finalize_fixed())
 }
 
-fn create_tree(leaf_values: Vec<String>) -> MerkleTree<Sha256>
+pub fn create_tree(leaf_values: Vec<String>) -> MerkleTree<Sha256>
 {
     let leaves: Vec<[u8; 32]> = leaf_values
         .iter()
@@ -23,7 +23,7 @@ fn create_tree(leaf_values: Vec<String>) -> MerkleTree<Sha256>
     return merkle_tree;
 }
 
-fn append_to_tree(mut merkle_tree: MerkleTree<Sha256>, leaf_values: Vec<String>) -> MerkleTree<Sha256>
+fn _append_to_tree(mut merkle_tree: MerkleTree<Sha256>, leaf_values: Vec<String>) -> MerkleTree<Sha256>
 {
     let mut leaves: Vec<[u8; 32]> = leaf_values
         .iter()
@@ -37,7 +37,7 @@ fn append_to_tree(mut merkle_tree: MerkleTree<Sha256>, leaf_values: Vec<String>)
     return  merkle_tree;
 }
 
-fn get_root(merkle_tree: MerkleTree<Sha256>) -> String
+pub fn get_root(merkle_tree: MerkleTree<Sha256>) -> String
 {
     let root = merkle_tree.root_hex().ok_or("couldn't get the merkle root").unwrap();
 

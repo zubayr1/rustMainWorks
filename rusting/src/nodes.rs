@@ -57,7 +57,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         }
         else 
         {                
-            let ip_address: Vec<&str> = Vec::new();
+            let mut ip_address: Vec<&str> = Vec::new();
+            let address:&str = "127.0.0.1";
+            ip_address.push(address);
             let level = 0;
             reactor::reactor_init(ip_address.clone(), level, _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
 
