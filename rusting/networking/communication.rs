@@ -94,11 +94,8 @@ pub async fn prod_communication(ip_address: Vec<&str>, level: u32, port_count: u
 
 
 pub async fn dev_communication(working_port: String, test_port: String, value: Vec<String>) -> Vec<String>
-{
-    let mut output: Vec<String> = Vec::new();
-    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, value);
-
-    output.push(_result.is_ok().to_string());
+{    
+    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, value.clone());
     
-    return output;
+    return value;
 }

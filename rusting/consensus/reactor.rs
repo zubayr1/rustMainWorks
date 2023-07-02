@@ -42,7 +42,7 @@ async fn communication(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec
     {
         output = communication::prod_communication(ip_address.clone(), level, port_count, _index, args.clone(), value.clone()).await;
 
-       // reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;
+       reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;
 
     }
     if medium=="dev_init"
@@ -50,7 +50,7 @@ async fn communication(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec
         output = communication::dev_communication(["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
             ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone()).await;
 
-       // reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;
+       reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;
     }
 }
 
