@@ -18,7 +18,14 @@ pub async fn match_tcp_client(address: String, test_address: String, value: Vec<
     }    
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
 
-    let self_ip = stream.local_addr().unwrap().ip().to_string();
+    
+    let peer_addr = stream.peer_addr();
+
+    let mut self_ip="0.0.0.0".to_string();
+
+    if let Ok(peer_addr) = stream.peer_addr() {
+        self_ip = peer_addr.ip().to_string();
+    } 
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
