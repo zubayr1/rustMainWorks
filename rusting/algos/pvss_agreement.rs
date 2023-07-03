@@ -33,7 +33,6 @@ pub fn encoder(pvss_data: &[u8], e: usize) -> String
         leaves.push(i.to_string());
     }
 
-    // println!("{:?}", leaves);
 
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 

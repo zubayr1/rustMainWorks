@@ -68,13 +68,14 @@ pub async fn reactor_init(ip_address: Vec<&str>, level: u32, _index: u32, args: 
 
 pub async fn reaction(output: Vec<String>, medium: String, mode: String, length: usize)
 {
+    let mut c1: Vec<(String, String)> = Vec::new();
     if medium=="prod_init"
     {
         if mode=="accum"
         {
             timer::wait(1);
 
-            accum::accum_reaction(medium, output, length);
+            c1 = accum::accum_reaction(medium, output, length);
         }
         
     }
@@ -84,9 +85,10 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
         {
             timer::wait(1);
 
-            accum::accum_reaction(medium, output, length);
+            c1 = accum::accum_reaction(medium, output, length);
         }
     }
+    println!("{:?}", c1);
 }
 
 pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 

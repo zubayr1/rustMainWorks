@@ -1,6 +1,6 @@
-pub fn accum_reaction(medium: String, received_texts: Vec<String>, committee_length: usize)
+pub fn accum_reaction(medium: String, received_texts: Vec<String>, committee_length: usize) -> Vec<(String, String)>
 {
-    let mut C1: Vec<String> = Vec::new();
+    let mut c1: Vec<(String, String)> = Vec::new();
 
     if (received_texts.len())>=committee_length/2
     {
@@ -9,14 +9,18 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>, committee_len
            for text in received_texts
            {
             let split_text: Vec<&str> = text.split(',').collect();
-            C1.push(split_text[1].to_string());
+            let accum_tuple = (split_text[0].to_string(), split_text[1].to_string());
+            c1.push(accum_tuple);
            }             
         }
         else 
         {
-            C1.push(received_texts[1].to_string());
+            let accum_tuple = (received_texts[0].to_string(), received_texts[1].to_string());
+
+            c1.push(accum_tuple);
         }      
                 
     }
-    println!("{:?}", C1);
+    
+    return c1;
 }
