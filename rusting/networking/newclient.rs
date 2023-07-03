@@ -17,9 +17,7 @@ pub async fn match_tcp_client(address: String, test_address: String, value: Vec<
         sleep(Duration::from_millis(3)).await;
     }    
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
-
     
-    let peer_addr = stream.peer_addr();
 
     let mut self_ip="0.0.0.0".to_string();
 
