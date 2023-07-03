@@ -15,10 +15,10 @@ server at port: 7124
 --------------------------------
 epoch : 4
 client at: : 127.0.0.1
-server at port: 7125--------------------------------
-
-127.0.0.1 127.0.0.1:7125, 290b9de48d0978d3dc1baf753ad8d98a1a1315fa859aff277aa3e9b07ec8865b, accum EOFepoch : 5
-
+server at port: 7125
+127.0.0.1 127.0.0.1:7125, 290b9de48d0978d3dc1baf753ad8d98a1a1315fa859aff277aa3e9b07ec8865b, accum EOF
+--------------------------------
+epoch : 5
 client at: : 127.0.0.1
 server at port: 7126
 127.0.0.1 127.0.0.1:7126, 290b9de48d0978d3dc1baf753ad8d98a1a1315fa859aff277aa3e9b07ec8865b, accum EOF

@@ -94,7 +94,7 @@ pub async fn initiate(args: Vec<String>)
 
             let _result = handle_server(initial_port+port_count, test_port+port_count );
             
-            println!("------------------{}-----------------------", _result);
+           // println!("------------------{}-----------------------", _result);
 
             
         }
