@@ -73,8 +73,8 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
         if mode=="accum"
         {
             timer::wait(1);
-            println!("{:?}", output);
-           // accum::accum_reaction(output, length);
+
+            accum::accum_reaction(medium, output, length);
         }
         
     }
@@ -83,8 +83,8 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
         if mode=="accum"
         {
             timer::wait(1);
-            println!("{:?}", output);
-           // accum::accum_reaction(output, length);
+
+            accum::accum_reaction(medium, output, length);
         }
     }
 }

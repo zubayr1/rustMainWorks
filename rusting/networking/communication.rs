@@ -101,6 +101,6 @@ pub async fn dev_communication(working_port: String, test_port: String, value: V
 
     let mut vec: Vec<String>= Vec::new();
     vec.push(value_string);
-    println!("{:?}", vec);
+
     return value;
 }
