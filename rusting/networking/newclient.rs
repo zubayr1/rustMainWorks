@@ -30,7 +30,7 @@ pub async fn match_tcp_client(address: String, test_address: String, value: Vec<
     loop{
         // Write some data.
         stream.write_all(address.as_bytes()).await?;
-        
+        stream.write_all(self_ip.as_bytes()).await?;
         
         let result = stream.write_all([value_string.clone(), "EOF".to_string().to_string()].join(" ").as_bytes()).await;
         if  result.is_ok()
