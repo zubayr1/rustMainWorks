@@ -127,7 +127,7 @@ pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<S
     }
     else 
     {
-        let accum = generic::Accum::create_accum("".to_string(), value);
+        let accum = generic::Accum::create_accum("sign".to_string(), value);
         let accum_vec = accum.to_vec();
 
         communication(ip_address, level, _index, args, port_count, medium, mode, initial_port, test_port, accum_vec, length).await;

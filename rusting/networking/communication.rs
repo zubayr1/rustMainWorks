@@ -97,5 +97,10 @@ pub async fn dev_communication(working_port: String, test_port: String, value: V
 {    
     let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, value.clone());
     
+    let value_string = value.join(" ");
+
+    let mut vec: Vec<String>= Vec::new();
+    vec.push(value_string);
+    println!("{:?}", vec);
     return value;
 }
