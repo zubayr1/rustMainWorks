@@ -8,7 +8,8 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>, committee_len
         {
            for text in received_texts
            {
-            println!("{}", text);
+            let split_text: Vec<&str> = text.split(',').collect();
+            C1.push(split_text[1].to_string());
            }             
         }
         else 
