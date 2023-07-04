@@ -33,20 +33,20 @@ impl Phase
 }
 
 
-async fn communication(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
+async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
     initial_port: u32, test_port: u32, value: Vec<String>, length: usize) -> Vec<String>
 {
     let mut output: Vec<String>= Vec::new();
     
     if medium=="prod_init"
     {
-        output = communication::prod_communication(ip_address.clone(), level, port_count, _index, args.clone(), value.clone()).await;
+        output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, _index, args.clone(), value.clone()).await;
 
        
     }
     if medium=="dev_init"
     {
-        output = communication::dev_communication(["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
+        output = communication::dev_communication(committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
             ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
 
     }
@@ -55,14 +55,14 @@ async fn communication(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec
 }
 
 
-pub async fn reactor_init(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
+pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
 {       
     let length = ip_address.len();
 
     let acc_value = encoder::encoder(b"pvss_data", length.clone());
    
     timer::wait(1);
-    reactor(ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, length).await;
+    reactor(committee_id, ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, length).await;
 }
 
 
@@ -91,7 +91,7 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
     return check;
 }
 
-pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, mode: String, medium: String, length: usize) 
 { 
 
@@ -134,7 +134,7 @@ pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<S
         let accum = generic::Accum::create_accum("sign".to_string(), value);
         let accum_vec = accum.to_vec();
 
-        let output = communication(ip_address, level, _index, args, port_count, 
+        let output = communication(committee_id, ip_address, level, _index, args, port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, length).await;
 
         let check = reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;

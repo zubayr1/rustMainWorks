@@ -44,14 +44,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         if args[5]=="prod" // in prod mode
         {
             let mut level = 0;
-            for (_i, ip_addresses_comb) in sorted.clone()
+            for (committee_id, ip_addresses_comb) in sorted.clone()
             {
-                println!("{:?} {}", ip_addresses_comb, _i);
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
                 port_count+=1;
 
-                reactor::reactor_init(ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                reactor::reactor_init(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
             }
                            
@@ -62,7 +61,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             let address:&str = "127.0.0.1";
             ip_address.push(address);
             let level = 0;
-            reactor::reactor_init(ip_address.clone(), level, _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
+            reactor::reactor_init(999, ip_address.clone(), level, _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
 
         }
 

@@ -12,7 +12,7 @@ mod newserver;
 
 
 
-pub async fn prod_communication(ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
+pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>) -> Vec<String>
 {
 
@@ -78,7 +78,8 @@ pub async fn prod_communication(ip_address: Vec<&str>, level: u32, port_count: u
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
-                [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), value.clone(), args.clone());
+                [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
+                committee_id.clone(), value.clone(), args.clone());
 
                 
             }
@@ -93,9 +94,9 @@ pub async fn prod_communication(ip_address: Vec<&str>, level: u32, port_count: u
 }
 
 
-pub async fn dev_communication(working_port: String, test_port: String, value: Vec<String>, args: Vec<String>) -> Vec<String>
+pub async fn dev_communication(committee_id: u32, working_port: String, test_port: String, value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
-    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, value.clone(), args.clone());
+    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, committee_id.clone(), value.clone(), args.clone());
     
     let value_string = value.join(" ");
 
