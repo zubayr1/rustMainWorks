@@ -46,6 +46,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             let mut level = 0;
             for (_i, ip_addresses_comb) in sorted.clone()
             {
+                println!("{:?} {}", ip_addresses_comb, _i);
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
                 port_count+=1;
