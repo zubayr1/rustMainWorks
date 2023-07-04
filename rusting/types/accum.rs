@@ -1,3 +1,6 @@
+#[path = "../consensus/timer.rs"]
+mod timer; 
+
 pub fn accum_check(received_texts: Vec<String>, committee_length: usize) -> bool
 {
     if (received_texts.len())>=committee_length/2
@@ -30,4 +33,17 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(Strin
     
     
     return c1;
+}
+
+
+pub fn call_byzar(c1: Vec<(String, String)>)
+{
+    timer::wait(1);
+
+    let v1: Vec<(String, String)> = Vec::new();
+    let v2: Vec<(String, String)> = Vec::new();
+
+    //byzar()
+    //byzar()
+
 }

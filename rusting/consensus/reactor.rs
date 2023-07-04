@@ -145,7 +145,9 @@ pub async fn reactor(ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<S
         }
 
         println!("{:?}", c1);
+        
 
+        accum::call_byzar(c1);
     }
 
     
