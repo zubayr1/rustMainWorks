@@ -92,14 +92,20 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
     
     let v1: Vec<(String, String, String)> = Vec::new();
 
-    let json_string = serde_json::to_string(&c).unwrap();
+    for tuple in c
+    {
+        let json_string = serde_json::to_string(&tuple).unwrap();
     
-    println!("{:?}", json_string);
 
-    // let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
+        let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
 
-    // let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
-    // println!("{}", committee_id);
+        let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
+        println!("{}", committee_id);
+    }
+
+    
+
+    
 
     //byzar()
     //byzar()
