@@ -43,6 +43,8 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
 {
     timer::wait(1);
 
+    println!("{:?}", c);
+
     let v1: Vec<(String, String)> = Vec::new();
 
     //byzar()
