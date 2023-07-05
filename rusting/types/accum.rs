@@ -90,11 +90,11 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
 {
     timer::wait(1);
     
-    let v: Vec<(String, String, String)> = Vec::new();
+    let mut v: Vec<(String, String, String)> = Vec::new();
 
     let mut unique_merkle_root_check: Vec<String> =  Vec::new();
 
-    for tuple in c
+    for tuple in c.clone()
     {
         let json_string = serde_json::to_string(&tuple).unwrap();
     
@@ -113,13 +113,13 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
 
     }
 
-    println!("{:?}", unique_merkle_root_check.len());
 
+    if unique_merkle_root_check.len() == 1
+    {
+        v = c;
+    }
     
 
-    
-
-    //byzar()
     //byzar()
 
 
