@@ -23,7 +23,6 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     loop
     {
-        println!("{:?}",args[6].to_string());
         // Write data.
         stream.write_all(args[6].to_string().as_bytes()).await?;
         

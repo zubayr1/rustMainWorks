@@ -69,13 +69,14 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 pub async fn reaction(output: Vec<String>, medium: String, mode: String, length: usize) -> bool
 {
     let mut check: bool = false;
+
     if medium=="prod_init"
     {
         if mode=="accum"
         {
             timer::wait(1);
 
-            check= accum::accum_check(output, length);
+            check= accum::accum_check(output, medium, length);
         }
         
     }
@@ -85,7 +86,7 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
         {
             timer::wait(1);
 
-            check= accum::accum_check(output, length);
+            check= accum::accum_check(output, medium, length);
         }
     }
     return check;
