@@ -95,7 +95,7 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
     value: String, mode: String, medium: String, length: usize) 
 { 
 
-    let mut c: Vec<(String, String)> = Vec::new();
+    let mut c: Vec<(String, String, String)> = Vec::new();
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
@@ -143,10 +143,7 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
         {
             c = accum::accum_reaction(medium, output);
         }
-
-        println!("{:?}", c);
-        
-
+       
         accum::call_byzar(c);
     }
 

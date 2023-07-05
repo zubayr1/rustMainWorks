@@ -11,9 +11,9 @@ pub fn accum_check(received_texts: Vec<String>, committee_length: usize) -> bool
 }
 
 
-pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(String, String)>
+pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(String, String, String)>
 {
-    let mut c: Vec<(String, String)> = Vec::new();
+    let mut c: Vec<(String, String, String)> = Vec::new();
     
     if medium=="prod_init"
     {
@@ -21,23 +21,15 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(Strin
         {
             let split_text: Vec<&str> = text.split(',').collect();
 
-            let accum_tuple = (split_text[0].to_string(), split_text[1].to_string());
+            let accum_tuple = (split_text[0].to_string(), split_text[1].to_string(), split_text[2].to_string());
 
-            // if unique_merkle_root.contains(&merkle_root)
-            // {
-
-            // }
-            // else
-            // {
-            //     
-            //     unique_merkle_root.push(merkle_root);
-            // }
+            
             c.push(accum_tuple);
         }             
     }
     else 
     {
-        let accum_tuple = (received_texts[0].to_string(), received_texts[1].to_string());
+        let accum_tuple = (received_texts[0].to_string(), received_texts[1].to_string(), received_texts[2].to_string());
 
         c.push(accum_tuple);
     }      
@@ -47,7 +39,7 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(Strin
 }
 
 
-pub fn call_byzar(c: Vec<(String, String)>)
+pub fn call_byzar(c: Vec<(String, String, String)>)
 {
     timer::wait(1);
 
