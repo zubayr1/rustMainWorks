@@ -18,6 +18,7 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     }    
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;
      
+     println!("{:?}", value);
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
