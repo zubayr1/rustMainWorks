@@ -90,7 +90,9 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
 {
     timer::wait(1);
     
-    let v1: Vec<(String, String, String)> = Vec::new();
+    let v: Vec<(String, String, String)> = Vec::new();
+
+    let mut unique_merkle_root_check: Vec<String> =  Vec::new();
 
     for tuple in c
     {
@@ -100,8 +102,18 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
         let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
 
         let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
-        println!("{}", committee_id);
+
+        if unique_merkle_root_check.contains(&value) {
+
+        }
+        else 
+        {
+            unique_merkle_root_check.push(value);
+        }
+
     }
+
+    println!("{:?}", unique_merkle_root_check.len());
 
     
 
