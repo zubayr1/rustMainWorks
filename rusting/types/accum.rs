@@ -26,15 +26,15 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(Strin
 
             let accum_tuple = (split_text[0].to_string(), split_text[1].to_string());
 
-            if unique_merkle_root.contains(&merkle_root)
-            {
+            // if unique_merkle_root.contains(&merkle_root)
+            // {
 
-            }
-            else
-            {
-                c.push(accum_tuple);
-                unique_merkle_root.push(merkle_root);
-            }
+            // }
+            // else
+            // {
+            //     c.push(accum_tuple);
+            //     unique_merkle_root.push(merkle_root);
+            // }
             
         }             
     }
