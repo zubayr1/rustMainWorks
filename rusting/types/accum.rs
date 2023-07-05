@@ -17,7 +17,7 @@ pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length
             accum_val = split_text[2].to_string();
 
             if accum_val.contains("accum")
-            {
+            {   println!("yes");
                 check_len+=1;
             }
             
