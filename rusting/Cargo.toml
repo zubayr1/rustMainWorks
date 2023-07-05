@@ -19,8 +19,6 @@ futures = "0.3.28"
 schnorrkel = "0.10.2"
 
 serde_json = "1.0.100"
-serde = "1.0.166"
-serde_derive = "1.0.166"
 
 
 tokio-core = "0.1.18"
