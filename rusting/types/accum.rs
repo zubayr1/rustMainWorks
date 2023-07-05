@@ -1,5 +1,20 @@
+
 #[path = "../consensus/timer.rs"]
 mod timer; 
+
+
+use serde_derive::Deserialize;
+use serde_json;
+
+#[derive(Debug, Deserialize)]
+struct CValueTuple {
+    id_details: String,
+    value: String,
+    committee_id: String,
+}
+
+
+
 
 pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length: usize) -> bool
 {
@@ -17,7 +32,7 @@ pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length
             accum_val = split_text[2].to_string();
 
             if accum_val.contains("accum")
-            {   println!("yes");
+            {   
                 check_len+=1;
             }
             
@@ -75,10 +90,17 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
 {
     timer::wait(1);
     
-    println!("{:?}", c);
-    let v1: Vec<(String, String)> = Vec::new();
+    let v1: Vec<(String, String, String)> = Vec::new();
+
+    let json_string = serde_json::to_string(&c).unwrap();
+    let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string).unwrap();
+
+    let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
+    println!("{}", committee_id);
 
     //byzar()
     //byzar()
+
+
 
 }

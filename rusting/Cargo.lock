@@ -849,6 +849,8 @@ dependencies = [
  "rs_merkle",
  "schnorr_fun",
  "schnorrkel",
+ "serde",
+ "serde_derive",
  "serde_json",
  "sha2 0.10.6",
  "tokio 1.27.0",
