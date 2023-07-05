@@ -144,7 +144,7 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
             c = accum::accum_reaction(medium, output);
         }
 
-        // println!("{:?}", c);
+        println!("{:?}", c);
         
 
         accum::call_byzar(c);
