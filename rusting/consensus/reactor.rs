@@ -101,6 +101,7 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
 { 
 
     let mut c: Vec<(String, String, String)> = Vec::new();
+    let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
@@ -149,9 +150,9 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
             c = accum::accum_reaction(medium, output);
         }
        
-        c = accum::call_byzar(c);
+        v = accum::call_byzar(c);
     }
-    println!("{:?}", c);
+    println!("{:?}", v);
     // deliver::deliver(b"pvss_data", )
      
 }

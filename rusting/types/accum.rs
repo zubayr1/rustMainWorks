@@ -86,29 +86,38 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(Strin
 }
 
 
-pub fn call_byzar(c: Vec<(String, String, String)>) -> Vec<(String, String, String)>
+pub fn call_byzar(c: Vec<(String, String, String)>) -> (String, String, String)
 {
     timer::wait(1);
     
-    let mut v: Vec<(String, String, String)> = Vec::new();
+    let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
 
     let mut unique_merkle_root_check: Vec<String> =  Vec::new();
+
+    let mut id: String = "".to_string();
+    let mut final_value: String = "".to_string();
+    let mut final_committee: String = "".to_string();
 
     for tuple in c.clone()
     {
         let json_string = serde_json::to_string(&tuple).unwrap();
-    
-
+        
+        
         let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
 
         let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
 
-        if unique_merkle_root_check.contains(&value) {
+        let temp_value = value.clone();
+
+        if unique_merkle_root_check.contains(&value.clone()) {
 
         }
         else 
         {
             unique_merkle_root_check.push(value);
+            id = [id.to_string(), id_details.to_string().clone()].join(" ");
+            final_value = temp_value.clone();
+            final_committee = committee_id;
         }
 
     }
@@ -116,7 +125,8 @@ pub fn call_byzar(c: Vec<(String, String, String)>) -> Vec<(String, String, Stri
 
     if unique_merkle_root_check.len() == 1
     {
-        v = c;
+        v = (id, final_value, final_committee);
+
     }
     
     return v;
