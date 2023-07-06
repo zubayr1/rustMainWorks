@@ -109,13 +109,15 @@ pub fn call_byzar(c: Vec<(String, String, String)>) -> (String, String, String)
 
         let temp_value = value.clone();
 
+        id = [id.to_string(), id_details.to_string().clone()].join(" ");
+
         if unique_merkle_root_check.contains(&value.clone()) {
 
         }
         else 
         {
             unique_merkle_root_check.push(value);
-            id = [id.to_string(), id_details.to_string().clone()].join(" ");
+            
             final_value = temp_value.clone();
             final_committee = committee_id;
         }
