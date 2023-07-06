@@ -17,6 +17,8 @@ pub fn deliver(pvss_data: &[u8], accum_value: String, committee_length: usize)
     // Step 1: Partition m and run Encode algorithm
     let code_words = encode(&pvss_data[..t + 1]);
 
+    println!("{:?}", code_words);
+
     let mut witnessess: Vec<String> = Vec::new();
 
     for word in code_words.clone()
