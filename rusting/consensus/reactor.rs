@@ -6,6 +6,7 @@ mod communication;
 #[path = "../types/generic.rs"]
 mod generic; 
 
+
 #[path = "../types/accum.rs"]
 mod accum;
 
@@ -14,6 +15,9 @@ mod encoder;
 
 #[path = "./timer.rs"]
 mod timer; 
+
+#[path = "./deliver.rs"]
+mod deliver;
 
 enum Phase 
 {
@@ -145,9 +149,9 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
             c = accum::accum_reaction(medium, output);
         }
        
-        accum::call_byzar(c);
+        c = accum::call_byzar(c);
     }
-
-    
+    println!("{:?}", c);
+    // deliver::deliver(b"pvss_data", )
      
 }

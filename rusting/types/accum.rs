@@ -86,7 +86,7 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(Strin
 }
 
 
-pub fn call_byzar(c: Vec<(String, String, String)>)
+pub fn call_byzar(c: Vec<(String, String, String)>) -> Vec<(String, String, String)>
 {
     timer::wait(1);
     
@@ -119,6 +119,7 @@ pub fn call_byzar(c: Vec<(String, String, String)>)
         v = c;
     }
     
+    return v;
 
     //byzar()
 
