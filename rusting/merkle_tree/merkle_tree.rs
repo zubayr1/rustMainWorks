@@ -69,8 +69,6 @@ pub fn merkle_proof(proof_bytes: Vec<u8>, indices_to_prove: Vec<usize>, leaf_val
 
     let leaves_to_proof = leaves_to_proof.get(0..1).ok_or("can't get leaves to prove").unwrap();
 
-    println!("{:?}", leaves_to_proof);
-
 
     if proof.verify(root, &indices_to_prove, leaves_to_proof, len)
     {

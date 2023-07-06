@@ -41,14 +41,7 @@ pub fn deliver(pvss_data: &[u8], accum_value: String, committee_length: usize)
         println!("{}", proof);
 
     }
-
-    
-
-    
-        
-    
-
-
+    println!("{:?}", witnesses_vec);
     
     
 }
