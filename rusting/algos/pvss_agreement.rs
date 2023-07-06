@@ -2,8 +2,6 @@ extern crate reed_solomon;
 use reed_solomon::Encoder;
 use reed_solomon::Decoder;
 
-#[path = "../merkle_tree/merkle_tree.rs"]
-mod merkle_tree;
 
 pub fn encoder(pvss_data: &[u8], mut e: usize) -> Vec<String>
 {

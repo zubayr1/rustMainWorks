@@ -46,7 +46,7 @@ pub fn get_root(merkle_tree: MerkleTree<Sha256>) -> String
 
 
 
-fn _create_proof_bytes(indices_to_prove: Vec<usize>, merkle_tree: MerkleTree<Sha256>) -> Vec<u8>
+pub fn create_proof_bytes(indices_to_prove: Vec<usize>, merkle_tree: MerkleTree<Sha256>) -> Vec<u8>
 {
 
     let merkle_proof = merkle_tree.proof(&indices_to_prove);
@@ -58,7 +58,7 @@ fn _create_proof_bytes(indices_to_prove: Vec<usize>, merkle_tree: MerkleTree<Sha
 }
 
 
-fn _merkle_proof(proof_bytes: Vec<u8>, indices_to_prove: Vec<usize>, leaf_values_to_prove: Vec<String>, root: [u8; 32], len: usize) -> bool
+pub fn merkle_proof(proof_bytes: Vec<u8>, indices_to_prove: Vec<usize>, leaf_values_to_prove: Vec<String>, root: [u8; 32], len: usize) -> bool
 {
     let proof = MerkleProof::<Sha256>::try_from(proof_bytes).unwrap();
 
