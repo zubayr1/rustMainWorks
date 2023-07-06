@@ -16,7 +16,7 @@ pub fn deliver(pvss_data: &[u8], accum_value: String, committee_length: usize)
 {
 
     // Step 1: Partition m and run Encode algorithm
-    let code_words = pvss_agreement::encoder(pvss_data, committee_length);
+    let code_words = pvss_agreement::encoder(pvss_data, committee_length/2);
 
     println!("{} {:?}   {:?}", committee_length, pvss_data, code_words);
 
