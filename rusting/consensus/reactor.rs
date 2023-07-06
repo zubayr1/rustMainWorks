@@ -29,6 +29,9 @@ mod timer;
 #[path = "./deliver.rs"]
 mod deliver;
 
+#[path = "../merkle_tree/merkle_tree.rs"]
+mod merkle_tree;
+
 enum Phase 
 {
     echo, vote, committee, codeword, accum
@@ -73,7 +76,12 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 {       
     let committee_length = ip_address.len();
 
-    let acc_value = encoder::encoder(b"pvss_data", committee_length.clone());
+    let leaves = encoder::encoder(b"pvss_data", committee_length.clone());
+
+    let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
+
+    let acc_value = merkle_tree::get_root(merkle_tree.clone());
+
    
     timer::wait(1);
     reactor(committee_id, ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, committee_length).await;

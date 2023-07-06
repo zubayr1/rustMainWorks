@@ -15,18 +15,18 @@ pub fn deliver(pvss_data: &[u8], accum_value: String, committee_length: usize)
     let t = ((committee_length + 1) / 2) as usize;
 
     // Step 1: Partition m and run Encode algorithm
-    let code_words = encode(&pvss_data[..t + 1]);
+    let m_words = &pvss_data[..t + 1];
 
-    println!("{:?}", code_words);
+    println!("{} {:?}   {:?}", t, pvss_data, m_words);
 
-    let mut witnessess: Vec<String> = Vec::new();
+    // let mut witnessess: Vec<String> = Vec::new();
 
-    for word in code_words.clone()
-    {
-        let wit = create_witness(accum_value.clone(), accum_value.clone(), word);
+    // for word in code_words.clone()
+    // {
+    //     let wit = create_witness(accum_value.clone(), accum_value.clone(), word);
 
-        witnessess.push(wit);
-    }
+    //     witnessess.push(wit);
+    // }
 
-    println!("{:?}", witnessess);
+    // println!("{:?}", witnessess);
 }

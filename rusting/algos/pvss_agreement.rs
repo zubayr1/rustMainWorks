@@ -5,7 +5,7 @@ use reed_solomon::Decoder;
 #[path = "../merkle_tree/merkle_tree.rs"]
 mod merkle_tree;
 
-pub fn encoder(pvss_data: &[u8], e: usize) -> String
+pub fn encoder(pvss_data: &[u8], e: usize) -> Vec<String>
 {
     // Length of error correction code
     let ecc_len = 2*e;
@@ -33,12 +33,9 @@ pub fn encoder(pvss_data: &[u8], e: usize) -> String
         leaves.push(i.to_string());
     }
 
+    return leaves;
 
-    let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
-
-    let root = merkle_tree::get_root(merkle_tree.clone());
-
-    return root;
+    
 
 }
 
