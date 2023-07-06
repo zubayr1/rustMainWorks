@@ -1,8 +1,10 @@
-fn encode(data: &[u8]) -> Vec<String> {
-    // Implementation of the Encode algorithm
-    // Replace with your actual implementation
-    data.iter().map(|&d| d.to_string()).collect()
-}
+
+#[path = "../merkle_tree/merkle_tree.rs"]
+mod merkle_tree;
+
+#[path = "../algos/pvss_agreement.rs"]
+mod pvss_agreement;
+
 
 fn create_witness(ak: String, zl: String, s: String) -> String {
     // Implementation of the CreateWit algorithm
@@ -12,12 +14,11 @@ fn create_witness(ak: String, zl: String, s: String) -> String {
 
 pub fn deliver(pvss_data: &[u8], accum_value: String, committee_length: usize)
 {
-    let t = ((committee_length + 1) / 2) as usize;
 
     // Step 1: Partition m and run Encode algorithm
-    let m_words = &pvss_data[..t + 1];
+    let code_words = pvss_agreement::encoder(pvss_data, committee_length);
 
-    println!("{} {:?}   {:?}", t, pvss_data, m_words);
+    println!("{} {:?}   {:?}", committee_length, pvss_data, code_words);
 
     // let mut witnessess: Vec<String> = Vec::new();
 
