@@ -19,7 +19,7 @@ struct CValueTuple {
 pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length: usize) -> bool
 {
 
-    let mut accum_val: String="".to_string(); 
+    let mut accum_val: String; 
 
     let mut check_len = 0;
 
