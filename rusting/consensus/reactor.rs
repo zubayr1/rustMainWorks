@@ -1,5 +1,15 @@
 use std::env;
 
+use serde_derive::Deserialize;
+use serde_json;
+
+#[derive(Debug, Deserialize)]
+struct CValueTuple {
+    id_details: String,
+    value: String,
+    committee_id: String,
+}
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -38,7 +48,7 @@ impl Phase
 
 
 async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
-    initial_port: u32, test_port: u32, value: Vec<String>, length: usize) -> Vec<String>
+    initial_port: u32, test_port: u32, value: Vec<String>, committee_length: usize) -> Vec<String>
 {
     let mut output: Vec<String>= Vec::new();
     
@@ -61,16 +71,16 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
 
 pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
 {       
-    let length = ip_address.len();
+    let committee_length = ip_address.len();
 
-    let acc_value = encoder::encoder(b"pvss_data", length.clone());
+    let acc_value = encoder::encoder(b"pvss_data", committee_length.clone());
    
     timer::wait(1);
-    reactor(committee_id, ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, length).await;
+    reactor(committee_id, ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, committee_length).await;
 }
 
 
-pub async fn reaction(output: Vec<String>, medium: String, mode: String, length: usize) -> bool
+pub async fn reaction(output: Vec<String>, medium: String, mode: String, committee_length: usize) -> bool
 {
     let mut check: bool = false;
 
@@ -80,7 +90,7 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
         {
             timer::wait(1);
 
-            check= accum::accum_check(output, medium, length);
+            check= accum::accum_check(output, medium, committee_length);
         }
         
     }
@@ -90,14 +100,14 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, length:
         {
             timer::wait(1);
 
-            check= accum::accum_check(output, medium, length);
+            check= accum::accum_check(output, medium, committee_length);
         }
     }
     return check;
 }
 
 pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    value: String, mode: String, medium: String, length: usize) 
+    value: String, mode: String, medium: String, committee_length: usize) 
 { 
 
     let mut c: Vec<(String, String, String)> = Vec::new();
@@ -141,9 +151,9 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
         let accum_vec = accum.to_vec();
 
         let output = communication(committee_id, ip_address, level, _index, args, port_count, 
-            medium.clone(), mode.clone(), initial_port, test_port, accum_vec, length).await;
+            medium.clone(), mode.clone(), initial_port, test_port, accum_vec, committee_length).await;
 
-        let check = reaction(output.clone(), medium.clone(), mode.clone(), length.clone()).await;
+        let check = reaction(output.clone(), medium.clone(), mode.clone(), committee_length.clone()).await;
 
         if check==true
         {
@@ -152,7 +162,20 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
        
         v = accum::call_byzar(c);
     }
-    println!("{:?}", v);
-    // deliver::deliver(b"pvss_data", )
+
+    timer::wait(1);
+
+    let json_string = serde_json::to_string(&v).unwrap();
+
+    let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
+
+    let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
+
+    if value!="".to_string()
+    {
+        deliver::deliver(b"pvss_data", value.clone(), committee_length.clone());
+    }
+
+    
      
 }

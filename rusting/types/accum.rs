@@ -14,8 +14,6 @@ struct CValueTuple {
 }
 
 
-
-
 pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length: usize) -> bool
 {
 
@@ -100,8 +98,7 @@ pub fn call_byzar(c: Vec<(String, String, String)>) -> (String, String, String)
 
     for tuple in c.clone()
     {
-        let json_string = serde_json::to_string(&tuple).unwrap();
-        
+        let json_string = serde_json::to_string(&tuple).unwrap();        
         
         let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
 
