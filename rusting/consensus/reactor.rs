@@ -1,6 +1,9 @@
 use std::env;
 use async_recursion::async_recursion;
 
+use hex::FromHex;
+use std::convert::TryInto;
+
 use serde_derive::Deserialize;
 use serde_json;
 
@@ -32,6 +35,9 @@ mod deliver;
 
 #[path = "../merkle_tree/merkle_tree.rs"]
 mod merkle_tree;
+
+#[path = "../algos/pvss_agreement.rs"]
+mod pvss_agreement;
 
 enum Phase 
 {
@@ -87,7 +93,7 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
     let empty_vec: Vec<Vec<u8>> = Vec::new();
    
     timer::wait(1);
-    reactor(committee_id, &ip_address, level, _index, args, port_count, acc_value, empty_vec, 
+    reactor(committee_id, &ip_address, level, _index, args, port_count, acc_value, 0, empty_vec, 
         "accum".to_string(), medium, committee_length).await;
 }
 
@@ -120,11 +126,9 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, committ
 
 #[async_recursion]
 pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    value: String, witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
+    value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
-
-    let mut c: Vec<(String, String, String)> = Vec::new();
-    let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
+ 
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
@@ -155,19 +159,43 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
     }
     else if mode.contains("codeword")
     {
-        let codeword = generic::Codeword::create_codeword("".to_string(), "".to_string(), "".to_string(),
-        "".to_string());
-
+        
         println!("{:?}", witnesses_vec);
+        let mut index = 0;
+
+        let code_words = pvss_agreement::encoder(b"pvss_data", committee_length/2);
+
+        
+        for witness in witnesses_vec
+        {
+            let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
+            leaf_values_to_prove.push(code_words[index].to_string());
+
+            let indices_to_prove = vec![index.clone()];
+
+            let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
+            "".to_string(), indices_to_prove.clone(), merkle_len);
+            index+=1;
+
+            let root = Vec::from_hex(value.clone()).ok().unwrap();
+            let byte_root: [u8; 32] = root[..32].try_into().expect("Invalid length of byte vector");
+
+
+            let proof = merkle_tree::merkle_proof(witness.clone(), indices_to_prove.clone(), leaf_values_to_prove, byte_root, merkle_len);
+
+            println!("{:?}", proof);
+
+        }
+        
     }
     else 
     {
-        let witnesses_vec: Vec<Vec<u8>> = accum_reactor(committee_id, &ip_address, level, _index, args.clone(), port_count, 
+        let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
 
 
-        reactor(committee_id, ip_address, level, _index, args, port_count, 
-            value, witnesses_vec, "codeword".to_string(), medium, committee_length).await;
+        reactor(committee_id, ip_address, level, _index, args, port_count, value, 
+            merkle_len, witnesses_vec, "codeword".to_string(), medium, committee_length).await;
     }
 
     
@@ -176,7 +204,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
 
 
 pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    value: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) -> Vec<Vec<u8>>
+    value: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
     {
 
         let mut c: Vec<(String, String, String)> = Vec::new();
@@ -207,10 +235,12 @@ pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32
 
         let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
+        let mut merkle_len: usize= 0;
+
         if value!="".to_string()
         {
-            witnesses_vec = deliver::deliver_encode(b"pvss_data", value.clone(), committee_length.clone());
+            (witnesses_vec, merkle_len) = deliver::deliver_encode(b"pvss_data", value.clone(), committee_length.clone());
         }
 
-        return witnesses_vec;
+        return (witnesses_vec, merkle_len);
     }

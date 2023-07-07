@@ -8,7 +8,7 @@ mod pvss_agreement;
 #[path = "../networking/communication.rs"]
 mod communication;
 
-pub fn deliver_encode(pvss_data: &[u8], accum_value: String, committee_length: usize) -> Vec<Vec<u8>>
+pub fn deliver_encode(pvss_data: &[u8], accum_value: String, committee_length: usize) -> (Vec<Vec<u8>>, usize)
 {
 
     // Step 1.1: Partition m and run Encode algorithm
@@ -29,22 +29,17 @@ pub fn deliver_encode(pvss_data: &[u8], accum_value: String, committee_length: u
 
         let indices_to_prove = vec![index];
 
-        let proof_bytes = merkle_tree::create_proof_bytes(indices_to_prove.clone(), merkle_tree.clone());
+        let witness_proof_bytes = merkle_tree::create_proof_bytes(indices_to_prove.clone(), merkle_tree.clone());
 
-        witnesses_vec.push(proof_bytes.clone());
+        witnesses_vec.push(witness_proof_bytes.clone());
 
         index+=1;
-
-        let merkle_root = merkle_tree.root().ok_or("couldn't get the merkle root").unwrap();
-
-
-        let proof = merkle_tree::merkle_proof(proof_bytes, indices_to_prove, leaf_values_to_prove, merkle_root, merkle_tree.leaves_len());
 
 
     }
 
 
-    return witnesses_vec;
+    return (witnesses_vec, merkle_tree.leaves_len());
     
     
     
