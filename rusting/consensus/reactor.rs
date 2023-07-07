@@ -75,27 +75,10 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
 
 pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
 {       
-    let mut committee_length = ip_address.len();
+    let committee_length = ip_address.len();
 
-    let leaves: Vec<String>;
+    let leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
 
-    if medium=="dev_init"
-    {
-        committee_length = 2;
-
-        leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
-    }
-    else 
-    {
-        if ip_address.len()==1
-        {
-            leaves =  Vec::new();
-        }
-        else 
-        {
-            leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
-        }    
-    }
 
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -139,6 +122,9 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, committ
 pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
+
+    let mut c: Vec<(String, String, String)> = Vec::new();
+    let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
