@@ -5,8 +5,7 @@ mod merkle_tree;
 #[path = "../algos/pvss_agreement.rs"]
 mod pvss_agreement;
 
-#[path = "../networking/communication.rs"]
-mod communication;
+
 
 pub fn deliver_encode(pvss_data: &[u8], accum_value: String, committee_length: usize) -> (Vec<Vec<u8>>, usize)
 {

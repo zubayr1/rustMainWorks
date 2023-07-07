@@ -61,19 +61,38 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
     initial_port: u32, test_port: u32, value: Vec<String>, committee_length: usize) -> Vec<String>
 {
     let mut output: Vec<String>= Vec::new();
+
+    if mode=="accum"
+    {
+        if medium=="prod_init"
+        {
+            output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, _index, args.clone(), value.clone()).await;
     
-    if medium=="prod_init"
-    {
-        output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, _index, args.clone(), value.clone()).await;
-
-       
+           
+        }
+        if medium=="dev_init"
+        {
+            output = communication::dev_communication(committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
+                ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
+    
+        }
     }
-    if medium=="dev_init"
+    else if mode=="codeword"
     {
-        output = communication::dev_communication(committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
-            ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
-
+        if medium=="prod_init"
+        {
+            output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, _index, args.clone(), value.clone()).await;
+    
+           
+        }
+        if medium=="dev_init"
+        {
+            output = communication::codeword_dev_communication(committee_id, (initial_port + _index).to_string(), 
+                (test_port + _index).to_string(), value.clone(), args.clone()).await;
+    
+        }
     }
+    
 
     return output;
 }
@@ -181,6 +200,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
+            
 
             // let root = Vec::from_hex(value.clone()).ok().unwrap();
             // let byte_root: [u8; 32] = root[..32].try_into().expect("Invalid length of byte vector");
