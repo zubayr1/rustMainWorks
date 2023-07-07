@@ -77,13 +77,25 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 {       
     let mut committee_length = ip_address.len();
 
+    let leaves: Vec<String>;
+
     if medium=="dev_init"
     {
         committee_length = 2;
+
+        leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
     }
-
-    let leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
-
+    else 
+    {
+        if ip_address.len()==1
+        {
+            leaves =  Vec::new();
+        }
+        else 
+        {
+            leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
+        }    
+    }
 
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
