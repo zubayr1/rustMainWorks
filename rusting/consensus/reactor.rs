@@ -160,7 +160,6 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
     else if mode.contains("codeword")
     {
         
-        println!("{:?}", witnesses_vec);
         let mut index = 0;
 
         let code_words = pvss_agreement::encoder(b"pvss_data", committee_length/2);
@@ -177,13 +176,19 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
             "".to_string(), indices_to_prove.clone(), merkle_len);
             index+=1;
 
-            let root = Vec::from_hex(value.clone()).ok().unwrap();
-            let byte_root: [u8; 32] = root[..32].try_into().expect("Invalid length of byte vector");
+            let codeword_vec = codeword.to_vec();
 
 
-            let proof = merkle_tree::merkle_proof(witness.clone(), indices_to_prove.clone(), leaf_values_to_prove, byte_root, merkle_len);
+            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
 
-            println!("{:?}", proof);
+            // let root = Vec::from_hex(value.clone()).ok().unwrap();
+            // let byte_root: [u8; 32] = root[..32].try_into().expect("Invalid length of byte vector");
+
+
+            // let proof = merkle_tree::merkle_proof(witness.clone(), indices_to_prove.clone(), leaf_values_to_prove, byte_root, merkle_len);
+
+            println!("{:?}", output);
 
         }
         

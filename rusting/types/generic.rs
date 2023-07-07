@@ -65,6 +65,10 @@ impl Codeword
         Codeword{sign:sign, codewords: codewords, witness: witness, accumulation_value: accumulation_value, 
             index: index, leaves_len: leaves_len, types: "codeword".to_string()}
     }
+
+    pub fn to_vec(self) -> Vec<String> {
+        vec![self.sign, self.accumulation_value, self.leaves_len.to_string(), self.types]
+    }
 }
 
 pub struct Accum
