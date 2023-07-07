@@ -1,4 +1,5 @@
 use std::env;
+use async_recursion::async_recursion;
 
 use serde_derive::Deserialize;
 use serde_json;
@@ -7,7 +8,7 @@ use serde_json;
 struct CValueTuple {
     id_details: String,
     value: String,
-    committee_id: String,
+    _committee_id: String,
 }
 
 #[path = "../networking/communication.rs"]
@@ -83,9 +84,11 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 
     let acc_value = merkle_tree::get_root(merkle_tree.clone());
 
+    let empty_vec: Vec<Vec<u8>> = Vec::new();
    
     timer::wait(1);
-    reactor(committee_id, ip_address, level, _index, args, port_count, acc_value, "accum".to_string(), medium, committee_length).await;
+    reactor(committee_id, &ip_address, level, _index, args, port_count, acc_value, empty_vec, 
+        "accum".to_string(), medium, committee_length).await;
 }
 
 
@@ -115,8 +118,9 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, committ
     return check;
 }
 
-pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    value: String, mode: String, medium: String, committee_length: usize) 
+#[async_recursion]
+pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+    value: String, witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
 
     let mut c: Vec<(String, String, String)> = Vec::new();
@@ -153,38 +157,60 @@ pub async fn reactor(committee_id: u32, ip_address: Vec<&str>, level: u32, _inde
     {
         let codeword = generic::Codeword::create_codeword("".to_string(), "".to_string(), "".to_string(),
         "".to_string());
+
+        println!("{:?}", witnesses_vec);
     }
     else 
     {
+        let witnesses_vec: Vec<Vec<u8>> = accum_reactor(committee_id, &ip_address, level, _index, args.clone(), port_count, 
+            value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
+
+
+        reactor(committee_id, ip_address, level, _index, args, port_count, 
+            value, witnesses_vec, "codeword".to_string(), medium, committee_length).await;
+    }
+
+    
+     
+}
+
+
+pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+    value: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) -> Vec<Vec<u8>>
+    {
+
+        let mut c: Vec<(String, String, String)> = Vec::new();
+        let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
+
         let accum = generic::Accum::create_accum("sign".to_string(), value);
         let accum_vec = accum.to_vec();
 
-        let output = communication(committee_id, ip_address, level, _index, args, port_count, 
+        let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, committee_length).await;
 
         let check = reaction(output.clone(), medium.clone(), mode.clone(), committee_length.clone()).await;
 
         if check==true
         {
-            c = accum::accum_reaction(medium, output);
+            c = accum::accum_reaction(medium.clone(), output);
         }
        
         v = accum::call_byzar(c);
+
+        timer::wait(1);
+
+        let json_string = serde_json::to_string(&v).unwrap();
+
+        let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
+
+        let CValueTuple {id_details, value, _committee_id} = deserialized_tuple;
+
+        let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
+
+        if value!="".to_string()
+        {
+            witnesses_vec = deliver::deliver_encode(b"pvss_data", value.clone(), committee_length.clone());
+        }
+
+        return witnesses_vec;
     }
-
-    timer::wait(1);
-
-    let json_string = serde_json::to_string(&v).unwrap();
-
-    let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
-
-    let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
-
-    if value!="".to_string()
-    {
-        deliver::deliver(b"pvss_data", value.clone(), committee_length.clone());
-    }
-
-    
-     
-}

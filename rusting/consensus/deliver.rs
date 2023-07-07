@@ -5,8 +5,10 @@ mod merkle_tree;
 #[path = "../algos/pvss_agreement.rs"]
 mod pvss_agreement;
 
+#[path = "../networking/communication.rs"]
+mod communication;
 
-pub fn deliver(pvss_data: &[u8], accum_value: String, committee_length: usize)
+pub fn deliver_encode(pvss_data: &[u8], accum_value: String, committee_length: usize) -> Vec<Vec<u8>>
 {
 
     // Step 1.1: Partition m and run Encode algorithm
@@ -38,10 +40,12 @@ pub fn deliver(pvss_data: &[u8], accum_value: String, committee_length: usize)
 
         let proof = merkle_tree::merkle_proof(proof_bytes, indices_to_prove, leaf_values_to_prove, merkle_root, merkle_tree.leaves_len());
 
-        println!("{}", proof);
 
     }
-    println!("{:?}", witnesses_vec);
+
+
+    return witnesses_vec;
+    
     
     
 }
