@@ -3,12 +3,9 @@ use reed_solomon::Encoder;
 use reed_solomon::Decoder;
 
 
-pub fn encoder(pvss_data: &[u8], mut e: usize) -> Vec<String>
+pub fn encoder(pvss_data: &[u8], e: usize) -> Vec<String>
 {
-    if e==0
-    {
-        e=1;
-    }
+    
     // Length of error correction code
     let ecc_len = 2*e;
 
