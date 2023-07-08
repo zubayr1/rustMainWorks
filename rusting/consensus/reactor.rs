@@ -186,7 +186,6 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
         for witness in witnesses_vec
         {
             
-
             let leaf_values_to_prove = code_words[index].to_string();
 
             
@@ -203,7 +202,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
             
             
-            println!("WITNESSSSSS{:?}", output);
+            println!("{:?}", output);
 
         }
         
