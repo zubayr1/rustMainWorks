@@ -16,7 +16,7 @@ mod nested_nodes_test;
 
 
 pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, value: Vec<String>) -> Vec<String>
+    args: Vec<String>, value: Vec<String>, types: String) -> Vec<String>
 {
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -60,7 +60,8 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 count+=1;
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
-                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, test_port+port_count + additional_port );
+                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, test_port+port_count + additional_port
+            , types.clone());
                 //println!("{:?}", _result);
                 output.push(_result);
             }
