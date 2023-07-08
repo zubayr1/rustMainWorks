@@ -130,6 +130,11 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
             check= accum::accum_check(output[0].clone(), medium, committee_length);
         }
+        if mode=="codeword"
+        {
+            timer::wait(1);
+            println!("{:?}", output);
+        }
         
     }
     else 
@@ -139,6 +144,11 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             timer::wait(1);
 
             check= accum::accum_check(output[0].clone(), medium, committee_length);
+        }
+        if mode=="codeword"
+        {
+            timer::wait(1);
+            println!("{:?}", output);
         }
     }
     return check;
@@ -182,9 +192,10 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
     {
         
         codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args, port_count, 
-            value, merkle_len,  witnesses_vec, mode, medium, committee_length, initial_port, test_port).await;
+            value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        println!("{:?}", codeword_output);
+
+        let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length).await;
         
     }
     else 
