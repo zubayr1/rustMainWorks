@@ -17,11 +17,16 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     {
         sleep(Duration::from_millis(3)).await;
         individual_check+=1;
+
+        if individual_check>=10
+        {
+            break;
+        }
     }    
 
     if types=="individual" && individual_check>=10
     {
-        
+        println!("sss");
     }
     else 
     {       
