@@ -14,6 +14,8 @@ mod newserver;
 #[path = "./nested_nodes_test.rs"]
 mod nested_nodes_test;
 
+#[path = "../types/codeword.rs"]
+mod codeword;
 
 pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, types: String) -> Vec<String>
@@ -61,8 +63,10 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
                 let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, test_port+port_count + additional_port
-            , types.clone());
-                //println!("{:?}", _result);
+                    , types.clone());
+                
+                codeword::verify_codeword(_result.clone());
+                
                 output.push(_result);
             }
             
