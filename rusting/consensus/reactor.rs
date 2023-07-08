@@ -118,7 +118,7 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 }
 
 
-pub async fn reaction(output: Vec<String>, medium: String, mode: String, committee_length: usize) -> bool
+pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, committee_length: usize) -> bool
 {
     let mut check: bool = false;
 
@@ -128,7 +128,7 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, committ
         {
             timer::wait(1);
 
-            check= accum::accum_check(output, medium, committee_length);
+            check= accum::accum_check(output[0].clone(), medium, committee_length);
         }
         
     }
@@ -138,7 +138,7 @@ pub async fn reaction(output: Vec<String>, medium: String, mode: String, committ
         {
             timer::wait(1);
 
-            check= accum::accum_check(output, medium, committee_length);
+            check= accum::accum_check(output[0].clone(), medium, committee_length);
         }
     }
     return check;
@@ -252,7 +252,9 @@ pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32
         let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, committee_length).await;
 
-        let check = reaction(output.clone(), medium.clone(), mode.clone(), committee_length.clone()).await;
+        let mut wrapper_output: Vec<Vec<String>> = Vec::new();
+        wrapper_output.push(output.clone());
+        let check = reaction(wrapper_output.clone(), medium.clone(), mode.clone(), committee_length.clone()).await;
 
         if check==true
         {
