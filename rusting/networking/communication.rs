@@ -96,7 +96,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
                 [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
-                committee_id.clone(), value.clone(), args.clone());
+                committee_id.clone(), value.clone(), args.clone(), types.clone());
 
                 
             }
@@ -113,7 +113,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
 pub async fn dev_communication(committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
-    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, committee_id.clone(), value.clone(), args.clone());
+    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, committee_id.clone(), value.clone(), args.clone(), "dev_env".to_string());
     
     value.push(committee_id.to_string());
     
@@ -159,7 +159,7 @@ pub async fn codeword_dev_communication(committee_id: u32, working_port: String,
             let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(
                 ["127.0.0.1".to_string(), (initial_port_client + 500).to_string()].join(":"),
                 ["127.0.0.1".to_string(), (test_port_client + 500).to_string()].join(":"),
-                committee_id.clone(), value.clone(), args.clone());
+                committee_id.clone(), value.clone(), args.clone(), "dev_env".to_string());
 
 
         });
