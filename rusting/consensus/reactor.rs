@@ -137,7 +137,9 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         {
             let mut s_values: Vec<String> = Vec::new();
 
-            println!("{:?}", output);
+            // println!("{:?}", output);
+
+
             
             // for words in output
             // {
@@ -173,7 +175,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             timer::wait(1);
 
             let mut s_values: Vec<String> = Vec::new();
-            
+            println!("{:?}", output);
             for words in output
             {
                 let value = words[1].clone();

@@ -65,6 +65,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                 test_port+port_count + additional_port);
                 
+                println!("{:?}", _result);
                 if types=="individual"
                 {
                     let witness_verify =  codeword::verify_codeword(_result.clone());
