@@ -17,6 +17,8 @@ pub fn verify_codeword(value: String)
     
     let witness_str = value_split[2];
 
+    println!("{:?}", witness_str);
+
     let witness: Vec<u8> = witness_str
     .strip_prefix('[')
     .unwrap()
