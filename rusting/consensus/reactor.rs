@@ -150,10 +150,15 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 let value = words[0].clone();
 
-                println!("{:?}", value);
+                for value in words.clone()
+                {
+                    println!("{:?}", value);
 
-                println!("\n");
-                println!("\n");
+                    println!("\n");
+                    println!("\n");
+                }
+
+                
 
                 let value_split: Vec<&str> = value.split(", ").collect();
 
