@@ -136,25 +136,27 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         if mode=="codeword"
         {
             let mut s_values: Vec<String> = Vec::new();
+
+            println!("{:?}", output);
             
-            for words in output
-            {
-                let value = words[1].clone();
-                if s_values.contains(&value.clone())
-                {
+            // for words in output
+            // {
+            //     let value = words[1].clone();
+            //     if s_values.contains(&value.clone())
+            //     {
 
-                }
-                else 
-                {
-                    s_values.push(value);
+            //     }
+            //     else 
+            //     {
+            //         s_values.push(value);
 
-                    let words_string: String = words.join(", ");
+            //         let words_string: String = words.join(", ");
                     
-                    let witness_verify =  codeword::verify_codeword(words_string.clone());
+            //         let witness_verify =  codeword::verify_codeword(words_string.clone());
 
-                    println!("{:?}", witness_verify);
-                }
-            }
+            //         println!("{:?}", witness_verify);
+            //     }
+            // }
         }
         
     }
