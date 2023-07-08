@@ -35,7 +35,6 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     { 
         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
-        println!("a {:?}", line);
     
         if line.contains("EOF")  
         {
