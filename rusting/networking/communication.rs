@@ -62,10 +62,13 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 count+=1;
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
-                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, test_port+port_count + additional_port
-                    , types.clone());
+                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                test_port+port_count + additional_port);
                 
-                codeword::verify_codeword(_result.clone());
+                if types=="individual"
+                {
+                    codeword::verify_codeword(_result.clone());
+                }
                 
                 output.push(_result);
             }

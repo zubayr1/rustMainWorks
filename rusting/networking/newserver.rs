@@ -6,7 +6,7 @@ use tokio::fs::{OpenOptions};
 
 
 #[tokio::main]
-pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32, types: String) -> String{
+pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> String{
    // loop{
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
@@ -53,10 +53,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32, ty
         
         
     }
-    if types=="individual"
-    {
-        // println!("{:?}", line);
-    }
+    
         
     return line;
     
