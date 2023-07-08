@@ -138,7 +138,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             let mut s_values: Vec<String> = Vec::new();
 
             println!("{:?}", output);
-            
+            println!("\n");
 
             let mut tempoutput: Vec<String> = Vec::new();
             
@@ -169,6 +169,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
             println!("{:?}", tempoutput);
 
+            println!("\n");
             println!("\n");
         }
         
