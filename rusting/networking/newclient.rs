@@ -15,13 +15,19 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
     {
-        sleep(Duration::from_millis(3)).await;
-        individual_check+=1;
-
-        if individual_check>=10
+        if types=="individual"
         {
-            break;
+            individual_check+=1;
+            println!("sssaaa");
+            if individual_check>=10
+            {
+                break;
+            }
         }
+        
+
+        sleep(Duration::from_millis(3)).await;
+        
     }    
 
     if types=="individual" && individual_check>=10
