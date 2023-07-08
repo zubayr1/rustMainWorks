@@ -58,7 +58,6 @@ pub async fn handle_server(port: u32, testport: u32) -> String{
         
         
     }
-    println!("{:?}", line);
         
     return line;
        

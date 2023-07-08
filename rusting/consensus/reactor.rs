@@ -213,7 +213,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
 
             // let proof = merkle_tree::merkle_proof(witness.clone(), indices_to_prove.clone(), leaf_values_to_prove, byte_root, merkle_len);
 
-            // println!("{:?}", output);
+            println!("{:?}", output);
 
         }
         
