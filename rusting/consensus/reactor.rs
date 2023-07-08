@@ -203,7 +203,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
             
             
-            // println!("{:?}", output);
+            println!("WITNESSSSSS {:?}", output);
 
         }
         
@@ -238,7 +238,7 @@ pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, committee_length).await;
 
         let check = reaction(output.clone(), medium.clone(), mode.clone(), committee_length.clone()).await;
-
+        println!("{:?}", output);
         if check==true
         {
             c = accum::accum_reaction(medium.clone(), output);
