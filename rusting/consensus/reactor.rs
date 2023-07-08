@@ -38,6 +38,9 @@ mod merkle_tree;
 #[path = "../algos/pvss_agreement.rs"]
 mod pvss_agreement;
 
+#[path = "../types/codeword.rs"]
+mod codeword;
+
 enum Phase 
 {
     echo, vote, committee, codeword, accum
@@ -132,10 +135,26 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         }
         if mode=="codeword"
         {
-            timer::wait(1);
-            println!("{:?}", output);
-            println!("\n");
-            println!("\n");
+            let mut s_values: Vec<String> = Vec::new();
+            
+            for words in output
+            {
+                let value = words[1].clone();
+                if s_values.contains(&value.clone())
+                {
+
+                }
+                else 
+                {
+                    s_values.push(value);
+
+                    let words_string: String = words.join(", ");
+                    
+                    let witness_verify =  codeword::verify_codeword(words_string.clone());
+
+                    println!("{:?}", witness_verify);
+                }
+            }
         }
         
     }
@@ -150,7 +169,27 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         if mode=="codeword"
         {
             timer::wait(1);
-            println!("{:?}", output);
+
+            let mut s_values: Vec<String> = Vec::new();
+            
+            for words in output
+            {
+                let value = words[1].clone();
+                if s_values.contains(&value.clone())
+                {
+
+                }
+                else 
+                {
+                    s_values.push(value);
+
+                    let words_string: String = words.join(", ");
+                    
+                    let witness_verify =  codeword::verify_codeword(words_string.clone());
+
+                    println!("{:?}", witness_verify);
+                }
+            }
         }
     }
     return check;
