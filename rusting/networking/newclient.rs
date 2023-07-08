@@ -32,6 +32,7 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     if types=="individual" && individual_check>=10
     {
+        println!("{:?}", address);
         Ok(())
     }
     else 
