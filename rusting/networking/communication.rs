@@ -18,7 +18,7 @@ mod nested_nodes_test;
 mod codeword;
 
 pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, value: Vec<String>) -> Vec<String>
+    args: Vec<String>, value: Vec<String>, types: String) -> Vec<String>
 {
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -65,17 +65,20 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                 test_port+port_count + additional_port);
                 
-                // if types=="individual"
-                // {
-                //     let witness_verify =  codeword::verify_codeword(_result.clone());
+                if types=="individual"
+                {
+                    let witness_verify =  codeword::verify_codeword(_result.clone());
 
-                //     if witness_verify==true
-                //     {
-                //         output.push(_result);
-                //         break;
-                //     }
-                // }
-                output.push(_result);
+                    if witness_verify==true
+                    {
+                        output.push(_result);
+                    }
+                }
+                else 
+                {
+                    output.push(_result);
+                }
+                
             }
             
             
