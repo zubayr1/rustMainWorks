@@ -50,24 +50,25 @@ impl Committee
 pub struct Codeword
 {
     pub sign: String,
-    pub codewords: Vec<String>,
+    pub codewords: String,
     pub witness: Vec<u8>,
     pub accumulation_value: String,
-    pub index: Vec<usize>,
+    pub index: String,
     pub leaves_len: usize,
     pub types: String
 }
 
 impl Codeword
 {
-    pub fn create_codeword(sign: String, codewords: Vec<String>, witness: Vec<u8>, accumulation_value: String, index: Vec<usize>, leaves_len: usize) -> Self
+    pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, accumulation_value: String, index: String, leaves_len: usize) -> Self
     {
         Codeword{sign:sign, codewords: codewords, witness: witness, accumulation_value: accumulation_value, 
             index: index, leaves_len: leaves_len, types: "codeword".to_string()}
     }
 
     pub fn to_vec(self) -> Vec<String> {
-        vec![self.sign, self.accumulation_value, self.leaves_len.to_string(), self.types]
+        let witness_string = format!("{:?}", self.witness);
+        vec![self.sign, self.codewords, witness_string, self.accumulation_value, self.index, self.leaves_len.to_string(), self.types]
     }
 }
 

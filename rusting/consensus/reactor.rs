@@ -186,17 +186,22 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
         
         for witness in witnesses_vec
         {
-            let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
-            leaf_values_to_prove.push(code_words[index].to_string());
+            // let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
+            // leaf_values_to_prove.push(code_words[index].to_string());
 
-            let indices_to_prove = vec![index.clone()];
+            let leaf_values_to_prove = code_words[index].to_string();
+
+            // let indices_to_prove = vec![index.clone()];
+            
+            let indices_to_prove = index.clone().to_string();
+
+
 
             let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
-            "".to_string(), indices_to_prove.clone(), merkle_len);
+            value.to_string(), indices_to_prove.clone(), merkle_len);
             index+=1;
 
             let codeword_vec = codeword.to_vec();
-
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
@@ -208,7 +213,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
 
             // let proof = merkle_tree::merkle_proof(witness.clone(), indices_to_prove.clone(), leaf_values_to_prove, byte_root, merkle_len);
 
-            println!("{:?}", output);
+            // println!("{:?}", output);
 
         }
         
@@ -237,6 +242,7 @@ pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32
 
         let accum = generic::Accum::create_accum("sign".to_string(), value);
         let accum_vec = accum.to_vec();
+
 
         let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, committee_length).await;
