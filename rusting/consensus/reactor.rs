@@ -139,7 +139,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
             println!("{:?}", output);
 
-
+            let mut tempoutput: Vec<String> = Vec::new();
             
             for words in output
             {
@@ -159,9 +159,14 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                     
                     let witness_verify =  codeword::verify_codeword(words_string.clone());
 
-                    println!("{:?}", witness_verify);
+                    if witness_verify==true
+                    {
+                        tempoutput.push(words_string);
+                    }
                 }
             }
+
+            println!("{:?}", tempoutput);
         }
         
     }
@@ -178,7 +183,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             timer::wait(1);
 
             let mut s_values: Vec<String> = Vec::new();
-            println!("{:?}", output);
+
             for words in output
             {
                 let value = words[1].clone();
@@ -194,7 +199,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                     
                     let witness_verify =  codeword::verify_codeword(words_string.clone());
 
-                    println!("{:?}", witness_verify);
+                    if witness_verify==true
+                    {
+
+                    }
                 }
             }
         }
