@@ -134,6 +134,8 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         {
             timer::wait(1);
             println!("{:?}", output);
+            println!("\n");
+            println!("\n");
         }
         
     }
