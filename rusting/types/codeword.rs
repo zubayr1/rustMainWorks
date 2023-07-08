@@ -5,7 +5,7 @@ use std::convert::TryInto;
 #[path = "../merkle_tree/merkle_tree.rs"]
 mod merkle_tree;
 
-pub fn verify_codeword(value: String)
+pub fn verify_codeword(value: String) -> bool
 {
     let value_split: Vec<&str> = value.split(", ").collect();
 
@@ -40,5 +40,5 @@ pub fn verify_codeword(value: String)
     let proof = merkle_tree::merkle_proof(witness.clone(), indices_to_prove.clone(), leaf_values_to_prove, byte_root, merkle_len);
 
 
-    println!("{:?}", proof);
+    return proof;
 }

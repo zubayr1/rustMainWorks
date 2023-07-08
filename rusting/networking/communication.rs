@@ -67,7 +67,13 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 
                 if types=="individual"
                 {
-                    codeword::verify_codeword(_result.clone());
+                    let witness_verify =  codeword::verify_codeword(_result.clone());
+
+                    if witness_verify==true
+                    {
+                        output.push(_result);
+                        break;
+                    }
                 }
                 
                 output.push(_result);
