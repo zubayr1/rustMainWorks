@@ -160,6 +160,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
     let initial_port: u32 = initial_port_str.parse().unwrap();
     let test_port: u32 = test_port_str.parse().unwrap();
         
+    let codeword_output: Vec<Vec<String>>;
 
     if mode.contains("echo")
     {
@@ -178,33 +179,10 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
     else if mode.contains("codeword")
     {
         
-        let mut index = 0;
+        codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args, port_count, 
+            value, merkle_len,  witnesses_vec, mode, medium, committee_length, initial_port, test_port).await;
 
-        let code_words = pvss_agreement::encoder(b"pvss_data", committee_length/2);
-
-        
-        for witness in witnesses_vec
-        {
-            
-            let leaf_values_to_prove = code_words[index].to_string();
-
-            
-            let indices_to_prove = index.clone().to_string();
-
-
-            let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
-            value.to_string(), indices_to_prove.clone(), merkle_len);
-            index+=1;
-
-            let codeword_vec = codeword.to_vec();
-
-            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
-            
-            
-            println!("{:?}", output);
-
-        }
+        println!("{:?}", codeword_output);
         
     }
     else 
@@ -219,6 +197,42 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
 
     
      
+}
+
+
+pub async fn codeword_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32)
+-> Vec<Vec<String>>
+{
+    let mut index = 0;
+
+    let code_words = pvss_agreement::encoder(b"pvss_data", committee_length/2);
+
+    let mut codeword_output: Vec<Vec<String>> =  Vec::new();
+    for witness in witnesses_vec
+    {
+        
+        let leaf_values_to_prove = code_words[index].to_string();
+
+        
+        let indices_to_prove = index.clone().to_string();
+
+
+        let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
+        value.to_string(), indices_to_prove.clone(), merkle_len);
+        index+=1;
+
+        let codeword_vec = codeword.to_vec();
+
+        let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+        medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
+        
+        
+        codeword_output.push(output);
+
+    }
+
+    return codeword_output;
 }
 
 
