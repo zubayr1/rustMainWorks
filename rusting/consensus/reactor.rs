@@ -140,7 +140,6 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             println!("{:?}", output);
             println!("\n");
 
-            let mut tempoutput: Vec<String> = Vec::new();
             
             for words in output
             {
@@ -148,7 +147,6 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 println!("\n");
 
-                let value = words[0].clone();
 
                 for value in words.clone()
                 {
@@ -156,29 +154,29 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                     println!("\n");
                     println!("\n");
+
+                    let value_split: Vec<&str> = value.split(", ").collect();
+
+                    if s_values.contains(&value_split.clone()[1].to_string())
+                    {
+
+                    }
+                    else 
+                    {
+                        s_values.push(value_split.clone()[1].to_string());
+
+                        let words_string: String = words.join(", ");
+                        
+                        let witness_verify =  codeword::verify_codeword(words_string.clone());
+
+                        if witness_verify==true
+                        {
+                            break;
+                        }
+                    }
                 }
 
                 
-
-                let value_split: Vec<&str> = value.split(", ").collect();
-
-                if s_values.contains(&value_split.clone()[1].to_string())
-                {
-
-                }
-                else 
-                {
-                    s_values.push(value_split.clone()[1].to_string());
-
-                    let words_string: String = words.join(", ");
-                    
-                    let witness_verify =  codeword::verify_codeword(words_string.clone());
-
-                    if witness_verify==true
-                    {
-                        tempoutput.push(words_string);
-                    }
-                }
             }
 
             
