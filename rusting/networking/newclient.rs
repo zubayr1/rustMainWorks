@@ -19,7 +19,7 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
         {
             individual_check+=1;
 
-            if individual_check>=3000
+            if individual_check>=300
             {
                 break;
             }
@@ -30,7 +30,7 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
         
     }    
 
-    if types=="individual" && individual_check>=3000
+    if types=="individual" && individual_check>=300
     {
         println!("{:?}", address);
         Ok(())
