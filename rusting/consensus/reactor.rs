@@ -1,8 +1,7 @@
 use std::env;
 use async_recursion::async_recursion;
 
-use hex::FromHex;
-use std::convert::TryInto;
+
 
 use serde_derive::Deserialize;
 use serde_json;
@@ -186,15 +185,12 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
         
         for witness in witnesses_vec
         {
-            // let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
-            // leaf_values_to_prove.push(code_words[index].to_string());
+            
 
             let leaf_values_to_prove = code_words[index].to_string();
 
-            // let indices_to_prove = vec![index.clone()];
             
             let indices_to_prove = index.clone().to_string();
-
 
 
             let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
@@ -206,13 +202,7 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
             
-
-            // let root = Vec::from_hex(value.clone()).ok().unwrap();
-            // let byte_root: [u8; 32] = root[..32].try_into().expect("Invalid length of byte vector");
-
-
-            // let proof = merkle_tree::merkle_proof(witness.clone(), indices_to_prove.clone(), leaf_values_to_prove, byte_root, merkle_len);
-
+            
             // println!("{:?}", output);
 
         }
