@@ -146,6 +146,11 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             {
                 let value = words[0].clone();
 
+                println!("{:?}", value);
+
+                println!("\n");
+                println!("\n");
+
                 let value_split: Vec<&str> = value.split(", ").collect();
 
                 if s_values.contains(&value_split.clone()[1].to_string())
@@ -167,10 +172,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 }
             }
 
-            println!("{:?}", tempoutput);
-
-            println!("\n");
-            println!("\n");
+            
         }
         
     }
