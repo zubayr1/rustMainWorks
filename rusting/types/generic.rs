@@ -68,7 +68,10 @@ impl Codeword
 
     pub fn to_vec(self) -> Vec<String> {
         let witness_string = format!("{:?}", self.witness);
-        vec![self.sign, self.codewords, witness_string, self.accumulation_value, self.index, self.leaves_len.to_string(), self.types]
+
+        let modified_string = witness_string.replace(", ", "; ");
+
+        vec![self.sign, self.codewords, modified_string, self.accumulation_value, self.index, self.leaves_len.to_string(), self.types]
     }
 }
 
