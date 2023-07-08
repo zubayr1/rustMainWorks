@@ -144,6 +144,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             
             for words in output
             {
+                println!("{:?}", words);
+
+                println!("\n");
+
                 let value = words[0].clone();
 
                 println!("{:?}", value);
