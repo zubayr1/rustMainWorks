@@ -50,6 +50,8 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
     text = ["Level ".to_string(), level.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
+
+    println!("{:?}", level);
     
     thread::scope(|s| { 
 
