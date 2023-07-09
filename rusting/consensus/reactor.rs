@@ -61,7 +61,7 @@ impl Phase
 
 
 async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
-    initial_port: u32, test_port: u32, value: Vec<String>, committee_length: usize) -> Vec<String>
+    initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>
 {
     let mut output: Vec<String>= Vec::new();
 
@@ -70,7 +70,7 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
         if medium=="prod_init"
         {
             output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), "broadcast".to_string()).await;
+                _index, args.clone(), value.clone(), communication_type.to_string()).await;
     
            
         }
@@ -86,7 +86,7 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
         if medium=="prod_init"
         {
             output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), "individual".to_string()).await;
+                _index, args.clone(), value.clone(), communication_type.to_string()).await;
     
            
         }
@@ -177,7 +177,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             }
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
+                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "broadcast".to_string()).await;
             println!("{:?}", output);
             // for output_string in output
             // {
@@ -248,7 +248,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             }
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
+                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "individual".to_string()).await;
 
             // println!("{:?}", output);
         }
@@ -356,7 +356,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 
             // println!("{:?}", subset_vec);
             let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
-            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
+            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "individual".to_string()).await;
             
             codeword_output.push(output);
         }
@@ -375,7 +375,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
             let codeword_vec = codeword.to_vec();
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
+            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "broadcast".to_string()).await;
             
             // println!("{:?}", output);
             codeword_output.push(output);
@@ -401,7 +401,7 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
 
         let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-            medium.clone(), mode.clone(), initial_port, test_port, accum_vec, committee_length).await;
+            medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
         let mut wrapper_output: Vec<Vec<String>> = Vec::new();
         wrapper_output.push(output.clone());
