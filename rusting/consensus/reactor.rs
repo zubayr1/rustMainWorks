@@ -197,7 +197,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 let encoded_data: Vec<u8> = encoder.encode(&data_bytes).to_vec();
 
-                println!("{:?},   {:?}", encoded, encoded_data);
+                println!("{:?},   {:?}", data_bytes, encoded_data);
 
 
                 // pvss_agreement::decoder(encoded, committee_length/2);
