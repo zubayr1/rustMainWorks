@@ -183,7 +183,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             {
                 let modified_string = format!("[{}]", output_string.trim());
 
-                println!("{:?}", &modified_string[1..modified_string.len() - 1]);
+                println!("{:?},    {:?}", modified_string, &modified_string[1..modified_string.len() - 1]);
             }
             
         }
