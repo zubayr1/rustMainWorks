@@ -158,14 +158,13 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                     {
                         s_values.push(value_split.clone()[1].to_string());
 
-                        let words_string: String = words.join(", ");
                         
-                        let witness_verify =  codeword::verify_codeword(words_string.clone());
+                        let witness_verify =  codeword::verify_codeword(value.clone());
 
                         if witness_verify==true
                         {
 
-                            println!("{:?}", words_string);
+                            // println!("{:?}", words_string);
                             println!("{:?}", value_split);
                             println!("\n");
                             // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
