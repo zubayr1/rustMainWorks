@@ -148,11 +148,9 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             witness_to_deliver.push(" ".to_string());
             
             for words in output
-            {
-                
+            {                
                 for value in words.clone()
-                {
-                    
+                {                    
                     let value_split: Vec<&str> = value.split(", ").collect();
 
                     if s_values.contains(&value_split.clone()[1].to_string())
@@ -180,7 +178,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
-
+            println!("{:?}", output);
             for output_string in output
             {
                 let modified_vec: Vec<String> = output_string.split(", ")
@@ -298,11 +296,10 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        println!("{:?}", codeword_output);
-        // let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
-        //     committee_id, ip_address, level, _index,  args, port_count, 
-        //     initial_port, test_port
-        // ).await;
+        let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
+            committee_id, ip_address, level, _index,  args, port_count, 
+            initial_port, test_port
+        ).await;
         
     }
     else 
