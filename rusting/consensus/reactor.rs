@@ -331,24 +331,51 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
     let mut codeword_output: Vec<Vec<String>> =  Vec::new();
     for witness in witnesses_vec
     {
+        if medium=="prod_init"
+        {
+            let subset_ip = ip_address.clone()[index];
+            let mut subset_vec: Vec<&str> = Vec::new();
+            subset_vec.push(subset_ip);
+            let leaf_values_to_prove = code_words[index].to_string();
+    
+            
+            let indices_to_prove = index.clone().to_string();
+    
+    
+            let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
+            value.to_string(), indices_to_prove.clone(), merkle_len);
+            index+=1;
+    
+            let codeword_vec = codeword.to_vec();
+    
+            let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
+            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
+            
+            println!("{:?}", output);
+            codeword_output.push(output);
+        }
+        else 
+        {            
+            let leaf_values_to_prove = code_words[index].to_string();
+
+            
+            let indices_to_prove = index.clone().to_string();
+
+
+            let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
+            value.to_string(), indices_to_prove.clone(), merkle_len);
+            index+=1;
+
+            let codeword_vec = codeword.to_vec();
+
+            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
+            
+            println!("{:?}", output);
+            codeword_output.push(output);
+            
+        }
         
-        let leaf_values_to_prove = code_words[index].to_string();
-
-        
-        let indices_to_prove = index.clone().to_string();
-
-
-        let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
-        value.to_string(), indices_to_prove.clone(), merkle_len);
-        index+=1;
-
-        let codeword_vec = codeword.to_vec();
-
-        let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-        medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
-        
-        println!("{:?}", output);
-        codeword_output.push(output);
 
     }
 
