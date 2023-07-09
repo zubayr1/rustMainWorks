@@ -168,7 +168,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                         if witness_verify==true
                         {
-
+                            println!("{:?}", witness_verify);
                             witness_to_deliver.push(value_split[1].to_string());
                             
                             break;
