@@ -143,7 +143,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             if types.contains("individual")
             {
                 
-                let additional_port = (client_count)*30;
+                let additional_port = (client_count)*10;
 
                 println!("client {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
                 println!("client count: {:?},   {:?}", count, _index);
