@@ -51,7 +51,6 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
 
-    println!("{:?}", level);
     
     thread::scope(|s| { 
 
@@ -62,7 +61,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
             if types.contains("individual")
             {
-                for i in 0..2 {
+                for i in 0..level+1 {
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
                 println!("server {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
