@@ -108,7 +108,6 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 
     let leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
 
-
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
     let acc_value = merkle_tree::get_root(merkle_tree.clone());
@@ -121,7 +120,11 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 }
 
 
-pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, committee_length: usize) -> bool
+
+pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, committee_length: usize,
+    committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+    initial_port: u32, test_port: u32
+) -> bool
 {
     let mut check: bool = false;
 
@@ -137,24 +140,14 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         {
             let mut s_values: Vec<String> = Vec::new();
 
-            println!("{:?}", output);
-            println!("\n");
-
+            
             
             for words in output
             {
-                println!("{:?}", words);
-
-                println!("\n");
-
-
+                
                 for value in words.clone()
                 {
-                    println!("{:?}", value);
-
-                    println!("\n");
-                    println!("\n");
-
+                    
                     let value_split: Vec<&str> = value.split(", ").collect();
 
                     if s_values.contains(&value_split.clone()[1].to_string())
@@ -171,6 +164,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                         if witness_verify==true
                         {
+
+                            println!("{:?}", words_string);
+                            // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+                            //     medium.clone(), mode.clone(), initial_port, test_port, words_string, committee_length).await;
                             break;
                         }
                     }
@@ -260,11 +257,14 @@ pub async fn reactor<'a>(committee_id: u32, ip_address: &'a Vec<&str>, level: u3
     else if mode.contains("codeword")
     {
         
-        codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args, port_count, 
+        codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
 
-        let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length).await;
+        let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
+            committee_id, ip_address, level, _index,  args, port_count, 
+            initial_port, test_port
+        ).await;
         
     }
     else 
@@ -334,7 +334,10 @@ pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32
 
         let mut wrapper_output: Vec<Vec<String>> = Vec::new();
         wrapper_output.push(output.clone());
-        let check = reaction(wrapper_output.clone(), medium.clone(), mode.clone(), committee_length.clone()).await;
+        let check = reaction(wrapper_output, medium.clone(), mode, committee_length,            
+            committee_id, ip_address, level, _index,  args, port_count, 
+            initial_port, test_port
+        ).await;
 
         if check==true
         {
