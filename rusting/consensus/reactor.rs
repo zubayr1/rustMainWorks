@@ -107,7 +107,7 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
     let committee_length = ip_address.len();
 
     let leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
-    println!("{:?}", leaves);
+
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
     let acc_value = merkle_tree::get_root(merkle_tree.clone());
@@ -173,12 +173,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 
             }
-            println!("{:?}",  witness_to_deliver);
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
 
-            println!("{:?}", output);
 
             
         }
