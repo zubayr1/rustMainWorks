@@ -189,7 +189,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 let encoded = &modified_vec[1..modified_vec.len() - 1];
 
-                let encoder = Encoder::new(committee_length);
+                let encoder = Encoder::new(committee_length/2);
 
                 let converted_data: Vec<u8> = encoded.iter()
                     .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
