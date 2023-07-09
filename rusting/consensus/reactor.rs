@@ -357,7 +357,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
     
             let codeword_vec = codeword.to_vec();
     
-            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
             
             println!("{:?}", output);
