@@ -68,6 +68,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 test_port+port_count+ additional_port );
 
                 println!("{:?}", _result);
+                println!("\n");
 
                 let witness_verify =  codeword::verify_codeword(_result.clone());
     
