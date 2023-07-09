@@ -179,7 +179,12 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
 
-            println!("{:?}", output);
+            for output_string in output
+            {
+                let modified_string = format!("[{}]", output_string.trim());
+
+                println!("{:?}", &modified_string[1..modified_string.len() - 1]);
+            }
             
         }
         
