@@ -63,5 +63,7 @@ pub fn decoder(encoded: reed_solomon::Buffer, e: usize)
 
     let recv_str = std::str::from_utf8(recovered.data()).unwrap();
 
+    println!("{:?}", recv_str);
+
 }
 
