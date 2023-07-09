@@ -23,7 +23,7 @@ mod codeword;
 pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, types: String) -> Vec<String>
 {
-    let file_path = "../nodes_information.txt";
+    let file_path = "./nodes_information.txt";
     let mut file = File::open(file_path).unwrap();
 
     let mut contents = String::new();
@@ -186,6 +186,7 @@ pub async fn dev_communication(committee_id: u32, working_port: String, test_por
 pub async fn codeword_dev_communication(committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
     
+
     value.push(committee_id.to_string());
 
 
