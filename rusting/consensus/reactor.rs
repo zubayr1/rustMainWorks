@@ -145,24 +145,32 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             let mut witness_to_deliver: Vec<String> = Vec::new();
 
             witness_to_deliver.push(" ".to_string());
+
+            let mut check=false;
             
             for words in output
-            {                
-                for value in words.clone()
-                {                    
-                    let value_split: Vec<&str> = value.split(", ").collect();
-
-                    
-                    let witness_verify =  codeword::verify_codeword(value.clone());
-
-                    if witness_verify==true
-                    {
-                        witness_to_deliver.push(value_split[1].to_string());
+            {   
+                if check==false
+                {
+                    for value in words.clone()
+                    {                    
+                        let value_split: Vec<&str> = value.split(", ").collect();
+    
                         
-                        break;
+                        let witness_verify =  codeword::verify_codeword(value.clone());
+    
+                        if witness_verify==true
+                        {
+                            witness_to_deliver.push(value_split[1].to_string());
+
+                            check = true;
+                            
+                            break;
+                        }
+                        
                     }
-                    
-                }
+                }             
+                
 
                 
             }
