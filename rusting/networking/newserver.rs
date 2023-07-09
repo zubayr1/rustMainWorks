@@ -52,7 +52,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         
         
     }
-    
+    println!("{:?}", line);
         
     return line;
     

@@ -27,7 +27,6 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
-    println!("{:?},     {:?}", value, value_string);
 
     loop
     {
