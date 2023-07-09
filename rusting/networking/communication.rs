@@ -23,23 +23,27 @@ mod codeword;
 pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, types: String) -> Vec<String>
 {
-    let file_path = "./nodes_information.txt";
-    let file = File::open(file_path).unwrap();
-
-    let reader = BufReader::new(file);
-
-
     let mut client_count = 1;
 
-    for line_result in reader.lines() {
-        let line = line_result.unwrap();
-        
-        if line.contains(ip_address[0])
-        {
-            break;
+    if types.contains("individual")
+    {
+        let file_path = "./nodes_information.txt";
+        let file = File::open(file_path).unwrap();
+    
+        let reader = BufReader::new(file);
+    
+    
+        for line_result in reader.lines() {
+            let line = line_result.unwrap();
+            
+            if line.contains(ip_address[0])
+            {
+                break;
+            }
+            client_count+=1;
         }
-        client_count+=1;
     }
+    
 
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
