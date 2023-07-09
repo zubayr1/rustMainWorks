@@ -110,10 +110,10 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     test_port+port_count + additional_port);
 
                     output.push(_result);
-                    
-                                        
+                                                            
                     
                 }
+                println!("{:?}", output);
             }
             
             
