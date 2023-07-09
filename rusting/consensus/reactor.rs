@@ -128,13 +128,13 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 {
     let mut check: bool = false;
 
-    if medium=="prod_init"
+    if medium.clone()=="prod_init"
     {
         if mode=="accum"
         {
             timer::wait(1);
 
-            check= accum::accum_check(output[0].clone(), medium, committee_length);
+            check= accum::accum_check(output[0].clone(), medium.clone(), committee_length);
         }
         if mode=="codeword"
         {
@@ -174,11 +174,11 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 
             }
 
-            println!("{:?}", witness_to_deliver);
 
+            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
 
-            // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-                            //     medium.clone(), mode.clone(), initial_port, test_port, words_string, committee_length).await;
+            println!("{:?}", output);
 
             
         }
@@ -190,13 +190,16 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         {
             timer::wait(1);
 
-            check= accum::accum_check(output[0].clone(), medium, committee_length);
+            check= accum::accum_check(output[0].clone(), medium.clone(), committee_length);
         }
         if mode=="codeword"
         {
             timer::wait(1);
 
             let mut s_values: Vec<String> = Vec::new();
+
+            let mut witness_to_deliver: Vec<String> = Vec::new();
+
 
             for words in output
             {
@@ -215,10 +218,15 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                     if witness_verify==true
                     {
-
+                        witness_to_deliver.push(words[1].to_string());
                     }
                 }
             }
+
+            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
+
+            println!("{:?}", output);
         }
     }
     return check;
