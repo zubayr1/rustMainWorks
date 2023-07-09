@@ -166,6 +166,8 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                         {
 
                             println!("{:?}", words_string);
+                            println!("{:?}", value_split);
+                            println!("\n");
                             // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                             //     medium.clone(), mode.clone(), initial_port, test_port, words_string, committee_length).await;
                             break;
