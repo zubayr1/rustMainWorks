@@ -189,7 +189,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 let encoded = &modified_vec[1..modified_vec.len() - 1];
 
-                let encoder = Encoder::new(committee_length/2);
+                let encoder = Encoder::new(committee_length);
 
                 let data_bytes: Vec<u8> = encoded.iter()
                     .flat_map(|s| s.bytes())
