@@ -181,9 +181,11 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
             for output_string in output
             {
-                let modified_string = format!("[{}]", output_string.trim());
+                let modified_vec: Vec<String> = output_string.split(", ")
+                    .map(|s| s.to_string())
+                    .collect();
 
-                println!("{:?},   {:?},    {:?}", output_string, modified_string, &modified_string[1..modified_string.len() - 1]);
+                println!("{:?},   {:?},    {:?}", output_string, modified_vec, &modified_vec[1..modified_vec.len() - 1]);
             }
             
         }
