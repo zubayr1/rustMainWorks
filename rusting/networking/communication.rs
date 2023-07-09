@@ -6,7 +6,7 @@ use std::env;
 use futures::executor::block_on;
 
 use std::fs::File;
-use std::io::{self, Read};
+use std::io::{self, BufRead, BufReader};
 
 #[path = "./newclient.rs"]
 mod newclient;
@@ -24,13 +24,23 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
     args: Vec<String>, value: Vec<String>, types: String) -> Vec<String>
 {
     let file_path = "./nodes_information.txt";
-    let mut file = File::open(file_path).unwrap();
+    let file = File::open(file_path).unwrap();
 
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
+    let reader = BufReader::new(file);
 
-    println!("File contents:\n{}", contents);
 
+    let mut client_count = 0;
+
+    for line_result in reader.lines() {
+        let line = line_result.unwrap();
+        
+        if line.contains(ip_address[0])
+        {
+            break;
+        }
+        client_count+=1;
+    }
+    println!("{:?}", client_count);
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
