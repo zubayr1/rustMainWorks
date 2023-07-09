@@ -140,7 +140,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         {
             let mut s_values: Vec<String> = Vec::new();
 
-            
+            let mut witness_to_deliver: Vec<String> = Vec::new();
             
             for words in output
             {
@@ -164,11 +164,8 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                         if witness_verify==true
                         {
 
-                            // println!("{:?}", words_string);
-                            println!("{:?}", value_split);
-                            println!("\n");
-                            // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-                            //     medium.clone(), mode.clone(), initial_port, test_port, words_string, committee_length).await;
+                            witness_to_deliver.push(value_split[1].to_string());
+                            
                             break;
                         }
                     }
@@ -176,6 +173,12 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 
             }
+
+            println!("{:?}", witness_to_deliver);
+
+
+            // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+                            //     medium.clone(), mode.clone(), initial_port, test_port, words_string, committee_length).await;
 
             
         }
