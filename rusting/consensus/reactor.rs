@@ -201,7 +201,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 let enc = Encoder::new(ecc_len);
                 let encoded = enc.encode(&converted_data[..]);
 
-                println!("{:?},   {:?},   {:?}", committee_length, converted_data, encoded);
+                // println!("{:?},   {:?},   {:?}", committee_length, converted_data, encoded);
 
                 // let encoded = enc.encode(&[192, 137][..]); 
                 // pvss_agreement::decoder(encoded, committee_length/2);
@@ -298,7 +298,7 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        println!("         {:?}", codeword_output);
+        // println!("         {:?}", codeword_output);
         // let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
         //     committee_id, ip_address, level, _index,  args, port_count, 
         //     initial_port, test_port
