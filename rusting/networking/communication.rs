@@ -59,9 +59,11 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             
             let mut count=1;
 
+            let length = i32::pow(2, level);
+
             if types.contains("individual")
             {
-                for i in 0..level+1 {
+                for i in 0..length {
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
                 println!("server {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
