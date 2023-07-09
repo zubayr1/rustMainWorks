@@ -63,24 +63,27 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
             if types.contains("individual")
             {
-                for i in 0..length {
-                let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
-
-                println!("server {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
-
-                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
-                test_port+port_count+ additional_port );
-
-                println!("{:?}", _result);
-                println!("\n");
-
-                let witness_verify =  codeword::verify_codeword(_result.clone());
-    
-                if witness_verify==true
+                
+                for i in 0..length 
                 {
-                    output.push(_result);
+                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+
+                    println!("server {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
+
+                    let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                    test_port+port_count+ additional_port );
+
+                    println!("{:?}", _result);
+                    println!("\n");
+
+                    let witness_verify =  codeword::verify_codeword(_result.clone());
+        
+                    if witness_verify==true
+                    {
+                        output.push(_result);
+                    }
+                    count=1;
                 }
-            }
 
             }
             else
