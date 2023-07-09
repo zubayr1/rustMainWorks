@@ -176,34 +176,34 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 
             }
 
-            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
-            println!("{:?}", output);
-            for output_string in output
-            {
-                let modified_vec: Vec<String> = output_string.split(", ")
-                    .map(|s| s.to_string())
-                    .collect();
+            // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            //                     medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
+            // println!("{:?}", output);
+            // for output_string in output
+            // {
+            //     let modified_vec: Vec<String> = output_string.split(", ")
+            //         .map(|s| s.to_string())
+            //         .collect();
 
 
-                let encoded = &modified_vec[1..modified_vec.len() - 1];
+            //     let encoded = &modified_vec[1..modified_vec.len() - 1];
 
-                let ecc_len = 2*committee_length/2;
-
-
-                let converted_data: Vec<u8> = encoded.iter()
-                    .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
-                    .collect();
+            //     let ecc_len = 2*committee_length/2;
 
 
-                let enc = Encoder::new(ecc_len);
-                let encoded = enc.encode(&converted_data[..]);
+            //     let converted_data: Vec<u8> = encoded.iter()
+            //         .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
+            //         .collect();
 
-                // println!("{:?},   {:?},   {:?}", committee_length, converted_data, encoded);
 
-                // let encoded = enc.encode(&[192, 137][..]); 
-                // pvss_agreement::decoder(encoded, committee_length/2);
-            }
+            //     let enc = Encoder::new(ecc_len);
+            //     let encoded = enc.encode(&converted_data[..]);
+
+            //     // println!("{:?},   {:?},   {:?}", committee_length, converted_data, encoded);
+
+            //     // let encoded = enc.encode(&[192, 137][..]); 
+            //     // pvss_agreement::decoder(encoded, committee_length/2);
+            // }
             
         }
         
@@ -296,10 +296,10 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        // let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
-        //     committee_id, ip_address, level, _index,  args, port_count, 
-        //     initial_port, test_port
-        // ).await;
+        let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
+            committee_id, ip_address, level, _index,  args, port_count, 
+            initial_port, test_port
+        ).await;
         
     }
     else 
