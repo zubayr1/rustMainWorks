@@ -65,7 +65,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             {
                 for i in 0..length 
                 {
-                    println!("{:?}", count);
+                    println!("{:?},   {:?}", count, args[2].parse::<u32>().unwrap());
 
                     let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
