@@ -141,11 +141,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         }
         if mode=="codeword"
         {
-            let mut s_values: Vec<String> = Vec::new();
 
             let mut witness_to_deliver: Vec<String> = Vec::new();
 
-            // witness_to_deliver.push(" ".to_string());
+            witness_to_deliver.push(" ".to_string());
             
             for words in output
             {                
@@ -153,24 +152,16 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 {                    
                     let value_split: Vec<&str> = value.split(", ").collect();
 
-                    if s_values.contains(&value_split.clone()[1].to_string())
-                    {
+                    
+                    let witness_verify =  codeword::verify_codeword(value.clone());
 
-                    }
-                    else 
+                    if witness_verify==true
                     {
-                        s_values.push(value_split.clone()[1].to_string());
-
+                        witness_to_deliver.push(value_split[1].to_string());
                         
-                        let witness_verify =  codeword::verify_codeword(value.clone());
-
-                        if witness_verify==true
-                        {
-                            witness_to_deliver.push(value_split[1].to_string());
-                            
-                            break;
-                        }
+                        break;
                     }
+                    
                 }
 
                 
