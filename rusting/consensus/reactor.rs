@@ -168,7 +168,6 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                         if witness_verify==true
                         {
-                            println!("{:?}", witness_verify);
                             witness_to_deliver.push(value_split[1].to_string());
                             
                             break;
@@ -181,7 +180,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, committee_length).await;
-            println!("{:?}", output);
+
             for output_string in output
             {
                 let modified_vec: Vec<String> = output_string.split(", ")
@@ -308,7 +307,7 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
     }
     else 
     {
-        let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(committee_id, &ip_address, level, _index, args.clone(), port_count, 
+        let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
 
 
@@ -357,7 +356,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 }
 
 
-pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
     {
 
@@ -399,7 +398,7 @@ pub async fn accum_reactor(committee_id: u32, ip_address: &Vec<&str>, level: u32
 
         if value!="".to_string()
         {
-            (witnesses_vec, merkle_len) = deliver::deliver_encode(b"pvss_data", value.clone(), committee_length.clone());
+            (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), value.clone(), committee_length.clone());
         }
 
         return (witnesses_vec, merkle_len);
