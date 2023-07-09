@@ -203,7 +203,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 println!("{:?},   {:?},   {:?}", committee_length, converted_data, encoded);
 
 
-                pvss_agreement::decoder(encoded, committee_length/2);
+                // pvss_agreement::decoder(encoded, committee_length/2);
             }
             
         }
