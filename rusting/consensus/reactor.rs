@@ -191,13 +191,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 let ecc_len = committee_length/2;
 
-                let encoder = Encoder::new(ecc_len);
 
                 let converted_data: Vec<u8> = encoded.iter()
                     .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
                     .collect();
-
-                let encoded_data: Vec<u8> = encoder.encode(&converted_data[..]).to_vec();
 
 
                 let enc = Encoder::new(ecc_len);
@@ -206,7 +203,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 println!("{:?},   {:?},   {:?}", committee_length, converted_data, encoded);
 
 
-                // pvss_agreement::decoder(encoded_data, committee_length/2);
+                pvss_agreement::decoder(encoded, committee_length/2);
             }
             
         }
