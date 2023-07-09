@@ -5,6 +5,9 @@ use std::io::Write;
 use std::env;
 use futures::executor::block_on;
 
+use std::fs::File;
+use std::io::{self, Read};
+
 #[path = "./newclient.rs"]
 mod newclient;
 
@@ -20,6 +23,14 @@ mod codeword;
 pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, types: String) -> Vec<String>
 {
+    let file_path = "../nodes_information.txt";
+    let mut file = File::open(file_path).unwrap();
+
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+
+    println!("File contents:\n{}", contents);
+
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
