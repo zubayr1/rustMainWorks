@@ -62,7 +62,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             {
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
-                println!("server {:?}, {:?}", (initial_port+port_count), (test_port+port_count+ additional_port));
+                println!("server {:?}, {:?}", (initial_port+port_count), (test_port+port_count));
 
                 let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                 test_port+port_count + additional_port);
