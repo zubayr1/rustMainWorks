@@ -145,7 +145,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
             let mut witness_to_deliver: Vec<String> = Vec::new();
 
-            witness_to_deliver.push(" ".to_string());
+            // witness_to_deliver.push(" ".to_string());
             
             for words in output
             {                
