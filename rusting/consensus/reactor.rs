@@ -1,6 +1,7 @@
 use std::env;
 use async_recursion::async_recursion;
 
+use reed_solomon::Encoder;
 
 
 use serde_derive::Deserialize;
@@ -185,7 +186,21 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                     .map(|s| s.to_string())
                     .collect();
 
-                println!("{:?},   {:?},    {:?}", output_string, modified_vec, &modified_vec[1..modified_vec.len() - 1]);
+
+                let encoded = &modified_vec[1..modified_vec.len() - 1];
+
+                let encoder = Encoder::new(committee_length/2);
+
+                let data_bytes: Vec<u8> = encoded.iter()
+                    .flat_map(|s| s.bytes())
+                    .collect();
+
+                let encoded_data: Vec<u8> = encoder.encode(&data_bytes).to_vec();
+
+                println!("{:?}", encoded_data);
+
+
+                // pvss_agreement::decoder(encoded, committee_length/2);
             }
             
         }
