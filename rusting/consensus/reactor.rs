@@ -107,7 +107,7 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
     let committee_length = ip_address.len();
 
     let leaves = encoder::encoder(b"pvss_data", committee_length.clone()/2);
-
+    println!("{:?}", leaves);
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
     let acc_value = merkle_tree::get_root(merkle_tree.clone());
