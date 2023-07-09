@@ -86,7 +86,7 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
         if medium=="prod_init"
         {
             output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), "broadcast".to_string()).await;
+                _index, args.clone(), value.clone(), "individual".to_string()).await;
     
            
         }
@@ -357,7 +357,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
     
             let codeword_vec = codeword.to_vec();
     
-            let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
             
             println!("{:?}", output);
