@@ -162,14 +162,14 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                         s_values.push(value_split.clone()[1].to_string());
 
                         
-                        // let witness_verify =  codeword::verify_codeword(value.clone());
+                        let witness_verify =  codeword::verify_codeword(value.clone());
 
-                        // if witness_verify==true
-                        // {
-                        //     witness_to_deliver.push(value_split[1].to_string());
+                        if witness_verify==true
+                        {
+                            witness_to_deliver.push(value_split[1].to_string());
                             
-                        //     break;
-                        // }
+                            break;
+                        }
                     }
                 }
 
@@ -296,10 +296,10 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
-            committee_id, ip_address, level, _index,  args, port_count, 
-            initial_port, test_port
-        ).await;
+        // let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
+        //     committee_id, ip_address, level, _index,  args, port_count, 
+        //     initial_port, test_port
+        // ).await;
         
     }
     else 
