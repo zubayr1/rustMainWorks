@@ -64,8 +64,8 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             if types.contains("individual")
             {
                 count=0;
-                for i in 0..length 
-                {
+                // for i in 0..length 
+                // {
                     count+=1;
 
                     println!("{:?},   {:?}", count, args[2].parse::<u32>().unwrap());
@@ -87,7 +87,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                         output.push(_result);
                     }
                     
-                }
+             //   }
 
             }
             else
