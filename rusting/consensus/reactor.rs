@@ -162,14 +162,14 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                         s_values.push(value_split.clone()[1].to_string());
 
                         
-                        let witness_verify =  codeword::verify_codeword(value.clone());
+                        // let witness_verify =  codeword::verify_codeword(value.clone());
 
-                        if witness_verify==true
-                        {
-                            witness_to_deliver.push(value_split[1].to_string());
+                        // if witness_verify==true
+                        // {
+                        //     witness_to_deliver.push(value_split[1].to_string());
                             
-                            break;
-                        }
+                        //     break;
+                        // }
                     }
                 }
 
