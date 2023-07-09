@@ -105,21 +105,34 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
             let mut count=1;
 
-            
-
-            for ip in ip_address_clone.clone() 
+            println!("{:?}", ip_address_clone);
+            if types.contains("individual")
             {
-                count+=1;
                 let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
                 println!("server {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
 
                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
-                [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
+                [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                 committee_id.clone(), value.clone(), args.clone());
-
-                
             }
+            else 
+            {
+                for ip in ip_address_clone.clone() 
+                {
+                    count+=1;
+                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+
+                    println!("server {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
+
+                    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
+                    [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
+                    committee_id.clone(), value.clone(), args.clone());
+                    
+                }
+            }
+
+            
 
         });
 
