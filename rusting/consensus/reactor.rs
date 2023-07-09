@@ -191,13 +191,13 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 let encoder = Encoder::new(committee_length);
 
-                let data_bytes: Vec<u8> = encoded.iter()
-                    .flat_map(|s| s.bytes())
+                let converted_data: Vec<u8> = encoded.iter()
+                    .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
                     .collect();
 
-                let encoded_data: Vec<u8> = encoder.encode(&data_bytes).to_vec();
+                let encoded_data: Vec<u8> = encoder.encode(&converted_data).to_vec();
 
-                println!("{:?},   {:?}", data_bytes, encoded_data);
+                println!("{:?},   {:?}", converted_data, encoded_data);
 
 
                 // pvss_agreement::decoder(encoded, committee_length/2);
