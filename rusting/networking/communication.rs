@@ -29,7 +29,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
     let reader = BufReader::new(file);
 
 
-    let mut client_count = 0;
+    let mut client_count = 1;
 
     for line_result in reader.lines() {
         let line = line_result.unwrap();
@@ -40,7 +40,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
         }
         client_count+=1;
     }
-    println!("{:?}", client_count);
+
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
@@ -143,7 +143,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             if types.contains("individual")
             {
                 
-                let additional_port = (args[2].parse::<u32>().unwrap())*20;
+                let additional_port = (client_count)*20;
 
                 println!("client {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
                 println!("client count: {:?},   {:?}", count, _index);
