@@ -189,7 +189,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
                 let encoded = &modified_vec[1..modified_vec.len() - 1];
 
-                let ecc_len = 2*committee_length/2;
+                let ecc_len = committee_length/2;
 
                 let encoder = Encoder::new(ecc_len);
 
