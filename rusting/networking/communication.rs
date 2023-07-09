@@ -80,35 +80,25 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             
             let mut count=1;
 
-            let length = i32::pow(2, level);
 
             if types.contains("individual")
             {
-                count=0;
-                // for i in 0..length 
-                // {
-                    count+=1;
+                            
+                let additional_port = (client_count)*10;
 
-                    println!("{:?},   {:?}", count, _index);
+                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                test_port+port_count+ additional_port );
+
+                println!("{:?}", _result);
+                println!("\n");
+
+                let witness_verify =  codeword::verify_codeword(_result.clone());
+    
+                if witness_verify==true
+                {
+                    output.push(_result);
+                }
                     
-                    let additional_port = (client_count)*10;
-
-                    println!("server {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
-
-                    let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
-                    test_port+port_count+ additional_port );
-
-                    println!("{:?}", _result);
-                    println!("\n");
-
-                    let witness_verify =  codeword::verify_codeword(_result.clone());
-        
-                    if witness_verify==true
-                    {
-                        output.push(_result);
-                    }
-                    
-             //   }
 
             }
             else
@@ -145,9 +135,6 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 
                 let additional_port = (args[2].parse::<u32>().unwrap())*10;
 
-                println!("client {:?}, {:?}, {:?}", (initial_port+port_count), (test_port+port_count + additional_port), additional_port);
-                println!("client count: {:?},   {:?}", count, _index);
-                println!("{:?}", ip_address_clone);
 
                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
                 [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 

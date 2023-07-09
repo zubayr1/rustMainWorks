@@ -298,7 +298,7 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        // println!("         {:?}", codeword_output);
+        println!("{:?}", codeword_output);
         // let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
         //     committee_id, ip_address, level, _index,  args, port_count, 
         //     initial_port, test_port
@@ -361,7 +361,6 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
             let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, committee_length).await;
             
-            // println!("{:?}", output);
             codeword_output.push(output);
         }
         else 
