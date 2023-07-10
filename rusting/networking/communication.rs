@@ -108,11 +108,11 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 for _ip in ip_address_clone.clone() 
                 {   
                     count+=1;
-                    let mut additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+                    let mut additional_port = (count + args[2].parse::<u32>().unwrap())*5;
 
                     if mode=="codeword"
                     {
-                        additional_port = (count + args[2].parse::<u32>().unwrap())*20;
+                        additional_port = (count + args[2].parse::<u32>().unwrap())*50;
                         println!("server port {:?},  {:?}", (initial_port+port_count), (test_port+port_count + additional_port));
 
                     }
@@ -156,10 +156,10 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 for ip in ip_address_clone.clone() 
                 {   
                     count+=1;
-                    let mut additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+                    let mut additional_port = (count + args[2].parse::<u32>().unwrap())*5;
 
                     if mode=="codeword"
-                    {   additional_port = (count + args[2].parse::<u32>().unwrap())*20;
+                    {   additional_port = (count + args[2].parse::<u32>().unwrap())*50;
                         println!("client port {:?},  {:?}", (initial_port+port_count), (test_port+port_count + additional_port));
 
                     }
