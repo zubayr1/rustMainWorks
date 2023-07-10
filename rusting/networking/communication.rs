@@ -25,7 +25,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 {
     let mut client_count = 1;
 
-    if types.contains("individual")
+    if mode.contains("codeword")
     {
         let file_path = "./nodes_information.txt";
         let file = File::open(file_path).unwrap();
@@ -108,10 +108,11 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 for _ip in ip_address_clone.clone() 
                 {   
                     count+=1;
-                    let additional_port = (count + args[2].parse::<u32>().unwrap())*10;
+                    let mut additional_port = (count + args[2].parse::<u32>().unwrap())*10;
 
                     if mode=="codeword"
                     {
+                        additional_port = (count + client_count)*10;
                         println!("server port {:?},  {:?}", (initial_port+port_count), (test_port+port_count + additional_port));
 
                     }
