@@ -70,7 +70,7 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
         if medium=="prod_init"
         {
             output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), communication_type.to_string()).await;
+                _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
         }
@@ -86,7 +86,7 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
         if medium=="prod_init"
         {
             output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), communication_type.to_string()).await;
+                _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
         }
