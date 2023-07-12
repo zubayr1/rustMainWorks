@@ -46,13 +46,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             let mut level = 0;
 
             let mut _pvss_data: String = "".to_string();
-            
+
             for (committee_id, ip_addresses_comb) in sorted.clone()
             {
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
-
-                
-
+              
                 if ip_address.len()==1
                 {
                     //GET PVSS DATA FROM DIMITRIS

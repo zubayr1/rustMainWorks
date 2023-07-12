@@ -98,6 +98,8 @@ pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
     let mut final_value: String = "".to_string();
     let mut final_committee: String = "".to_string();
 
+    let mut tempFINALVALUE = "".to_string();
+
     for tuple in V.clone()
     {
         let json_string = serde_json::to_string(&tuple).unwrap();        
@@ -120,6 +122,8 @@ pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
             final_value = temp_value.clone();
             final_committee = committee_id;
 
+            tempFINALVALUE = [tempFINALVALUE, final_value.clone()].join(" ");
+
             unique_zl = (id.clone(), final_value.clone(), final_committee.clone());
 
             //byzar(unique_zl)
@@ -130,9 +134,9 @@ pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
     }
 
 
-    if unique_merkle_root_check.len() == 1
+    if unique_merkle_root_check.len() >= 1
     {
-        v = (id, final_value.clone(), final_committee.clone());
+        v = (id, final_value.clone(), tempFINALVALUE.clone());
 
     }
 
