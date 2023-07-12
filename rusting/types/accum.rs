@@ -98,6 +98,8 @@ pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
     let mut final_value: String = "".to_string();
     let mut final_committee: String = "".to_string();
 
+    println!("   {:?}", V);
+
     for tuple in V.clone()
     {
         let json_string = serde_json::to_string(&tuple).unwrap();        
