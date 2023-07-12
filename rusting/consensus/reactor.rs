@@ -414,24 +414,23 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         let accum_vec = accum.to_vec();
 
         //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP 
-        let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+        let V = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
         let mut wrapper_output: Vec<Vec<String>> = Vec::new();
-        wrapper_output.push(output.clone());
+        wrapper_output.push(V.clone());
 
-        let check = reaction(wrapper_output, medium.clone(), mode, committee_length,            
+        let check = reaction(wrapper_output, medium.clone(), mode, committee_length,          // to check if the output is about accum  
             committee_id, ip_address, level, _index,  args, port_count, 
             initial_port, test_port
         ).await;
 
         if check==true
         {
-            V = accum::accum_reaction(medium.clone(), output.clone());
+            v = accum::call_byzar(V.clone());
         }
-        println!("{:?},   {:?}", output, V);
 
-        v = accum::call_byzar(V);
+        
 
         timer::wait(1);
 

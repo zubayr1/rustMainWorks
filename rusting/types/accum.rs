@@ -3,16 +3,6 @@
 mod timer; 
 
 
-use serde_derive::Deserialize;
-use serde_json;
-
-#[derive(Debug, Deserialize)]
-struct CValueTuple {
-    id_details: String,
-    value: String,
-    committee_id: String,
-}
-
 
 pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length: usize) -> bool
 {
@@ -56,35 +46,8 @@ pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length
 }
 
 
-pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(String, String, String)>
-{
-    let mut V: Vec<(String, String, String)> = Vec::new();
 
-    if medium=="prod_init"
-    {
-        for text in received_texts
-        {
-            let split_text: Vec<&str> = text.split(',').collect();
-
-            let accum_tuple = (split_text[0].to_string(), split_text[1].to_string(), split_text[3].to_string());
-
-            
-            V.push(accum_tuple);
-        }             
-    }
-    else 
-    {
-        let accum_tuple = (received_texts[0].to_string(), received_texts[1].to_string(), received_texts[3].to_string());
-
-        V.push(accum_tuple);
-    }      
-    
-    
-    return V;
-}
-
-
-pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
+pub fn call_byzar(V: Vec<String>) -> (String, String, String)
 {
     timer::wait(1);
     
@@ -100,27 +63,24 @@ pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
 
     let mut tempFINALVALUE = "".to_string();
 
-    for tuple in V.clone()
+    for strings in V.clone()
     {
-        let json_string = serde_json::to_string(&tuple).unwrap();        
         
-        let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
+        let split_strings: Vec<&str> = strings.split(',').collect();
 
-        let CValueTuple {id_details, value, committee_id} = deserialized_tuple;
+        let temp_value = split_strings[1].to_string().clone();
 
-        let temp_value = value.clone();
+        id = [id.to_string(), split_strings[0].to_string().clone()].join(" ");
 
-        id = [id.to_string(), id_details.to_string().clone()].join(" ");
-
-        if unique_merkle_root_check.contains(&value.clone()) {
+        if unique_merkle_root_check.contains(&split_strings[1].to_string().clone()) {
 
         }
         else 
         {
-            unique_merkle_root_check.push(value);
+            unique_merkle_root_check.push(split_strings[1].to_string().clone());
             
             final_value = temp_value.clone();
-            final_committee = committee_id;
+            final_committee = split_strings[2].to_string().clone();
 
             tempFINALVALUE = [tempFINALVALUE, final_value.clone()].join(" ");
 
