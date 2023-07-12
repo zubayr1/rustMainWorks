@@ -123,6 +123,7 @@ pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
             unique_zl = (id.clone(), final_value.clone(), final_committee.clone());
 
             //byzar(unique_zl)
+            println!("{:?}", unique_zl);
 
         }
 
