@@ -187,8 +187,12 @@ pub async fn dev_communication(committee_id: u32, working_port: String, test_por
     
     value.push(committee_id.to_string());
 
-    
-    return value;
+    let joined_string = value.join(", ");    
+
+    let mut returnVec: Vec<String> = Vec::new();
+    returnVec.push(joined_string);
+
+    return returnVec;
 }
 
 

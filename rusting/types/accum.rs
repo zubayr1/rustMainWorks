@@ -28,7 +28,8 @@ pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length
     }
     else 
     {
-        accum_val = received_texts[2].to_string();
+        let split_text: Vec<&str> = received_texts[0].split(", ").collect();
+        accum_val = split_text[2].to_string();
 
         if accum_val=="accum".to_string()
         {
@@ -63,7 +64,6 @@ pub fn call_byzar(V: Vec<String>) -> (String, String, String)
 
     let mut tempFINALVALUE = "".to_string();
 
-    println!("{:?}", V);
     for strings in V.clone()
     {
         
