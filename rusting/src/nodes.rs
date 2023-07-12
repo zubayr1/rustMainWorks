@@ -48,12 +48,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
-                let mut _pvss_data: String = ["pvss_data".to_string(), committee_id.to_string()].join(" ");
+                let mut _pvss_data: String = "".to_string();
 
                 if ip_address.len()==1
                 {
                     //GET PVSS DATA FROM DIMITRIS
-                    _pvss_data = ["pvss_data".to_string(), committee_id.to_string()].join(" ");
+                    _pvss_data = ["pvss_data".to_string(), args[2].to_string()].join(" ");
                 }
                 else 
                 {
