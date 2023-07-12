@@ -58,8 +58,8 @@ pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length
 
 pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(String, String, String)>
 {
-    let mut c: Vec<(String, String, String)> = Vec::new();
-    
+    let mut V: Vec<(String, String, String)> = Vec::new();
+    println!("{:?}", received_texts);
     if medium=="prod_init"
     {
         for text in received_texts
@@ -69,18 +69,18 @@ pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(Strin
             let accum_tuple = (split_text[0].to_string(), split_text[1].to_string(), split_text[3].to_string());
 
             
-            c.push(accum_tuple);
+            V.push(accum_tuple);
         }             
     }
     else 
     {
         let accum_tuple = (received_texts[0].to_string(), received_texts[1].to_string(), received_texts[3].to_string());
 
-        c.push(accum_tuple);
+        V.push(accum_tuple);
     }      
     
     
-    return c;
+    return V;
 }
 
 
@@ -97,8 +97,6 @@ pub fn call_byzar(V: Vec<(String, String, String)>) -> (String, String, String)
     let mut id: String = "".to_string();
     let mut final_value: String = "".to_string();
     let mut final_committee: String = "".to_string();
-
-    println!("   {:?}", V);
 
     for tuple in V.clone()
     {
