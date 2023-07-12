@@ -113,12 +113,12 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
-    let acc_value = merkle_tree::get_root(merkle_tree.clone());
+    let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
 
     let empty_vec: Vec<Vec<u8>> = Vec::new();
    
     timer::wait(1);
-    reactor(pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value, 0, empty_vec, 
+    reactor(pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
         "accum".to_string(), medium, committee_length).await;
 }
 
@@ -406,20 +406,20 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
     value: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
     {
 
-        let mut c: Vec<(String, String, String)> = Vec::new();
+        let mut V: Vec<(String, String, String)> = Vec::new();
         let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
 
         let accum = generic::Accum::create_accum("sign".to_string(), value);
         let accum_vec = accum.to_vec();
 
-
+        //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP 
         let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
-            println!("{:?}", output);
 
         let mut wrapper_output: Vec<Vec<String>> = Vec::new();
         wrapper_output.push(output.clone());
+
         let check = reaction(wrapper_output, medium.clone(), mode, committee_length,            
             committee_id, ip_address, level, _index,  args, port_count, 
             initial_port, test_port
@@ -427,10 +427,10 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
         if check==true
         {
-            c = accum::accum_reaction(medium.clone(), output);
+            V = accum::accum_reaction(medium.clone(), output);
         }
        
-        v = accum::call_byzar(c);
+        v = accum::call_byzar(V);
 
         timer::wait(1);
 
