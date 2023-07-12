@@ -48,10 +48,19 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
-                port_count+=1;
+                if ip_address.len()==1
+                {
+                    //GET PVSS DATA FROM DIMITRIS
+                }
+                else 
+                {
+                    port_count+=1;
 
-                reactor::reactor_init(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                level+=1;
+                    reactor::reactor_init(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                    level+=1;
+                }
+
+                
             }
                            
         }

@@ -107,6 +107,7 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
 {       
     let committee_length = ip_address.len();
 
+    
     let pvss_data = ["pvss_data".to_string(), committee_id.to_string()].join(" ");
 
     let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone()/2);
