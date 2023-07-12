@@ -114,7 +114,7 @@ pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, 
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
-    println!("{:?}", acc_value_zl);
+
     let empty_vec: Vec<Vec<u8>> = Vec::new();
    
     timer::wait(1);
@@ -415,7 +415,7 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP 
         let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
-
+        println!("{:?}", output);
 
         let mut wrapper_output: Vec<Vec<String>> = Vec::new();
         wrapper_output.push(output.clone());
