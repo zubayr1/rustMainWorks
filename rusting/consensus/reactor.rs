@@ -191,7 +191,6 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                     .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
                     .collect();
 
-            println!("{:?}", converted_s_values);
 
             // for output_string in output
             // {
