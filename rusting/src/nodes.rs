@@ -48,15 +48,18 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {
                 let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
 
+                let mut _pvss_data: String = ["pvss_data".to_string(), committee_id.to_string()].join(" ");
+
                 if ip_address.len()==1
                 {
                     //GET PVSS DATA FROM DIMITRIS
+                    _pvss_data = ["pvss_data".to_string(), committee_id.to_string()].join(" ");
                 }
                 else 
                 {
                     port_count+=1;
 
-                    reactor::reactor_init(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                    reactor::reactor_init(_pvss_data.clone(),committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                     level+=1;
                 }
 
@@ -65,12 +68,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                            
         }
         else 
-        {                
+        {           
+            let pvss_data = ["pvss_data".to_string(), 999.to_string()].join(" ");     
             let mut ip_address: Vec<&str> = Vec::new();
             let address:&str = "127.0.0.1";
             ip_address.push(address);
             let level = 0;
-            reactor::reactor_init(999, ip_address.clone(), level, _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
+            reactor::reactor_init(pvss_data.clone(), 999, ip_address.clone(), level, _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
 
         }
 

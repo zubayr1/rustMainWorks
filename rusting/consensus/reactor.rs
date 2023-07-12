@@ -103,12 +103,12 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
 }
 
 
-pub async fn reactor_init(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
+pub async fn reactor_init(pvss_data: String, committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
 {       
     let committee_length = ip_address.len();
 
     
-    let pvss_data = ["pvss_data".to_string(), committee_id.to_string()].join(" ");
+    
 
     let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone()/2);
 
