@@ -63,7 +63,7 @@ pub fn call_byzar(V: Vec<String>) -> (String, String, String)
 
     let mut tempFINALVALUE = "".to_string();
 
-
+    println!("{:?}", V);
     for strings in V.clone()
     {
         
@@ -81,7 +81,7 @@ pub fn call_byzar(V: Vec<String>) -> (String, String, String)
             unique_merkle_root_check.push(split_strings[1].trim().to_string().clone());
             
             final_value = temp_value.clone();
-            final_committee = split_strings[2].trim().to_string().clone();
+            final_committee = split_strings[3].trim().to_string().clone();
 
             tempFINALVALUE = [tempFINALVALUE, final_value.clone()].join(" ");
 

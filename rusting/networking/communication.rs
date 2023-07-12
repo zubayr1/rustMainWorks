@@ -186,6 +186,7 @@ pub async fn dev_communication(committee_id: u32, working_port: String, test_por
     let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client(working_port, test_port, committee_id.clone(), value.clone(), args.clone());
     
     value.push(committee_id.to_string());
+
     
     return value;
 }
