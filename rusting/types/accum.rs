@@ -59,7 +59,7 @@ pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length
 pub fn accum_reaction(medium: String, received_texts: Vec<String>) -> Vec<(String, String, String)>
 {
     let mut V: Vec<(String, String, String)> = Vec::new();
-    println!("{:?}", received_texts);
+
     if medium=="prod_init"
     {
         for text in received_texts
