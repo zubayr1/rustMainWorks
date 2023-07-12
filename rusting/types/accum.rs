@@ -95,7 +95,7 @@ pub fn call_byzar(V: Vec<String>) -> (String, String, String)
 
     if unique_merkle_root_check.len() >= 1
     {
-        v = (id, final_value.clone(), tempFINALVALUE.clone());
+        v = (id, tempFINALVALUE.clone(), final_committee.clone());
 
     }
 
