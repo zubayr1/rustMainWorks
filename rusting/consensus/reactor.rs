@@ -115,7 +115,7 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32, ip_address: Vec<
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
-
+    println!("acc   {:?}", acc_value_zl);
     let empty_vec: Vec<Vec<u8>> = Vec::new();
    
     timer::wait(1);
