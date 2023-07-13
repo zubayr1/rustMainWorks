@@ -171,10 +171,9 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                         
                     }
                 }             
-                
-
-                
+                                
             }
+            // send witness to nodes if have received the first valid code word: prod
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "broadcast".to_string()).await;
 
@@ -260,7 +259,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                     }
                 }
             }
-
+            // send witness to nodes if have received the first valid code word: dev
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "individual".to_string()).await;
 
@@ -368,7 +367,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
     
             let codeword_vec = codeword.to_vec();
 
-            // println!("{:?}", subset_vec);
+            // send codeword_vec individually to nodes: prod
             let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "individual".to_string()).await;
             
@@ -388,10 +387,10 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 
             let codeword_vec = codeword.to_vec();
 
+            // send codeword_vec individually to nodes: dev
             let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "broadcast".to_string()).await;
             
-            // println!("{:?}", output);
             codeword_output.push(output);
             
         }
@@ -413,9 +412,11 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         let accum = generic::Accum::create_accum("sign".to_string(), value);
         let accum_vec = accum.to_vec();
 
-        //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP 
+        //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
         let V = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
+
+        println!("{:?}", V);
 
         let mut wrapper_output: Vec<Vec<String>> = Vec::new();
         wrapper_output.push(V.clone());
