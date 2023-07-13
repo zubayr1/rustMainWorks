@@ -431,7 +431,6 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
             v = accum::call_byzar(V.clone());
         }
 
-        println!("{:?}", v);
 
         timer::wait(1);
 
