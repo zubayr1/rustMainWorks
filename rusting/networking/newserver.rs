@@ -17,8 +17,8 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let (_, _) = test_listener.accept().await.unwrap();
 
 
-    let (mut socket, mut socket_addr) = listener.accept().await.unwrap(); // accept listening
-    println!("{:?}", socket_addr);
+    let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
+
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
         
     let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
@@ -54,7 +54,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         
         
     }
-        
+    line = [line, socket_addr.to_string()].join("/");    
     return line;
     
 //}
