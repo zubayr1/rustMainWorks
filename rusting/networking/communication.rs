@@ -64,6 +64,9 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
     let mut output: Vec<String> = Vec::new();
 
+    let mut V1: Vec<String> = Vec::new();
+    let mut V2: Vec<String> = Vec::new();
+
     text = ["epoch ".to_string(), _index.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
@@ -114,13 +117,22 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
+                        let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        test_port+port_count + additional_port);
+
+                        output.push(_result);
+
+                    }
+                    else if mode=="accum"
+                    {
+                        let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        test_port+port_count + additional_port);
+
+                        output.push(_result);
                     }
 
 
-                    let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
-                    test_port+port_count + additional_port);
-
-                    output.push(_result);
+                    
 
                     
                                                             

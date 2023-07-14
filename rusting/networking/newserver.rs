@@ -1,3 +1,5 @@
+use std::net::SocketAddr;
+
 use tokio::net::TcpListener;
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
@@ -15,8 +17,8 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let (_, _) = test_listener.accept().await.unwrap();
 
 
-    let (mut socket, _) = listener.accept().await.unwrap(); // accept listening
-
+    let (mut socket, mut socket_addr) = listener.accept().await.unwrap(); // accept listening
+    println!("{:?}", socket_addr);
     let (reader, mut writer) = socket.split(); // tokio socket split to read and write concurrently
         
     let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
