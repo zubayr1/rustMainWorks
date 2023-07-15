@@ -1,53 +1,66 @@
-
 #[path = "../consensus/timer.rs"]
 mod timer; 
 
+use std::collections::HashMap;
 
 
-pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length: usize) -> bool
+#[allow(non_snake_case)]
+pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length: usize) -> String
 {
+    let BOT = "bot".to_string();
+    let mut count_map: HashMap<String, usize> = HashMap::new();
 
     let mut accum_val: String; 
 
-    let mut check_len = 0;
 
     if medium=="prod_init"
     {
+        let mut accum_values: Vec<String> = Vec::new();
         for text in received_texts.clone()
         {
-            let split_text: Vec<&str> = text.split(',').collect();
+            let split_text: Vec<&str> = text.split(", ").collect();
 
             accum_val = split_text[2].to_string();
 
-            if accum_val.contains("accum")
-            {   
-                check_len+=1;
-            }
+            accum_values.push(accum_val);
             
-        }             
+        } 
+
+        // Count occurrences of each string
+        for accum_string in accum_values {
+            let count = count_map.entry(accum_string).or_insert(0);
+            *count += 1;
+        }
+
+        for (accum_string, count) in count_map 
+        {
+            if count>=committee_length/2
+            {
+                return accum_string;
+            }
+        }
+
+        return BOT;
+
     }
     else 
     {
-        let split_text: Vec<&str> = received_texts[0].split(", ").collect();
-        accum_val = split_text[2].to_string();
-
-        if accum_val=="accum".to_string()
+        if received_texts.len()==0
         {
-            check_len+=1;
+            return BOT;
         }
+        let split_text: Vec<&str> = received_texts[0].split(", ").collect();
+        accum_val = split_text[1].to_string();
+
+        return accum_val;
 
     }
 
-
-    if (check_len)>=committee_length/2
-    {
-        return true;
-    }
-    return false;
+    
 }
 
 
-
+#[allow(non_snake_case)]
 pub fn call_byzar(V: Vec<String>) -> (String, String, String)
 {
     timer::wait(1);

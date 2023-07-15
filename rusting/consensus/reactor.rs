@@ -132,12 +132,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
     if medium.clone()=="prod_init"
     {
-        if mode=="accum"
-        {
-            timer::wait(1);
-
-            check= accum::accum_check(output[0].clone(), medium.clone(), committee_length);
-        }
+        
         if mode=="codeword"
         {
 
@@ -221,12 +216,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
     }
     else 
     {
-        if mode=="accum"
-        {
-            timer::wait(1);
-
-            check= accum::accum_check(output[0].clone(), medium.clone(), committee_length);
-        }
+        
         if mode=="codeword"
         {
             timer::wait(1);
@@ -411,8 +401,8 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
-        let mut V1: Vec<String> = Vec::new();
-        let mut V2: Vec<String> = Vec::new();
+        let mut V1_vec: Vec<String> = Vec::new();
+        let mut V2_vec: Vec<String> = Vec::new();
 
         if medium=="prod_init"
         {
@@ -422,27 +412,27 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
                 if data_stream[5].contains("l")
                 {
-                    V1.push(val);
+                    V1_vec.push(val);
                 }
                 else 
                 {
-                    V2.push(val);
+                    V2_vec.push(val);
                 }
             }
         }
         else 
         {
-            V1 =V.clone();
+            V1_vec =V.clone();
         }
         
         
-        let mut wrapper_output: Vec<Vec<String>> = Vec::new();
-        wrapper_output.push(V.clone());
+        let V1 = accum::accum_check(V1_vec.clone(), medium.clone(), committee_length);
 
-        // let check = reaction(wrapper_output, medium.clone(), mode, committee_length,          // to check if the output is about accum  
-        //     committee_id, ip_address, level, _index,  args, port_count, 
-        //     initial_port, test_port
-        // ).await;
+        println!("{:?}", V1);
+
+        let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length);
+
+        println!("{:?}", V2);
 
         v = accum::call_byzar(V.clone());
 
@@ -459,7 +449,6 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
         let mut merkle_len: usize= 0;
 
-        println!("{:?},    {:?},   {:?},    {:?}", V1, V2, v, value);
 
         if value!="".to_string()
         {

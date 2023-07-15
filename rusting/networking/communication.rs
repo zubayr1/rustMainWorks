@@ -6,7 +6,7 @@ use std::env;
 use futures::executor::block_on;
 
 use std::fs::File;
-use std::io::{self, BufRead, BufReader};
+use std::io::{BufRead, BufReader};
 
 #[path = "./newclient.rs"]
 mod newclient;
@@ -223,10 +223,10 @@ pub async fn dev_communication(committee_id: u32, working_port: String, test_por
 
     let joined_string = value.join(", ");    
 
-    let mut returnVec: Vec<String> = Vec::new();
-    returnVec.push(joined_string);
+    let mut returnvec: Vec<String> = Vec::new();
+    returnvec.push(joined_string);
 
-    return returnVec;
+    return returnvec;
 }
 
 
