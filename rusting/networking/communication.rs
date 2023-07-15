@@ -128,7 +128,30 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                         let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                        output.push(_result);
+                        let socket_vec: Vec<&str> = _result.split("/").collect();
+                        let socket_ip = socket_vec[1];
+
+                        let file_path = "./updatednodeinfo.txt";
+                        let file = File::open(file_path).unwrap();
+                    
+                        let reader = BufReader::new(file);
+                    
+                        let mut result: String =  "".to_string();
+                        for line_result in reader.lines() {
+                            let line = line_result.unwrap();
+                            
+                            if line.contains(socket_ip)
+                            {
+                                let nodes_string: Vec<&str> = line.split(" ").collect();
+
+                                let index_usize: usize = _index as usize;
+
+                                result = [_result, nodes_string.get(index_usize).unwrap().to_string()].join(", ");
+                                break;
+                            }
+                        }
+
+                        output.push(result);
                     }
 
 
