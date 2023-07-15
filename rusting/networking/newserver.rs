@@ -54,7 +54,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         
         
     }
-    // line = [line, socket_addr.to_string()].join(", ");    
+    line = [line, socket_addr.to_string()].join(", ");    
     return line;
     
 //}
