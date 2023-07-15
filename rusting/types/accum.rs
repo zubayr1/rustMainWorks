@@ -20,7 +20,7 @@ pub fn accum_check(received_texts: Vec<String>, medium: String, committee_length
         {
             let split_text: Vec<&str> = text.split(", ").collect();
 
-            accum_val = split_text[2].to_string();
+            accum_val = split_text[1].to_string();
 
             accum_values.push(accum_val);
             
