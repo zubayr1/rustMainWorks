@@ -47,15 +47,17 @@ fn run_nodes(args: Vec<String>)
        
         for _i in 1..committeesplit.len() 
         {   
-            let committee_id = committeesplit[_i];
-            if !committee.contains_key(&committee_id.clone().parse::<u32>().unwrap())
+            let committee_id = committeesplit[_i].clone();
+            let modified_committee_id = committee_id.replace("l", "").replace("r", "");
+
+            if !committee.contains_key(&modified_committee_id.clone().parse::<u32>().unwrap())
             {
-                committee.insert(committeesplit[_i].parse::<u32>().unwrap(), committeesplit[0].to_string());
+                committee.insert(committeesplit[_i].replace("l", "").replace("r", "").parse::<u32>().unwrap(), committeesplit[0].to_string());
             }   
             else 
             {   
-                let participants = [committee[&committeesplit[_i].parse::<u32>().unwrap()].to_string(), committeesplit[0].to_string()].join(" ");
-                committee.insert(committeesplit[_i].parse::<u32>().unwrap(),   participants);     
+                let participants = [committee[&committeesplit[_i].replace("l", "").replace("r", "").parse::<u32>().unwrap()].to_string(), committeesplit[0].to_string()].join(" ");
+                committee.insert(committeesplit[_i].replace("l", "").replace("r", "").parse::<u32>().unwrap(),   participants);     
             }     
             
         }
