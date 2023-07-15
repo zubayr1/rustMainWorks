@@ -146,12 +146,12 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
                                 let index_usize: usize = _index as usize;
 
-                                result = [_result, nodes_string.get(index_usize).unwrap().to_string()].join(", ");
+                                result = [_result.clone(), nodes_string.get(index_usize).unwrap().to_string()].join(", ");
                                 break;
                             }
                         }
 
-                        output.push(result);
+                        output.push(_result);
                     }
 
 
