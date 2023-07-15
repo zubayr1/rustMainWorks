@@ -63,9 +63,7 @@ println!("{:?}",  level);
     let mut text;
 
     let mut output: Vec<String> = Vec::new();
-
-    let mut V1: Vec<String> = Vec::new();
-    let mut V2: Vec<String> = Vec::new();
+    
 
     text = ["epoch ".to_string(), _index.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
