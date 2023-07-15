@@ -137,7 +137,8 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                         let reader = BufReader::new(file);
                     
                         let mut result: String =  "".to_string();
-                        for line_result in reader.lines() {
+                        for line_result in reader.lines() 
+                        {
                             let line = line_result.unwrap();
                             
                             if line.contains(socket_ip)
@@ -145,7 +146,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                                 let nodes_string: Vec<&str> = line.split(" ").collect();
 
                                 let level_usize: usize = level as usize;
-
+                                println!("{:?}", nodes_string);
                                 result = [_result.clone(), nodes_string.get(level_usize).unwrap().to_string()].join(", ");
                                 break;
                             }
