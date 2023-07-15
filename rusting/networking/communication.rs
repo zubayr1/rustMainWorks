@@ -146,8 +146,8 @@ println!("{:?}",  level);
                                 let nodes_string: Vec<&str> = line.split(" ").collect();
 
                                 let level_usize: usize = level as usize;
-                                println!("{:?}, {:?}", nodes_string, level_usize);
-                                result = [_result.clone(), nodes_string.get(level_usize).unwrap().to_string()].join(", ");
+
+                                result = [_result.clone(), nodes_string.get(level_usize+1).unwrap().to_string()].join(", ");
                                 break;
                             }
                         }
