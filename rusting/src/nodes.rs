@@ -55,6 +55,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 {
                     //GET PVSS DATA FROM DIMITRIS
                     _pvss_data = ["pvss_data".to_string(), args[2].to_string()].join(" ");
+                    level+=1
                 }
                 else 
                 {
