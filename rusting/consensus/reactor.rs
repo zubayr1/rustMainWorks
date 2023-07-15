@@ -9,7 +9,7 @@ use serde_json;
 
 #[derive(Debug, Deserialize)]
 struct CValueTuple {
-    id_details: String,
+    _id_details: String,
     value: String,
     _committee_id: String,
 }
@@ -107,8 +107,6 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32, ip_address: Vec<
 {       
     let committee_length = ip_address.len();
 
-    
-    
 
     let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone()/2);
 
@@ -274,7 +272,6 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
     value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
  
-
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
         String::new()
@@ -401,62 +398,68 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
     return codeword_output;
 }
 
-
+#[allow(non_snake_case)]
 pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    value: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
-    {
-            
-        let mut V: Vec<(String, String, String)> = Vec::new();
+    acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
+{            
         let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
 
-        let accum = generic::Accum::create_accum("sign".to_string(), value);
+        let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl);
         let accum_vec = accum.to_vec();
 
         //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
-        let V = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+        let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
         let mut V1: Vec<String> = Vec::new();
         let mut V2: Vec<String> = Vec::new();
 
-        for val in V.clone()
+        if medium=="prod_init"
         {
-            let data_stream: Vec<&str>  = val.split(", ").collect();
-            if data_stream[5].contains("l")
+            for val in V.clone()
             {
-                V1.push(val);
-            }
-            else 
-            {
-                V2.push(val);
+                let data_stream: Vec<&str>  = val.split(", ").collect();
+
+                if data_stream[5].contains("l")
+                {
+                    V1.push(val);
+                }
+                else 
+                {
+                    V2.push(val);
+                }
             }
         }
-        println!("{:?},    {:?}", V1, V2);
+        else 
+        {
+            V1 =V.clone();
+        }
+        
+        
         let mut wrapper_output: Vec<Vec<String>> = Vec::new();
         wrapper_output.push(V.clone());
 
-        let check = reaction(wrapper_output, medium.clone(), mode, committee_length,          // to check if the output is about accum  
-            committee_id, ip_address, level, _index,  args, port_count, 
-            initial_port, test_port
-        ).await;
+        // let check = reaction(wrapper_output, medium.clone(), mode, committee_length,          // to check if the output is about accum  
+        //     committee_id, ip_address, level, _index,  args, port_count, 
+        //     initial_port, test_port
+        // ).await;
 
-        if check==true
-        {
-            v = accum::call_byzar(V.clone());
-        }
+        v = accum::call_byzar(V.clone());
 
-
+        
         timer::wait(1);
 
         let json_string = serde_json::to_string(&v).unwrap();
 
         let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
 
-        let CValueTuple {id_details, value, _committee_id} = deserialized_tuple;
+        let CValueTuple {_id_details, value, _committee_id} = deserialized_tuple;
 
         let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
         let mut merkle_len: usize= 0;
+
+        println!("{:?},    {:?},   {:?},    {:?}", V1, V2, v, value);
 
         if value!="".to_string()
         {

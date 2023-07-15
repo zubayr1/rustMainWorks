@@ -24,7 +24,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
     args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
 {
     let mut client_count = 1;
-println!("{:?}",  level);
+
     if mode.contains("codeword")
     {
         let file_path = "./nodes_information.txt";
