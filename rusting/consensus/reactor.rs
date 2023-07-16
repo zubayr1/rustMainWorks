@@ -1,18 +1,7 @@
 use std::env;
 use async_recursion::async_recursion;
 
-use reed_solomon::Encoder;
 
-
-use serde_derive::Deserialize;
-use serde_json;
-
-#[derive(Debug, Deserialize)]
-struct CValueTuple {
-    _id_details: String,
-    value: String,
-    _committee_id: String,
-}
 
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -42,22 +31,22 @@ mod pvss_agreement;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
-enum Phase 
-{
-    echo, vote, committee, codeword, accum
-}
+// enum Phase 
+// {
+//     echo, vote, committee, codeword, accum
+// }
 
-impl Phase 
-{
-    pub fn is_weekday(&self) -> bool
-    {
-        match self 
-        {
-            &Phase:: echo => return false,
-            _=> return true
-        }
-    }
-}
+// impl Phase 
+// {
+//     pub fn is_weekday(&self) -> bool
+//     {
+//         match self 
+//         {
+//             &Phase:: echo => return false,
+//             _=> return true
+//         }
+//     }
+// }
 
 
 async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
@@ -106,7 +95,6 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
 pub async fn reactor_init(pvss_data: String, committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String)
 {       
     let committee_length = ip_address.len();
-
 
     let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone()/2);
 
@@ -436,24 +424,17 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
         v = accum::call_byzar(V.clone());
 
-        
-        timer::wait(1);
-
-        let json_string = serde_json::to_string(&v).unwrap();
-
-        let deserialized_tuple: CValueTuple = serde_json::from_str(&json_string.to_string()).unwrap();
-
-        let CValueTuple {_id_details, value, _committee_id} = deserialized_tuple;
 
         let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
         let mut merkle_len: usize= 0;
 
 
-        if value!="".to_string()
-        {
-            (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), value.clone(), committee_length.clone());
-        }
+        
+        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), V1.clone(), committee_length.clone());
+
+        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), V2.clone(), committee_length.clone());
+        
 
         return (witnesses_vec, merkle_len);
     }
