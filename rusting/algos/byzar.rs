@@ -1,0 +1,15 @@
+
+#[path = "./gba.rs"]
+mod gba; 
+
+#[allow(non_snake_case)]
+pub async fn byzar(committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
+    args: Vec<String>, V: String, mode: String, types: String) -> String
+{   
+    gba::gba(committee_id, ip_address.to_vec(), level, port_count, _index, args.clone(),
+    V.clone(), mode.clone(), types).await;
+
+    
+    return V;
+    
+}

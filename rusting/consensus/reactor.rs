@@ -2,7 +2,6 @@ use std::env;
 use async_recursion::async_recursion;
 
 
-
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -15,6 +14,9 @@ mod accum;
 
 #[path = "../algos/pvss_agreement.rs"]
 mod encoder;
+
+#[path = "../algos/byzar.rs"]
+mod byzar;
 
 #[path = "./timer.rs"]
 mod timer; 
@@ -264,13 +266,7 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         
     let codeword_output: Vec<Vec<String>>;
 
-    if mode.contains("echo")
-    {
-        let echo = generic::Echo::create_echo("".to_string(), "".to_string());
-        let echo_vec = echo.to_vec();
-
-    }
-    else if mode.contains("vote")
+    if mode.contains("vote")
     {
         let vote: generic::Vote = generic::Vote::create_vote("".to_string(), "".to_string());
     }
@@ -379,9 +375,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 #[allow(non_snake_case)]
 pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
-{            
-        let mut v: (String, String, String) = ("".to_string(), "".to_string(), "".to_string());
-
+{                    
         let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl);
         let accum_vec = accum.to_vec();
 
@@ -416,24 +410,26 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         
         let V1 = accum::accum_check(V1_vec.clone(), medium.clone(), committee_length);
 
-        println!("{:?}", V1);
 
         let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length);
 
-        println!("{:?}", V2);
 
-        v = accum::call_byzar(V.clone());
+        let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
+             V1.clone(), mode.clone(), "broadcast".to_string()).await;
+        let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
+            V2.clone(), mode.clone(), "broadcast".to_string()).await;
+
+
 
 
         let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
         let mut merkle_len: usize= 0;
 
-
         
-        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), V1.clone(), committee_length.clone());
+        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone());
 
-        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), V2.clone(), committee_length.clone());
+        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone());
         
 
         return (witnesses_vec, merkle_len);
