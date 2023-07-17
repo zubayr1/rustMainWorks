@@ -2,8 +2,8 @@ epoch : 1
 client at: : 18.117.92.19
 server at port: 7022
 epoch : 1
-Level : 018.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
-
+Level : 0
+18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7021
 18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
@@ -48,9 +48,9 @@ server at port: 7523
 --------------------------------
 epoch : 3
 client at: : 18.117.92.19
-server at port: 7024
 epoch : 3
 Level : 0
+server at port: 7024
 18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7021
@@ -72,8 +72,8 @@ server at port: 7524
 --------------------------------
 epoch : 4
 client at: : 18.117.92.19
-epoch : 4
-Level : 0server at port: 7025
+server at port: 7025epoch : 4
+Level : 0
 
 18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
 client at: : 18.117.92.19
@@ -119,11 +119,11 @@ server at port: 7526
 18.117.92.1985, 5, 999, 999, 1 EOF
 --------------------------------
 epoch : 6
+server at port: 7027
 client at: : 18.117.92.19
+18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
 epoch : 6
 Level : 0
-server at port: 7027
-18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7021
 18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
