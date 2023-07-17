@@ -1,7 +1,17 @@
 epoch : 1
 client at: : 18.117.92.19
 server at port: 7022
-18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
+epoch : 1
+Level : 018.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
+
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
+epoch : 1
+Level : 0
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, bot, echo, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7522
 18.117.92.19, 85, [239; 45; 18; 125; 227; 123; 148; 43; 170; 208; 97; 69; 229; 75; 12; 97; 154; 31; 34; 50; 123; 46; 187; 207; 190; 199; 143; 85; 100; 175; 227; 157], 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, 0, 2, codeword, 999, 999, 1 EOF
@@ -14,8 +24,18 @@ server at port: 7522
 --------------------------------
 epoch : 2
 client at: : 18.117.92.19
+epoch : 2
+Level : 0
 server at port: 7023
 18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
+epoch : 2
+Level : 0
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, bot, echo, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7523
 18.117.92.19, 85, [239; 45; 18; 125; 227; 123; 148; 43; 170; 208; 97; 69; 229; 75; 12; 97; 154; 31; 34; 50; 123; 46; 187; 207; 190; 199; 143; 85; 100; 175; 227; 157], 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, 0, 2, codeword, 999, 999, 1 EOF
@@ -29,7 +49,17 @@ server at port: 7523
 epoch : 3
 client at: : 18.117.92.19
 server at port: 7024
+epoch : 3
+Level : 0
 18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
+epoch : 3
+Level : 0
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, bot, echo, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7524
 18.117.92.19, 85, [239; 45; 18; 125; 227; 123; 148; 43; 170; 208; 97; 69; 229; 75; 12; 97; 154; 31; 34; 50; 123; 46; 187; 207; 190; 199; 143; 85; 100; 175; 227; 157], 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, 0, 2, codeword, 999, 999, 1 EOF
@@ -42,8 +72,18 @@ server at port: 7524
 --------------------------------
 epoch : 4
 client at: : 18.117.92.19
-server at port: 7025
+epoch : 4
+Level : 0server at port: 7025
+
 18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
+epoch : 4
+Level : 0
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, bot, echo, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7525
 18.117.92.19, 85, [239; 45; 18; 125; 227; 123; 148; 43; 170; 208; 97; 69; 229; 75; 12; 97; 154; 31; 34; 50; 123; 46; 187; 207; 190; 199; 143; 85; 100; 175; 227; 157], 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, 0, 2, codeword, 999, 999, 1 EOF
@@ -56,8 +96,18 @@ server at port: 7525
 --------------------------------
 epoch : 5
 client at: : 18.117.92.19
+epoch : 5
+Level : 0
 server at port: 7026
 18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
+epoch : 5
+Level : 0
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, bot, echo, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7526
 18.117.92.19, 85, [239; 45; 18; 125; 227; 123; 148; 43; 170; 208; 97; 69; 229; 75; 12; 97; 154; 31; 34; 50; 123; 46; 187; 207; 190; 199; 143; 85; 100; 175; 227; 157], 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, 0, 2, codeword, 999, 999, 1 EOF
@@ -70,8 +120,18 @@ server at port: 7526
 --------------------------------
 epoch : 6
 client at: : 18.117.92.19
+epoch : 6
+Level : 0
 server at port: 7027
 18.117.92.19sign, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, accum, 999, 1 EOF
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, echo, 999, 1 EOF
+epoch : 6
+Level : 0
+client at: : 18.117.92.19
+server at port: 7021
+18.117.92.19, bot, echo, 999, 1 EOF
 client at: : 18.117.92.19
 server at port: 7527
 18.117.92.19, 85, [239; 45; 18; 125; 227; 123; 148; 43; 170; 208; 97; 69; 229; 75; 12; 97; 154; 31; 34; 50; 123; 46; 187; 207; 190; 199; 143; 85; 100; 175; 227; 157], 348cf03813b221b6d89b61138411e7ce12bc5825e9825029e31ef9196f35bccb, 0, 2, codeword, 999, 999, 1 EOF
