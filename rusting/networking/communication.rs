@@ -234,7 +234,7 @@ pub async fn dev_communication(committee_id: u32, working_port: String, test_por
 
 
 
-pub async fn codeword_dev_communication(committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
+pub async fn nested_dev_communication(committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
     
 

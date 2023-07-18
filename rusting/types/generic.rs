@@ -30,6 +30,10 @@ impl Vote
     {
         Vote{sign:sign, value: value, types: "vote".to_string()}
     }
+
+    pub fn to_vec(self) -> Vec<String> {
+        vec![self.sign, self.value, self.types]
+    }
 }
 
 pub struct Committee

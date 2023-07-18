@@ -83,7 +83,7 @@ async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _in
         }
         if medium=="dev_init"
         {
-            output = communication::codeword_dev_communication(committee_id, (initial_port + _index).to_string(), 
+            output = communication::nested_dev_communication(committee_id, (initial_port + _index).to_string(), 
                 (test_port + _index).to_string(), value.clone(), args.clone()).await;
     
         }
@@ -266,11 +266,7 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         
     let codeword_output: Vec<Vec<String>>;
 
-    if mode.contains("vote")
-    {
-        let vote: generic::Vote = generic::Vote::create_vote("".to_string(), "".to_string());
-    }
-    else if mode.contains("committee")
+    if mode.contains("committee")
     {
         let committee = generic::Committee::create_committee("".to_string(), "".to_string());
     }
@@ -415,9 +411,9 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
 
         let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
-             V1.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+             V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
         let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
-            V2.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+            V2.clone(), medium, mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
 
 
