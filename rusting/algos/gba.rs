@@ -39,7 +39,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     sent = true;
 
-    println!("{:?}", output);
+    // println!("{:?}", output);
 
 
 
