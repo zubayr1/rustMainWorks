@@ -121,7 +121,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let mut W: Vec<(String, String)> = Vec::new();
     let mut C1: Vec<(String, String)> = Vec::new();
-    let mut C2: String = "".to_string();
+    let mut C2: Vec<(String, String)> = Vec::new();
 
     let mut g: usize = 0;
 
@@ -211,13 +211,30 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
 
         second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-            args.clone(), vote2_vec.clone(), medium, mode.clone(), types.clone()).await;
-
-            println!("{:?}", vote2_vec);
+            args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
 
     }
-    println!("{:?}", second_vote_output);
+
+    if second_vote_output.len()>=b
+    {
+        if medium.clone()=="prod_init"
+        {
+            for output in second_vote_output
+            {
+                let split_output: Vec<&str> = output.split(", ").collect();
+                C2.push((split_output[1].to_string(), split_output[2].to_string()));
+
+            }
+        }
+        else 
+        {
+            let split_output: Vec<&str> = second_vote_output[1].split(", ").collect();
+
+            C2.push((split_output[0].to_string(), split_output[1].to_string()));
+        }
+    }
     
+    println!("{:?}", C2);
 
     // let mut W_vec: Vec<String> = Vec::new();
 
