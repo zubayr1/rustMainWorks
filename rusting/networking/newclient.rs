@@ -31,8 +31,7 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     loop
     {
         // Write data.
-        stream.write_all(args[6].to_string().as_bytes()).await?;
-        
+                
         let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
 
         let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
