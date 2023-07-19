@@ -161,11 +161,25 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
         sent = true;
     }
 
+    let mut first_vote_output: Vec<String> = Vec::new();
+
     if sent==true
     {        
         let check = check_other_major(forward_output.clone(), V.clone(), medium.clone());
 
-        println!("{:?}", check);
+        if check==true
+        {
+            let vote = generic::Vote::create_vote("".to_string(), V.to_string());
+            let vote_vec = vote.to_vec();
+
+            first_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+                args.clone(), vote_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
+        }
+    }
+
+    if first_vote_output.len() >=b
+    {
+        println!("{:?}", first_vote_output);
     }
 
     // let mut W_vec: Vec<String> = Vec::new();
@@ -179,14 +193,8 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     // // println!("{:?}", output);
 
 
-
-
-    // let vote = generic::Vote::create_vote("".to_string(), V.to_string());
-    // let vote_vec = vote.to_vec();
-
     
-    // let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    // args.clone(), vote_vec.clone(), medium.clone(), mode.clone(), types.clone(), committee_length).await;
+    
 
 
     // if output.len() >= b
