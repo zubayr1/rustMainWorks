@@ -114,7 +114,7 @@ fn check_other_major(mut forward_output: Vec<String>, V: String, medium: String)
 
 #[allow(non_snake_case)]
 pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, V: String, medium: String, mode: String, types: String, committee_length: usize)
+    args: Vec<String>, mut V: String, medium: String, mode: String, types: String, committee_length: usize) -> (String, usize)
 {
 
     let own_signature = args[6].clone().to_string();
@@ -235,12 +235,19 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     }
     
     
-
     if C1.len()>0
     {
-        let (_, v_prime) =  C1[0].clone();
+        let (_, v1_prime) =  C1[0].clone();
 
-        println!("{:?}", v_prime);
+        let (_, v2_prime) =  C2[0].clone();
+
+        if v1_prime==v2_prime
+        {
+            g =1;
+            V = v1_prime;
+        }
     }
+
+    return (V, g);
 
 }
