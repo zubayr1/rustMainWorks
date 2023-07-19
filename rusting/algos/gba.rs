@@ -8,7 +8,7 @@ use std::env;
 
 
 async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, value: Vec<String>, medium: String, mode: String, types: String, committee_length: usize) -> Vec<String>
+    args: Vec<String>, value: Vec<String>, medium: String, mode: String, types: String) -> Vec<String>
 {
     
 
@@ -44,7 +44,7 @@ async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32,
 }
 
 #[allow(non_snake_case)]
-fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<String>)
+fn check_echo_major_v(echo_phase_output: Vec<String>, V: String, medium: String) -> (usize, Vec<String>)
 {
     let mut count: usize = 0;
 
@@ -52,19 +52,30 @@ fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<
 
     let mut pi: Vec<String> = Vec::new();
 
-    for output in echo_phase_output
+    if medium.clone()=="prod_init"
     {
-        let split_output: Vec<&str> = output.split(", ").collect();
-
-        if split_output[1].contains(&val.clone())
+        for output in echo_phase_output
         {
-            count+=1;
-
-            pi.push(split_output[0].to_string());
+            let split_output: Vec<&str> = output.split(", ").collect();
+    
+            if split_output[1].contains(&val.clone())
+            {
+                count+=1;
+    
+                pi.push(split_output[0].to_string());
+            }
         }
+    
+        return (count, pi);
+    }
+    else 
+    {
+        let val = echo_phase_output[1].clone();
+        pi.push(val);
+        return (1, pi);
     }
 
-    return (count, pi);
+    
 
 }
 
@@ -72,7 +83,7 @@ fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<
 pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, V: String, medium: String, mode: String, types: String, committee_length: usize)
 {
-    let mut W: Vec<(&String, &String)> = Vec::new();
+    let mut W: Vec<(String, String)> = Vec::new();
     let mut C1: String = "".to_string();
     let mut C2: String = "".to_string();
 
@@ -86,29 +97,47 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     let echo_vec = echo.to_vec();
 
     let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone(), committee_length).await;
+    args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone()).await;
+
     
-    let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone());
+    let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone(), medium.clone());
    
     
     if count > b
     {
-        let tuples: Vec<(&String, &String)> = pi
+        let tuples: Vec<(String, String)> = pi
         .iter()
-        .map(|ip| (ip, &V))
+        .map(|ip| (ip.clone(), V.clone()))
         .collect();
     
         W = tuples;
     }
 
-    println!("{:?}", W);
+    let mut forward_output: Vec<String> = Vec::new();
+    if W.len()>0
+    {
+        let (pi_val, v): (String, String) = W[0].clone();
+
+        let mut W_vec: Vec<String> = Vec::new();
+
+        W_vec.push([pi_val, v].join(" "));
+
+        forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+            args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
+        
+        sent = true;
+    }
+
+    if sent==true
+    {
+        println!("{:?}", forward_output);
+    }
 
     // let mut W_vec: Vec<String> = Vec::new();
 
     // W_vec.push(W.clone());
 
-    // let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    // args.clone(), W_vec, medium.clone(), mode.clone(), types.clone(), committee_length).await;
+    
 
     // sent = true;
 
