@@ -88,10 +88,10 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     println!("{:?}, {:?}, {:?}", echo_phase_output, count, V);
     
-    // if output.len() > b
-    // {
-    //     W =V.clone();
-    // }
+    if count > b
+    {
+        W =V.clone();
+    }
 
 
     // let mut W_vec: Vec<String> = Vec::new();
