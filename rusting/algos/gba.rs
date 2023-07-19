@@ -158,7 +158,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
         W_vec.push([pi_val, v].join(" "));
 
-        forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+        forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count+250, _index, 
             args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
         
         sent = true;
@@ -175,7 +175,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
             let vote1 = generic::Vote::create_vote("".to_string(), V.to_string());
             let vote1_vec = vote1.to_vec();
 
-            first_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+            first_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+300, _index, 
                 args.clone(), vote1_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
         }
     }
@@ -210,7 +210,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
         let vote2_vec = vote2.to_vec();
 
 
-        second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+        second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
             args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
 
     }
