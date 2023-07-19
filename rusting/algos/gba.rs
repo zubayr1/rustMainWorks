@@ -211,11 +211,13 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
 
         second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-            args.clone(), vote2_vec, medium, mode.clone(), types.clone()).await;
+            args.clone(), vote2_vec.clone(), medium, mode.clone(), types.clone()).await;
+
+            println!("{:?}", vote2_vec);
 
     }
 
-    println!("{:?}", second_vote_output);
+    
 
     // let mut W_vec: Vec<String> = Vec::new();
 
