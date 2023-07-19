@@ -80,6 +80,39 @@ fn check_echo_major_v(echo_phase_output: Vec<String>, V: String, medium: String)
 }
 
 #[allow(non_snake_case)]
+fn check_other_major(mut forward_output: Vec<String>, V: String, medium: String) -> bool
+{
+    if medium.clone()=="prod_init"
+    {
+        for output in forward_output
+        {
+            let split_output: Vec<&str> = output.split(", ").collect();
+
+            if !split_output[0].contains(&V)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else 
+    {
+        forward_output.pop().expect("Vector is empty.");
+        
+        let split_output: Vec<&str> = forward_output[0].split(" ").collect();
+
+        for output in split_output.clone()
+        {
+            if output!=V
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+#[allow(non_snake_case)]
 pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, V: String, medium: String, mode: String, types: String, committee_length: usize)
 {
@@ -129,8 +162,10 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     }
 
     if sent==true
-    {
-        println!("{:?}", forward_output);
+    {        
+        let check = check_other_major(forward_output.clone(), V.clone(), medium.clone());
+
+        println!("{:?}", check);
     }
 
     // let mut W_vec: Vec<String> = Vec::new();
