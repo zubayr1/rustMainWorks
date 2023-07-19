@@ -72,7 +72,7 @@ fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<
 pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, V: String, medium: String, mode: String, types: String, committee_length: usize)
 {
-    let mut W: String = "".to_string();
+    let mut W: Vec<Vec<(&String, &String)>> = Vec::new();
     let mut C1: String = "".to_string();
     let mut C2: String = "".to_string();
 
@@ -89,14 +89,19 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone(), committee_length).await;
     
     let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone());
-
-    println!("{:?}, {:?}, {:?}, {:?}", echo_phase_output, pi, count, V);
+   
     
     if count > b
     {
-        W =V.clone();
+        let tuples: Vec<(&String, &String)> = pi
+        .iter()
+        .map(|ip| (ip, &V))
+        .collect();
+    
+        W.push(tuples);
     }
 
+    println!("{:?}", W);
 
     // let mut W_vec: Vec<String> = Vec::new();
 
