@@ -234,35 +234,13 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
         }
     }
     
-    println!("{:?}", C2);
-
-    // let mut W_vec: Vec<String> = Vec::new();
-
-    // W_vec.push(W.clone());
-
     
 
-    // sent = true;
+    if C1.len()>0
+    {
+        let (_, v_prime) =  C1[0].clone();
 
-    // // println!("{:?}", output);
-
-
-    
-    
-
-
-    // if output.len() >= b
-    // {
-    //     C1 = W.clone();
-    // }
-
-    
-
-    // if output.len() >= b
-    // {
-    //     C2 = W;
-    // }
-
-    // println!("{:?}", output);
+        println!("{:?}", v_prime);
+    }
 
 }
