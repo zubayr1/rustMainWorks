@@ -62,6 +62,8 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
     args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone(), committee_length).await;
+
+    println!("{:?}", output);
     
     if output.len() > b
     {
@@ -69,32 +71,41 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     }
 
 
-    let mut W_vec: Vec<String> = Vec::new();
+    // let mut W_vec: Vec<String> = Vec::new();
 
-    W_vec.push(W.clone());
+    // W_vec.push(W.clone());
 
-    let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    args.clone(), W_vec, medium.clone(), mode.clone(), types.clone(), committee_length).await;
+    // let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+    // args.clone(), W_vec, medium.clone(), mode.clone(), types.clone(), committee_length).await;
 
-    sent = true;
+    // sent = true;
 
-    // println!("{:?}", output);
-
-
+    // // println!("{:?}", output);
 
 
-    let vote = generic::Vote::create_vote("".to_string(), V.to_string());
-    let vote_vec = vote.to_vec();
+
+
+    // let vote = generic::Vote::create_vote("".to_string(), V.to_string());
+    // let vote_vec = vote.to_vec();
 
     
-    let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    args.clone(), vote_vec, medium, mode.clone(), types.clone(), committee_length).await;
+    // let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+    // args.clone(), vote_vec.clone(), medium.clone(), mode.clone(), types.clone(), committee_length).await;
 
 
-    if output.len() >= b
-    {
-        C1 = W;
-    }
-    println!("{:?}", output);
+    // if output.len() >= b
+    // {
+    //     C1 = W.clone();
+    // }
+
+    // let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+    // args.clone(), vote_vec, medium, mode.clone(), types.clone(), committee_length).await;
+
+    // if output.len() >= b
+    // {
+    //     C2 = W;
+    // }
+
+    // println!("{:?}", output);
 
 }
