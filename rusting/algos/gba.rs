@@ -86,7 +86,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     
     let count = check_echo_major_v(echo_phase_output.clone(), V.clone());
 
-    println!("{:?}, {:?}", echo_phase_output, count);
+    println!("{:?}, {:?}, {:?}", echo_phase_output, count, V);
     
     // if output.len() > b
     // {
