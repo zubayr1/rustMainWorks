@@ -44,6 +44,27 @@ async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32,
 }
 
 #[allow(non_snake_case)]
+fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> usize
+{
+    let mut count: usize = 0;
+
+    let val: &str = V.as_str();
+
+    for output in echo_phase_output
+    {
+        let split_output: Vec<&str> = output.split(", ").collect();
+
+        if split_output.contains(&val.clone())
+        {
+            count+=1;
+        }
+    }
+
+    return count;
+
+}
+
+#[allow(non_snake_case)]
 pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, V: String, medium: String, mode: String, types: String, committee_length: usize)
 {
@@ -60,15 +81,17 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     let echo = generic::Echo::create_echo("".to_string(), V.to_string());
     let echo_vec = echo.to_vec();
 
-    let output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+    let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
     args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone(), committee_length).await;
-
-    println!("{:?}", output);
     
-    if output.len() > b
-    {
-        W =V.clone();
-    }
+    let count = check_echo_major_v(echo_phase_output.clone(), V.clone());
+
+    println!("{:?}, {:?}", echo_phase_output, count);
+    
+    // if output.len() > b
+    // {
+    //     W =V.clone();
+    // }
 
 
     // let mut W_vec: Vec<String> = Vec::new();
