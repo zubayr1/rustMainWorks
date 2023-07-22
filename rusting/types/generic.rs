@@ -1,3 +1,5 @@
+#[allow(unused)]
+
 pub struct Echo
 {
     pub sign: String,
@@ -5,6 +7,7 @@ pub struct Echo
     pub types: String
 }
 
+#[allow(unused)]
 impl Echo
 {
     pub fn create_echo(sign: String, value: String) -> Self
@@ -17,6 +20,7 @@ impl Echo
     }
 }
 
+#[allow(unused)]
 pub struct Vote
 {
     pub sign: String,
@@ -24,6 +28,7 @@ pub struct Vote
     pub types: String
 }
 
+#[allow(unused)]
 impl Vote
 {
     pub fn create_vote(sign: String, value: String) -> Self
@@ -36,6 +41,7 @@ impl Vote
     }
 }
 
+#[allow(unused)]
 pub struct Committee
 {
     pub sign: String,
@@ -43,6 +49,7 @@ pub struct Committee
     pub types: String
 }
 
+#[allow(unused)]
 impl Committee
 {
     pub fn create_committee(sign: String, value: String) -> Self
@@ -51,6 +58,7 @@ impl Committee
     }
 }
 
+#[allow(unused)]
 pub struct Codeword
 {
     pub sign: String,
@@ -62,6 +70,7 @@ pub struct Codeword
     pub types: String
 }
 
+#[allow(unused)]
 impl Codeword
 {
     pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, accumulation_value: String, index: String, leaves_len: usize) -> Self
@@ -79,6 +88,7 @@ impl Codeword
     }
 }
 
+#[allow(unused)]
 pub struct Accum
 {
     pub sign: String,
@@ -86,6 +96,7 @@ pub struct Accum
     pub types: String
 }
 
+#[allow(unused)]
 impl Accum
 {
     pub fn create_accum(sign: String, accumulation_value: String) -> Self

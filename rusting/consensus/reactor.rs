@@ -266,13 +266,9 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         
     let codeword_output: Vec<Vec<String>>;
 
-    if mode.contains("committee")
-    {
-        let committee = generic::Committee::create_committee("".to_string(), "".to_string());
-    }
-    else if mode.contains("codeword")
-    {
-        
+    
+    if mode.contains("codeword")
+    {        
         codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
