@@ -117,8 +117,6 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     args: Vec<String>, mut V: String, medium: String, mode: String, types: String, committee_length: usize) -> (String, usize)
 {
 
-    let own_signature = args[6].clone().to_string();
-
     let mut W: Vec<(String, String)> = Vec::new();
     let mut C1: Vec<(String, String)> = Vec::new();
     let mut C2: Vec<(String, String)> = Vec::new();
@@ -204,7 +202,9 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     {
         let (_, val): (String, String) = C1[0].clone();
 
-        let value = [own_signature, val].join(", ");
+        println!("{:?}", C1);
+
+        let value = ["own_signature".to_string(), val].join(", ");
 
         let vote2 = generic::Vote::create_vote("".to_string(), value.to_string());
         let vote2_vec = vote2.to_vec();
