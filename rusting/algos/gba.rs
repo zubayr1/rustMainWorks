@@ -204,7 +204,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
         let mut own_signature: String = "".to_string();
 
-        for (sign, _) in C1
+        for (sign, _) in C1.clone()
         {
             own_signature = [own_signature, sign].join(", ");
         }
