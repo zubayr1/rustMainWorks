@@ -242,6 +242,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     
     if C1.len()>0
     {
+        println!("{:?},  {:?}", C1[0].clone(), C2[0].clone());
         let (_, v1_prime) =  C1[0].clone();
 
         let (_, v2_prime) =  C2[0].clone();
