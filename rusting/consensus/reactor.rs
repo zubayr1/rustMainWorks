@@ -113,12 +113,12 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32, ip_address: Vec<
 
 
 
-pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, committee_length: usize,
+pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
 ) -> bool
 {
-    let mut check: bool = false;
+    let check: bool = false;
 
     if medium.clone()=="prod_init"
     {
@@ -170,7 +170,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             }
             
 
-            let converted_s_values: Vec<u8> = s_values.iter()
+            let _converted_s_values: Vec<u8> = s_values.iter()
                     .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
                     .collect();
 
@@ -238,7 +238,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 }
             }
             // send witness to nodes if have received the first valid code word: dev
-            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let _output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "individual".to_string()).await;
 
             // println!("{:?}", output);
@@ -272,7 +272,7 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
         codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        let codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
+        let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
             committee_id, ip_address, level, _index,  args, port_count, 
             initial_port, test_port
         ).await;
@@ -414,15 +414,15 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
 
 
-        let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
+        let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
-        let mut merkle_len: usize= 0;
+        let mut _merkle_len: usize= 0;
 
         
-        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone());
+        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone());
 
-        (witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone());
+        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone());
         
 
-        return (witnesses_vec, merkle_len);
+        return (_witnesses_vec, _merkle_len);
     }
