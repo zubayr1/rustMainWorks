@@ -140,8 +140,8 @@ fn main()
 {
     println!("Starting");    
     
-    env::set_var("INITIAL_PORT", "7521");
-    env::set_var("TEST_PORT", "7621");
+    env::set_var("INITIAL_PORT", "8021");
+    env::set_var("TEST_PORT", "8121");
     
     let args: Vec<String> = env::args().collect(); // get user argument
     /*
