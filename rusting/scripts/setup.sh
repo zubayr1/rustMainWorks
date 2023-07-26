@@ -40,5 +40,7 @@ fi
 # run script
 cd "rusting"
 python3 Structuring.py
+sudo apt update
+sudo apt install -y rustc
 /home/ubuntu/.cargo/bin/cargo run -- keys "$ID" 4 03282129 prod "$IP" 10 1
 exit 0

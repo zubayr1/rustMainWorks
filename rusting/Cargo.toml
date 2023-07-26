@@ -8,10 +8,6 @@ edition = "2021"
 [dependencies]
 rand = "0.8.5"
 
-schnorr_fun = "0.8.2"
-
-chrono = "0.4.24"
-
 tokio = { version = "1.27.0", features = ["full"] }
 
 futures = "0.3.28"
