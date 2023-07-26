@@ -10,7 +10,7 @@ fn hash(data: &[u8]) -> [u8; 32]
     hasher.update(data);
     <[u8; 32]>::from(hasher.finalize_fixed())
 }
-
+#[allow(unused)]
 pub fn create_tree(leaf_values: Vec<String>) -> MerkleTree<Sha256>
 {
     let leaves: Vec<[u8; 32]> = leaf_values
@@ -36,7 +36,7 @@ fn _append_to_tree(mut merkle_tree: MerkleTree<Sha256>, leaf_values: Vec<String>
 
     return  merkle_tree;
 }
-
+#[allow(unused)]
 pub fn get_root(merkle_tree: MerkleTree<Sha256>) -> String
 {
     let root = merkle_tree.root_hex().ok_or("couldn't get the merkle root").unwrap();
@@ -45,7 +45,7 @@ pub fn get_root(merkle_tree: MerkleTree<Sha256>) -> String
 }
 
 
-
+#[allow(unused)]
 pub fn create_proof_bytes(indices_to_prove: Vec<usize>, merkle_tree: MerkleTree<Sha256>) -> Vec<u8>
 {
 
@@ -57,7 +57,7 @@ pub fn create_proof_bytes(indices_to_prove: Vec<usize>, merkle_tree: MerkleTree<
 
 }
 
-
+#[allow(unused)]
 pub fn merkle_proof(proof_bytes: Vec<u8>, indices_to_prove: Vec<usize>, leaf_values_to_prove: Vec<String>, root: [u8; 32], len: usize) -> bool
 {
     let proof = MerkleProof::<Sha256>::try_from(proof_bytes).unwrap();

@@ -7,7 +7,7 @@ mod pvss_agreement;
 
 
 
-pub fn deliver_encode(pvss_data: &[u8], accum_value: String, committee_length: usize) -> (Vec<Vec<u8>>, usize)
+pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: usize) -> (Vec<Vec<u8>>, usize)
 {
 
     // Step 1.1: Partition m and run Encode algorithm

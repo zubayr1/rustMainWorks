@@ -41,7 +41,7 @@ pub fn encoder(pvss_data: &[u8], mut e: usize) -> Vec<String>
 
 }
 
-pub fn decoder(encoded: reed_solomon::Buffer, e: usize)
+pub fn _decoder(encoded: reed_solomon::Buffer, e: usize)
 {
     // Length of error correction code
     let ecc_len = 2*e;
