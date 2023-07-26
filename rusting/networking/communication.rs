@@ -89,7 +89,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             if types.contains("individual")
             {
                             
-                let additional_port = (client_count)*10;
+                let additional_port = (client_count)*30;
 
                 let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                 test_port+port_count+ additional_port );
@@ -113,7 +113,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
                     if mode=="codeword"
                     {
-                        additional_port = (count + args[2].parse::<u32>().unwrap())*50;
+                        additional_port = (count + args[2].parse::<u32>().unwrap())*100;
 
                         let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
@@ -177,7 +177,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             if types.contains("individual")
             {
                 
-                let additional_port = (args[2].parse::<u32>().unwrap())*10;
+                let additional_port = (args[2].parse::<u32>().unwrap())*30;
 
 
                 let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
@@ -192,7 +192,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     let mut additional_port = (count + args[2].parse::<u32>().unwrap())*5;
 
                     if mode=="codeword"
-                    {   additional_port = (count + args[2].parse::<u32>().unwrap())*50;
+                    {   additional_port = (count + args[2].parse::<u32>().unwrap())*100;
 
                     }
 
