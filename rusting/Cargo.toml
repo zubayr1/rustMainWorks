@@ -20,6 +20,8 @@ serde_json = "1.0.100"
 serde = "1.0.100"
 serde_derive = "1.0.100"
 
+flate2 = "1.0.26"
+
 tokio-core = "0.1.18"
 
 sha2 = "0.10.6"

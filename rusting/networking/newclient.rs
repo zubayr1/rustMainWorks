@@ -1,8 +1,12 @@
 use tokio::net::TcpStream;
-use tokio::io::AsyncWriteExt;
+use tokio::io::{AsyncWriteExt, BufWriter};
+
 use std::error::Error;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
+
+use flate2::Compression;
+use flate2::write::GzEncoder;
 
 
 #[tokio::main]
@@ -14,7 +18,7 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
     {               
-        sleep(Duration::from_millis(3)).await;        
+        sleep(Duration::from_millis(1)).await;        
     }    
        
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;    
@@ -27,8 +31,12 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     let data_to_write = [final_string, "EOF".to_string()].join(" ");
 
-    loop
-    {
+    // let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
+    // encoder.write_all(&data_to_write)?;
+    // let compressed_data = encoder.finish()?;
+
+    // loop
+    // {
         // Write data.
        // stream.write_all(args[6].to_string().as_bytes()).await?;          
 
@@ -38,14 +46,11 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
             let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
             file.write_all(text.as_bytes()).await.unwrap();
             file.write_all(b"\n").await.unwrap();
-            break;
+           // break;
         }
-        if result.is_err()
-        {
-            continue;
-        }        
+              
 
-    }
+   // }
 
     Ok(())
    
