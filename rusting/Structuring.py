@@ -1,7 +1,7 @@
 import math
 
 def committee():
-    read_count = 4 # number of nodes
+    read_count = 8 # number of nodes
 
 
     file = open("nodes_information.txt", "r")
