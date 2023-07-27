@@ -21,16 +21,18 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
+    let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
+
+    let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
+
+    let data_to_write = [final_string, "EOF".to_string()].join(" ");
+
     loop
     {
         // Write data.
-        stream.write_all(args[6].to_string().as_bytes()).await?;
-        
-        let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
+       // stream.write_all(args[6].to_string().as_bytes()).await?;          
 
-        let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
-
-        let result = stream.write_all([final_string.clone(), "EOF".to_string()].join(" ").as_bytes()).await;
+        let result = stream.write_all(data_to_write.as_bytes()).await;
         if  result.is_ok()
         {
             let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
