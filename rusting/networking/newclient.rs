@@ -1,12 +1,12 @@
 use tokio::net::TcpStream;
-use tokio::io::{AsyncWriteExt, BufWriter};
+use tokio::io::AsyncWriteExt;
 
 use std::error::Error;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 
-use flate2::Compression;
-use flate2::write::GzEncoder;
+use data_encoding::BASE64;
+
 
 
 #[tokio::main]
@@ -29,28 +29,26 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
 
-    let data_to_write = [final_string, "EOF".to_string()].join(" ");
+    let encoded_data = BASE64.encode(final_string.as_bytes());
 
-    // let mut encoder = GzEncoder::new(Vec::new(), Compression::default());
-    // encoder.write_all(&data_to_write)?;
-    // let compressed_data = encoder.finish()?;
 
-    // loop
-    // {
-        // Write data.
-       // stream.write_all(args[6].to_string().as_bytes()).await?;          
+    loop
+    {
+        // Write data.           
 
-        let result = stream.write_all(data_to_write.as_bytes()).await;
+         stream.write_all(encoded_data.as_bytes()).await.unwrap();
+         let result = stream.write_all(b"EOF").await;
+
         if  result.is_ok()
         {
-            let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
-            file.write_all(text.as_bytes()).await.unwrap();
-            file.write_all(b"\n").await.unwrap();
-           // break;
-        }
-              
+            break;
+        }             
 
-   // }
+    }
+
+    let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
+    file.write_all(text.as_bytes()).await.unwrap();
+    file.write_all(b"\n").await.unwrap();
 
     Ok(())
    
