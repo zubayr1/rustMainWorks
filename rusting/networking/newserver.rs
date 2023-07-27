@@ -19,7 +19,8 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
     
-
+    socket.set_nodelay(true).expect("Failed to enable TCP_NODELAY");
+    
     let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
         
     let mut reader: BufReader<ReadHalf> = BufReader::new(reader);

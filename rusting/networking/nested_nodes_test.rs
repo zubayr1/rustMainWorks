@@ -20,8 +20,7 @@ pub async fn handle_server(port: u32, testport: u32) -> String{
 
     let (mut socket, _) = listener.accept().await.unwrap(); // accept listening
 
-    println!("---continue---");
-
+    socket.set_nodelay(true).expect("Failed to enable TCP_NODELAY");
 
     let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
         
