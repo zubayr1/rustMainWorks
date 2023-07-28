@@ -81,10 +81,8 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
     thread::scope(|s| { 
 
         s.spawn(|| 
-        {
-            
+        {            
             let mut count=1;
-
 
             if types.contains("individual")
             {
@@ -106,6 +104,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             }
             else
             {
+                println!("1");
                 for _ip in ip_address_clone.clone() 
                 {   
                     count+=1;

@@ -4,10 +4,6 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::OpenOptions;
 
-use data_encoding::BASE64;
-
-use serde::{Serialize, Deserialize};
-
 
 #[tokio::main]
 pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> String{
@@ -36,7 +32,6 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    //let mut _decoded_data = Vec::new(); // Declare decoded_data outside the loop
 
     loop 
     {         
@@ -51,9 +46,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         {
             line = line.replace("EOF", "");
 
-            // Decode the Base64 data back to binary format.
-           // _decoded_data = BASE64.decode(line.trim().as_bytes()).unwrap();                    
-            
+          
             break;
         }
 
@@ -61,8 +54,6 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
                 
     }
 
-
-    //let decoded_string: String = String::from_utf8_lossy(&_decoded_data).to_string();
 
     file.write_all(line.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
@@ -75,10 +66,9 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
     let serialized_data = serde_json::to_string(&line).unwrap();   
 
-    let message_size = serialized_data.len();
+    let _message_size = serialized_data.len();
 
 
-    println!("Message Size: {} bytes", message_size);
     return line;
     
 //}

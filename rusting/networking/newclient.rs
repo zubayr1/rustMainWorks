@@ -5,8 +5,6 @@ use std::error::Error;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 
-use data_encoding::BASE64;
-
 
 
 #[tokio::main]
