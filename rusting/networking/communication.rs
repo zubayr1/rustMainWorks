@@ -81,16 +81,22 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
     thread::scope(|s| { 
 
         s.spawn(|| 
-        {            
+        {
+            
             let mut count=1;
+
 
             if types.contains("individual")
             {
                             
                 let additional_port = (client_count)*10;
 
-                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
-                test_port+port_count+ additional_port );
+                let listener = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        test_port+port_count + additional_port);
+
+                let future = newserver::handle_communication(&listener); 
+
+                let _result = block_on(future);
 
                 
                 let witness_verify =  codeword::verify_codeword(_result.clone());
@@ -104,7 +110,6 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
             }
             else
             {
-                println!("1");
                 for _ip in ip_address_clone.clone() 
                 {   
                     count+=1;
@@ -114,16 +119,24 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        let listener = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
+
+                        let future = newserver::handle_communication(&listener); 
+
+                        let _result = block_on(future);
 
                         output.push(_result);
 
                     }
                     else if mode=="accum"
                     {
-                        let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        let listener = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
+
+                        let future = newserver::handle_communication(&listener); 
+
+                        let _result = block_on(future);
 
                         let socket_vec: Vec<&str> = _result.split("/").collect();
                         let socket_ip = socket_vec[1];
