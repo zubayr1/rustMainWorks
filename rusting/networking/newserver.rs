@@ -4,7 +4,7 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::OpenOptions;
 
 #[tokio::main]
-pub async fn handle_server(_ip_address: Vec<&str>, port: u32, testport: u32) -> TcpListener {
+pub async fn handle_server(_ip_address: Vec<&str>, port: u32, testport: u32) -> (TcpListener, TcpListener) {
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":"))
         .await
         .unwrap(); // open connection
@@ -13,13 +13,14 @@ pub async fn handle_server(_ip_address: Vec<&str>, port: u32, testport: u32) -> 
         .await
         .unwrap();
     
-    let (_, _) = test_listener.accept().await.unwrap();
     
-    return listener // Return the listener
+    
+    return (listener, test_listener) // Return the listener
 }
 
-pub async fn handle_communication(listener: &TcpListener) -> String
+pub async fn handle_communication(listener: &TcpListener, test_listener: &TcpListener) -> String
 {
+    let (_, _) = test_listener.accept().await.unwrap();
     // Accept the first client connection
     let (socket, socket_addr) = listener.accept().await.unwrap();
     let socket_addr_string = socket_addr.to_string();

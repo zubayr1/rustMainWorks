@@ -91,10 +91,10 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                             
                 let additional_port = (client_count)*10;
 
-                let listener = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                let (listener, test_listener) = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                let future = newserver::handle_communication(&listener); 
+                let future = newserver::handle_communication(&listener, &test_listener); 
 
                 let _result = block_on(future);
 
@@ -119,10 +119,10 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let listener = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        let (listener, test_listener) = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                        let future = newserver::handle_communication(&listener); 
+                        let future = newserver::handle_communication(&listener, &test_listener); 
 
                         let _result = block_on(future);
 
@@ -131,10 +131,10 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     }
                     else if mode=="accum"
                     {
-                        let listener = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        let (listener, test_listener) = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                        let future = newserver::handle_communication(&listener); 
+                        let future = newserver::handle_communication(&listener, &test_listener); 
 
                         let _result = block_on(future);
 
