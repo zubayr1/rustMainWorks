@@ -78,7 +78,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let message_size = serialized_data.len();
 
 
-    println!("Message Size: {} bytes, {:?}", message_size, line);
+    println!("Message Size: {} bytes", message_size);
     return line;
     
 //}
