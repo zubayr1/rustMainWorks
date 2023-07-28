@@ -36,7 +36,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    let mut _decoded_data = Vec::new(); // Declare decoded_data outside the loop
+    //let mut _decoded_data = Vec::new(); // Declare decoded_data outside the loop
 
     loop 
     {         
@@ -52,7 +52,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
             line = line.replace("EOF", "");
 
             // Decode the Base64 data back to binary format.
-            _decoded_data = BASE64.decode(line.trim().as_bytes()).unwrap();                    
+           // _decoded_data = BASE64.decode(line.trim().as_bytes()).unwrap();                    
             
             break;
         }
@@ -62,23 +62,23 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     }
 
 
-    let decoded_string: String = String::from_utf8_lossy(&_decoded_data).to_string();
+    //let decoded_string: String = String::from_utf8_lossy(&_decoded_data).to_string();
 
-    file.write_all(decoded_string.as_bytes()).await.unwrap();
+    file.write_all(line.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
     let socket_addr_string = socket_addr.to_string();
     let socket_ip: Vec<&str> = socket_addr_string.split(":").collect();
 
 
-    line = [decoded_string.clone(), socket_ip[0].to_string()].join("/"); 
+    line = [line.clone(), socket_ip[0].to_string()].join("/"); 
 
-    let serialized_data = serde_json::to_string(&_decoded_data).unwrap();   
+    let serialized_data = serde_json::to_string(&line).unwrap();   
 
     let message_size = serialized_data.len();
 
 
-    println!("Message Size: {} bytes, {:?}", message_size, decoded_string);
+    println!("Message Size: {} bytes, {:?}", message_size, line);
     return line;
     
 //}

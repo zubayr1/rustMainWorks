@@ -29,14 +29,14 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
 
-    let encoded_data = BASE64.encode(final_string.as_bytes());
+    // let encoded_data = BASE64.encode(final_string.as_bytes());
 
 
     loop
     {
         // Write data.           
 
-         stream.write_all(encoded_data.as_bytes()).await.unwrap();
+         stream.write_all(final_string.as_bytes()).await.unwrap();
          let result = stream.write_all(b"EOF").await;
 
         if  result.is_ok()
