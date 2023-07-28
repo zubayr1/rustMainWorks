@@ -71,6 +71,8 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
 
     line = [decoded_string, socket_ip[0].to_string()].join("/");    
+
+    println!("{}", line);
     return line;
     
 //}
