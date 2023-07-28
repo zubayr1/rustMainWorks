@@ -4,7 +4,6 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::OpenOptions;
 
-use data_encoding::BASE64;
 
 #[tokio::main]
 pub async fn handle_server(port: u32, testport: u32) -> String{
@@ -36,7 +35,6 @@ pub async fn handle_server(port: u32, testport: u32) -> String{
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    let mut _decoded_data = Vec::new(); // Declare decoded_data outside the loop
 
     loop 
     {         
@@ -49,10 +47,7 @@ pub async fn handle_server(port: u32, testport: u32) -> String{
     
         if line.contains("EOF")  
         {
-            line = line.replace("EOF", "");
-
-            // Decode the Base64 data back to binary format.
-            _decoded_data = BASE64.decode(line.trim().as_bytes()).unwrap();                    
+            line = line.replace("EOF", "");                           
             
             break;
         }
@@ -60,9 +55,8 @@ pub async fn handle_server(port: u32, testport: u32) -> String{
         line.clear();
                 
     }
-    let decoded_string: String = String::from_utf8_lossy(&_decoded_data).to_string();
 
-    return decoded_string;
+    return line;
        
     
 //}
