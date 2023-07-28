@@ -73,7 +73,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
     line = [decoded_string.clone(), socket_ip[0].to_string()].join("/"); 
 
-    let serialized_data = serde_json::to_string(&decoded_string).unwrap();   
+    let serialized_data = serde_json::to_string(&_decoded_data).unwrap();   
 
     let message_size = serialized_data.len();
 
