@@ -306,7 +306,6 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
     {
         if medium=="prod_init"
         {
-
             let subset_ip: &str;
             if ip_address.len()==1
             {

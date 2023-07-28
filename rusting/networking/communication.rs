@@ -154,11 +154,6 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     }
 
 
-                    
-
-                    
-                                                            
-                    
                 }
             }
             

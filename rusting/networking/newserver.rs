@@ -6,6 +6,7 @@ use tokio::fs::OpenOptions;
 
 use data_encoding::BASE64;
 
+use serde::{Serialize, Deserialize};
 
 
 #[tokio::main]
@@ -70,9 +71,14 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let socket_ip: Vec<&str> = socket_addr_string.split(":").collect();
 
 
-    line = [decoded_string, socket_ip[0].to_string()].join("/");    
+    line = [decoded_string, socket_ip[0].to_string()].join("/"); 
 
-    println!("server hit");
+    let serialized_data = serde_json::to_string(&line).unwrap();   
+
+    let message_size = serialized_data.len();
+
+
+    println!("Message Size: {} bytes", message_size);
     return line;
     
 //}
