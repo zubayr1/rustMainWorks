@@ -3,6 +3,7 @@ use tokio::net::TcpListener;
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::OpenOptions;
+use chrono::Utc;
 
 
 #[tokio::main]
@@ -32,7 +33,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-
+    let start_time = Utc::now().time();
     loop 
     {         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
@@ -67,6 +68,12 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let serialized_data = serde_json::to_string(&line).unwrap();   
 
     let _message_size = serialized_data.len();
+
+    let end_time = Utc::now().time();
+
+    let diff = end_time - start_time;
+    
+    println!("time taken {} seconds",diff.num_seconds());
 
 
     return line;
