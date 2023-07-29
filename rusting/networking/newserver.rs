@@ -9,6 +9,7 @@ use chrono::Utc;
 #[tokio::main]
 pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> String{
    // loop{
+    let start_time = Utc::now().time();
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
     let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
@@ -33,7 +34,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    let start_time = Utc::now().time();
+    
     loop 
     {         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
