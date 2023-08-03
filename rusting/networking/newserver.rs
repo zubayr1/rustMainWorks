@@ -72,9 +72,9 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
     let end_time = Utc::now().time();
 
-    let diff = end_time - start_time;
+    let _diff = end_time - start_time;
     
-    println!("time taken {} miliseconds",diff.num_milliseconds());
+    // println!("time taken {} miliseconds",diff.num_milliseconds());
 
 
     return line;
