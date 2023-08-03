@@ -33,23 +33,6 @@ mod pvss_agreement;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
-// enum Phase 
-// {
-//     echo, vote, committee, codeword, accum
-// }
-
-// impl Phase 
-// {
-//     pub fn is_weekday(&self) -> bool
-//     {
-//         match self 
-//         {
-//             &Phase:: echo => return false,
-//             _=> return true
-//         }
-//     }
-// }
-
 
 async fn communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
     initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>

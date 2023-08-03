@@ -1,11 +1,26 @@
 
-use tokio::net::TcpListener;
+
+use tokio::net::{TcpListener, TcpStream};
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::OpenOptions;
 use chrono::Utc;
 
+#[allow(unused)]
+pub async fn create_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> TcpStream
+{
+    let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
+    
+    let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
 
+    let (_, _) = test_listener.accept().await.unwrap();
+
+    let (mut socket, _) = listener.accept().await.unwrap(); // accept listening
+
+    socket
+}
+
+#[allow(unused)]
 #[tokio::main]
 pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> String{
    // loop{

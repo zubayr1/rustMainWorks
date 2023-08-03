@@ -5,8 +5,20 @@ use std::error::Error;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 
+#[allow(unused)]
+pub async fn create_client(address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> TcpStream
+{
+    while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
+    {               
+        sleep(Duration::from_millis(1)).await;        
+    }    
+       
+    let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap(); 
 
+    stream
+}
 
+#[allow(unused)]
 #[tokio::main]
 pub async fn match_tcp_client(address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> Result<(), Box<dyn Error>> {
 
