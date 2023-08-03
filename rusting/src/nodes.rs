@@ -6,7 +6,7 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
-use futures::executor::block_on;
+
 use tokio::net::TcpStream;
 
 use tokio::sync::mpsc;
@@ -72,55 +72,55 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
     }
 
-    let mut server_stream_vec: Vec<TcpStream> = Vec::new();
+    let server_stream_vec: Vec<TcpStream> = Vec::new();
 
-    let mut client_stream_vec: Vec<TcpStream> = Vec::new();
+    let client_stream_vec: Vec<TcpStream> = Vec::new();
 
-    if args[5]=="prod"
-    {
-        let nodes_ip_clone = node_ips.clone();
+    // if args[5]=="prod"
+    // {
+    //     let nodes_ip_clone = node_ips.clone();
 
-        let (server_tx, mut server_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
-            mpsc::channel(32);
-        let (client_tx, mut client_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
-        mpsc::channel(32);
+    //     let (server_tx, mut server_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
+    //         mpsc::channel(32);
+    //     let (client_tx, mut client_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
+    //     mpsc::channel(32);
 
-        // Spawning the server and client tasks
-        let server_task = spawn(async move {
-            for ip in nodes_ip_clone {
-                let future = newserver::create_server(ip.clone(), initial_port, test_port);
-                let result = future.await;
-                let _ = server_tx.send(result).await;
+    //     // Spawning the server and client tasks
+    //     let server_task = spawn(async move {
+    //         for ip in nodes_ip_clone {
+    //             let future = newserver::create_server(ip.clone(), initial_port, test_port);
+    //             let result = future.await;
+    //             let _ = server_tx.send(result).await;
                 
-            }
-        });
+    //         }
+    //     });
 
-        let client_task = spawn(async move {
-            for ip in node_ips {
-                let future = newclient::create_client(
-                    [ip.clone(), initial_port.to_string()].join(":"),
-                    [ip, test_port.to_string()].join(":"),
-                );
-                let result = future.await;
-                let _ = client_tx.send(result).await;
-            }
-        });
+    //     let client_task = spawn(async move {
+    //         for ip in node_ips {
+    //             let future = newclient::create_client(
+    //                 [ip.clone(), initial_port.to_string()].join(":"),
+    //                 [ip, test_port.to_string()].join(":"),
+    //             );
+    //             let result = future.await;
+    //             let _ = client_tx.send(result).await;
+    //         }
+    //     });
 
-        // Wait for the tasks to complete
-        server_task.await.unwrap();
-        client_task.await.unwrap();
+    //     // Wait for the tasks to complete
+    //     server_task.await.unwrap();
+    //     client_task.await.unwrap();
 
-        // Collect the results
-        let mut server_stream_vec = Vec::new();
-        while let Some(result) = server_rx.recv().await {
-            server_stream_vec.push(result);
-        }
+    //     // Collect the results
+    //     let mut server_stream_vec = Vec::new();
+    //     while let Some(result) = server_rx.recv().await {
+    //         server_stream_vec.push(result);
+    //     }
 
-        let mut client_stream_vec = Vec::new();
-        while let Some(result) = client_rx.recv().await {
-            client_stream_vec.push(result);
-        }
-    }
+    //     let mut client_stream_vec = Vec::new();
+    //     while let Some(result) = client_rx.recv().await {
+    //         client_stream_vec.push(result);
+    //     }
+    // }
     
 
      println!("{:?}", server_stream_vec);
