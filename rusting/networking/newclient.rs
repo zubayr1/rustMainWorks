@@ -6,7 +6,7 @@ use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 
 #[allow(unused)]
-pub async fn create_client(address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> TcpStream
+pub async fn create_client(address: String, test_address: String) -> TcpStream
 {
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
     {               

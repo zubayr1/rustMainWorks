@@ -1,8 +1,16 @@
-
+use tokio::task::spawn;
+use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::io::Write;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
+use futures::executor::block_on;
+use tokio::net::TcpStream;
+
+use tokio::sync::mpsc;
+
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
 
@@ -32,6 +40,91 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     sorted.sort_by_key(|a| a.0);
 
+
+    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
+        println!("INITIAL_PORT_STR is not set.");
+        String::new()
+    });
+    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
+        println!("TEST_PORT_STR is not set.");
+        String::new()
+    });
+   
+    let initial_port: u32 = initial_port_str.parse().unwrap();
+    let test_port: u32 = test_port_str.parse().unwrap();
+
+
+    let file_path = "./nodes_information.txt";
+    let nodes_file = File::open(file_path).unwrap();
+
+    let reader = BufReader::new(nodes_file);
+
+    let mut node_ips: Vec<String> = Vec::new();
+
+    for line_result in reader.lines() {
+        let line = line_result.unwrap();
+
+        let ip: Vec<&str> = line.split("-").collect();
+        
+        node_ips.push(ip[1].to_string()); 
+        
+        
+    }
+
+    let mut server_stream_vec: Vec<TcpStream> = Vec::new();
+
+    let mut client_stream_vec: Vec<TcpStream> = Vec::new();
+
+    if args[5]=="prod"
+    {
+        let nodes_ip_clone = node_ips.clone();
+
+        let (server_tx, mut server_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
+            mpsc::channel(32);
+        let (client_tx, mut client_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
+        mpsc::channel(32);
+
+        // Spawning the server and client tasks
+        let server_task = spawn(async move {
+            for ip in nodes_ip_clone {
+                let future = newserver::create_server(ip.clone(), initial_port, test_port);
+                let result = future.await;
+                let _ = server_tx.send(result).await;
+                
+            }
+        });
+
+        let client_task = spawn(async move {
+            for ip in node_ips {
+                let future = newclient::create_client(
+                    [ip.clone(), initial_port.to_string()].join(":"),
+                    [ip, test_port.to_string()].join(":"),
+                );
+                let result = future.await;
+                let _ = client_tx.send(result).await;
+            }
+        });
+
+        // Wait for the tasks to complete
+        server_task.await.unwrap();
+        client_task.await.unwrap();
+
+        // Collect the results
+        let mut server_stream_vec = Vec::new();
+        while let Some(result) = server_rx.recv().await {
+            server_stream_vec.push(result);
+        }
+
+        let mut client_stream_vec = Vec::new();
+        while let Some(result) = client_rx.recv().await {
+            client_stream_vec.push(result);
+        }
+    }
+    
+
+     println!("{:?}", server_stream_vec);
+     println!("{:?}", client_stream_vec);
+
     let start_time = Utc::now().time();
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
@@ -51,6 +144,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             let mut level = 0;
 
             let mut _pvss_data: String = "".to_string();
+           
 
             for (committee_id, ip_addresses_comb) in sorted.clone()
             {
