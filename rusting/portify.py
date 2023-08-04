@@ -57,7 +57,7 @@ def portify(my_port, n, port_range_start, port_range_end):
 import sys
 if __name__ == "__main__":
     if len(sys.argv) > 4:
-        arg1 = int(sys.argv[1])
+        arg1 = sys.argv[1]
         arg2 = sys.argv[2]
         arg3 = sys.argv[3]
         arg4 = sys.argv[4]
