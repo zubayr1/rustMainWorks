@@ -41,7 +41,7 @@ fi
 cd "rusting"
 python3 Structuring.py
 
-arg1=$ID
+arg1="$ID"
 arg2=4
 arg3=7000
 arg4=13000
