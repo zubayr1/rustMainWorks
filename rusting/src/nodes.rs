@@ -56,6 +56,63 @@ pub fn read_ports(file_name: String) -> Vec<u32>
     return ports;
 }
 
+#[tokio::main]
+pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, client_port_list: Vec<u32>, 
+    initial_port: u32, test_port: u32) -> (Vec<TcpStream>, Vec<TcpStream>)
+{
+    let nodes_ip_clone = node_ips.clone();
+
+    let (server_tx, mut server_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
+        mpsc::channel(32);
+    let (client_tx, mut client_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
+    mpsc::channel(32);
+
+    // Spawning the server and client tasks
+    let server_task = spawn(async move {
+        let mut count = 0;
+        for ip in nodes_ip_clone {
+            let additional_port = server_port_list[count];
+            count+=1;
+            let future = newserver::create_server(ip.clone(), initial_port
+            + additional_port, test_port+ additional_port);
+            let result = future.await;
+            let _ = server_tx.send(result).await;
+            println!("server: {} {} {}", ip, initial_port, test_port);
+            
+        }
+    });
+
+    let client_task = spawn(async move {
+        let mut count = 0;
+        for ip in node_ips {
+            let additional_port = client_port_list[count];
+            count+=1;
+            let future = newclient::create_client(ip.clone(), initial_port
+            + additional_port, test_port+ additional_port);
+            let result = future.await;
+            let _ = client_tx.send(result).await;
+            println!("client: {} {} {}", ip, initial_port, test_port);
+        }
+    });
+
+    // Wait for the tasks to complete
+    server_task.await.unwrap();
+    client_task.await.unwrap();
+
+    // Collect the results
+    let mut server_stream_vec = Vec::new();
+    while let Some(result) = server_rx.recv().await {
+        server_stream_vec.push(result);
+    }
+
+    let mut client_stream_vec = Vec::new();
+    while let Some(result) = client_rx.recv().await {
+        client_stream_vec.push(result);
+    }
+
+    return (server_stream_vec, client_stream_vec);
+}
+
 
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
@@ -96,9 +153,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
     }
 
-    let server_stream_vec: Vec<TcpStream> = Vec::new();
-
-    let client_stream_vec: Vec<TcpStream> = Vec::new();
+    let mut server_stream_vec: Vec<TcpStream> = Vec::new();
+    let mut client_stream_vec: Vec<TcpStream> = Vec::new();
 
     let server_port_list = read_ports("./server_port_list.txt".to_string());
     let client_port_list = read_ports("./client_port_list.txt".to_string());
@@ -107,55 +163,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     if args[5]=="prod"
     {
 
-        let nodes_ip_clone = node_ips.clone();
-
-        let (server_tx, mut server_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
-            mpsc::channel(32);
-        let (client_tx, mut client_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
-        mpsc::channel(32);
-
-        // Spawning the server and client tasks
-        let server_task = spawn(async move {
-            let mut count = 0;
-            for ip in nodes_ip_clone {
-                let additional_port = server_port_list[count];
-                count+=1;
-                let future = newserver::create_server(ip.clone(), initial_port
-                + additional_port, test_port+ additional_port);
-                let result = future.await;
-                let _ = server_tx.send(result).await;
-                println!("server: {} {} {}", ip, initial_port, test_port);
-                
-            }
-        });
-
-        let client_task = spawn(async move {
-            let mut count = 0;
-            for ip in node_ips {
-                let additional_port = client_port_list[count];
-                count+=1;
-                let future = newclient::create_client(ip.clone(), initial_port
-                + additional_port, test_port+ additional_port);
-                let result = future.await;
-                let _ = client_tx.send(result).await;
-                println!("client: {} {} {}", ip, initial_port, test_port);
-            }
-        });
-
-        // Wait for the tasks to complete
-        server_task.await.unwrap();
-        client_task.await.unwrap();
-
-        // Collect the results
-        let mut server_stream_vec = Vec::new();
-        while let Some(result) = server_rx.recv().await {
-            server_stream_vec.push(result);
-        }
-
-        let mut client_stream_vec = Vec::new();
-        while let Some(result) = client_rx.recv().await {
-            client_stream_vec.push(result);
-        }
+        (server_stream_vec, client_stream_vec) = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
     }
     
 
