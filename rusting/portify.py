@@ -51,6 +51,6 @@ if __name__ == "__main__":
         arg2 = sys.argv[2]
         arg3 = sys.argv[3]
         arg4 = sys.argv[4]
-        portify(arg1, arg2, arg3, arg4)
+        portify(int(arg1), int(arg2), int(arg3), int(arg4))
     else:
         print("Usage: python call.py <argument1> <argument2>")
