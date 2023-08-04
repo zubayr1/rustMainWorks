@@ -88,21 +88,20 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         // Spawning the server and client tasks
         let server_task = spawn(async move {
             for ip in nodes_ip_clone {
-                let future = newserver::create_server(ip.clone(), initial_port, test_port);
-                let result = future.await;
-                let _ = server_tx.send(result).await;
+                // let future = newserver::create_server(ip.clone(), initial_port, test_port);
+                // let result = future.await;
+                // let _ = server_tx.send(result).await;
+                println!("server: {} {} {}", ip, initial_port, test_port);
                 
             }
         });
 
         let client_task = spawn(async move {
             for ip in node_ips {
-                let future = newclient::create_client(
-                    [ip.clone(), initial_port.to_string()].join(":"),
-                    [ip, test_port.to_string()].join(":"),
-                );
-                let result = future.await;
-                let _ = client_tx.send(result).await;
+                // let future = newclient::create_client(ip.clone(), initial_port, test_port);
+                // let result = future.await;
+                // let _ = client_tx.send(result).await;
+                println!("client: {} {} {}", ip, initial_port, test_port);
             }
         });
 
