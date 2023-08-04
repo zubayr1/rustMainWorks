@@ -21,8 +21,8 @@ client at: : 18.117.92.19
 server at port: 7722
 client at: : 18.117.92.19
 server at port: 7722
-client at: : 18.117.92.19
 server at port: 7722
+client at: : 18.117.92.19
 --------------------------------
 epoch : 2
 client at: : 18.117.92.19
@@ -105,8 +105,8 @@ server at port: 7725
 epoch : 5
 client at: : 18.117.92.19
 server at port: 7226
-server at port: 7726
 client at: : 18.117.92.19
+server at port: 7726
 client at: : 18.117.92.19
 server at port: 7726
 client at: : 18.117.92.19

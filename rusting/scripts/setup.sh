@@ -46,8 +46,8 @@ python3 Structuring.py
 
 arg1="$ID"
 arg2=4
-arg3=7000
-arg4=13000
+arg3=700
+arg4=1300
 
 # Call the Python script with the arguments
 python3 portify.py "$arg1" "$arg2" "$arg3" "$arg4"
