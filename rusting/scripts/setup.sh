@@ -29,34 +29,16 @@ folder="rustMainWorks"
 
 if [ -d "${folder}" ]; then
   cd "${folder}"
-  git stash
+  git stash --include-untracked  # Stash both tracked and untracked changes
   git pull https://github.com/zubayr1/rustMainWorks.git
+  git stash pop  # Apply the stashed changes back after the pull
 else
   git clone https://github.com/zubayr1/rustMainWorks.git
   cd "${folder}"
 fi
 
-file_name="server_port_list.txt"
 
-# Check if the file exists
-if [ -f "$file_name" ]; then
-    # Delete the file
-    rm "$file_name"
-    echo "Deleted $file_name"
-else
-    echo "$file_name does not exist."
-fi
 
-file_name="client_port_list.txt"
-
-# Check if the file exists
-if [ -f "$file_name" ]; then
-    # Delete the file
-    rm "$file_name"
-    echo "Deleted $file_name"
-else
-    echo "$file_name does not exist."
-fi
 
 # run script
 cd "rusting"
@@ -68,7 +50,7 @@ arg3=7000
 arg4=13000
 
 # Call the Python script with the arguments
-python3 portify.py "$arg1" "$arg2" "$arg1" "$arg1"
+python3 portify.py "$arg1" "$arg2" "$arg3" "$arg4"
 
 /home/ubuntu/.cargo/bin/cargo run -- keys "$ID" 4 03282129 prod "$IP" 10 1
 exit 0
