@@ -55,13 +55,12 @@ def portify(my_port, n, port_range_start, port_range_end):
 
 
 import sys
-portify(int(2), int(4), int(7000), int(13000))
-# if __name__ == "__main__":
-#     if len(sys.argv) > 4:
-#         arg1 = int(sys.argv[1])
-#         arg2 = sys.argv[2]
-#         arg3 = sys.argv[3]
-#         arg4 = sys.argv[4]
-#         portify(int(arg1), int(arg2), int(arg3), int(arg4))
-#     else:
-#         print("Usage: python call.py <argument1> <argument2>")
+if __name__ == "__main__":
+    if len(sys.argv) > 4:
+        arg1 = int(sys.argv[1])
+        arg2 = sys.argv[2]
+        arg3 = sys.argv[3]
+        arg4 = sys.argv[4]
+        portify(int(arg1), int(arg2), int(arg3), int(arg4))
+    else:
+        print("Usage: python call.py <argument1> <argument2>")
