@@ -56,7 +56,7 @@ pub fn read_ports(file_name: String) -> Vec<u32>
     return ports;
 }
 
-#[tokio::main]
+
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
