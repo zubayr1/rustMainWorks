@@ -47,7 +47,7 @@ arg3=7000
 arg4=13000
 
 # Call the Python script with the arguments
-python portify.py "$arg1" "$arg2" "$arg1" "$arg1"
+python3 portify.py "$arg1" "$arg2" "$arg1" "$arg1"
 
 /home/ubuntu/.cargo/bin/cargo run -- keys "$ID" 4 03282129 prod "$IP" 10 1
 exit 0
