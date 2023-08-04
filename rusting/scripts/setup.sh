@@ -36,6 +36,27 @@ else
   cd "${folder}"
 fi
 
+file_name="server_port_list.txt"
+
+# Check if the file exists
+if [ -f "$file_name" ]; then
+    # Delete the file
+    rm "$file_name"
+    echo "Deleted $file_name"
+else
+    echo "$file_name does not exist."
+fi
+
+file_name="client_port_list.txt"
+
+# Check if the file exists
+if [ -f "$file_name" ]; then
+    # Delete the file
+    rm "$file_name"
+    echo "Deleted $file_name"
+else
+    echo "$file_name does not exist."
+fi
 
 # run script
 cd "rusting"
