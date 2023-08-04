@@ -89,7 +89,7 @@ fn run_nodes(args: Vec<String>)
         let handle1 = thread::spawn(move || {  
         
 
-            let future1 =nodes::initiate(filtered_committee.clone(), args_clone); //client
+            let future1 =nodes::dev_initiate(filtered_committee.clone(), args_clone); //client
 
             block_on(future1);
 
@@ -117,9 +117,8 @@ fn run_nodes(args: Vec<String>)
     } 
     else  // run in prod mode
     {
-        let future1 = nodes::initiate(filtered_committee.clone(), args.clone()); 
+        nodes::initiate(filtered_committee.clone(), args.clone()); 
 
-        block_on(future1);
 
         
     }
