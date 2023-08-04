@@ -39,12 +39,12 @@ def portify(my_port, n, port_range_start, port_range_end):
         
     
     
-    with open("server_port_list.txt", "w") as file:
+    with open("server_port_list.txt", "a") as file:
         # Convert all elements to strings using map() and join them with newline
         lines = map(str, server_port_list)
         file.writelines("\n".join(lines))
 
-    with open("client_port_list.txt", "w") as file:
+    with open("client_port_list.txt", "a") as file:
         # Convert all elements to strings using map() and join them with newline
         lines = map(str, client_port_list)
         file.writelines("\n".join(lines))

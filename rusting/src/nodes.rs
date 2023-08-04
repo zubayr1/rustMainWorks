@@ -100,8 +100,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     let client_stream_vec: Vec<TcpStream> = Vec::new();
 
-    let server_port_list = read_ports("../server_port_list.txt".to_string());
-    let client_port_list = read_ports("../client_port_list.txt".to_string());
+    let server_port_list = read_ports("./server_port_list.txt".to_string());
+    let client_port_list = read_ports("./client_port_list.txt".to_string());
 
     println!("{:?}",client_port_list);
 
