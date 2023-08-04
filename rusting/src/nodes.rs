@@ -32,6 +32,30 @@ pub fn create_keys() // schnorr key generation
 
 }
 
+pub fn read_ports(file_name: String) -> Vec<u32>
+{
+    let file = File::open(file_name).expect("Failed to open the file");
+
+    // Create a BufReader to efficiently read the file
+    let reader = BufReader::new(file);
+
+    // Initialize an empty vector to store the u32 port values
+    let mut ports: Vec<u32> = Vec::new();
+
+    // Read each line from the file and parse it into a u32, then push it into the vector
+    for line in reader.lines() {
+        if let Ok(num_str) = line {
+            if let Ok(num) = num_str.trim().parse::<u32>() {
+                ports.push(num);
+            } else {
+                println!("Invalid number: {}", num_str);
+            }
+        }
+    }
+
+    return ports;
+}
+
 #[tokio::main]
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
@@ -76,9 +100,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     let client_stream_vec: Vec<TcpStream> = Vec::new();
 
+    let server_port_list = read_ports("../server_port_list.txt".to_string());
+    let client_port_list = read_ports("../client_port_list.txt".to_string());
+
+    println!("{:?}",client_port_list);
+
     if args[5]=="prod"
     {
-        
+
         // let nodes_ip_clone = node_ips.clone();
 
         // let (server_tx, mut server_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
