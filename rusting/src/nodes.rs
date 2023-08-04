@@ -106,8 +106,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         });
 
         // Wait for the tasks to complete
-        server_task.await.unwrap();
-        client_task.await.unwrap();
+        // server_task.await.unwrap();
+        // client_task.await.unwrap();
 
         // Collect the results
         let mut server_stream_vec = Vec::new();
