@@ -38,8 +38,17 @@ def portify(my_port, n, port_range_start, port_range_end):
         client_port_list.append(create_ports(client_str, port_range_start, port_range_end))
         
     
-    write_port(server_port_list, "/server_port_list.txt")
-    write_port(client_port_list, "/client_port_list.txt")
+    
+    with open("server_port_list.txt", "w") as file:
+        # Convert all elements to strings using map() and join them with newline
+        lines = map(str, server_port_list)
+        file.writelines("\n".join(lines))
+
+    with open("client_port_list.txt", "w") as file:
+        # Convert all elements to strings using map() and join them with newline
+        lines = map(str, client_port_list)
+        file.writelines("\n".join(lines))
+
     print("ports created")
     print(server_port_list)
     print(client_port_list)
