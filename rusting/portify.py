@@ -41,8 +41,7 @@ def portify(my_port, n, port_range_start, port_range_end):
     write_port(server_port_list, "server_port_list.txt")
     write_port(client_port_list, "client_port_list.txt")
     print("ports created")
-    print(server_port_list)
-    print(client_port_list)
+   
 
 
 import sys
@@ -53,7 +52,6 @@ if __name__ == "__main__":
         arg2 = sys.argv[2]
         arg3 = sys.argv[3]
         arg4 = sys.argv[4]
-        print(int(arg1), int(arg2), int(arg3), int(arg4))
         portify(int(arg1), int(arg2), int(arg3), int(arg4))
     else:
         print("Usage: python call.py <argument1> <argument2>")
