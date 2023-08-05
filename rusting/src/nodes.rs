@@ -220,8 +220,23 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     
     // PORT TESTING START
-    let future1 = port_testing(Arc::try_unwrap(server_stream_vec_clone.clone()).unwrap(), 
-    Arc::try_unwrap(client_stream_vec_clone.clone()).unwrap(), initial_port);
+    let server_stream_vec = match Arc::try_unwrap(server_stream_vec_clone.clone()) {
+        Ok(vec) => vec,
+        Err(_) => {
+            eprintln!("Cannot unwrap server_stream_vec_clone");
+            return; // or handle the error in some other way
+        }
+    };
+
+    let client_stream_vec = match Arc::try_unwrap(client_stream_vec_clone.clone()) {
+        Ok(vec) => vec,
+        Err(_) => {
+            eprintln!("Cannot unwrap client_stream_vec_clone");
+            return; // or handle the error in some other way
+        }
+    };
+
+    let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
     let check = future1.await;
     println!("port testing: {}", check);
     // PORT TESTING DONE
