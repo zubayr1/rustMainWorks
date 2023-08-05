@@ -127,27 +127,25 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
     }
 
     
-    let servertask = tokio::task::spawn(async move{
+    let servertask = spawn(async move{
         // Call test_server for each stream in the server_streams vector
         for server_stream in server_streams {
-            newserver::test_server(server_stream, initial_port);
+            let future = newserver::test_server(server_stream, initial_port);
+            future.await;
         }
     });
 
-    let clienttask = tokio::task::spawn(async move{
+    let clienttask = spawn(async move{
         // Call test_client for each stream in the client_streams vector
         for client_stream in client_streams {
-            newclient::test_client(client_stream, initial_port);
+            let future = newclient::test_client(client_stream, initial_port);
+            future.await;
         }
     });
 
     // Wait for the tasks to complete
-    if let Err(e) = servertask.await {
-        eprintln!("Error in server task: {:?}", e);
-    }
-    if let Err(e) = clienttask.await {
-        eprintln!("Error in client task: {:?}", e);
-    }
+    servertask.await.unwrap();
+    clienttask.await.unwrap();
 }
 
 
