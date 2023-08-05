@@ -160,38 +160,38 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     // PORT TESTING START
     // Split the server_stream_vec into individual streams
-    // let mut server_streams = Vec::new();
-    // while let Some(stream) = server_stream_vec.pop() {
-    //     server_streams.push(stream);
-    // }
+    let mut server_streams = Vec::new();
+    while let Some(stream) = server_stream_vec.pop() {
+        server_streams.push(stream);
+    }
 
-    // // Split the client_stream_vec into individual streams
-    // let mut client_streams = Vec::new();
-    // while let Some(stream) = client_stream_vec.pop() {
-    //     client_streams.push(stream);
-    // }
+    // Split the client_stream_vec into individual streams
+    let mut client_streams = Vec::new();
+    while let Some(stream) = client_stream_vec.pop() {
+        client_streams.push(stream);
+    }
 
     
-    // let servertask = tokio::spawn(async move{
-    //     // Call test_server for each stream in the server_streams vector
-    //     for server_stream in server_streams {
-    //         newserver::test_server(server_stream, initial_port);
-    //     }
-    // });
+    let servertask = tokio::spawn(async move{
+        // Call test_server for each stream in the server_streams vector
+        for server_stream in server_streams {
+            newserver::test_server(server_stream, initial_port);
+        }
+    });
 
-    // let clienttask = tokio::spawn(async move{
-    //     // Call test_client for each stream in the client_streams vector
-    //     for client_stream in client_streams {
-    //         newclient::test_client(client_stream, initial_port);
-    //     }
-    // });
+    let clienttask = tokio::spawn(async move{
+        // Call test_client for each stream in the client_streams vector
+        for client_stream in client_streams {
+            newclient::test_client(client_stream, initial_port);
+        }
+    });
 
-    // // Await the completion of both tasks concurrently
-    // if let (Ok(_), Ok(_)) = tokio::join!(servertask, clienttask) {
-    //     println!("Both tasks completed successfully.");
-    // } else {
-    //     eprintln!("An error occurred in one of the tasks.");
-    // }
+    // Await the completion of both tasks concurrently
+    if let (Ok(_), Ok(_)) = tokio::join!(servertask, clienttask) {
+        println!("Both tasks completed successfully.");
+    } else {
+        eprintln!("An error occurred in one of the tasks.");
+    }
 
     // PORT TESTING DONE
 
