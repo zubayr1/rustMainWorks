@@ -256,6 +256,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 port_count+=1;
                 println!("{:?}", ip_address);
                 println!("{:?}", node_ips.clone());
+
+                for element in &ip_address {
+                    match node_ips.clone().iter().position(|x| x == *element) {
+                        Some(index) => println!("Element {} found in B at index {}", element, index),
+                        None => println!("Element {} not found in B", element),
+                    }
+                }
+
                 reactor::reactor_init(
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
