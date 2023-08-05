@@ -21,7 +21,6 @@ pub async fn create_server( _ip_address: String, initial_port: u32, testport: u3
 }
 
 #[allow(unused)]
-#[tokio::main]
 pub async fn test_server( mut socket: TcpStream, initial_port: u32) 
 {
     let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
