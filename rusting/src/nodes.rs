@@ -206,13 +206,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let stream_vec_clone = Arc::clone(&stream_vec_arc);
 
 
-    let (server_stream_vec, client_stream_vec) = match Arc::try_unwrap(stream_vec_clone) {
-        Ok(vec) => vec,
-        Err(_) => {
-            eprintln!("Cannot unwrap server_stream_vec_clone");
-            return; // or handle the error in some other way
-        }
-    };
+    let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_clone).unwrap();
 
 
     // let server_stream_vec_arc = Arc::new(server_stream_vec);
