@@ -205,15 +205,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_clone).unwrap();
 
     if let Some(stream_vec_arc) = stream_vec_weak.upgrade() {
-        let (server_stream_vec, client_stream_vec) = &*stream_vec_arc;
+        let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_arc).expect("Expected to get ownership of the Arc");
 
-        // let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
-        // let check = future1.await;
-        // println!("port testing: {}", check);
-        // Use server_stream_vec and client_stream_vec here.
+        let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
+        let check = future1.await;
+        println!("port testing: {}", check);
     }
 
 
+    
     
     // PORT TESTING DONE
 
