@@ -108,15 +108,15 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_vec: Vec<TcpStream>, initial_port: u32) -> bool
 {    
     // Split the server_stream_vec into individual streams
-    let mut server_streams = Vec::new();
-    while let Some(stream) = server_stream_vec.pop() {
-        server_streams.push(stream);
-    }
-    // Split the client_stream_vec into individual streams
-    let mut client_streams = Vec::new();
-    while let Some(stream) = client_stream_vec.pop() {
-        client_streams.push(stream);
-    }
+    // let mut server_streams = Vec::new();
+    // while let Some(stream) = server_stream_vec.pop() {
+    //     server_streams.push(stream);
+    // }
+    // // Split the client_stream_vec into individual streams
+    // let mut client_streams = Vec::new();
+    // while let Some(stream) = client_stream_vec.pop() {
+    //     client_streams.push(stream);
+    // }
 
     let mut check = true;
 
@@ -126,7 +126,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
 
         s.spawn(|| {
 
-            for server_stream in server_streams {
+            for server_stream in server_stream_vec {
                 let line = newserver::test_server(server_stream, initial_port);
     
                 if line=="".to_string()
@@ -139,7 +139,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
         });
 
         s.spawn(|| {
-            for client_stream in client_streams {
+            for client_stream in client_stream_vec {
                 newclient::test_client(client_stream, initial_port);
             }
         });
@@ -199,11 +199,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     // PORT TESTING START
-    // let stream_vec_arc = Arc::new((server_stream_vec, client_stream_vec));
-    // // let stream_vec_clone = Arc::clone(&stream_vec_arc);
+    let stream_vec_arc = Arc::new((server_stream_vec, client_stream_vec));
+    // let stream_vec_clone = Arc::clone(&stream_vec_arc);
 
 
-    // let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_arc).unwrap();
+    let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_arc).unwrap();
 
 
 
