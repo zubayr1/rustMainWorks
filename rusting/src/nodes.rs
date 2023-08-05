@@ -206,9 +206,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
 
-    let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
-    let check = future1.await;
-    println!("port testing: {}", check);
+    // let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
+    // let check = future1.await;
+    // println!("port testing: {}", check);
     // PORT TESTING DONE
 
 
