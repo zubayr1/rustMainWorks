@@ -211,6 +211,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
     let (server_stream_vec, client_stream_vec) = future.await;
 
+    println!("{:?}", server_stream_vec);
+
     let server_stream_vec_arc = Arc::new(server_stream_vec);
     let server_stream_vec_clone = Arc::clone(&server_stream_vec_arc);
 
