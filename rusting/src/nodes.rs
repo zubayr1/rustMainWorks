@@ -111,7 +111,43 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
     return (server_stream_vec, client_stream_vec);
 }
 
-#[tokio::main]
+async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_vec: Vec<TcpStream>, initial_port: u32)
+{    
+    // Split the server_stream_vec into individual streams
+    let mut server_streams = Vec::new();
+    while let Some(stream) = server_stream_vec.pop() {
+        server_streams.push(stream);
+    }
+    // Split the client_stream_vec into individual streams
+    let mut client_streams = Vec::new();
+    while let Some(stream) = client_stream_vec.pop() {
+        client_streams.push(stream);
+    }
+
+    
+    let servertask = tokio::spawn(async move{
+        // Call test_server for each stream in the server_streams vector
+        for server_stream in server_streams {
+            newserver::test_server(server_stream, initial_port);
+        }
+    });
+
+    let clienttask = tokio::spawn(async move{
+        // Call test_client for each stream in the client_streams vector
+        for client_stream in client_streams {
+            newclient::test_client(client_stream, initial_port);
+        }
+    });
+
+    // Await the completion of both tasks concurrently
+    if let (Ok(_), Ok(_)) = tokio::join!(servertask, clienttask) {
+        println!("Both tasks completed successfully.");
+    } else {
+        eprintln!("An error occurred in one of the tasks.");
+    }
+}
+
+
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
@@ -156,42 +192,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let client_port_list = read_ports("./client_port_list.txt".to_string());
     
     let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
-    let (mut server_stream_vec, mut client_stream_vec) = future.await;
-
-    // PORT TESTING START
-    // Split the server_stream_vec into individual streams
-    let mut server_streams = Vec::new();
-    while let Some(stream) = server_stream_vec.pop() {
-        server_streams.push(stream);
-    }
-    // Split the client_stream_vec into individual streams
-    let mut client_streams = Vec::new();
-    while let Some(stream) = client_stream_vec.pop() {
-        client_streams.push(stream);
-    }
+    let (server_stream_vec, client_stream_vec) = future.await;
 
     
-    let servertask = tokio::spawn(async move{
-        // Call test_server for each stream in the server_streams vector
-        for server_stream in server_streams {
-            newserver::test_server(server_stream, initial_port);
-        }
-    });
-
-    let clienttask = tokio::spawn(async move{
-        // Call test_client for each stream in the client_streams vector
-        for client_stream in client_streams {
-            newclient::test_client(client_stream, initial_port);
-        }
-    });
-
-    // Await the completion of both tasks concurrently
-    if let (Ok(_), Ok(_)) = tokio::join!(servertask, clienttask) {
-        println!("Both tasks completed successfully.");
-    } else {
-        eprintln!("An error occurred in one of the tasks.");
-    }
-
+    // PORT TESTING START
+    let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
+    future1.await;
     // PORT TESTING DONE
 
 
