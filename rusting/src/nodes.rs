@@ -199,40 +199,22 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     // PORT TESTING START
     let stream_vec_arc = Arc::new((server_stream_vec, client_stream_vec));
-    let stream_vec_clone = Arc::clone(&stream_vec_arc);
+    let stream_vec_weak = Arc::downgrade(&stream_vec_arc);
 
 
-    let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_clone).unwrap();
+    // let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_clone).unwrap();
 
+    if let Some(stream_vec_arc) = stream_vec_weak.upgrade() {
+        let (server_stream_vec, client_stream_vec) = &*stream_vec_arc;
 
-    // let server_stream_vec_arc = Arc::new(server_stream_vec);
-    // let server_stream_vec_clone = Arc::clone(&server_stream_vec_arc);
+        // let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
+        // let check = future1.await;
+        // println!("port testing: {}", check);
+        // Use server_stream_vec and client_stream_vec here.
+    }
+
 
     
-    // let server_stream_vec = match Arc::try_unwrap(server_stream_vec_clone) {
-    //     Ok(vec) => vec,
-    //     Err(_) => {
-    //         eprintln!("Cannot unwrap server_stream_vec_clone");
-    //         return; // or handle the error in some other way
-    //     }
-    // };
-
-        
-    // let client_stream_vec_arc = Arc::new(client_stream_vec);
-    // let client_stream_vec_clone = Arc::clone(&client_stream_vec_arc);
-   
-
-    // let client_stream_vec = match Arc::try_unwrap(client_stream_vec_clone) {
-    //     Ok(vec) => vec,
-    //     Err(_) => {
-    //         eprintln!("Cannot unwrap client_stream_vec_clone");
-    //         return; // or handle the error in some other way
-    //     }
-    // };
-
-    let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
-    let check = future1.await;
-    println!("port testing: {}", check);
     // PORT TESTING DONE
 
 
