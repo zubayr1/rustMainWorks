@@ -78,9 +78,8 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
             for ip in nodes_ip_clone {
             let additional_port = server_port_list[count];
             count+=1;
-            let future = newserver::create_server(ip.clone(), initial_port
+            let result = newserver::create_server(ip.clone(), initial_port
             + additional_port, test_port+ additional_port);
-            let result = block_on(future);
             server_stream_vec.push(result);
             
         }
@@ -92,9 +91,8 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
             for ip in node_ips {
                 let additional_port = client_port_list[count];
                 count+=1;
-                let future = newclient::create_client(ip.clone(), initial_port
+                let result = newclient::create_client(ip.clone(), initial_port
                 + additional_port, test_port+ additional_port);
-                let result = block_on(future);
                 client_stream_vec.push(result);
             }
         });

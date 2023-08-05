@@ -6,6 +6,7 @@ use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 
 #[allow(unused)]
+#[tokio::main]
 pub async fn create_client(ip_address: String, initial_port: u32, testport: u32) -> TcpStream
 {
     let address = [ip_address.clone(), initial_port.to_string()].join(":");

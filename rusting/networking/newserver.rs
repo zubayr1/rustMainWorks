@@ -7,6 +7,7 @@ use tokio::fs::OpenOptions;
 use chrono::Utc;
 
 #[allow(unused)]
+#[tokio::main]
 pub async fn create_server( _ip_address: String, initial_port: u32, testport: u32) -> TcpStream
 {
     let listener = TcpListener::bind(["0.0.0.0".to_string(), initial_port.to_string()].join(":")).await.unwrap(); // open connection
