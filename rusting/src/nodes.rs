@@ -1,4 +1,5 @@
 
+use futures::executor::block_on;
 use tokio::task::spawn;
 use std::env;
 use std::fs::File;
@@ -108,15 +109,15 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_vec: Vec<TcpStream>, initial_port: u32) -> bool
 {    
     // Split the server_stream_vec into individual streams
-    // let mut server_streams = Vec::new();
-    // while let Some(stream) = server_stream_vec.pop() {
-    //     server_streams.push(stream);
-    // }
-    // // Split the client_stream_vec into individual streams
-    // let mut client_streams = Vec::new();
-    // while let Some(stream) = client_stream_vec.pop() {
-    //     client_streams.push(stream);
-    // }
+    let mut server_streams = Vec::new();
+    while let Some(stream) = server_stream_vec.pop() {
+        server_streams.push(stream);
+    }
+    // Split the client_stream_vec into individual streams
+    let mut client_streams = Vec::new();
+    while let Some(stream) = client_stream_vec.pop() {
+        client_streams.push(stream);
+    }
 
     let mut check = true;
 
@@ -208,7 +209,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
-    let check = future1.await;
+    let check = block_on(future1);
     println!("port testing: {}", check);
     // PORT TESTING DONE
 
