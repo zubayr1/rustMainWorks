@@ -135,7 +135,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
             let line = future.await;
             println!("{}", line);
             if line!="".to_string()
-            {
+            {println!("ddd{}", line);
                 _count+=1;
             }
         }
