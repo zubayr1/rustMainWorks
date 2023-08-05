@@ -157,11 +157,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_port_list = read_ports("./server_port_list.txt".to_string());
     let client_port_list = read_ports("./client_port_list.txt".to_string());
     
-    // let (server_stream_vec, client_stream_vec) = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
+    let (server_stream_vec, client_stream_vec) = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
         
 
-    //  println!("{:?}", server_stream_vec);
-    //  println!("{:?}", client_stream_vec);
+     println!("{:?}", server_stream_vec);
+     println!("{:?}", client_stream_vec);
 
     let start_time = Utc::now().time();
 
@@ -197,7 +197,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {
                 port_count+=1;
                 println!("{:?}", ip_address);
-                //reactor::reactor_init(_pvss_data.clone(),committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                reactor::reactor_init(_pvss_data.clone(),committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
             }
 
