@@ -79,7 +79,6 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
             count+=1;
             let result = newserver::create_server(ip.clone(), initial_port
             + additional_port, test_port+ additional_port);
-            println!("{:?}", result);
             server_stream_vec.push(result);
             
         }
@@ -202,12 +201,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     println!("{:?}", server_stream_vec);
 
+    
     let server_stream_vec_arc = Arc::new(server_stream_vec);
     let server_stream_vec_clone = Arc::clone(&server_stream_vec_arc);
 
-
+        
     let client_stream_vec_arc = Arc::new(client_stream_vec);
     let client_stream_vec_clone = Arc::clone(&client_stream_vec_arc);
+
+    println!("{:?}", server_stream_vec_clone);
     
     
     // PORT TESTING START
