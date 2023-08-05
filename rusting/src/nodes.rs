@@ -6,6 +6,7 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
+use std::sync::{Arc, Mutex};
 
 use tokio::net::TcpStream;
 
@@ -126,17 +127,21 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
         client_streams.push(stream);
     }
 
-    let mut _count=0;
+    let check = Arc::new(Mutex::new(true));
+
+    let server_check = check.clone();
+
     let servertask = spawn(async move{
         
         // Call test_server for each stream in the server_streams vector
         for server_stream in server_streams {
             let future = newserver::test_server(server_stream, initial_port);
             let line = future.await;
-            println!("{}", line);
-            if line!="".to_string()
-            {println!("ddd{}", line);
-                _count+=1;
+
+            if line=="".to_string()
+            {
+                *server_check.lock().unwrap() = false;
+                
             }
         }
     });
@@ -153,12 +158,8 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
     servertask.await.unwrap();
     clienttask.await.unwrap();
 
-    if _count>=1
-    {
-        println!("{}", _count);
-        return true;
-    }
-    return false;
+    let check_guard = check.lock().unwrap();
+    *check_guard
 }
 
 
