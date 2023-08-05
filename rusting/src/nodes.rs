@@ -1,5 +1,4 @@
 
-use futures::executor::block_on;
 use tokio::task::spawn;
 use std::env;
 use std::fs::File;
@@ -80,6 +79,7 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
             count+=1;
             let result = newserver::create_server(ip.clone(), initial_port
             + additional_port, test_port+ additional_port);
+            println!("{:?}", result);
             server_stream_vec.push(result);
             
         }
@@ -99,19 +99,7 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 
     });
 
-    // Spawning the server and client tasks
-    // let server_task = spawn(async move {
-        
-    // });
-
-    // let client_task = spawn(async move {
-        
-    // });
-
-    // // Wait for the tasks to complete
-    // server_task.await.unwrap();
-    // client_task.await.unwrap();
-
+    
     
     return (server_stream_vec, client_stream_vec);
 }
