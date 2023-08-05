@@ -219,12 +219,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let client_stream_vec_clone = Arc::clone(&client_stream_vec_arc);
     
     
-    // // PORT TESTING START
-    // let future1 = port_testing(Arc::try_unwrap(server_stream_vec_clone.clone()).unwrap(), 
-    // Arc::try_unwrap(client_stream_vec_clone.clone()).unwrap(), initial_port);
-    // let check = future1.await;
-    // println!("port testing: {}", check);
-    // // PORT TESTING DONE
+    // PORT TESTING START
+    let future1 = port_testing(Arc::try_unwrap(server_stream_vec_clone.clone()).unwrap(), 
+    Arc::try_unwrap(client_stream_vec_clone.clone()).unwrap(), initial_port);
+    let check = future1.await;
+    println!("port testing: {}", check);
+    // PORT TESTING DONE
 
 
     let start_time = Utc::now().time();
