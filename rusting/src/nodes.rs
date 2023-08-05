@@ -245,21 +245,20 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             }
             else 
             {
-                let mut server_stream_vec_final: Vec<&TcpStream> = Vec::new();
-                let mut client_stream_vec_final: Vec<&TcpStream> = Vec::new();
+                let mut server_stream_vec_final: Vec<TcpStream> = Vec::new();
+                let mut client_stream_vec_final: Vec<TcpStream> = Vec::new();
                 
                 port_count+=1;
                 println!("{:?}", ip_address);
 
-                // let server_stream = Arc::try_unwrap(server_stream_vec_clone.clone()).unwrap();
-                // let client_stream = Arc::try_unwrap(client_stream_vec_clone.clone()).unwrap();
-
+                
                 // for element in &ip_address {
+                //     let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_arc).unwrap();
                 //     match node_ips.clone().iter().position(|x| x == *element) {
                 //         Some(index) => 
                 //         {        
-                //             server_stream_vec_final.push(&server_stream[index]);
-                //             client_stream_vec_final.push(&client_stream[index]);
+                //             server_stream_vec_final.push(server_stream_vec[index]);
+                //             client_stream_vec_final.push(client_stream_vec[index]);
                 //         },
                 //         None => 
                 //         {
@@ -267,7 +266,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 //         },
                 //     }
                 // }
-                // println!("{:?}", server_stream_vec_final.clone());
+                // println!("{:?}", server_stream_vec_final);
 
                 reactor::reactor_init(
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
