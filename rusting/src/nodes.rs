@@ -120,32 +120,33 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
 
     let mut check = true;
 
-    let servertask = spawn(async move{
-        
-        // Call test_server for each stream in the server_streams vector
-        for server_stream in server_streams {
-            let future = newserver::test_server(server_stream, initial_port);
-            let line = future.await;
+   
 
-            if line=="".to_string()
-            {
-                check = false;
-                
+    thread::scope(|s| { 
+
+        s.spawn(|| {
+
+            for server_stream in server_streams {
+                let line = newserver::test_server(server_stream, initial_port);
+    
+                if line=="".to_string()
+                {
+                    check = false;
+                    
+                }
             }
-        }
+
+        });
+
+        s.spawn(|| {
+            for client_stream in client_streams {
+                newclient::test_client(client_stream, initial_port);
+            }
+        });
+
     });
 
-    let clienttask = spawn(async move{
-        // Call test_client for each stream in the client_streams vector
-        for client_stream in client_streams {
-            let future = newclient::test_client(client_stream, initial_port);
-            future.await;
-        }
-    });
-
-    // Wait for the tasks to complete
-    servertask.await.unwrap();
-    clienttask.await.unwrap();
+   
 
     check
 }
@@ -206,9 +207,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
 
-    // let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
-    // let check = future1.await;
-    // println!("port testing: {}", check);
+    let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
+    let check = future1.await;
+    println!("port testing: {}", check);
     // PORT TESTING DONE
 
 

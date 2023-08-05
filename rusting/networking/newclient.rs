@@ -23,6 +23,7 @@ pub async fn create_client(ip_address: String, initial_port: u32, testport: u32)
 }
 
 #[allow(unused)]
+#[tokio::main]
 pub async fn test_client( mut stream: TcpStream, initial_port: u32) 
 {
     loop
