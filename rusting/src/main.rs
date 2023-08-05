@@ -117,7 +117,8 @@ fn run_nodes(args: Vec<String>)
     } 
     else  // run in prod mode
     {
-        nodes::initiate(filtered_committee.clone(), args.clone()); 
+        let future1 = nodes::initiate(filtered_committee.clone(), args.clone()); 
+        block_on(future1);
 
     }
          

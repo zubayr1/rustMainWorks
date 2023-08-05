@@ -1,3 +1,4 @@
+use futures::executor::block_on;
 use tokio::task::spawn;
 use std::env;
 use std::fs::File;
@@ -56,7 +57,7 @@ pub fn read_ports(file_name: String) -> Vec<u32>
     return ports;
 }
 
-#[tokio::main]
+
 pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, client_port_list: Vec<u32>, 
     initial_port: u32, test_port: u32) -> (Vec<TcpStream>, Vec<TcpStream>)
 {
@@ -113,7 +114,7 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
     return (server_stream_vec, client_stream_vec);
 }
 
-#[tokio::main]
+
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
@@ -157,8 +158,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_port_list = read_ports("./server_port_list.txt".to_string());
     let client_port_list = read_ports("./client_port_list.txt".to_string());
     
-    // let (server_stream_vec, client_stream_vec) = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
-        
+    let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
+    let (server_stream_vec, client_stream_vec) = block_on(future);
 
     //  println!("{:?}", server_stream_vec);
     //  println!("{:?}", client_stream_vec);
