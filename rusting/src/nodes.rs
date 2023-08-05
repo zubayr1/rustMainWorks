@@ -118,9 +118,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
         client_streams.push(stream);
     }
 
-    let check = Arc::new(Mutex::new(true));
-
-    let server_check = check.clone();
+    let mut check = true;
 
     let servertask = spawn(async move{
         
@@ -131,7 +129,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
 
             if line=="".to_string()
             {
-                *server_check.lock().unwrap() = false;
+                check = false;
                 
             }
         }
@@ -149,8 +147,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
     servertask.await.unwrap();
     clienttask.await.unwrap();
 
-    let check_guard = check.lock().unwrap();
-    *check_guard
+    check
 }
 
 
@@ -199,7 +196,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
     let (server_stream_vec, client_stream_vec) = future.await;
 
-    println!("{:?}", server_stream_vec);
 
     // PORT TESTING START
     let stream_vec_arc = Arc::new((server_stream_vec, client_stream_vec));
