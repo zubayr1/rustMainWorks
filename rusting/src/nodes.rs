@@ -1,3 +1,4 @@
+
 use tokio::task::spawn;
 use std::env;
 use std::fs::File;
@@ -32,6 +33,7 @@ pub fn create_keys() // schnorr key generation
     schnorrkel::_create_keys_schnorrkel();
 
 }
+
 
 pub fn read_ports(file_name: String) -> Vec<u32>
 {
@@ -209,15 +211,21 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
     let (server_stream_vec, client_stream_vec) = future.await;
 
+    let server_stream_vec_arc = Arc::new(server_stream_vec);
+    let server_stream_vec_clone = Arc::clone(&server_stream_vec_arc);
+
+
+    let client_stream_vec_arc = Arc::new(client_stream_vec);
+    let client_stream_vec_clone = Arc::clone(&client_stream_vec_arc);
     
     
     // PORT TESTING START
-    let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
+    let future1 = port_testing(Arc::try_unwrap(server_stream_vec_clone.clone()).unwrap(), 
+    Arc::try_unwrap(client_stream_vec_clone.clone()).unwrap(), initial_port);
     let check = future1.await;
     println!("port testing: {}", check);
     // PORT TESTING DONE
 
-    
 
     let start_time = Utc::now().time();
 
@@ -237,11 +245,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let mut level = 0;
 
         let mut _pvss_data: String = "".to_string();
-        
+
+                
 
         for (committee_id, ip_addresses_comb) in sorted.clone()
         {
-            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();
+            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();           
             
             if ip_address.len()==1
             {
@@ -251,18 +260,29 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             }
             else 
             {
-                let mut server_stream_vec_final: Vec<TcpStream> = Vec::new();
-
+                let mut server_stream_vec_final: Vec<&TcpStream> = Vec::new();
+                let mut client_stream_vec_final: Vec<&TcpStream> = Vec::new();
+                
                 port_count+=1;
                 println!("{:?}", ip_address);
-                println!("{:?}", node_ips.clone());
+
+                let server_stream = Arc::try_unwrap(server_stream_vec_clone.clone()).unwrap();
+                let client_stream = Arc::try_unwrap(client_stream_vec_clone.clone()).unwrap();
 
                 for element in &ip_address {
                     match node_ips.clone().iter().position(|x| x == *element) {
-                        Some(index) => println!("Element {} found in B at index {}", element, index),
-                        None => println!("Element {} not found in B", element),
+                        Some(index) => 
+                        {        
+                            server_stream_vec_final.push(&server_stream[index]);
+                            client_stream_vec_final.push(&client_stream[index]);
+                        },
+                        None => 
+                        {
+                            println!("Element {} not found in B", element)
+                        },
                     }
                 }
+                println!("{:?}", server_stream_vec_final.clone());
 
                 reactor::reactor_init(
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
@@ -324,8 +344,8 @@ pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<St
         ip_address.push(address);
         let level = 0;
 
-        let server_stream_vec: Vec<TcpStream> = Vec::new();
-        let client_stream_vec: Vec<TcpStream> = Vec::new();
+        // let server_stream_vec: Vec<TcpStream> = Vec::new();
+        // let client_stream_vec: Vec<TcpStream> = Vec::new();
         reactor::reactor_init(
             pvss_data.clone(), 999, ip_address.clone(), level, 
         _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
