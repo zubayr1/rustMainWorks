@@ -111,7 +111,7 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
     return (server_stream_vec, client_stream_vec);
 }
 
-
+#[tokio::main]
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
@@ -164,7 +164,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     while let Some(stream) = server_stream_vec.pop() {
         server_streams.push(stream);
     }
-
     // Split the client_stream_vec into individual streams
     let mut client_streams = Vec::new();
     while let Some(stream) = client_stream_vec.pop() {
