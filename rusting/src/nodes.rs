@@ -199,11 +199,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     // PORT TESTING START
-    let stream_vec_arc = Arc::new((server_stream_vec, client_stream_vec));
-    // let stream_vec_clone = Arc::clone(&stream_vec_arc);
+    // let stream_vec_arc = Arc::new((server_stream_vec, client_stream_vec));
+    // // let stream_vec_clone = Arc::clone(&stream_vec_arc);
 
 
-    let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_arc).unwrap();
+    // let (server_stream_vec, client_stream_vec) = Arc::try_unwrap(stream_vec_arc).unwrap();
 
 
 
