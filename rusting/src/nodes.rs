@@ -111,6 +111,8 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
     return (server_stream_vec, client_stream_vec);
 }
 
+
+
 async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_vec: Vec<TcpStream>, initial_port: u32)
 {    
     // Split the server_stream_vec into individual streams
@@ -125,14 +127,14 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
     }
 
     
-    let servertask = spawn(async move{
+    let servertask = tokio::task::spawn(async move{
         // Call test_server for each stream in the server_streams vector
         for server_stream in server_streams {
             newserver::test_server(server_stream, initial_port);
         }
     });
 
-    let clienttask = spawn(async move{
+    let clienttask = tokio::task::spawn(async move{
         // Call test_client for each stream in the client_streams vector
         for client_stream in client_streams {
             newclient::test_client(client_stream, initial_port);
@@ -140,8 +142,12 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
     });
 
     // Wait for the tasks to complete
-    servertask.await.unwrap();
-    clienttask.await.unwrap();
+    if let Err(e) = servertask.await {
+        eprintln!("Error in server task: {:?}", e);
+    }
+    if let Err(e) = clienttask.await {
+        eprintln!("Error in client task: {:?}", e);
+    }
 }
 
 
