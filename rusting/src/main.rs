@@ -15,7 +15,8 @@ mod nodes;
 // mod nodes_test;
 mod nodes_test;
 
-fn run_nodes(args: Vec<String>)
+#[tokio::main]
+async fn run_nodes(args: Vec<String>)
 {
 
     let _file = File::create("output.log"); // to create output log file where all logs will be stored
