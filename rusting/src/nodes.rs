@@ -160,16 +160,16 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     // PORT TESTING START
     // Split the server_stream_vec into individual streams
-    let mut server_streams = Vec::new();
-    while let Some(stream) = server_stream_vec.pop() {
-        server_streams.push(stream);
-    }
+    // let mut server_streams = Vec::new();
+    // while let Some(stream) = server_stream_vec.pop() {
+    //     server_streams.push(stream);
+    // }
 
-    // Split the client_stream_vec into individual streams
-    let mut client_streams = Vec::new();
-    while let Some(stream) = client_stream_vec.pop() {
-        client_streams.push(stream);
-    }
+    // // Split the client_stream_vec into individual streams
+    // let mut client_streams = Vec::new();
+    // while let Some(stream) = client_stream_vec.pop() {
+    //     client_streams.push(stream);
+    // }
 
     
     // let servertask = tokio::spawn(async move{
