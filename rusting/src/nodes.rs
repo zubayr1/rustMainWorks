@@ -10,6 +10,7 @@ use chrono::Utc;
 use std::sync::{Arc, Mutex};
 
 use tokio::net::TcpStream;
+use tokio::io::{self, AsyncReadExt};
 
 use tokio::sync::mpsc;
 
@@ -61,26 +62,29 @@ pub fn read_ports(file_name: String) -> Vec<u32>
 
 
 pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, client_port_list: Vec<u32>, 
-    initial_port: u32, test_port: u32) -> (Vec<TcpStream>, Vec<TcpStream>)
+    initial_port: u32, test_port: u32) -> (Arc<Mutex<Vec<TcpStream>>>, Arc<Mutex<Vec<TcpStream>>>)
 {
     let nodes_ip_clone = node_ips.clone();
 
-    let (server_tx, mut server_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
-        mpsc::channel(32);
-    let (client_tx, mut client_rx): (mpsc::Sender<TcpStream>, mpsc::Receiver<TcpStream>) =
-    mpsc::channel(32);
+    let server_stream_vec: Arc<Mutex<Vec<TcpStream>>> = Arc::new(Mutex::new(Vec::new()));
+    let client_stream_vec: Arc<Mutex<Vec<TcpStream>>> = Arc::new(Mutex::new(Vec::new()));
+
+    let thread_shared_server = server_stream_vec.clone();
+    let thread_shared_client = client_stream_vec.clone();
 
     // Spawning the server and client tasks
     let server_task = spawn(async move {
         let mut count = 0;
         for ip in nodes_ip_clone {
             let additional_port = server_port_list[count];
-            count+=1;
-            let future = newserver::create_server(ip.clone(), initial_port
-            + additional_port, test_port+ additional_port);
+            count += 1;
+            let future = newserver::create_server(
+                ip.clone(),
+                initial_port + additional_port,
+                test_port + additional_port,
+            );
             let result = future.await;
-            let _ = server_tx.send(result).await;
-            
+            thread_shared_server.lock().unwrap().push(result);
         }
     });
 
@@ -88,11 +92,14 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
         let mut count = 0;
         for ip in node_ips {
             let additional_port = client_port_list[count];
-            count+=1;
-            let future = newclient::create_client(ip.clone(), initial_port
-            + additional_port, test_port+ additional_port);
+            count += 1;
+            let future = newclient::create_client(
+                ip.clone(),
+                initial_port + additional_port,
+                test_port + additional_port,
+            );
             let result = future.await;
-            let _ = client_tx.send(result).await;
+            thread_shared_client.lock().unwrap().push(result);
         }
     });
 
@@ -100,19 +107,8 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
     server_task.await.unwrap();
     client_task.await.unwrap();
 
-    // Collect the results
-    let mut server_stream_vec = Vec::new();
-    while let Some(result) = server_rx.recv().await {
-        server_stream_vec.push(result);
-    }
-
-    let mut client_stream_vec = Vec::new();
-    while let Some(result) = client_rx.recv().await {
-        client_stream_vec.push(result);
-    }
-
-    
-    return (server_stream_vec, client_stream_vec);
+    // Return the Arc<Mutex<Vec<TcpStream>>>
+    (server_stream_vec, client_stream_vec)
 }
 
 
@@ -213,11 +209,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     println!("{:?}", server_stream_vec);
 
-    let server_stream_vec_arc = Arc::new(server_stream_vec);
+    let unwrapped_server_vec = Arc::try_unwrap(server_stream_vec).unwrap().into_inner().unwrap();
+
+    let unwrapped_client_vec = Arc::try_unwrap(client_stream_vec).unwrap().into_inner().unwrap();
+
+    let server_stream_vec_arc = Arc::new(unwrapped_server_vec);
     let server_stream_vec_clone = Arc::clone(&server_stream_vec_arc);
 
 
-    let client_stream_vec_arc = Arc::new(client_stream_vec);
+    let client_stream_vec_arc = Arc::new(unwrapped_client_vec);
     let client_stream_vec_clone = Arc::clone(&client_stream_vec_arc);
     
     
