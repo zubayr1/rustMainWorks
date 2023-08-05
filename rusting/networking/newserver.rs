@@ -21,7 +21,7 @@ pub async fn create_server( _ip_address: String, initial_port: u32, testport: u3
 }
 
 #[allow(unused)]
-pub async fn test_server( mut socket: TcpStream, initial_port: u32) 
+pub async fn test_server( mut socket: TcpStream, initial_port: u32) -> String
 {
     let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
         
@@ -59,7 +59,7 @@ pub async fn test_server( mut socket: TcpStream, initial_port: u32)
                 
     }
 
-    println!("{:?}", line);
+    return line;
 }
 
 
