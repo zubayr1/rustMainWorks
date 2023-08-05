@@ -128,8 +128,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
         s.spawn(|| {
 
             for server_stream in server_stream_vec {
-                let future = newserver::test_server(server_stream, initial_port);
-                let line  = block_on(future);
+                let line = newserver::test_server(server_stream, initial_port);
                 if line=="".to_string()
                 {
                     check = false;
@@ -141,14 +140,12 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
 
         s.spawn(|| {
             for client_stream in client_stream_vec {
-                let future = newclient::test_client(client_stream, initial_port);
-                block_on(future);
+                newclient::test_client(client_stream, initial_port);
+                
             }
         });
 
     });
-
-   
 
     check
 }
@@ -210,7 +207,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
-    let check = block_on(future1);
+    let check = future1.await;
     println!("port testing: {}", check);
     // PORT TESTING DONE
 
