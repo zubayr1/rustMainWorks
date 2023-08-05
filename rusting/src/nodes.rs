@@ -133,7 +133,7 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
         for server_stream in server_streams {
             let future = newserver::test_server(server_stream, initial_port);
             let line = future.await;
-
+            println!("{}", line);
             if line!="".to_string()
             {
                 _count+=1;
