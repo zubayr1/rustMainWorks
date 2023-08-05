@@ -159,7 +159,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let client_port_list = read_ports("./client_port_list.txt".to_string());
     
     let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
-    let (server_stream_vec, client_stream_vec) = block_on(future);
+    let (server_stream_vec, client_stream_vec) = future.await;
 
     //  println!("{:?}", server_stream_vec);
     //  println!("{:?}", client_stream_vec);
