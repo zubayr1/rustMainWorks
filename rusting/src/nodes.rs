@@ -125,26 +125,23 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
     }
 
     
-    let servertask = tokio::spawn(async move{
+    let servertask = spawn(async move{
         // Call test_server for each stream in the server_streams vector
         for server_stream in server_streams {
             newserver::test_server(server_stream, initial_port);
         }
     });
 
-    let clienttask = tokio::spawn(async move{
+    let clienttask = spawn(async move{
         // Call test_client for each stream in the client_streams vector
         for client_stream in client_streams {
             newclient::test_client(client_stream, initial_port);
         }
     });
 
-    // Await the completion of both tasks concurrently
-    if let (Ok(_), Ok(_)) = tokio::join!(servertask, clienttask) {
-        println!("Both tasks completed successfully.");
-    } else {
-        eprintln!("An error occurred in one of the tasks.");
-    }
+    // Wait for the tasks to complete
+    servertask.await.unwrap();
+    clienttask.await.unwrap();
 }
 
 
