@@ -128,8 +128,8 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
         s.spawn(|| {
 
             for server_stream in server_stream_vec {
-                let line = newserver::test_server(server_stream, initial_port);
-    
+                let future = newserver::test_server(server_stream, initial_port);
+                let line  = block_on(future);
                 if line=="".to_string()
                 {
                     check = false;
@@ -141,7 +141,8 @@ async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_v
 
         s.spawn(|| {
             for client_stream in client_stream_vec {
-                newclient::test_client(client_stream, initial_port);
+                let future = newclient::test_client(client_stream, initial_port);
+                block_on(future);
             }
         });
 
