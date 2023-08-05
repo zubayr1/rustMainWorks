@@ -119,8 +119,6 @@ fn run_nodes(args: Vec<String>)
     {
         nodes::initiate(filtered_committee.clone(), args.clone()); 
 
-
-        
     }
          
 
