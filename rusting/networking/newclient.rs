@@ -23,6 +23,25 @@ pub async fn create_client(ip_address: String, initial_port: u32, testport: u32)
 
 #[allow(unused)]
 #[tokio::main]
+pub async fn test_client( mut stream: TcpStream, initial_port: u32) 
+{
+    loop
+    {
+        // Write data.           
+
+         stream.write_all("test_string".as_bytes()).await.unwrap();
+         let result = stream.write_all(b"EOF").await;
+
+        if  result.is_ok()
+        {
+            break;
+        }             
+
+    }
+}
+
+#[allow(unused)]
+#[tokio::main]
 pub async fn match_tcp_client(address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> Result<(), Box<dyn Error>> {
 
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();

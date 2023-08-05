@@ -22,6 +22,51 @@ pub async fn create_server( _ip_address: String, initial_port: u32, testport: u3
 
 #[allow(unused)]
 #[tokio::main]
+pub async fn test_server( mut socket: TcpStream, initial_port: u32) 
+{
+    let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
+        
+    let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
+    let mut line: String  = String :: new();
+
+    let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
+
+    let text;
+
+    text = ["server at port".to_string(), initial_port.to_string()].join(": ");
+
+    file.write_all(text.as_bytes()).await.unwrap();
+    file.write_all(b"\n").await.unwrap();
+
+    
+    loop 
+    {         
+        let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
+
+        // if _bytes_read == 0 {
+        //     // End of stream, the client has closed the connection.
+        //     break;
+        // }
+    
+        if line.contains("EOF")  
+        {
+            line = line.replace("EOF", "");
+
+          
+            break;
+        }
+
+        line.clear();
+                
+    }
+
+    println!("{:?}", line);
+}
+
+
+
+#[allow(unused)]
+#[tokio::main]
 pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) -> String{
    // loop{
     let start_time = Utc::now().time();
@@ -68,6 +113,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
         }
 
         line.clear();
+        
                 
     }
 
