@@ -254,8 +254,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             }
             else 
             {
-                let mut server_stream_vec_final: Vec<Rc<TcpStream>> = Vec::new();
-                let mut client_stream_vec_final: Vec<Rc<TcpStream>> = Vec::new();
+                let mut server_stream_vec_final_rc: Vec<Rc<TcpStream>> = Vec::new();
+                let mut client_stream_vec_final_rc: Vec<Rc<TcpStream>> = Vec::new();
                 
                 port_count+=1;
                 
@@ -264,8 +264,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                     match node_ips.clone().iter().position(|x| x == *element) {
                         Some(index) => 
                         {        
-                            server_stream_vec_final.push(server_stream_vec_rc[index].clone());
-                            client_stream_vec_final.push(client_stream_vec_rc[index].clone());
+                            server_stream_vec_final_rc.push(server_stream_vec_rc[index].clone());
+                            client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
                         },
                         None => 
                         {
@@ -273,9 +273,20 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                         },
                     }
                 }
-                println!("{:?}", server_stream_vec_final);
 
-                reactor::reactor_init(
+                let server_stream_vec_final: Vec<TcpStream> = server_stream_vec_final_rc
+                .into_iter()
+                    .filter_map(|rc| Rc::try_unwrap(rc).ok())
+                    .collect();
+                
+                let client_stream_vec_final: Vec<TcpStream> = client_stream_vec_final_rc
+                .into_iter()
+                    .filter_map(|rc| Rc::try_unwrap(rc).ok())
+                    .collect();
+
+
+
+                reactor::reactor_init(server_stream_vec_final, client_stream_vec_final, 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
@@ -335,9 +346,9 @@ pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<St
         ip_address.push(address);
         let level = 0;
 
-        // let server_stream_vec: Vec<TcpStream> = Vec::new();
-        // let client_stream_vec: Vec<TcpStream> = Vec::new();
-        reactor::reactor_init(
+        let server_stream_vec: Vec<TcpStream> = Vec::new();
+        let client_stream_vec: Vec<TcpStream> = Vec::new();
+        reactor::reactor_init(server_stream_vec, client_stream_vec,
             pvss_data.clone(), 999, ip_address.clone(), level, 
         _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
     }
