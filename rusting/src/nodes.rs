@@ -107,30 +107,16 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 async fn port_testing(server_stream_vec_rc: &Vec<Rc<TcpStream>>, client_stream_vec_rc: &Vec<Rc<TcpStream>>, initial_port: u32) -> bool
 {   
 
-    for rc in server_stream_vec_rc {
-        println!("Strong count: {}", Rc::strong_count(rc));
-    }
+    let server_stream_vec: Vec<Rc<TcpStream>> = server_stream_vec_rc.iter().cloned().collect();
+    let client_stream_vec: Vec<Rc<TcpStream>> = client_stream_vec_rc.iter().cloned().collect();
 
-    let server_stream_slice = server_stream_vec_rc.as_slice();
-    let mut server_stream_vec_rc = Vec::with_capacity(server_stream_slice.len());
-    println!("{}, {}", server_stream_slice.len(), server_stream_vec_rc.len());
-    server_stream_vec_rc.clone_from_slice(server_stream_slice);
-
-    for rc in &server_stream_vec_rc {
-        println!("Strong count: {}", Rc::strong_count(rc));
-    }
-
-    let client_stream_slice = client_stream_vec_rc.as_slice();
-    let client_stream_vec_rc = client_stream_slice.to_vec();
-    
-
-    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
+    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec
     .into_iter()
     .filter_map(|rc| Rc::try_unwrap(rc).ok())
     .collect();
 
 
-    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc
+    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec
     .into_iter()
     .filter_map(|rc| Rc::try_unwrap(rc).ok())
     .collect();
@@ -234,8 +220,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     .map(Rc::new)
     .collect();
 
-    // PORT TESTING START
-  
+    // PORT TESTING START  
     let future1 = port_testing(&server_stream_vec_rc, &client_stream_vec_rc, initial_port);
     let check = future1.await;
     println!("port testing: {}", check);
