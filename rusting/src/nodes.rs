@@ -111,12 +111,12 @@ async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_ve
         .filter_map(|rc| Rc::try_unwrap(rc).ok())
         .collect();
 
-
+        println!("{:?}",client_stream_vec_rc);
     let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc
     .into_iter()
         .filter_map(|rc| Rc::try_unwrap(rc).ok())
         .collect();
-    println!("{:?}",client_stream_vec);
+    
     // Split the server_stream_vec into individual streams
     let mut server_streams = Vec::new();
     while let Some(stream) = server_stream_vec.pop() {
