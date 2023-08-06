@@ -104,13 +104,11 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 
 
 
-async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_vec_rc: Vec<Rc<TcpStream>>, initial_port: u32) -> bool
+async fn port_testing(server_stream_vec_rc: &Vec<Rc<TcpStream>>, client_stream_vec_rc: &Vec<Rc<TcpStream>>, initial_port: u32) -> bool
 {   
 
-    for rc in &server_stream_vec_rc {
-        println!("Strong count: {}", Rc::strong_count(rc));
-    }
-
+    let server_stream_vec_rc = server_stream_vec_rc.clone();
+    let client_stream_vec_rc = client_stream_vec_rc.clone();
 
     let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
     .into_iter()
@@ -224,14 +222,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     // PORT TESTING START
   
-    let future1 = port_testing(server_stream_vec_rc, client_stream_vec_rc, initial_port);
+    let future1 = port_testing(&server_stream_vec_rc, &client_stream_vec_rc, initial_port);
     let check = future1.await;
     println!("port testing: {}", check);
+
     // PORT TESTING DONE
 
 
-    let start_time = Utc::now().time();
-   
+    let start_time = Utc::now().time();   
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
@@ -268,37 +266,37 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 
                 port_count+=1;
                 
-                // for element in &ip_address 
-                // {                    
-                //     match node_ips.clone().iter().position(|x| x == *element) {
-                //         Some(index) => 
-                //         {        
-                //             server_stream_vec_final_rc.push(server_stream_vec_rc[index].clone());
-                //             client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
-                //         },
-                //         None => 
-                //         {
-                //             println!("Element {} not found in B", element)
-                //         },
-                //     }
-                // }
-                // // println!("{:?}", server_stream_vec_final_rc);
-                // let server_stream_vec_final: Vec<TcpStream> = server_stream_vec_final_rc
-                // .into_iter()
-                //     .filter_map(|rc| Rc::try_unwrap(rc).ok())
-                //     .collect();
+                for element in &ip_address 
+                {                    
+                    match node_ips.clone().iter().position(|x| x == *element) {
+                        Some(index) => 
+                        {        
+                            server_stream_vec_final_rc.push(server_stream_vec_rc[index].clone());
+                            client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
+                        },
+                        None => 
+                        {
+                            println!("Element {} not found in B", element)
+                        },
+                    }
+                }
+                // println!("{:?}", server_stream_vec_final_rc);
+                let server_stream_vec_final: Vec<TcpStream> = server_stream_vec_final_rc
+                .into_iter()
+                    .filter_map(|rc| Rc::try_unwrap(rc).ok())
+                    .collect();
                 
-                // let client_stream_vec_final: Vec<TcpStream> = client_stream_vec_final_rc
-                // .into_iter()
-                //     .filter_map(|rc| Rc::try_unwrap(rc).ok())
-                //     .collect();
+                let client_stream_vec_final: Vec<TcpStream> = client_stream_vec_final_rc
+                .into_iter()
+                    .filter_map(|rc| Rc::try_unwrap(rc).ok())
+                    .collect();
 
 
 
-                // reactor::reactor_init(server_stream_vec_final, client_stream_vec_final, 
-                //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                // level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                // level+=1;
+                reactor::reactor_init(server_stream_vec_final, client_stream_vec_final, 
+                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                level+=1;
             }
 
             
