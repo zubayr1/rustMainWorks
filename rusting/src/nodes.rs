@@ -104,19 +104,16 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 
 
 
-async fn port_testing(server_stream_vec_rc: &Vec<Rc<TcpStream>>, client_stream_vec_rc: &Vec<Rc<TcpStream>>, initial_port: u32) -> bool
+async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_vec_rc: Vec<Rc<TcpStream>>, initial_port: u32) -> bool
 {   
 
-    let server_stream_vec: Vec<Rc<TcpStream>> = server_stream_vec_rc.iter().cloned().collect();
-    let client_stream_vec: Vec<Rc<TcpStream>> = client_stream_vec_rc.iter().cloned().collect();
-
-    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec
+    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
     .into_iter()
     .filter_map(|rc| Rc::try_unwrap(rc).ok())
     .collect();
 
 
-    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec
+    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc
     .into_iter()
     .filter_map(|rc| Rc::try_unwrap(rc).ok())
     .collect();
@@ -212,18 +209,18 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
     let (server_stream_vec, client_stream_vec) = future.await;
 
-    let server_stream_vec_rc: Vec<Rc<TcpStream>> = server_stream_vec.into_iter()
-    .map(Rc::new)
-    .collect();
+    // let server_stream_vec_rc: Vec<Rc<TcpStream>> = server_stream_vec.into_iter()
+    // .map(Rc::new)
+    // .collect();
 
-    let client_stream_vec_rc: Vec<Rc<TcpStream>> = client_stream_vec.into_iter()
-    .map(Rc::new)
-    .collect();
+    // let client_stream_vec_rc: Vec<Rc<TcpStream>> = client_stream_vec.into_iter()
+    // .map(Rc::new)
+    // .collect();
 
     // PORT TESTING START  
-    let future1 = port_testing(&server_stream_vec_rc, &client_stream_vec_rc, initial_port);
-    let check = future1.await;
-    println!("port testing: {}", check);
+    // let future1 = port_testing(server_stream_vec_rc, client_stream_vec_rc, initial_port);
+    // let check = future1.await;
+    // println!("port testing: {}", check);
 
     // PORT TESTING DONE
 
@@ -270,8 +267,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                     match node_ips.clone().iter().position(|x| x == *element) {
                         Some(index) => 
                         {        
-                            server_stream_vec_final_rc.push(server_stream_vec_rc[index].clone());
-                            client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
+                            // server_stream_vec_final_rc.push(server_stream_vec_rc[index].clone());
+                            // client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
+                            println!("{}", index);
                         },
                         None => 
                         {
