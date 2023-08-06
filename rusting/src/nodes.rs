@@ -112,7 +112,8 @@ async fn port_testing(server_stream_vec_rc: &Vec<Rc<TcpStream>>, client_stream_v
     }
 
     let server_stream_slice = server_stream_vec_rc.as_slice();
-    let mut server_stream_vec_rc = Vec::new();
+    let mut server_stream_vec_rc = Vec::with_capacity(server_stream_slice.len());
+    println!("{}, {}", server_stream_slice.len(), server_stream_vec_rc.len());
     server_stream_vec_rc.clone_from_slice(server_stream_slice);
 
     for rc in &server_stream_vec_rc {
