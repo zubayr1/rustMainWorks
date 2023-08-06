@@ -111,7 +111,7 @@ async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_ve
         println!("Strong count: {}", Rc::strong_count(rc));
     }
 
-    
+
     let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
     .into_iter()
     .filter_map(|rc| Rc::try_unwrap(rc).ok())
@@ -224,7 +224,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     // PORT TESTING START
   
-    let future1 = port_testing(server_stream_vec_rc.clone(), client_stream_vec_rc.clone(), initial_port);
+    let future1 = port_testing(server_stream_vec_rc, client_stream_vec_rc, initial_port);
     let check = future1.await;
     println!("port testing: {}", check);
     // PORT TESTING DONE
