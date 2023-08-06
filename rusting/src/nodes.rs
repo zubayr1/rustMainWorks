@@ -106,8 +106,16 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 
 async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_vec_rc: Vec<Rc<TcpStream>>, initial_port: u32) -> bool
 {   
-    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc.iter().cloned().map(Rc::try_unwrap).collect::<Result<_, _>>().unwrap();
-    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc.iter().cloned().map(Rc::try_unwrap).collect::<Result<_, _>>().unwrap();
+    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
+    .into_iter()
+        .filter_map(|rc| Rc::try_unwrap(rc).ok())
+        .collect();
+
+
+    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc
+    .into_iter()
+        .filter_map(|rc| Rc::try_unwrap(rc).ok())
+        .collect();
 
     // Split the server_stream_vec into individual streams
     let mut server_streams = Vec::new();
