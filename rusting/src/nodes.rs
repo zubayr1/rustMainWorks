@@ -103,7 +103,7 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 }
 
 
-
+#[allow(unused)]
 async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_vec_rc: Vec<Rc<TcpStream>>, initial_port: u32) -> bool
 {   
 
@@ -206,17 +206,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_port_list = read_ports("./server_port_list.txt".to_string());
     let client_port_list = read_ports("./client_port_list.txt".to_string());
     
-    let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
-    let (server_stream_vec, client_stream_vec) = future.await;
-
-    // let server_stream_vec_rc: Vec<Rc<TcpStream>> = server_stream_vec.into_iter()
-    // .map(Rc::new)
-    // .collect();
-
-    // let client_stream_vec_rc: Vec<Rc<TcpStream>> = client_stream_vec.into_iter()
-    // .map(Rc::new)
-    // .collect();
-
+    
     // PORT TESTING START  
     // let future1 = port_testing(server_stream_vec_rc, client_stream_vec_rc, initial_port);
     // let check = future1.await;
@@ -257,10 +247,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             }
             else 
             {
-                let mut server_stream_vec_final_rc: Vec<Rc<TcpStream>> = Vec::new();
-                let mut client_stream_vec_final_rc: Vec<Rc<TcpStream>> = Vec::new();
-                
+                               
                 port_count+=1;
+                
+                let mut selected_nodes: Vec<String> = Vec::new();
+                
                 
                 for element in &ip_address 
                 {                    
@@ -269,7 +260,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                         {        
                             // server_stream_vec_final_rc.push(server_stream_vec_rc[index].clone());
                             // client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
-                            println!("{}", index);
+                            if let Some(indexed_element) = node_ips.clone().get(index) {
+                                selected_nodes.push(indexed_element.clone());
+                            }
                         },
                         None => 
                         {
@@ -277,20 +270,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                         },
                     }
                 }
-                // println!("{:?}", server_stream_vec_final_rc);
-                let server_stream_vec_final: Vec<TcpStream> = server_stream_vec_final_rc
-                .into_iter()
-                    .filter_map(|rc| Rc::try_unwrap(rc).ok())
-                    .collect();
-                
-                let client_stream_vec_final: Vec<TcpStream> = client_stream_vec_final_rc
-                .into_iter()
-                    .filter_map(|rc| Rc::try_unwrap(rc).ok())
-                    .collect();
 
+                let future = portifying(selected_nodes.clone(), server_port_list.clone(), 
+                client_port_list.clone(), initial_port.clone(), test_port.clone());
+                let (server_stream_vec, client_stream_vec) = future.await;
 
+               
 
-                reactor::reactor_init(server_stream_vec_final, client_stream_vec_final, 
+                reactor::reactor_init(server_stream_vec, client_stream_vec, 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
