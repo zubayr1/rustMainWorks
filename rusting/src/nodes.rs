@@ -108,14 +108,14 @@ async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_ve
 {   
     let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
     .into_iter()
-        .filter_map(|rc| Rc::try_unwrap(rc).ok())
-        .collect();
+    .filter_map(|rc| Rc::try_unwrap(rc).ok())
+    .collect();
 
 
     let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc
     .into_iter()
-        .filter_map(|rc| Rc::try_unwrap(rc).ok())
-        .collect();
+    .filter_map(|rc| Rc::try_unwrap(rc).ok())
+    .collect();
     println!("{:?}",client_stream_vec);
 
 
@@ -191,7 +191,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     let mut node_ips: Vec<String> = Vec::new();
 
-    for line_result in reader.lines() {
+    for line_result in reader.lines() 
+    {
         let line = line_result.unwrap();
 
         let ip: Vec<&str> = line.split("-").collect();
