@@ -273,7 +273,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                         },
                     }
                 }
-
+                println!("{:?}", server_stream_vec_final_rc);
                 let server_stream_vec_final: Vec<TcpStream> = server_stream_vec_final_rc
                 .into_iter()
                     .filter_map(|rc| Rc::try_unwrap(rc).ok())
