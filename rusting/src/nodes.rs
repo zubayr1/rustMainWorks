@@ -114,6 +114,10 @@ async fn port_testing(server_stream_vec_rc: &Vec<Rc<TcpStream>>, client_stream_v
     let server_stream_slice = server_stream_vec_rc.as_slice();
     let server_stream_vec_rc = server_stream_slice.to_vec();
 
+    for rc in &server_stream_vec_rc {
+        println!("Strong count: {}", Rc::strong_count(rc));
+    }
+
     let client_stream_slice = client_stream_vec_rc.as_slice();
     let client_stream_vec_rc = client_stream_slice.to_vec();
     
