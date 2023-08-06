@@ -1,5 +1,4 @@
 
-
 use std::env;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -7,7 +6,6 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
-use std::rc::Rc;
 use tokio::net::TcpStream;
 
 use std::thread;
@@ -104,21 +102,8 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 
 
 #[allow(unused)]
-async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_vec_rc: Vec<Rc<TcpStream>>, initial_port: u32) -> bool
+async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_vec: Vec<TcpStream>, initial_port: u32) -> bool
 {   
-
-    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
-    .into_iter()
-    .filter_map(|rc| Rc::try_unwrap(rc).ok())
-    .collect();
-
-
-    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc
-    .into_iter()
-    .filter_map(|rc| Rc::try_unwrap(rc).ok())
-    .collect();
-    println!("{:?}",client_stream_vec);
-
 
     // Split the server_stream_vec into individual streams
     let mut server_streams = Vec::new();
@@ -208,9 +193,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     
     // PORT TESTING START  
-    // let future1 = port_testing(server_stream_vec_rc, client_stream_vec_rc, initial_port);
-    // let check = future1.await;
-    // println!("port testing: {}", check);
+    let future = portifying(node_ips.clone(), server_port_list.clone(), 
+                client_port_list.clone(), initial_port.clone(), test_port.clone());
+                let (server_stream_vec, client_stream_vec) = future.await;
+
+    let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
+    let check = future1.await;
+    println!("port testing: {}", check);
 
     // PORT TESTING DONE
 
@@ -259,8 +248,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                     match node_ips.clone().iter().position(|x| x == *element) {
                         Some(index) => 
                         {        
-                            // server_stream_vec_final_rc.push(server_stream_vec_rc[index].clone());
-                            // client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
+                            
                             if let Some(indexed_element) = node_ips.clone().get(index) {
                                 selected_nodes.push(indexed_element.clone());
                                 selected_server_port_list.push(server_port_list.clone()[index]);
