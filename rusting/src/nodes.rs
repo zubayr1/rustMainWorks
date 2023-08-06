@@ -104,8 +104,11 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 
 
 
-async fn port_testing(mut server_stream_vec: Vec<TcpStream>, mut client_stream_vec: Vec<TcpStream>, initial_port: u32) -> bool
-{    
+async fn port_testing(server_stream_vec_rc: Vec<Rc<TcpStream>>, client_stream_vec_rc: Vec<Rc<TcpStream>>, initial_port: u32) -> bool
+{   
+    let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc.iter().cloned().map(Rc::try_unwrap).collect::<Result<_, _>>().unwrap();
+    let mut client_stream_vec: Vec<TcpStream> = client_stream_vec_rc.iter().cloned().map(Rc::try_unwrap).collect::<Result<_, _>>().unwrap();
+
     // Split the server_stream_vec into individual streams
     let mut server_streams = Vec::new();
     while let Some(stream) = server_stream_vec.pop() {
@@ -194,17 +197,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let future = portifying(node_ips.clone(), server_port_list, client_port_list, initial_port, test_port);
     let (server_stream_vec, client_stream_vec) = future.await;
 
-
-    // PORT TESTING START
-  
-    // let future1 = port_testing(server_stream_vec, client_stream_vec, initial_port);
-    // let check = future1.await;
-    // println!("port testing: {}", check);
-    // PORT TESTING DONE
-
-
-    let start_time = Utc::now().time();
-
     let server_stream_vec_rc: Vec<Rc<TcpStream>> = server_stream_vec.into_iter()
     .map(Rc::new)
     .collect();
@@ -212,6 +204,17 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let client_stream_vec_rc: Vec<Rc<TcpStream>> = client_stream_vec.into_iter()
     .map(Rc::new)
     .collect();
+
+    // PORT TESTING START
+  
+    let future1 = port_testing(server_stream_vec_rc.clone(), client_stream_vec_rc.clone(), initial_port);
+    let check = future1.await;
+    println!("port testing: {}", check);
+    // PORT TESTING DONE
+
+
+    let start_time = Utc::now().time();
+   
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
@@ -247,11 +250,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 let mut client_stream_vec_final: Vec<Rc<TcpStream>> = Vec::new();
                 
                 port_count+=1;
-                println!("{:?}", ip_address);
                 
                 for element in &ip_address 
-                {
-                    
+                {                    
                     match node_ips.clone().iter().position(|x| x == *element) {
                         Some(index) => 
                         {        
