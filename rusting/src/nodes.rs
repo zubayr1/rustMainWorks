@@ -251,7 +251,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 port_count+=1;
                 
                 let mut selected_nodes: Vec<String> = Vec::new();
-                
+                let mut selected_server_port_list: Vec<u32> = Vec::new();
+                let mut selected_client_port_list: Vec<u32> = Vec::new();
                 
                 for element in &ip_address 
                 {                    
@@ -262,6 +263,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                             // client_stream_vec_final_rc.push(client_stream_vec_rc[index].clone());
                             if let Some(indexed_element) = node_ips.clone().get(index) {
                                 selected_nodes.push(indexed_element.clone());
+                                selected_server_port_list.push(server_port_list.clone()[index]);
+                                selected_client_port_list.push(client_port_list.clone()[index]);
                             }
                         },
                         None => 
@@ -271,8 +274,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                     }
                 }
 
-                let future = portifying(selected_nodes.clone(), server_port_list.clone(), 
-                client_port_list.clone(), initial_port.clone(), test_port.clone());
+                let future = portifying(selected_nodes.clone(), selected_server_port_list.clone(), 
+                selected_client_port_list.clone(), initial_port.clone(), test_port.clone());
                 let (server_stream_vec, client_stream_vec) = future.await;
 
                println!("{:?}", server_stream_vec);
