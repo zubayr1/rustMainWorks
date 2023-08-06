@@ -275,7 +275,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 client_port_list.clone(), initial_port.clone(), test_port.clone());
                 let (server_stream_vec, client_stream_vec) = future.await;
 
-               
+               println!("{:?}", server_stream_vec);
 
                 reactor::reactor_init(server_stream_vec, client_stream_vec, 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
