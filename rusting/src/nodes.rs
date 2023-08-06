@@ -235,8 +235,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 level+=1
             }
             else 
-            {
-                               
+            {                               
                 port_count+=1;
                 
                 let mut selected_nodes: Vec<String> = Vec::new();
@@ -245,10 +244,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 
                 for element in &ip_address 
                 {                    
-                    match node_ips.clone().iter().position(|x| x == *element) {
+                    match node_ips.clone().iter().position(|x| x == *element) 
+                    {
                         Some(index) => 
-                        {        
-                            
+                        {   
                             if let Some(indexed_element) = node_ips.clone().get(index) {
                                 selected_nodes.push(indexed_element.clone());
                                 selected_server_port_list.push(server_port_list.clone()[index]);
@@ -265,8 +264,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 let future = portifying(selected_nodes.clone(), selected_server_port_list.clone(), 
                 selected_client_port_list.clone(), initial_port.clone(), test_port.clone());
                 let (server_stream_vec, client_stream_vec) = future.await;
-
-               println!("{:?}", server_stream_vec);
 
                 reactor::reactor_init(server_stream_vec, client_stream_vec, 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
