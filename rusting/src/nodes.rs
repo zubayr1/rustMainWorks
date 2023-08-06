@@ -107,8 +107,11 @@ pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, clien
 async fn port_testing(server_stream_vec_rc: &Vec<Rc<TcpStream>>, client_stream_vec_rc: &Vec<Rc<TcpStream>>, initial_port: u32) -> bool
 {   
 
-    let server_stream_vec_rc = server_stream_vec_rc.clone();
-    let client_stream_vec_rc = client_stream_vec_rc.clone();
+    let server_stream_slice = server_stream_vec_rc.as_slice();
+    let server_stream_vec_rc = server_stream_slice.to_vec();
+
+    let client_stream_slice = client_stream_vec_rc.as_slice();
+    let client_stream_vec_rc = client_stream_slice.to_vec();
 
     let mut server_stream_vec: Vec<TcpStream> = server_stream_vec_rc
     .into_iter()
