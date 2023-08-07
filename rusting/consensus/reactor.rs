@@ -398,19 +398,21 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         println!("{:?}, {:?}", V1_vec, V1);
         println!("{:?}, {:?}", V2_vec, V2);
 
-        let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
-             V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-        let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
-            V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+        // let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
+        //      V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+        // let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
+        //     V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
         let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
         let mut _merkle_len: usize= 0;
 
+        let v1 = "v1".to_string();
+        let v2 = "v2".to_string();
         
-        // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
+        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
 
-        // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
+        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
         
 
         return (_witnesses_vec, _merkle_len);
