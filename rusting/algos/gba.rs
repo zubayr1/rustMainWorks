@@ -149,20 +149,20 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
         W = tuples;
     }
 
-    let mut forward_output: Vec<String> = Vec::new();
-    if W.len()>0
-    {
-        let (pi_val, v): (String, String) = W[0].clone();
+    // let mut forward_output: Vec<String> = Vec::new();
+    // if W.len()>0
+    // {
+    //     let (pi_val, v): (String, String) = W[0].clone();
 
-        let mut W_vec: Vec<String> = Vec::new();
+    //     let mut W_vec: Vec<String> = Vec::new();
 
-        W_vec.push([pi_val, v].join(" "));
+    //     W_vec.push([pi_val, v].join(" "));
 
-        forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count+250, _index, 
-            args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
+    //     forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count+250, _index, 
+    //         args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
         
-        sent = true;
-    }
+    //     sent = true;
+    // }
 
     let mut first_vote_output: Vec<String> = Vec::new();
 
@@ -199,22 +199,21 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     }
 
     let mut second_vote_output: Vec<String> = Vec::new();
-    C1.push(("value".to_string(), "value".to_string()));
 
-    if C1.len() >0
-    {
-        let (_, val): (String, String) = C1[0].clone();
+    // if C1.len() >0
+    // {
+    //     let (_, val): (String, String) = C1[0].clone();
 
-        let value = [own_signature, val].join(", ");
+    //     let value = [own_signature, val].join(", ");
 
-        let vote2 = generic::Vote::create_vote("".to_string(), value.to_string());
-        let vote2_vec = vote2.to_vec();
+    //     let vote2 = generic::Vote::create_vote("".to_string(), value.to_string());
+    //     let vote2_vec = vote2.to_vec();
 
 
-        second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
-            args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
+    //     second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
+    //         args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
 
-    }
+    // }
 
     // if second_vote_output.len()>=b
     // {
