@@ -23,7 +23,7 @@ async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32,
 
         let diff = end_time - start_time;
         
-        println!("gba {} seconds", diff.num_seconds());
+        println!("gba {} seconds", diff.num_milliseconds());
 
         return output;
     }
