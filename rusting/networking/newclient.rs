@@ -4,51 +4,21 @@ use tokio::io::AsyncWriteExt;
 use std::error::Error;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
-
-use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
-#[allow(unused)]
-#[tokio::main]
-pub async fn create_client(ip_address: String, initial_port: u32, testport: u32) -> TcpStream
-{
-    let address = [ip_address.clone(), initial_port.to_string()].join(":");
-    let test_address = [ip_address.clone(), testport.to_string()].join(":");
+use std::collections::HashMap;
 
-    while TcpStream::connect(test_address.clone()).await.is_err() //waiting for server to be active, if not random wait and retry
-    {               
-        sleep(Duration::from_millis(1)).await;        
-    }    
-       
-    let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap(); 
 
-    stream
-}
-
-#[allow(unused)]
-#[tokio::main]
-pub async fn test_client( mut stream: TcpStream, initial_port: u32) 
-{
-    loop
-    {
-        // Write data.           
-
-         stream.write_all("test_string".as_bytes()).await.unwrap();
-         let result = stream.write_all(b"EOF").await;
-
-        if  result.is_ok()
-        {
-            break;
-        }             
-
-    }
-}
 
 #[allow(unused)]
 #[tokio::main]
 pub async fn match_tcp_client(address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> Result<(), Box<dyn Error>> {
 
-    let mut connections: HashMap<String, TcpStream> = HashMap::new();
+    let mut connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
+
+    let address_clone = address.clone();
+
+    let parts: Vec<&str> = address_clone.split(':').collect();
 
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
     // Connect to a peer    
@@ -61,7 +31,9 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
        
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;  
 
-    connections.insert("server".to_string(), stream);  
+    
+
+    connections_client.lock().unwrap().insert(parts[0].clone().to_string(), stream);  
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
@@ -71,13 +43,13 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
 
     // let encoded_data = BASE64.encode(final_string.as_bytes());
 
-
+    let mut connections_client_lock = connections_client.lock().unwrap();
     loop
     {
         // Write data.           
 
-        connections.get_mut("server").unwrap().write_all(final_string.as_bytes()).await.unwrap();
-         let result = connections.get_mut("server").unwrap().write_all(b"EOF").await;
+        connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
+         let result = connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
 
         if  result.is_ok()
         {
@@ -90,7 +62,7 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    println!("{:?}", connections.get_mut("server").unwrap());
+    println!("{:?}", connections_client_lock.get_mut(parts[0].clone()).unwrap());
 
     Ok(())
    

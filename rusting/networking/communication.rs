@@ -5,6 +5,10 @@ use std::io::Write;
 use std::env;
 use futures::executor::block_on;
 
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+use tokio::net::TcpStream;
+
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -20,7 +24,8 @@ mod nested_nodes_test;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
-pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
+pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, 
+    committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
 {
     let mut client_count = 1;
@@ -91,7 +96,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                             
                 let additional_port = (client_count)*10;
 
-                let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                let (connections_server, _result) = newserver::handle_server( connections_server.clone(), ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
                
@@ -117,7 +122,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        let (connections_server, _result) = newserver::handle_server(connections_server.clone(), ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
                        
@@ -127,7 +132,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                     }
                     else if mode=="accum"
                     {
-                        let _result = newserver::handle_server( ip_address_clone.clone(), initial_port+port_count, 
+                        let (connections_server, _result) = newserver::handle_server( connections_server.clone(), ip_address_clone.clone(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
                        
@@ -181,7 +186,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
                 let additional_port = (args[2].parse::<u32>().unwrap())*10;
 
 
-                let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
+                let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client( [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
                 [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                 committee_id.clone(), value.clone(), args.clone());
             }
@@ -197,7 +202,7 @@ pub async fn prod_communication(committee_id: u32, ip_address: Vec<&str>, level:
 
                     }
 
-                    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client([ip.to_string(), (initial_port+port_count).to_string()].join(":"),
+                    let _result: Result<(), Box<dyn Error>> = newclient::match_tcp_client( [ip.to_string(), (initial_port+port_count).to_string()].join(":"),
                     [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                     committee_id.clone(), value.clone(), args.clone());
                     
