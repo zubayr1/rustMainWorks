@@ -3,9 +3,9 @@ use crate::nodes::reactor::communication;
 
 #[path = "../types/generic.rs"]
 mod generic; 
-
 use std::env;
 
+use chrono::Utc;
 
 async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, medium: String, mode: String, types: String) -> Vec<String>
@@ -14,8 +14,16 @@ async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32,
 
     if medium=="prod_init"
     {
+        let start_time = Utc::now().time();
+
         let output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, _index, 
         args.clone(), value.clone(), mode.clone(), types.clone()).await;
+
+        let end_time = Utc::now().time();
+
+        let diff = end_time - start_time;
+        
+        println!("gba {} seconds", diff.num_seconds());
 
         return output;
     }
