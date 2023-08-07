@@ -96,11 +96,10 @@ pub async fn reactor_init(server_stream_vec: Vec<TcpStream>, client_stream_vec: 
 
     println!("{:?}", acc_value_zl);
 
-    let empty_vec: Vec<Vec<u8>> = Vec::new();
+    let empty_vec: Vec<Vec<u8>> = Vec::new();    
     
-    timer::wait(1);
-    reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
-        "accum".to_string(), medium, committee_length).await;
+    // reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
+    //     "accum".to_string(), medium, committee_length).await;
 }
 
 
