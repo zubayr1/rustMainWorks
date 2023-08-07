@@ -1,0 +1,4 @@
+# Ignore output.log inside the rusting directory
+rusting/output.log
+
+# Other patterns and files to ignore (if needed)
