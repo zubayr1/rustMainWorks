@@ -215,39 +215,39 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     }
 
-    if second_vote_output.len()>=b
-    {
-        if medium.clone()=="prod_init"
-        {
-            for output in second_vote_output
-            {
-                let split_output: Vec<&str> = output.split(", ").collect();
-                C2.push((split_output[1].to_string(), split_output[2].to_string()));
+    // if second_vote_output.len()>=b
+    // {
+    //     if medium.clone()=="prod_init"
+    //     {
+    //         for output in second_vote_output
+    //         {
+    //             let split_output: Vec<&str> = output.split(", ").collect();
+    //             C2.push((split_output[1].to_string(), split_output[2].to_string()));
 
-            }
-        }
-        else 
-        {
-            let split_output: Vec<&str> = second_vote_output[1].split(", ").collect();
+    //         }
+    //     }
+    //     else 
+    //     {
+    //         let split_output: Vec<&str> = second_vote_output[1].split(", ").collect();
 
-            C2.push((split_output[0].to_string(), split_output[1].to_string()));
-        }
-    }
+    //         C2.push((split_output[0].to_string(), split_output[1].to_string()));
+    //     }
+    // }
     
     
-    if C1.len()>0
-    {
-        let (_, v1_prime) =  C1[0].clone();
+    // if C1.len()>0
+    // {
+    //     let (_, v1_prime) =  C1[0].clone();
 
-        let (_, v2_prime) =  C2[0].clone();
+    //     let (_, v2_prime) =  C2[0].clone();
 
 
-        if v1_prime==v2_prime
-        {
-            g =1;
-            V = v1_prime;
-        }
-    }
+    //     if v1_prime==v2_prime
+    //     {
+    //         g =1;
+    //         V = v1_prime;
+    //     }
+    // }
 
     return (V, g);
 

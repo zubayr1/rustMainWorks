@@ -395,8 +395,6 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
         let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length.clone());
 
-        println!("{:?}, {:?}", V1_vec, V1);
-        println!("{:?}, {:?}", V2_vec, V2);
 
         let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
              V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
