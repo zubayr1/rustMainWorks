@@ -98,8 +98,8 @@ pub async fn reactor_init(server_stream_vec: Vec<TcpStream>, client_stream_vec: 
 
     let empty_vec: Vec<Vec<u8>> = Vec::new();    
     
-    // reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
-    //     "accum".to_string(), medium, committee_length).await;
+    reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
+        "accum".to_string(), medium, committee_length).await;
 }
 
 
@@ -261,23 +261,24 @@ pub async fn reactor<'a>(server_stream_vec: Vec<TcpStream>, client_stream_vec: V
     
     if mode.contains("codeword")
     {        
-        codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
-            value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
+        // codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
+        //     value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
-            committee_id, ip_address, level, _index,  args, port_count, 
-            initial_port, test_port
-        ).await;
+        // let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
+        //     committee_id, ip_address, level, _index,  args, port_count, 
+        //     initial_port, test_port
+        // ).await;
         
     }
     else 
     {
-        let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
+        let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(
+            pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
 
 
-        reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
-            merkle_len, witnesses_vec, "codeword".to_string(), medium, committee_length).await;
+        // reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
+        //     merkle_len, witnesses_vec, "codeword".to_string(), medium, committee_length).await;
     }
 
     
@@ -401,9 +402,6 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
              V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
         let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
             V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-
-
-
 
         let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
