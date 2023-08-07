@@ -116,7 +116,7 @@ fn check_other_major(mut forward_output: Vec<String>, V: String, medium: String)
 pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, mut V: String, medium: String, mode: String, types: String, committee_length: usize) -> (String, usize)
 {
-
+    println!("{}", committee_id);
     let own_signature = args[6].clone().to_string();
 
     let mut W: Vec<(String, String)> = Vec::new();
