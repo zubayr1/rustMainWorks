@@ -132,22 +132,22 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     let echo = generic::Echo::create_echo("".to_string(), V.to_string());
     let echo_vec = echo.to_vec();
 
-    let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone()).await;
+    // let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+    // args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone()).await;
 
     
-    let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone(), medium.clone());
+    // let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone(), medium.clone());
    
     
-    if count > b
-    {
-        let tuples: Vec<(String, String)> = pi
-        .iter()
-        .map(|ip| (ip.clone(), V.clone()))
-        .collect();
+    // if count > b
+    // {
+    //     let tuples: Vec<(String, String)> = pi
+    //     .iter()
+    //     .map(|ip| (ip.clone(), V.clone()))
+    //     .collect();
     
-        W = tuples;
-    }
+    //     W = tuples;
+    // }
 
     // let mut forward_output: Vec<String> = Vec::new();
     // if W.len()>0
