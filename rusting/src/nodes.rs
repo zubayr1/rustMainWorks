@@ -202,12 +202,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     println!("port testing: {}", check);
 
     // PORT TESTING DONE
-
-
-    let start_time = Utc::now().time();   
+      
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
+        let start_time = Utc::now().time(); 
+
         println!("epoch {}", _index);
 
         let mut text;
@@ -282,13 +282,16 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         file.write_all(b"\n").unwrap();
 
 
+        let end_time = Utc::now().time();
+
+        let diff = end_time - start_time;
+        
+        println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
+
+
     }
 
-    let end_time = Utc::now().time();
-
-    let diff = end_time - start_time;
     
-    println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
     
 }
 
