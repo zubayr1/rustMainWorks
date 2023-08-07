@@ -200,7 +200,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let mut second_vote_output: Vec<String> = Vec::new();
 
-    if C1.len() >0
+    if C1.len() >=0
     {
         let (_, val): (String, String) = C1[0].clone();
 
