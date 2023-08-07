@@ -200,20 +200,20 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let mut second_vote_output: Vec<String> = Vec::new();
 
-    if C1.len() >0
-    {
-        let (_, val): (String, String) = C1[0].clone();
+    // if C1.len() >0
+    // {
+    //     let (_, val): (String, String) = C1[0].clone();
 
-        let value = [own_signature, val].join(", ");
+    //     let value = [own_signature, val].join(", ");
 
-        let vote2 = generic::Vote::create_vote("".to_string(), value.to_string());
-        let vote2_vec = vote2.to_vec();
+    //     let vote2 = generic::Vote::create_vote("".to_string(), value.to_string());
+    //     let vote2_vec = vote2.to_vec();
 
 
-        second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
-            args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
+    //     second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
+    //         args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
 
-    }
+    // }
 
     // if second_vote_output.len()>=b
     // {
