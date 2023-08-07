@@ -57,8 +57,21 @@ pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> V
     let num_nodes = committee_size.clone();      // Total number of shards
     
     let num_faults = committee_size.clone()/2;      // Maximum number of erasures to tolerate
+    
 
+    if committee_size==2
+    {
+        let mut shards : Vec<Vec<u8>> = Vec::new();
+        shards.push(original_data.clone().to_vec());
+        shards.push(original_data.clone().to_vec());
 
+        let leaves: Vec<String> = shards
+        .iter()
+        .map(|inner_vec| format!("{:?}", inner_vec))
+        .collect();
+
+        return leaves;
+    }
     let shards = to_shards(original_data, num_nodes, num_faults);
 
    
