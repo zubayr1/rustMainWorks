@@ -1,39 +1,62 @@
-extern crate reed_solomon;
-use reed_solomon::Encoder;
-use reed_solomon::Decoder;
+use reed_solomon_erasure::galois_8::ReedSolomon;
+
+#[allow(unused)]
+pub fn to_shards(data: &[u8], num_nodes: usize, num_faults: usize) -> Vec<Vec<u8>> {
+    let num_data_shards = num_nodes - num_faults;
+    let shard_size = (data.len() + num_data_shards - 1) / num_data_shards;
+    
+    let padding_size = shard_size * num_data_shards - data.len();
+    let mut data_with_padding = data.to_vec();
+    data_with_padding.extend(vec![0; padding_size]);
+    
+    let mut result = Vec::with_capacity(num_nodes);
+    for shard in 0..num_data_shards {
+        result.push(data_with_padding[shard * shard_size..(shard + 1) * shard_size].to_vec());
+    }
+    
+    for _shard in 0..num_faults {
+        result.push(vec![0; shard_size]);
+    }
+    
+    let r = ReedSolomon::new(num_data_shards, num_faults).unwrap();
+    r.encode(&mut result).unwrap();
+    
+    result
+}
+
+#[allow(unused)]
+pub fn from_shards(mut data: Vec<Option<Vec<u8>>>, num_nodes: usize, num_faults: usize) -> Vec<u8> {
+    let num_data_shards = num_nodes - num_faults;
+    let r = ReedSolomon::new(num_data_shards, num_faults).unwrap();
+    r.reconstruct(&mut data).unwrap();
+    let mut result = Vec::with_capacity(num_data_shards * data[0].as_ref().unwrap().len());
+    for shard in 0..num_data_shards {
+        result.append(&mut data[shard].clone().unwrap());
+    }
+    if let Some(last_byte) = result.last() {
+        let new_length = result.len().saturating_sub(*last_byte as usize);
+        result.truncate(new_length);
+    }
+    result
+}
 
 
-pub fn encoder(pvss_data: &[u8], mut e: usize) -> Vec<String>
+
+
+pub fn encoder(pvss_data: &[u8], committee_size: usize) -> Vec<String>
 {
-    if e==0
-    {
-        e=1;
-    }
-    // Length of error correction code
-    let ecc_len = 2*e;
-
-    let enc = Encoder::new(ecc_len);
-    
-
-    // Encode data
-    let encoded = enc.encode(&pvss_data[..]);
-
-    // Simulate some transmission errors
-    // let mut corrupted = *encoded;
-    // for i in 0..e {
-    //     corrupted[i] = 0x0;
-    // }
+    let original_data = pvss_data;
+    let num_nodes = committee_size.clone();      // Total number of shards
+    let num_faults = (committee_size.clone()/2) - 1;      // Maximum number of erasures to tolerate
 
 
-    // let orig_str = std::str::from_utf8(pvss_data).unwrap();
+    let shards = to_shards(original_data, num_nodes, num_faults);
 
-    
-    let mut leaves: Vec<String> = Vec::new();
-
-    for i in encoded.ecc()
-    {
-        leaves.push(i.to_string());
-    }
+   
+    let leaves: Vec<String> = shards
+    .iter()
+    .map(|bytes| String::from_utf8_lossy(bytes).to_string())
+    .collect();
 
     return leaves;
 
@@ -41,29 +64,8 @@ pub fn encoder(pvss_data: &[u8], mut e: usize) -> Vec<String>
 
 }
 
-pub fn _decoder(encoded: reed_solomon::Buffer, e: usize)
-{
-    // Length of error correction code
-    let ecc_len = 2*e;
-
-    let dec = Decoder::new(ecc_len);
-   
-
-    // Simulate some transmission errors
-    let mut corrupted = *encoded;
-    for i in 0..e {
-        corrupted[i] = 0x0;
-    }
-
-    // Try to recover data
-    let known_erasures = [0];
-
-    let recovered = dec.correct(&mut corrupted, Some(&known_erasures)).unwrap();
-
-
-    let recv_str = std::str::from_utf8(recovered.data()).unwrap();
-
-    println!("{:?}", recv_str);
-
-}
+// pub fn _decoder(encoded: reed_solomon::Buffer, e: usize)
+// {
+    
+// }
 

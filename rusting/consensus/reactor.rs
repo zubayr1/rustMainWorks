@@ -82,21 +82,23 @@ pub async fn reactor_init(server_stream_vec: Vec<TcpStream>, client_stream_vec: 
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>, port_count: u32, medium: String)
 { 
-    println!("{:?}", server_stream_vec); 
-    println!("{:?}", client_stream_vec); 
-
+   
     let committee_length = ip_address.len();
 
-    let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone()/2);
+    let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone());
+
+    println!("{:?}", leaves);
 
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
 
+    println!("{:?}", acc_value_zl);
+
     let empty_vec: Vec<Vec<u8>> = Vec::new();
     
     timer::wait(1);
-    reactor(pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
+    reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
         "accum".to_string(), medium, committee_length).await;
 }
 
@@ -237,7 +239,8 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 }
 
 #[async_recursion]
-pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+pub async fn reactor<'a>(server_stream_vec: Vec<TcpStream>, client_stream_vec: Vec<TcpStream>,
+    pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
  
@@ -273,7 +276,7 @@ pub async fn reactor<'a>(pvss_data: String, committee_id: u32, ip_address: &'a V
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
 
 
-        reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
+        reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, witnesses_vec, "codeword".to_string(), medium, committee_length).await;
     }
 
