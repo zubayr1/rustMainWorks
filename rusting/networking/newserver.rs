@@ -91,7 +91,7 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
 
     connections_server_clone.lock().unwrap().insert("client_id".to_string(), socket);
 
-    println!("{:?}", connections_server_clone);
+    println!("SERVER   {:?}", connections_server_clone);
 
     return (connections_server_clone, line);
     

@@ -31,9 +31,9 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
        
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;  
 
-    
+    let connections_client_clone = Arc::clone(&connections_client);
 
-    // connections_client.lock().unwrap().insert(parts[0].clone().to_string(), stream);  
+    connections_client_clone.lock().unwrap().insert(parts[0].clone().to_string(), stream);  
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
@@ -47,10 +47,9 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     loop
     {
         // Write data.           
-        stream.write_all(final_string.as_bytes()).await.unwrap();
-        // connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
-        //  let result = connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
-        let result = stream.write_all(b"EOF").await;
+        connections_client_clone.lock().unwrap().get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
+        let result = connections_client_clone.lock().unwrap().get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
+        // let result = stream.write_all(b"EOF").await;
 
         if  result.is_ok()
         {
@@ -63,7 +62,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    // println!("{:?}", connections_client_lock.get_mut(parts[0].clone()).unwrap());
+    println!("{:?}", connections_client_clone.lock().unwrap().get_mut(parts[0].clone()).unwrap());
 
     Ok(())
    
