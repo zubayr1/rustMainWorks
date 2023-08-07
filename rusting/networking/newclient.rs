@@ -29,7 +29,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
         sleep(Duration::from_millis(1)).await;        
     }    
        
-    let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;  
+    let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
 
     let connections_client_clone = Arc::clone(&connections_client);
 
@@ -40,8 +40,6 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
 
     let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
-
-    // let encoded_data = BASE64.encode(final_string.as_bytes());
 
     // let mut connections_client_lock = connections_client.lock().unwrap();
     loop
