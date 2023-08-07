@@ -353,17 +353,23 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 
     return codeword_output;
 }
-
+use chrono::Utc;
 #[allow(non_snake_case)]
 pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
 {                    
         let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl);
         let accum_vec = accum.to_vec();
-
+        let start_time = Utc::now().time();
         //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
         let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
+
+            let end_time = Utc::now().time();
+
+            let diff = end_time - start_time;
+            
+            println!("accum {} miliseconds", diff.num_milliseconds());
 
         let mut V1_vec: Vec<String> = Vec::new();
         let mut V2_vec: Vec<String> = Vec::new();
