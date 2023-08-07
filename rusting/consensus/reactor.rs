@@ -84,8 +84,9 @@ pub async fn reactor_init(server_stream_vec: Vec<TcpStream>, client_stream_vec: 
 { 
    
     let committee_length = ip_address.len();
+    
 
-    let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone());
+    let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone(), medium.clone());
 
     println!("{:?}", leaves);
 
@@ -291,7 +292,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 {
     let mut index = 0;
 
-    let code_words = pvss_agreement::encoder(pvss_data.as_bytes(), committee_length/2);
+    let code_words = pvss_agreement::encoder(pvss_data.as_bytes(), committee_length/2, medium.clone());
 
     let mut codeword_output: Vec<Vec<String>> =  Vec::new();
     for witness in witnesses_vec
@@ -400,7 +401,7 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
              V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
         let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
-            V2.clone(), medium, mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+            V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
 
 
@@ -410,9 +411,9 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
         let mut _merkle_len: usize= 0;
 
         
-        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone());
+        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
 
-        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone());
+        (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
         
 
         return (_witnesses_vec, _merkle_len);

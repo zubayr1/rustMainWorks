@@ -43,11 +43,20 @@ pub fn from_shards(mut data: Vec<Option<Vec<u8>>>, num_nodes: usize, num_faults:
 
 
 
-pub fn encoder(pvss_data: &[u8], committee_size: usize) -> Vec<String>
+pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> Vec<String>
 {
+    
     let original_data = pvss_data;
+
+
+    if medium.clone()=="dev_init".to_string()
+    {
+        committee_size=2;
+    }
+
     let num_nodes = committee_size.clone();      // Total number of shards
-    let num_faults = (committee_size.clone()/2) - 1;      // Maximum number of erasures to tolerate
+    
+    let num_faults = committee_size.clone()/2;      // Maximum number of erasures to tolerate
 
 
     let shards = to_shards(original_data, num_nodes, num_faults);
@@ -60,7 +69,6 @@ pub fn encoder(pvss_data: &[u8], committee_size: usize) -> Vec<String>
 
     return leaves;
 
-    
 
 }
 
