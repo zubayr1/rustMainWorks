@@ -80,6 +80,8 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
     
     socket.set_nodelay(true).expect("Failed to enable TCP_NODELAY");
+
+    let end_time = Utc::now().time();
     
     let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
         
@@ -132,11 +134,11 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
     let _message_size = serialized_data.len();
 
-    let end_time = Utc::now().time();
-
-    let _diff = end_time - start_time;
     
-    // println!("time taken {} miliseconds",diff.num_milliseconds());
+
+    let diff = end_time - start_time;
+    
+    println!("time taken {} miliseconds",diff.num_milliseconds());
 
 
     return line;
