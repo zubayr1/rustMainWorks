@@ -47,7 +47,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     loop
     {
         // Write data.           
-
+        stream.write_all(final_string.as_bytes()).await.unwrap();
         // connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
         //  let result = connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
         let result = stream.write_all(b"EOF").await;
