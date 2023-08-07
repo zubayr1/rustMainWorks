@@ -132,53 +132,53 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     let echo = generic::Echo::create_echo("".to_string(), V.to_string());
     let echo_vec = echo.to_vec();
 
-    // let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    // args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone()).await;
+    let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+    args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone()).await;
 
     
-    // let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone(), medium.clone());
+    let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone(), medium.clone());
    
     
-    // if count > b
-    // {
-    //     let tuples: Vec<(String, String)> = pi
-    //     .iter()
-    //     .map(|ip| (ip.clone(), V.clone()))
-    //     .collect();
+    if count > b
+    {
+        let tuples: Vec<(String, String)> = pi
+        .iter()
+        .map(|ip| (ip.clone(), V.clone()))
+        .collect();
     
-    //     W = tuples;
-    // }
+        W = tuples;
+    }
 
-    // let mut forward_output: Vec<String> = Vec::new();
-    // if W.len()>0
-    // {
-    //     let (pi_val, v): (String, String) = W[0].clone();
+    let mut forward_output: Vec<String> = Vec::new();
+    if W.len()>0
+    {
+        let (pi_val, v): (String, String) = W[0].clone();
 
-    //     let mut W_vec: Vec<String> = Vec::new();
+        let mut W_vec: Vec<String> = Vec::new();
 
-    //     W_vec.push([pi_val, v].join(" "));
+        W_vec.push([pi_val, v].join(" "));
 
-    //     forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count+250, _index, 
-    //         args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
+        forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count+250, _index, 
+            args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
         
-    //     sent = true;
-    // }
+        sent = true;
+    }
 
     let mut first_vote_output: Vec<String> = Vec::new();
 
-    // if sent==true
-    // {        
-    //     let check = check_other_major(forward_output.clone(), V.clone(), medium.clone());
+    if sent==true
+    {        
+        let check = check_other_major(forward_output.clone(), V.clone(), medium.clone());
 
-    //     if check==true
-    //     {
-    //         let vote1 = generic::Vote::create_vote("".to_string(), V.to_string());
-    //         let vote1_vec = vote1.to_vec();
+        if check==true
+        {
+            let vote1 = generic::Vote::create_vote("".to_string(), V.to_string());
+            let vote1_vec = vote1.to_vec();
 
-    //         first_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+300, _index, 
-    //             args.clone(), vote1_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
-    //     }
-    // }
+            first_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+300, _index, 
+                args.clone(), vote1_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
+        }
+    }
 
     if first_vote_output.len() >=b
     {
@@ -200,54 +200,54 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let mut second_vote_output: Vec<String> = Vec::new();
 
-    // if C1.len() >0
-    // {
-    //     let (_, val): (String, String) = C1[0].clone();
+    if C1.len() >0
+    {
+        let (_, val): (String, String) = C1[0].clone();
 
-    //     let value = [own_signature, val].join(", ");
+        let value = [own_signature, val].join(", ");
 
-    //     let vote2 = generic::Vote::create_vote("".to_string(), value.to_string());
-    //     let vote2_vec = vote2.to_vec();
+        let vote2 = generic::Vote::create_vote("".to_string(), value.to_string());
+        let vote2_vec = vote2.to_vec();
 
 
-    //     second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
-    //         args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
+        second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
+            args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
 
-    // }
+    }
 
-    // if second_vote_output.len()>=b
-    // {
-    //     if medium.clone()=="prod_init"
-    //     {
-    //         for output in second_vote_output
-    //         {
-    //             let split_output: Vec<&str> = output.split(", ").collect();
-    //             C2.push((split_output[1].to_string(), split_output[2].to_string()));
+    if second_vote_output.len()>=b
+    {
+        if medium.clone()=="prod_init"
+        {
+            for output in second_vote_output
+            {
+                let split_output: Vec<&str> = output.split(", ").collect();
+                C2.push((split_output[1].to_string(), split_output[2].to_string()));
 
-    //         }
-    //     }
-    //     else 
-    //     {
-    //         let split_output: Vec<&str> = second_vote_output[1].split(", ").collect();
+            }
+        }
+        else 
+        {
+            let split_output: Vec<&str> = second_vote_output[1].split(", ").collect();
 
-    //         C2.push((split_output[0].to_string(), split_output[1].to_string()));
-    //     }
-    // }
+            C2.push((split_output[0].to_string(), split_output[1].to_string()));
+        }
+    }
     
     
-    // if C1.len()>0
-    // {
-    //     let (_, v1_prime) =  C1[0].clone();
+    if C1.len()>0
+    {
+        let (_, v1_prime) =  C1[0].clone();
 
-    //     let (_, v2_prime) =  C2[0].clone();
+        let (_, v2_prime) =  C2[0].clone();
 
 
-    //     if v1_prime==v2_prime
-    //     {
-    //         g =1;
-    //         V = v1_prime;
-    //     }
-    // }
+        if v1_prime==v2_prime
+        {
+            g =1;
+            V = v1_prime;
+        }
+    }
 
     return (V, g);
 
