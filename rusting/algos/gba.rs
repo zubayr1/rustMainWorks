@@ -10,13 +10,13 @@ mod generic;
 use std::env;
 
 
-async fn gba_communication(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
+async fn gba_communication(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, medium: String, mode: String, types: String) -> Vec<String>
 {
     
     if medium=="prod_init"
     {
-        let output = communication::prod_communication(connections_server, committee_id, ip_address.clone(), level, port_count, _index, 
+        let output = communication::prod_communication(connections_server, connections_client.clone(), committee_id, ip_address.clone(), level, port_count, _index, 
         args.clone(), value.clone(), mode.clone(), types.clone()).await;
 
         return output;
@@ -35,7 +35,7 @@ async fn gba_communication(connections_server: Arc<Mutex<HashMap<String, TcpStre
         let initial_port: u32 = initial_port_str.parse().unwrap();
         let test_port: u32 = test_port_str.parse().unwrap();
 
-        let output = communication::nested_dev_communication(committee_id, (initial_port + _index).to_string(), 
+        let output = communication::nested_dev_communication(connections_client.clone(), committee_id, (initial_port + _index).to_string(), 
         (test_port + _index).to_string(), value.clone(), args.clone()).await;
 
         return output;
@@ -115,7 +115,7 @@ fn check_other_major(mut forward_output: Vec<String>, V: String, medium: String)
 }
 
 #[allow(non_snake_case)]
-pub async fn gba(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
+pub async fn gba(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, mut V: String, medium: String, mode: String, types: String, committee_length: usize) -> (String, usize)
 {
 
@@ -134,7 +134,7 @@ pub async fn gba(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, com
     let echo = generic::Echo::create_echo("".to_string(), V.to_string());
     let echo_vec = echo.to_vec();
 
-    let echo_phase_output = gba_communication(connections_server.clone(), committee_id, ip_address.clone(), level, port_count, _index, 
+    let echo_phase_output = gba_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, _index, 
     args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone()).await;
 
     
@@ -160,7 +160,7 @@ pub async fn gba(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, com
 
         W_vec.push([pi_val, v].join(" "));
 
-        forward_output = gba_communication(connections_server.clone(), committee_id, ip_address.clone(), level, port_count+250, _index, 
+        forward_output = gba_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count+250, _index, 
             args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
         
         sent = true;
@@ -177,7 +177,7 @@ pub async fn gba(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, com
             let vote1 = generic::Vote::create_vote("".to_string(), V.to_string());
             let vote1_vec = vote1.to_vec();
 
-            first_vote_output = gba_communication(connections_server.clone(), committee_id, ip_address.clone(), level, port_count+300, _index, 
+            first_vote_output = gba_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count+300, _index, 
                 args.clone(), vote1_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
         }
     }
@@ -212,7 +212,7 @@ pub async fn gba(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, com
         let vote2_vec = vote2.to_vec();
 
 
-        second_vote_output = gba_communication(connections_server.clone(), committee_id, ip_address.clone(), level, port_count+350, _index, 
+        second_vote_output = gba_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count+350, _index, 
             args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
 
     }
