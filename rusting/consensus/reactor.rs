@@ -398,8 +398,8 @@ pub async fn accum_reactor(pvss_data: String, committee_id: u32, ip_address: &Ve
 
         let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
              V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-        let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
-            V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+        // let v2 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(), 
+        //     V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
         let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
