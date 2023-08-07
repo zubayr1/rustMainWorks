@@ -263,9 +263,18 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let future = portifying(selected_nodes.clone(), selected_server_port_list.clone(), 
     selected_client_port_list.clone(), initial_port.clone(), test_port.clone());
-    let (server_stream_vec, client_stream_vec) = future.await;
+    let (server_stream_vec1, client_stream_vec1) = future.await;
+    let future = portifying(selected_nodes.clone(), selected_server_port_list.clone(), 
+    selected_client_port_list.clone(), initial_port.clone(), test_port.clone());
+    let (server_stream_vec2, client_stream_vec2) = future.await;
+    let future = portifying(selected_nodes.clone(), selected_server_port_list.clone(), 
+    selected_client_port_list.clone(), initial_port.clone(), test_port.clone());
+    let (server_stream_vec3, client_stream_vec3) = future.await;
+    let future = portifying(selected_nodes.clone(), selected_server_port_list.clone(), 
+    selected_client_port_list.clone(), initial_port.clone(), test_port.clone());
+    let (server_stream_vec4, client_stream_vec4) = future.await;
 
-    println!("{:?}", server_stream_vec);
+    println!("{:?}, {:?}", server_stream_vec1, server_stream_vec2);
 
 
 
