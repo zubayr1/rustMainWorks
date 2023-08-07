@@ -63,9 +63,9 @@ pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> V
 
    
     let leaves: Vec<String> = shards
-    .iter()
-    .map(|bytes| String::from_utf8_lossy(bytes).to_string())
-    .collect();
+        .iter()
+        .map(|inner_vec| format!("{:?}", inner_vec))
+        .collect();
 
     return leaves;
 
