@@ -5,6 +5,9 @@ use std::error::Error;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+
 #[allow(unused)]
 #[tokio::main]
 pub async fn create_client(ip_address: String, initial_port: u32, testport: u32) -> TcpStream
@@ -45,6 +48,8 @@ pub async fn test_client( mut stream: TcpStream, initial_port: u32)
 #[tokio::main]
 pub async fn match_tcp_client(address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> Result<(), Box<dyn Error>> {
 
+    let mut connections: HashMap<String, TcpStream> = HashMap::new();
+
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
     // Connect to a peer    
 
@@ -54,7 +59,9 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
         sleep(Duration::from_millis(1)).await;        
     }    
        
-    let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;    
+    let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;  
+
+    connections.insert("server".to_string(), stream);  
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
@@ -69,8 +76,8 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     {
         // Write data.           
 
-         stream.write_all(final_string.as_bytes()).await.unwrap();
-         let result = stream.write_all(b"EOF").await;
+        connections.get_mut("server").unwrap().write_all(final_string.as_bytes()).await.unwrap();
+         let result = connections.get_mut("server").unwrap().write_all(b"EOF").await;
 
         if  result.is_ok()
         {
@@ -82,6 +89,8 @@ pub async fn match_tcp_client(address: String, test_address: String, committee_i
     let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
+
+    println!("{:?}", connections.get_mut("server").unwrap());
 
     Ok(())
    

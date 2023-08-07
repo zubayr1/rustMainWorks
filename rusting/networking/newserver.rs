@@ -6,6 +6,9 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::OpenOptions;
 use chrono::Utc;
 
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+
 #[allow(unused)]
 #[tokio::main]
 pub async fn create_server( _ip_address: String, initial_port: u32, testport: u32) -> TcpStream
@@ -77,7 +80,11 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
 
     let (_, _) = test_listener.accept().await.unwrap();
 
+    let connections: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
+
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
+
+    let connections_clone = Arc::clone(&connections);
     
     socket.set_nodelay(true).expect("Failed to enable TCP_NODELAY");
     
@@ -125,6 +132,7 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     let socket_addr_string = socket_addr.to_string();
     let socket_ip: Vec<&str> = socket_addr_string.split(":").collect();
 
+    let connection_key = socket_addr.to_string();
 
     line = [line.clone(), socket_ip[0].to_string()].join("/"); 
 
@@ -138,6 +146,9 @@ pub async fn handle_server( _ip_address: Vec<&str>, port: u32, testport: u32) ->
     
     // println!("time taken {} miliseconds",diff.num_milliseconds());
 
+    connections_clone.lock().unwrap().insert("client_id".to_string(), socket);
+
+    println!("{:?}", connections_clone);
 
     return line;
     
