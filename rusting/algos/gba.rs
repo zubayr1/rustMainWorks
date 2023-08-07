@@ -6,6 +6,89 @@ mod generic;
 use std::env;
 
 
+use std::thread;
+
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
+use tokio::net::TcpStream;
+
+#[path ="../networking/newserver.rs"]
+mod newserver;
+
+#[path ="../networking/newclient.rs"]
+mod newclient;
+
+pub fn read_ports(file_name: String) -> Vec<u32>
+{
+    let file = File::open(file_name).expect("Failed to open the file");
+
+    // Create a BufReader to efficiently read the file
+    let reader = BufReader::new(file);
+
+    // Initialize an empty vector to store the u32 port values
+    let mut ports: Vec<u32> = Vec::new();
+
+    // Read each line from the file and parse it into a u32, then push it into the vector
+    for line in reader.lines() {
+        if let Ok(num_str) = line {
+            if let Ok(num) = num_str.trim().parse::<u32>() {
+                ports.push(num);
+            } else {
+                println!("Invalid number: {}", num_str);
+            }
+        }
+    }
+
+    return ports;
+}
+
+
+pub async fn portifying(node_ips: Vec<String>, server_port_list: Vec<u32>, client_port_list: Vec<u32>, 
+    initial_port: u32, test_port: u32) -> (Vec<TcpStream>, Vec<TcpStream>)
+{
+    let nodes_ip_clone = node_ips.clone();
+
+    let mut server_stream_vec:Vec<TcpStream> = Vec::new();
+    let mut client_stream_vec:Vec<TcpStream> = Vec::new();
+
+
+    thread::scope(|s| { 
+
+        s.spawn(|| {
+
+            let mut count = 0;
+            for ip in nodes_ip_clone {
+            let additional_port = server_port_list[count];
+            count+=1;
+            let result = newserver::create_server(ip.clone(), initial_port
+            + additional_port, test_port+ additional_port);
+            server_stream_vec.push(result);
+            
+        }
+
+        });
+
+        s.spawn(|| {
+            let mut count = 0;
+            for ip in node_ips {
+                let additional_port = client_port_list[count];
+                count+=1;
+                let result = newclient::create_client(ip.clone(), initial_port
+                + additional_port, test_port+ additional_port);
+                client_stream_vec.push(result);
+            }
+        });
+
+    });
+
+    
+    
+    return (server_stream_vec, client_stream_vec);
+}
+
+
+
 async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, medium: String, mode: String, types: String) -> Vec<String>
 {
@@ -116,6 +199,76 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     args: Vec<String>, mut V: String, medium: String, mode: String, types: String, committee_length: usize) -> (String, usize)
 {
     println!("{}", committee_id);
+
+
+    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
+        println!("INITIAL_PORT_STR is not set.");
+        String::new()
+    });
+    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
+        println!("TEST_PORT_STR is not set.");
+        String::new()
+    });
+   
+    let initial_port: u32 = initial_port_str.parse().unwrap();
+    let test_port: u32 = test_port_str.parse().unwrap();
+
+
+    let file_path = "./nodes_information.txt";
+    let nodes_file = File::open(file_path).unwrap();
+
+    let reader = BufReader::new(nodes_file);
+
+    let mut node_ips: Vec<String> = Vec::new();
+
+    for line_result in reader.lines() 
+    {
+        let line = line_result.unwrap();
+
+        let ip: Vec<&str> = line.split("-").collect();
+        
+        node_ips.push(ip[1].to_string());         
+        
+    }
+
+   
+    let server_port_list = read_ports("./server_port_list.txt".to_string());
+    let client_port_list = read_ports("./client_port_list.txt".to_string());
+    
+
+
+    let mut selected_nodes: Vec<String> = Vec::new();
+    let mut selected_server_port_list: Vec<u32> = Vec::new();
+    let mut selected_client_port_list: Vec<u32> = Vec::new();
+                
+
+    for element in &ip_address 
+    {                    
+        match node_ips.clone().iter().position(|x| x == *element) 
+        {
+            Some(index) => 
+            {   
+                if let Some(indexed_element) = node_ips.clone().get(index) {
+                    selected_nodes.push(indexed_element.clone());
+                    selected_server_port_list.push(server_port_list.clone()[index]);
+                    selected_client_port_list.push(client_port_list.clone()[index]);
+                }
+            },
+            None => 
+            {
+                println!("Element {} not found in B", element)
+            },
+        }
+    }
+
+    let future = portifying(selected_nodes.clone(), selected_server_port_list.clone(), 
+    selected_client_port_list.clone(), initial_port.clone(), test_port.clone());
+    let (server_stream_vec, client_stream_vec) = future.await;
+
+    println!("{:?}", server_stream_vec);
+
+
+
     let own_signature = args[6].clone().to_string();
 
     let mut W: Vec<(String, String)> = Vec::new();
