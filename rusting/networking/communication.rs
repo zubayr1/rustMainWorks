@@ -199,7 +199,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                 let additional_port = (args[2].parse::<u32>().unwrap())*10;
 
                 
-                let connections_client: HashMap<String, TcpStream> = newclient::match_tcp_client( connections_client.clone(), [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
+                let connections_client = newclient::match_tcp_client( connections_client.clone(), [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
                 [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                 committee_id.clone(), value.clone(), args.clone());
 
@@ -221,7 +221,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
 
                     }
 
-                    let connections_client: HashMap<String, TcpStream> = newclient::match_tcp_client( connections_client.clone(), [ip.to_string(), (initial_port+port_count).to_string()].join(":"),
+                    let connections_client = newclient::match_tcp_client( connections_client.clone(), [ip.to_string(), (initial_port+port_count).to_string()].join(":"),
                     [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                     committee_id.clone(), value.clone(), args.clone());
 
@@ -247,7 +247,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
 
 pub async fn dev_communication(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
-    let connections_client: HashMap<String, TcpStream> = newclient::match_tcp_client(connections_client.clone(), working_port, test_port, committee_id.clone(), value.clone(), args.clone());
+    let connections_client = newclient::match_tcp_client(connections_client.clone(), working_port, test_port, committee_id.clone(), value.clone(), args.clone());
     
     
 
@@ -298,7 +298,7 @@ pub async fn nested_dev_communication(connections_client: Arc<Mutex<HashMap<Stri
             let three_millis = time::Duration::from_millis(3);
             thread::sleep(three_millis);
 
-            let connections_client: HashMap<String, TcpStream> = newclient::match_tcp_client(connections_client.clone(), 
+            let connections_client = newclient::match_tcp_client(connections_client.clone(), 
                 ["127.0.0.1".to_string(), (initial_port_client + 500).to_string()].join(":"),
                 ["127.0.0.1".to_string(), (test_port_client + 500).to_string()].join(":"),
                 committee_id.clone(), value.clone(), args.clone());
