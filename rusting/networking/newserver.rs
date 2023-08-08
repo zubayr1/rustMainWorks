@@ -36,11 +36,11 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
     };
 
     
-    // if is_present {
-    //    println!("SERVER TcpStream exists for key: {}, {:?}", key_to_check, connection_server_lock.get(&key_to_check));
-    // } else {
-    //    println!("SERVER TcpStream does not exist for key: {}", key_to_check);
-    // }
+    if is_present {
+       println!("SERVER TcpStream exists for key: {}, {:?}", key_to_check, connection_server_lock.get(&key_to_check));
+    } else {
+       println!("SERVER TcpStream does not exist for key: {}", key_to_check);
+    }
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
 
@@ -108,7 +108,8 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
 
     connection_server_lock.insert(socket_ip[0].clone().to_string(), socket);
 
-    // println!("SERVER   {:?}\n", connections_server_clone);
+    println!("SERVER   {:?}\n", connections_server_clone);
+    
 
     return (connections_server, line);
     
