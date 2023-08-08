@@ -13,7 +13,7 @@ use std::sync::{Arc, Mutex};
 
 #[allow(unused)]
 #[tokio::main]
-pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, _ip_address: Vec<&str>, port: u32, testport: u32) 
+pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, _ip_address: String, port: u32, testport: u32) 
     -> (Arc<Mutex<HashMap<String, TcpStream>>>, String){
 
     let start_time = Utc::now().time();
@@ -24,6 +24,20 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
     let (_, _) = test_listener.accept().await.unwrap();
 
     // let connections: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
+
+
+    let key_to_check = _ip_address;
+    let is_present = {
+        let connections_lock = connections_server.lock().unwrap();
+        connections_lock.contains_key(&key_to_check)
+    };
+
+    let connections_lock = connections_server.lock().unwrap();
+    if is_present {
+        println!("TcpStream exists for key: {}, {:?}", key_to_check, connections_lock.get(&key_to_check));
+    } else {
+        println!("TcpStream does not exist for key: {}", key_to_check);
+    }
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
 
