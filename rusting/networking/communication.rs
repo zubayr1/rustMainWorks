@@ -99,15 +99,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
 
                 let (connections_server, _result) = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
-
-                        let mutex_guard = connections_server.lock().unwrap();
-                        
-                        
-                        for (key, value) in mutex_guard.iter() {
-                            println!("{:?},    {:?}", key, value);
-                        }
-
-
+                       
                
                 let witness_verify =  codeword::verify_codeword(_result.clone());
     
@@ -142,7 +134,12 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                         let (connections_server, _result) = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                       
+                        let mutex_guard = connections_server.lock().unwrap();
+                        
+                        
+                        for (key, value) in mutex_guard.iter() {
+                            println!("{:?},    {:?}", key, value);
+                        }
 
                         let socket_vec: Vec<&str> = _result.split("/").collect();
                         let socket_ip = socket_vec[1];
