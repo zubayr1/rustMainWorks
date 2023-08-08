@@ -13,7 +13,9 @@ use std::collections::HashMap;
 
 #[allow(unused)]
 #[tokio::main]
-pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> Result<(), Box<dyn Error>> {
+pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
+-> Arc<Mutex<HashMap<String, TcpStream>>>
+ {
 
     // let mut connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
     let mut connections: HashMap<String, TcpStream> = HashMap::new();
@@ -33,7 +35,9 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
         sleep(Duration::from_millis(1)).await;        
     }    
        
-    let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;  
+    let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
+
+    
 
     let mut connections_client_lock = connections_client.lock().unwrap();
 
@@ -67,7 +71,9 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     // println!("{:?}", connections_client_lock.get_mut("server").unwrap());
 
-    Ok(())
+    let mut connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+
+    return connections_client;
    
     
 }
