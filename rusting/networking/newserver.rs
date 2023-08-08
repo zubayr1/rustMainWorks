@@ -1,5 +1,3 @@
-
-
 use tokio::net::{TcpListener, TcpStream};
 use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
@@ -10,10 +8,9 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 
-
 #[allow(unused)]
 #[tokio::main]
-pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, _ip_address: String, port: u32, testport: u32) 
+pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, _ip_address: String, port: u32, testport: u32) 
     -> (Arc<Mutex<HashMap<String, TcpStream>>>, String){
 
     let start_time = Utc::now().time();
@@ -36,9 +33,12 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
     };
 
     
-    if is_present {
+    if is_present 
+    {
        println!("SERVER TcpStream exists for key: {}, {:?}", key_to_check, connection_server_lock.get(&key_to_check));
-    } else {
+    } 
+    else 
+    {
        println!("SERVER TcpStream does not exist for key: {}", key_to_check);
     }
 
@@ -81,8 +81,7 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
         }
 
         line.clear();
-        
-                
+                        
     }
 
 
@@ -109,6 +108,8 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
     connections.insert(socket_ip[0].clone().to_string(), socket);
 
     let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+
+    println!("{:?}", connections_server);
 
     return (connections_server, line);
     
