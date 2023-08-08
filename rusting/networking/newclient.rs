@@ -27,9 +27,9 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     // Connect to a peer    
 
     
-    let connections_client_clone = Arc::clone(&connections_client);
+    // let connections_client_clone = Arc::clone(&connections_client);
 
-    let mut connection_client_lock = connections_client_clone.lock().unwrap();
+    let mut connection_client_lock = connections_client.lock().unwrap();
 
     let key_to_check = parts[0].clone().to_string();
     let is_present = {
@@ -38,11 +38,11 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     };
 
     
-    if is_present {
-      println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
-    } else {
-      println!("TcpStream does not exist for key: {}", key_to_check);
-    }
+    // if is_present {
+    //   println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
+    // } else {
+    //   println!("TcpStream does not exist for key: {}", key_to_check);
+    // }
 
     
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for client to be active, if not random wait and retry

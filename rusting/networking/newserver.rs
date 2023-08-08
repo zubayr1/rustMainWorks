@@ -22,9 +22,9 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
     let mut connections: HashMap<String, TcpStream> = HashMap::new();
 
-    let connections_server_clone = Arc::clone(&connections_server);
+    // let connections_server_clone = Arc::clone(&connections_server);
 
-    let mut connection_server_lock = connections_server_clone.lock().unwrap();
+    let mut connection_server_lock = connections_server.lock().unwrap();
 
     let key_to_check = _ip_address;
     let is_present = {
