@@ -43,6 +43,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     let mut connections: HashMap<String, TcpStream> = HashMap::new();
     
+    println!("{:?}", stream);
     connections.insert(parts[0].clone().to_string(), stream);  
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
