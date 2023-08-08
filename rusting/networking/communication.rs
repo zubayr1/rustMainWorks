@@ -29,6 +29,11 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
     committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
 {
+
+    let mut server_map: HashMap<String, TcpStream> = HashMap::new();
+    let mut client_map: HashMap<String, TcpStream> = HashMap::new();
+
+
     let mut client_count = 1;
 
     if mode.contains("codeword")
@@ -134,11 +139,8 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                         let (connections_server, _result) = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                        let mutex_guard = connections_server.lock().unwrap();
-                        
-                        
-                        for (key, value) in mutex_guard.iter() {
-                            println!("{:?},    {:?}", key, value);
+                        for (key, value) in connections_server {
+                            println!("Key: {}, Value: {:?}", key, value);
                         }
 
                         let socket_vec: Vec<&str> = _result.split("/").collect();

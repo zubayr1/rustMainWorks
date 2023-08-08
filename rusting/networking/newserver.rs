@@ -11,7 +11,7 @@ use std::sync::{Arc, Mutex};
 #[allow(unused)]
 #[tokio::main]
 pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, _ip_address: String, port: u32, testport: u32) 
-    -> (Arc<Mutex<HashMap<String, TcpStream>>>, String){
+    -> (HashMap<String, TcpStream>, String){
 
     let start_time = Utc::now().time();
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
@@ -107,10 +107,10 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
     connections.insert(socket_ip[0].clone().to_string(), socket);
 
-    let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+    // let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
 
     // println!("server {:?}", connections_server);
 
-    return (connections_server, line);
+    return (connections, line);
     
 }
