@@ -412,8 +412,8 @@ pub async fn accum_reactor(
 
         let v1 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(),
              V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-        // let v2 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(), 
-        //     V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+        let v2 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(), 
+            V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
         let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
