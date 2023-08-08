@@ -108,8 +108,7 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
 
     connections.insert(socket_ip[0].clone().to_string(), socket);
 
-    println!("SERVER   {:?}\n", connections_server);
-    
+    let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
 
     return (connections_server, line);
     
