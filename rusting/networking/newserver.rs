@@ -25,23 +25,26 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
 
     // let connections: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
 
+    let connections_server_clone = Arc::clone(&connections_server);
 
-    // let key_to_check = _ip_address;
-    // let is_present = {
-    //     let connections_lock = connections_server.lock().unwrap();
-    //     connections_lock.contains_key(&key_to_check)
-    // };
+    let mut connection_server_lock = connections_server_clone.lock().unwrap();
 
-    // let connections_lock = connections_server.lock().unwrap();
-    // if is_present {
-    //     println!("TcpStream exists for key: {}, {:?}", key_to_check, connections_lock.get(&key_to_check));
-    // } else {
-    //     println!("TcpStream does not exist for key: {}", key_to_check);
-    // }
+    let key_to_check = _ip_address;
+    let is_present = {
+        
+        connection_server_lock.contains_key(&key_to_check)
+    };
+
+    
+    if is_present {
+        println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_server_lock.get(&key_to_check));
+    } else {
+        println!("TcpStream does not exist for key: {}", key_to_check);
+    }
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
 
-    let connections_server_clone = Arc::clone(&connections_server);
+    
     
     socket.set_nodelay(true).expect("Failed to enable TCP_NODELAY");
     
@@ -103,10 +106,10 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
     
     // println!("time taken {} miliseconds",diff.num_milliseconds());
 
-    connections_server_clone.lock().unwrap().insert(socket_ip[0].clone().to_string(), socket);
+    connection_server_lock.insert(socket_ip[0].clone().to_string(), socket);
 
     // println!("SERVER   {:?}\n", connections_server_clone);
 
-    return (connections_server_clone, line);
+    return (connections_server, line);
     
 }
