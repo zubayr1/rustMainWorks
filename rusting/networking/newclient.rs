@@ -55,7 +55,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     
 
-    let mut connections_client_lock = connections_client.lock().unwrap();
+    // let mut connections_client_lock = connections_client.lock().unwrap();
 
     
     connections.insert(parts[0].clone().to_string(), stream);  
