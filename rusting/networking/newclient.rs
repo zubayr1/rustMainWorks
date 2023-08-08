@@ -11,19 +11,12 @@ use std::collections::HashMap;
 pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
 -> HashMap<String, TcpStream>
  {
-
-    // let mut connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
-    let mut connections: HashMap<String, TcpStream> = HashMap::new();
-  
     let address_clone = address.clone();
 
     let parts: Vec<&str> = address_clone.split(':').collect();
 
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
-    // Connect to a peer    
-
-    
-    // let connections_client_clone = Arc::clone(&connections_client);
+    // Connect to a peer        
 
     let mut connection_client_lock = connections_client.lock().unwrap();
 
@@ -48,6 +41,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
        
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
 
+    let mut connections: HashMap<String, TcpStream> = HashMap::new();
     
     connections.insert(parts[0].clone().to_string(), stream);  
 
@@ -61,7 +55,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     loop
     {
         // Write data.           
-
+        println!("{:?}", connections.get_mut(parts[0].clone()).unwrap());
         connections.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
          let result = connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
 
