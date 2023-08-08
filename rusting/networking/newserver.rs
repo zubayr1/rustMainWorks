@@ -44,7 +44,7 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
 
-    
+    println!("server side: {:?}", socket_addr);
     
     socket.set_nodelay(true).expect("Failed to enable TCP_NODELAY");
     
