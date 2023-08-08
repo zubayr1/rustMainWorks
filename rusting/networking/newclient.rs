@@ -40,9 +40,9 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     
     if is_present {
-       println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
+      println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
     } else {
-       println!("TcpStream does not exist for key: {}", key_to_check);
+      println!("TcpStream does not exist for key: {}", key_to_check);
     }
 
     
@@ -52,10 +52,6 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     }    
        
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
-
-    
-
-    // let mut connections_client_lock = connections_client.lock().unwrap();
 
     
     connections.insert(parts[0].clone().to_string(), stream);  
