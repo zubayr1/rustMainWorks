@@ -23,7 +23,7 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
 
     let (_, _) = test_listener.accept().await.unwrap();
 
-    // let connections: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
+    let mut connections: HashMap<String, TcpStream> = HashMap::new();
 
     let connections_server_clone = Arc::clone(&connections_server);
 
@@ -106,7 +106,7 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
     
     // println!("time taken {} miliseconds",diff.num_milliseconds());
 
-    connection_server_lock.insert(socket_ip[0].clone().to_string(), socket);
+    connections.insert(socket_ip[0].clone().to_string(), socket);
 
     println!("SERVER   {:?}\n", connections_server);
     
