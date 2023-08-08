@@ -1,7 +1,6 @@
 use tokio::net::TcpStream;
 use tokio::io::AsyncWriteExt;
 
-use std::error::Error;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 use std::sync::{Arc, Mutex};
@@ -83,7 +82,9 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     // println!("{:?}", connections_client_lock.get_mut("client").unwrap());
 
-    let mut connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+    let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+
+    println!("{:?}", connections_client);
 
     return connections_client;
    

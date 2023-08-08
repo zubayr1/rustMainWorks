@@ -101,8 +101,6 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                         test_port+port_count + additional_port);
 
                
-
-                
                 let witness_verify =  codeword::verify_codeword(_result.clone());
     
                 if witness_verify==true
@@ -186,10 +184,11 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                 
                 let additional_port = (args[2].parse::<u32>().unwrap())*10;
 
-
+                
                 let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = newclient::match_tcp_client( connections_client.clone(), [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
                 [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                 committee_id.clone(), value.clone(), args.clone());
+                
             }
             else 
             {
