@@ -13,7 +13,7 @@ use std::collections::HashMap;
 #[allow(unused)]
 #[tokio::main]
 pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
--> Arc<Mutex<HashMap<String, TcpStream>>>
+-> HashMap<String, TcpStream>
  {
 
     // let mut connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
@@ -80,13 +80,11 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    // println!("{:?}", connections_client_lock.get_mut("client").unwrap());
 
-    let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+    // let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
 
-    // println!("client {:?}", connections_client);
 
-    return connections_client;
+    return connections;
    
     
 }
