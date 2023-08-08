@@ -29,7 +29,7 @@ pub fn create_keys() // schnorr key generation
 }
 
 
-pub fn read_ports(file_name: String) -> Vec<u32>
+pub fn _read_ports(file_name: String) -> Vec<u32>
 {
     let file = File::open(file_name).expect("Failed to open the file");
 

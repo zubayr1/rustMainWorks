@@ -43,12 +43,14 @@ async fn communication(
     initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>
 {
     let mut output: Vec<String>= Vec::new();
+    let mut server_map: HashMap<String, TcpStream> = HashMap::new();
+    let mut client_map: HashMap<String, TcpStream> = HashMap::new();
 
     if mode=="accum"
     {
         if medium=="prod_init"
         {
-            output = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
+            (output, server_map, client_map) = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
@@ -64,7 +66,7 @@ async fn communication(
     {
         if medium=="prod_init"
         {
-            output = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
+            (output, server_map, client_map) = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
@@ -77,7 +79,8 @@ async fn communication(
         }
     }
     
-
+    println!("{:?}", server_map);
+    println!("{:?}", client_map);
     return output;
 }
 

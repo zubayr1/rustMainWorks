@@ -1,5 +1,4 @@
 use std::{thread, time};
-use std::error::Error;
 use std::fs::OpenOptions;
 use std::io::Write;
 use std::env;
@@ -27,7 +26,8 @@ mod codeword;
 pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, 
     connections_client: Arc<Mutex<HashMap<String, TcpStream>>>,
     committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
+    args: Vec<String>, value: Vec<String>, mode: String, types: String) -> 
+    (Vec<String>, HashMap<String, TcpStream>, HashMap<String, TcpStream>)
 {
 
     let mut server_map: HashMap<String, TcpStream> = HashMap::new();
@@ -203,10 +203,10 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                 [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                 committee_id.clone(), value.clone(), args.clone());
 
-                // for (key, value) in connections_client {
+                for (key, value) in connections_client {
                             
-                //     client_map.insert(key, value);
-                // }
+                    client_map.insert(key, value);
+                }
                 
             }
             else 
@@ -225,10 +225,10 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                     [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                     committee_id.clone(), value.clone(), args.clone());
 
-                    // for (key, value) in connections_client {
+                    for (key, value) in connections_client {
                             
-                    //     client_map.insert(key, value);
-                    // }
+                        client_map.insert(key, value);
+                    }
                     
                 }
             }
@@ -240,17 +240,15 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
     });
 
 
-    return output;
+    return (output, server_map, client_map);
 
 }
 
 
 pub async fn dev_communication(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
-    let connections_client = newclient::match_tcp_client(connections_client.clone(), working_port, test_port, committee_id.clone(), value.clone(), args.clone());
-    
-    
-
+    let _connections_client = newclient::match_tcp_client(connections_client.clone(), working_port, test_port, committee_id.clone(), value.clone(), args.clone());
+        
     value.push(committee_id.to_string());
 
     let joined_string = value.join(", ");    
@@ -298,13 +296,10 @@ pub async fn nested_dev_communication(connections_client: Arc<Mutex<HashMap<Stri
             let three_millis = time::Duration::from_millis(3);
             thread::sleep(three_millis);
 
-            let connections_client = newclient::match_tcp_client(connections_client.clone(), 
+            let _connections_client = newclient::match_tcp_client(connections_client.clone(), 
                 ["127.0.0.1".to_string(), (initial_port_client + 500).to_string()].join(":"),
                 ["127.0.0.1".to_string(), (test_port_client + 500).to_string()].join(":"),
                 committee_id.clone(), value.clone(), args.clone());
-
-            
-
 
         });
 

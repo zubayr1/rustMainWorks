@@ -16,7 +16,7 @@ async fn gba_communication(connections_server: Arc<Mutex<HashMap<String, TcpStre
     
     if medium=="prod_init"
     {
-        let output = communication::prod_communication(connections_server, connections_client.clone(), committee_id, ip_address.clone(), level, port_count, _index, 
+        let (output, server_map, client_map)  = communication::prod_communication(connections_server, connections_client.clone(), committee_id, ip_address.clone(), level, port_count, _index, 
         args.clone(), value.clone(), mode.clone(), types.clone()).await;
 
         return output;
