@@ -9,7 +9,7 @@ use std::collections::HashMap;
 #[allow(unused)]
 #[tokio::main]
 pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
--> HashMap<String, TcpStream>
+-> Arc<Mutex<HashMap<String, TcpStream>>>
  {
     let address_clone = address.clone();
 
@@ -72,10 +72,10 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     file.write_all(b"\n").await.unwrap();
 
 
-    // let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+    let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
 
 
-    return connections;
+    return connections_client;
    
     
 }
