@@ -12,11 +12,9 @@ use std::collections::HashMap;
 
 #[allow(unused)]
 #[tokio::main]
-pub async fn match_tcp_client(connections_client1: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> Result<(), Box<dyn Error>> {
+pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) -> Result<(), Box<dyn Error>> {
 
     // let mut connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
-
-    let mut connections: HashMap<String, TcpStream> = HashMap::new();
 
     let address_clone = address.clone();
 
@@ -31,10 +29,12 @@ pub async fn match_tcp_client(connections_client1: Arc<Mutex<HashMap<String, Tcp
         sleep(Duration::from_millis(1)).await;        
     }    
        
-    let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
+    let mut stream: TcpStream = TcpStream::connect(address.clone()).await?;  
 
+    let mut connections_client_lock = connections_client.lock().unwrap();
 
-    connections.insert(parts[0].clone().to_string(), stream);  
+    
+    connections_client_lock.insert(parts[0].clone().to_string(), stream);  
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
@@ -42,13 +42,13 @@ pub async fn match_tcp_client(connections_client1: Arc<Mutex<HashMap<String, Tcp
 
     let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
 
-    // let mut connections_client_lock = connections_client.lock().unwrap();
+    
     loop
     {
         // Write data.           
-        connections.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
-        let result = connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
-        // let result = stream.write_all(b"EOF").await;
+
+        connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
+         let result = connections_client_lock.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
 
         if  result.is_ok()
         {
@@ -61,7 +61,7 @@ pub async fn match_tcp_client(connections_client1: Arc<Mutex<HashMap<String, Tcp
     file.write_all(text.as_bytes()).await.unwrap();
     file.write_all(b"\n").await.unwrap();
 
-    println!("{:?}", connections.get_mut(parts[0].clone()).unwrap());
+    println!("{:?}", connections_client_lock.get_mut(parts[0].clone()).unwrap());
 
     Ok(())
    
