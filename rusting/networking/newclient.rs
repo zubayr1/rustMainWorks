@@ -34,7 +34,7 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     let mut connections_client_lock = connections_client.lock().unwrap();
 
     
-    connections_client_lock.insert("server".to_string(), stream);  
+    connections.insert(parts[0].clone().to_string(), stream);  
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
@@ -47,8 +47,8 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     {
         // Write data.           
 
-        connections_client_lock.get_mut("server").unwrap().write_all(final_string.as_bytes()).await.unwrap();
-         let result = connections_client_lock.get_mut("server").unwrap().write_all(b"EOF").await;
+        connections.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
+         let result = connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
 
         if  result.is_ok()
         {
