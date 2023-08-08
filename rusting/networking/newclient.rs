@@ -48,8 +48,8 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     {
         // Write data.           
 
-        connections.get_mut("server").unwrap().write_all(final_string.as_bytes()).await.unwrap();
-         let result = connections.get_mut("server").unwrap().write_all(b"EOF").await;
+        connections_client_lock.get_mut("server").unwrap().write_all(final_string.as_bytes()).await.unwrap();
+         let result = connections_client_lock.get_mut("server").unwrap().write_all(b"EOF").await;
 
         if  result.is_ok()
         {
