@@ -77,7 +77,7 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
 
     let connection_key = socket_addr.to_string();
 
-    line = [line.clone(), socket_ip[0].to_string()].join("/"); 
+    line = [line.clone(), socket_ip[0].clone().to_string()].join("/"); 
 
     let serialized_data = serde_json::to_string(&line).unwrap();   
 
@@ -89,7 +89,7 @@ pub async fn handle_server( connections_server: Arc<Mutex<HashMap<String, TcpStr
     
     // println!("time taken {} miliseconds",diff.num_milliseconds());
 
-    connections_server_clone.lock().unwrap().insert("client_id".to_string(), socket);
+    connections_server_clone.lock().unwrap().insert(socket_ip[0].clone().to_string(), socket);
 
     println!("SERVER   {:?}", connections_server_clone);
 
