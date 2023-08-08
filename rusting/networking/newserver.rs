@@ -109,7 +109,7 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
     let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
 
-    println!("server {:?}", connections_server);
+    // println!("server {:?}", connections_server);
 
     return (connections_server, line);
     
