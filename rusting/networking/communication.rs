@@ -225,10 +225,11 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                     [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                     committee_id.clone(), value.clone(), args.clone());
 
-                    // for (key, value) in connections_client {
+                    for (key, value) in connections_client {
                             
-                    //     client_map.insert(key, value);
-                    // }
+                        // client_map.insert(key, value);
+                        println!("{:?}, {:?}", key, value);
+                    }
                     
                 }
             }
