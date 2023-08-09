@@ -9,6 +9,7 @@ use std::thread;
 use std::env;
 use std::sync::{Arc, Mutex};
 use tokio::net::TcpStream;
+use tokio::spawn;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -105,99 +106,110 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     // create persistant connections
-    let mut server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
-    let mut client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
+    let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
+    let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
+    let nodes_ip_clone = node_ips.clone();
 
-    thread::scope(|s| {
-        s.spawn(|| {
-
-            let mut count=0;
-            let mut additional_port;
-            for ip in node_ips.clone() 
-            { 
-                
-                additional_port = server_port_list[count];
-
-                let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
-                , test_port.clone() + additional_port + 5000);
-                
-                count+=1;
-
-                for (key, value) in val
-                {
-                    server_map.insert(key, value);
-                }
-            }
-
-        });
-        s.spawn(|| {
-
-            let mut count=0;
-            for ip in node_ips.clone() 
-            { 
-                
-                let additional_port = client_port_list[count];
-                let val = newclient::create_client([ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
-
-                count+=1;
-                for (key, value) in val
-                {
-                    client_map.insert(key, value);
-                }
-            }
-
-        });
-
-    });
-    
-
-                
     let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(server_map));
     let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(client_map));
 
+    let connections_server_clone = Arc::clone(&connections_server);
+    let connections_client_clone = Arc::clone(&connections_client);
 
-
-
-    thread::scope(|s| {
-        s.spawn(|| {
-
-            let mut count=0;
-            let mut additional_port;
-            for ip in node_ips.clone() 
-            { 
-                
-                additional_port = server_port_list[count];
-
-                let val = newserver::handle_server(connections_server.clone(), ip.to_string(), initial_port.clone() + additional_port + 5000
-                , test_port.clone() + additional_port + 5000);
-                
-                count+=1;
-
-                
+    let handle_server_fut = async move {
+        let mut count = 0;
+        let mut additional_port;
+        for ip in nodes_ip_clone.clone() {
+            additional_port = server_port_list[count];
+            let val = newserver::create_server(
+                ip.to_string(),
+                initial_port.clone() + additional_port + 5000,
+                test_port.clone() + additional_port + 5000,
+            );
+            count += 1;
+            for (key, value) in val {
+                connections_server.lock().unwrap().insert(key, value);
             }
-
-        });
-        s.spawn(|| {
-
-            let mut count=0;
-            for ip in node_ips.clone() 
-            { 
-                let mut val: Vec<String> = Vec::new();
-                val.push("EOF".to_string());
-                let additional_port = client_port_list[count];
-                 newclient::match_tcp_client(connections_client.clone(),
-                    [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), 1, val, args.clone() );
-
-                count+=1;
-                
+        }
+    };
+    
+    let handle_client_fut = async move {
+        let mut count = 0;
+        for ip in node_ips.clone() {
+            let additional_port = client_port_list[count];
+            let val = newclient::create_client(
+                [ip.to_string(), (initial_port + additional_port + 5000).to_string()].join(":"),
+                [ip.to_string(), (test_port + additional_port + 5000).to_string()].join(":"),
+            );
+            count += 1;
+            for (key, value) in val {
+                connections_client.lock().unwrap().insert(key, value);
             }
+        }
+    };
 
-        });
+    
+    
+    let fut = async {
+        let handle_server_task = spawn(handle_server_fut);
+        let handle_client_task = spawn(handle_client_fut);
+    
+        let (_, _) = tokio::join!(handle_server_task, handle_client_task);
+    };
+    
+    // Run the future inside the Tokio runtime
+    tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(2)
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(fut);
 
-    });
+                
+    println!("{:?}", connections_client_clone);
+
+
+
+
+    // thread::scope(|s| {
+    //     s.spawn(|| {
+
+    //         let mut count=0;
+    //         let mut additional_port;
+    //         for ip in node_ips.clone() 
+    //         { 
+                
+    //             additional_port = server_port_list[count];
+
+    //             let val = newserver::handle_server(connections_server.clone(), ip.to_string(), initial_port.clone() + additional_port + 5000
+    //             , test_port.clone() + additional_port + 5000);
+                
+    //             count+=1;
+
+                
+    //         }
+
+    //     });
+    //     s.spawn(|| {
+
+    //         let mut count=0;
+    //         for ip in node_ips.clone() 
+    //         { 
+    //             let mut val: Vec<String> = Vec::new();
+    //             val.push("EOF".to_string());
+    //             let additional_port = client_port_list[count];
+    //              newclient::match_tcp_client(connections_client.clone(),
+    //                 [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
+    //             [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), 1, val, args.clone() );
+
+    //             count+=1;
+                
+    //         }
+
+    //     });
+
+    // });
 
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
