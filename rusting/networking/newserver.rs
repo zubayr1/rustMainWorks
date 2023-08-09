@@ -74,7 +74,6 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
 
-    println!("server side: {:?}", socket_addr);
     
     socket.set_nodelay(true).expect("Failed to enable TCP_NODELAY");
     
@@ -133,13 +132,10 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
     let _diff = end_time - start_time;
     
-    // println!("time taken {} miliseconds",diff.num_milliseconds());
 
     connections.insert(socket_ip[0].clone().to_string(), socket);
 
-    // let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
 
-    // println!("server {:?}", connections_server);
 
     return (connections, line);
     

@@ -111,35 +111,35 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32,
 
 
 
-    // thread::scope(|s| {
-    //     s.spawn(|| {
+    thread::scope(|s| {
+        s.spawn(|| {
 
-    //         let mut count=1;
-    //         for ip in ip_address.clone() 
-    //         { 
-    //             count+=1;
-    //             let val = newserver::create_server(ip.to_string(), initial_port.clone() + count
-    //             , test_port.clone() + count);
+            let mut count=1;
+            for ip in ip_address.clone() 
+            { 
+                count+=1;
+                let val = newserver::create_server(ip.to_string(), initial_port.clone() + count + 5000
+                , test_port.clone() + count + 5000);
             
-    //             println!("server {:?}", val);
-    //         }
+                println!("server {:?}", val);
+            }
 
-    //     });
-    //     s.spawn(|| {
+        });
+        s.spawn(|| {
 
-    //         let mut count=1;
-    //         for ip in ip_address.clone() 
-    //         { 
-    //             count+=1;
-    //             let val = newclient::handle_client([ip.to_string(), (initial_port+ count).to_string()].join(":"), 
-    //             [ip.to_string(), (test_port+ count).to_string()].join(":"));
+            let mut count=1;
+            for ip in ip_address.clone() 
+            { 
+                count+=1;
+                let val = newclient::handle_client([ip.to_string(), (initial_port+ count + 5000).to_string()].join(":"), 
+                [ip.to_string(), (test_port+ count + 5000).to_string()].join(":"));
 
-    //             println!("client {:?}", val);
-    //         }
+                println!("client {:?}", val);
+            }
 
-    //     });
+        });
 
-    // });
+    });
 
     let committee_length = ip_address.len();
     

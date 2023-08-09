@@ -97,7 +97,6 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
 
     // let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
-    println!("{:?}",connections);
 
     return connections;
    
