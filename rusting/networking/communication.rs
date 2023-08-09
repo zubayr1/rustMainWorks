@@ -229,6 +229,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                             
                         // client_map.insert(key, value);
                         println!("{:?}, {:?}", key, value);
+                        client_map.insert(key, value);
                     }
                     
                 }
