@@ -103,6 +103,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let initial_port: u32 = initial_port_str.parse().unwrap();
     let test_port: u32 = test_port_str.parse().unwrap();
 
+
+    // create persistant connections
     let mut server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
     let mut client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 

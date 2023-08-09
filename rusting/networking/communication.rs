@@ -23,6 +23,7 @@ mod nested_nodes_test;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
+#[tokio::main]
 pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, 
     connections_client: Arc<Mutex<HashMap<String, TcpStream>>>,
     committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
@@ -102,9 +103,9 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                             
                 let additional_port = (client_count)*10;
 
-                let  _result = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
+                let  future = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
-                
+                let _result = block_on(future);
                
                 let witness_verify =  codeword::verify_codeword(_result.clone());
     
@@ -126,19 +127,20 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let _result
+                        let future
                          = newserver::handle_server(connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
+                        let _result = block_on(future);
                         
                         output.push(_result);
 
                     }
                     else if mode=="accum"
                     {
-                        let  _result = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
+                        let  future = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                        
+                        let _result = block_on(future);
 
                         let socket_vec: Vec<&str> = _result.split("/").collect();
                         let socket_ip = socket_vec[1];
