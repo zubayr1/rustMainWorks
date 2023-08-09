@@ -3,6 +3,7 @@ use tokio::net::tcp::ReadHalf;
 use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
 use tokio::fs::OpenOptions;
 use chrono::Utc;
+use tokio::sync::RwLock;
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
@@ -42,7 +43,7 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
     let start_time = Utc::now().time();
 
-    let mut connection_server_lock = connections_server.lock().unwrap();
+    let mut connection_server_lock = connections_server.lock();
 
     let key_to_check = _ip_address.clone();
     let is_present = {
