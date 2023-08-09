@@ -116,11 +116,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             let mut additional_port;
             for ip in node_ips.clone() 
             { 
-                let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
                 
                 additional_port = server_port_list[count];
 
-                let (val, _) = newserver::handle_server(connections_server, ip.to_string(), initial_port.clone() + additional_port + 5000
+                let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
                 , test_port.clone() + additional_port + 5000);
                 
                 count+=1;
@@ -137,14 +136,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             let mut count=0;
             for ip in node_ips.clone() 
             { 
-                let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
-                let value: Vec<String> = Vec::new();
                 
                 let additional_port = client_port_list[count];
-                let val = newclient::match_tcp_client(connections_client, [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"),
-                1, value, args.clone()
-            );
+                let val = newclient::create_client([ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
+                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
 
                 count+=1;
                 for (key, value) in val

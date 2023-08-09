@@ -8,11 +8,38 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
 
+#[allow(unused)]
+#[tokio::main]
+pub async fn create_server( _ip_address: String, port: u32, testport: u32) 
+    -> HashMap<String, TcpStream>
+{
+    let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
+    
+    let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
+
+    let (_, _) = test_listener.accept().await.unwrap();
+
+    let mut connections: HashMap<String, TcpStream> = HashMap::new();
+
+    let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
+
+
+    let socket_addr_string = socket_addr.to_string();
+    let socket_ip: Vec<&str> = socket_addr_string.split(":").collect();
+
+    let connection_key = socket_addr.to_string();
+
+
+    connections.insert(socket_ip[0].clone().to_string(), socket);
+
+    connections
+
+}
 
 #[allow(unused)]
 #[tokio::main]
 pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, _ip_address: String, port: u32, testport: u32) 
-    -> (HashMap<String, TcpStream>, String)
+    -> String
 {
 
     let start_time = Utc::now().time();
@@ -81,35 +108,12 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
 
         let _diff = end_time - start_time;       
 
-        let mut connections: HashMap<String, TcpStream> = HashMap::new();
-
-        return (connections, line);
+        return line;
     } 
     else 
     {
        println!("SERVER TcpStream does not exist for key: {}", key_to_check);
-       
-       
-       let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
-    
-        let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
-
-        let (_, _) = test_listener.accept().await.unwrap();
-
-        let mut connections: HashMap<String, TcpStream> = HashMap::new();
-
-        let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
-
-
-        let socket_addr_string = socket_addr.to_string();
-        let socket_ip: Vec<&str> = socket_addr_string.split(":").collect();
-
-        let connection_key = socket_addr.to_string();
-
-
-        connections.insert(socket_ip[0].clone().to_string(), socket);
-
-        (connections, "na".to_string())
+       return "na".to_string();
     }
 
     

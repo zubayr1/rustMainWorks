@@ -102,7 +102,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                             
                 let additional_port = (client_count)*10;
 
-                let  (connection, _result) = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
+                let  _result = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
                 
                
@@ -126,7 +126,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let (connection, _result)
+                        let _result
                          = newserver::handle_server(connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
                         
@@ -135,7 +135,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                     }
                     else if mode=="accum"
                     {
-                        let  (connection, _result) = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
+                        let  _result = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
                         
