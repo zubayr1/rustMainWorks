@@ -127,12 +127,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 ip.to_string(),
                 initial_port.clone() + additional_port + 5000,
                 test_port.clone() + additional_port + 5000,
-            );
-            let val = block_on(f);
-            count += 1;
-            for (key, value) in val {
-                connections_server.lock().unwrap().insert(key, value);
-            }
+            ).await;
+            // let val = block_on(f);
+            // count += 1;
+            // for (key, value) in val {
+            //     connections_server.lock().unwrap().insert(key, value);
+            // }
         }
     };
     
@@ -143,12 +143,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             let f = newclient::create_client(
                 [ip.to_string(), (initial_port + additional_port + 5000).to_string()].join(":"),
                 [ip.to_string(), (test_port + additional_port + 5000).to_string()].join(":"),
-            );
+            ).await;
             count += 1;
-            let val = block_on(f);
-            for (key, value) in val {
-                connections_client.lock().unwrap().insert(key, value);
-            }
+            // let val = block_on(f);
+            // for (key, value) in val {
+            //     connections_client.lock().unwrap().insert(key, value);
+            // }
         }
     };
 
