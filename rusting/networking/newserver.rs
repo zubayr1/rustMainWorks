@@ -48,71 +48,71 @@ pub async fn handle_server(connections_server: Arc<RwLock<HashMap<String, TcpStr
     let read_lock = connections_server.read().await;
 
     let key_to_check = _ip_address.clone();
-    let is_present = {
-        
-        read_lock.contains_key(&key_to_check)
-    };
-
     
-    if is_present 
+    
+    if read_lock.contains_key(&key_to_check) 
     {
         println!("SERVER TcpStream exists for key: {}, {:?}", key_to_check, read_lock.get(&key_to_check));
 
         drop(read_lock);
 
+        let mut write_lock = connections_server.write().await;
 
-    //     let socket = read_lock.get_mut(&key_to_check).unwrap();
+        // Bind the temporary value to a variable
+        let socket = write_lock.get_mut(&key_to_check).unwrap();        // Use the as_mut method on the variable        
+        
+        let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
+        
+        let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
+        let mut line: String  = String :: new();
+
+        let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
+
+        let text;
+
+        text = ["server at port".to_string(), port.to_string()].join(": ");
+
+        file.write_all(text.as_bytes()).await.unwrap();
+        file.write_all(b"\n").await.unwrap();
 
         
-    //     let (reader, _) = socket.split(); // tokio socket split to read and write concurrently
-        
-    //     let mut reader: BufReader<ReadHalf> = BufReader::new(reader);
-    //     let mut line: String  = String :: new();
-
-    //     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
-
-    //     let text;
-
-    //     text = ["server at port".to_string(), port.to_string()].join(": ");
-
-    //     file.write_all(text.as_bytes()).await.unwrap();
-    //     file.write_all(b"\n").await.unwrap();
-
     
-    // loop 
-    // {         
-    //     let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
+    loop 
+    {         
+        let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
         
-    //     if line.contains("EOF")  
-    //     {
-    //         line = line.replace("EOF", "");
+        if line.contains("EOF")  
+        {
+            line = line.replace("EOF", "");
 
           
-    //         break;
-    //     }
+            break;
+        }
 
-    //     line.clear();
+        line.clear();
                         
-    //     }
+        }
 
 
-    //     file.write_all(line.as_bytes()).await.unwrap();
-    //     file.write_all(b"\n").await.unwrap();
+        file.write_all(line.as_bytes()).await.unwrap();
+        file.write_all(b"\n").await.unwrap();
 
-    //     let socket_addr_string = _ip_address.to_string();
+        let socket_addr_string = _ip_address.to_string();
 
-    //     line = [line.clone(), socket_addr_string.to_string()].join("/"); 
+        line = [line.clone(), socket_addr_string.to_string()].join("/"); 
 
-    //     let serialized_data = serde_json::to_string(&line).unwrap();   
+        let serialized_data = serde_json::to_string(&line).unwrap();   
 
-    //     let _message_size = serialized_data.len();
+        let _message_size = serialized_data.len();
 
-    //     let end_time = Utc::now().time();
+        let end_time = Utc::now().time();
 
-    //     let _diff = end_time - start_time;       
+        let _diff = end_time - start_time;   
 
-        return "line".to_string();
+        println!("{:?}", line);    
+
+        return line;
     } 
     else 
     {
