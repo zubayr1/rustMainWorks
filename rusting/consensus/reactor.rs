@@ -158,8 +158,8 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32,
 
     let empty_vec: Vec<Vec<u8>> = Vec::new();    
     
-    reactor(connections_server.clone(), connections_client.clone(), pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
-        "accum".to_string(), medium, committee_length).await;
+    // reactor(connections_server.clone(), connections_client.clone(), pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
+    //     "accum".to_string(), medium, committee_length).await;
 }
 
 
