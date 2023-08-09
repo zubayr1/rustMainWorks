@@ -31,7 +31,6 @@ pub async fn create_client(address: String, test_address: String)
 }
 
 #[allow(unused)]
-#[tokio::main]
 pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
 {
     let address_clone = address.clone();

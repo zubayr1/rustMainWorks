@@ -89,147 +89,147 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
     file.write_all(b"\n").unwrap();
 
     
-    thread::scope(|s| { 
+    // thread::scope(|s| { 
 
-        s.spawn(|| 
-        {
+    //     s.spawn(|| 
+    //     {
             
-            let mut count=1;
+    //         let mut count=1;
 
 
-            if types.contains("individual")
-            {
+    //         if types.contains("individual")
+    //         {
                             
-                let additional_port = (client_count)*10;
+    //             let additional_port = (client_count)*10;
 
-                let  _result = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
-                        test_port+port_count + additional_port);
+    //             let  _result = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
+    //                     test_port+port_count + additional_port);
                 
                
-                let witness_verify =  codeword::verify_codeword(_result.clone());
+    //             let witness_verify =  codeword::verify_codeword(_result.clone());
     
-                if witness_verify==true
-                {
-                    output.push(_result);
-                }
+    //             if witness_verify==true
+    //             {
+    //                 output.push(_result);
+    //             }
                     
 
-            }
-            else
-            {
-                for _ip in ip_address_clone.clone() 
-                {   
-                    count+=1;
-                    let mut additional_port = (count + args[2].parse::<u32>().unwrap())*5;
+    //         }
+    //         else
+    //         {
+    //             for _ip in ip_address_clone.clone() 
+    //             {   
+    //                 count+=1;
+    //                 let mut additional_port = (count + args[2].parse::<u32>().unwrap())*5;
 
-                    if mode=="codeword"
-                    {
-                        additional_port = (count + args[2].parse::<u32>().unwrap())*50;
+    //                 if mode=="codeword"
+    //                 {
+    //                     additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let _result
-                         = newserver::handle_server(connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
-                        test_port+port_count + additional_port);
+    //                     let _result
+    //                      = newserver::handle_server(connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
+    //                     test_port+port_count + additional_port);
                         
-                        output.push(_result);
+    //                     output.push(_result);
 
-                    }
-                    else if mode=="accum"
-                    {
-                        let  _result = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
-                        test_port+port_count + additional_port);
-
-                        
-
-                        let socket_vec: Vec<&str> = _result.split("/").collect();
-                        let socket_ip = socket_vec[1];
-
-                        let file_path = "./updatednodeinfo.txt";
-                        let file = File::open(file_path).unwrap();
-                    
-                        let reader = BufReader::new(file);
-                    
-                        let mut result: String =  "".to_string();
-                        for line_result in reader.lines() 
-                        {
-                            let line = line_result.unwrap();
-                            
-                            if line.contains(socket_ip)
-                            {
-                                let nodes_string: Vec<&str> = line.split(" ").collect();
-
-                                let level_usize: usize = level as usize;
-
-                                result = [_result.clone(), nodes_string.get(level_usize+1).unwrap().to_string()].join(", ");
-                                break;
-                            }
-                        }
-
-                        output.push(result);
-                    }
-
-
-                }
-            }
-            
-            
-            
-        });
+    //                 }
+    //                 else if mode=="accum"
+    //                 {
+    //                     let  _result = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
+    //                     test_port+port_count + additional_port);
 
                         
-        s.spawn(|| {
-            let three_millis = time::Duration::from_millis(3);
-            thread::sleep(three_millis);
 
-            let mut count=1;
+    //                     let socket_vec: Vec<&str> = _result.split("/").collect();
+    //                     let socket_ip = socket_vec[1];
 
-            
-            if types.contains("individual")
-            {
-                
-                let additional_port = (args[2].parse::<u32>().unwrap())*10;
-
-                
-                newclient::match_tcp_client( connections_client.clone(), [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
-                [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
-                committee_id.clone(), value.clone(), args.clone());
-
-                // for (key, value) in connections_client {
-                            
-                //     client_map.insert(key, value);
-                // }
-                
-            }
-            else 
-            {
-                for ip in ip_address_clone.clone() 
-                {   
-                    count+=1;
-                    let mut additional_port = (count + args[2].parse::<u32>().unwrap())*5;
-
-                    if mode=="codeword"
-                    {   additional_port = (count + args[2].parse::<u32>().unwrap())*50;
-
-                    }
-
-                    newclient::match_tcp_client( connections_client.clone(), [ip.to_string(), (initial_port+port_count).to_string()].join(":"),
-                    [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
-                    committee_id.clone(), value.clone(), args.clone());
-
-                    // for (key, value) in connections_client {
-                            
-                    //     // client_map.insert(key, value);
-                    //     println!("{:?}, {:?}", key, value);
-                    //     client_map.insert(key, value);
-                    // }
+    //                     let file_path = "./updatednodeinfo.txt";
+    //                     let file = File::open(file_path).unwrap();
                     
-                }
-            }
+    //                     let reader = BufReader::new(file);
+                    
+    //                     let mut result: String =  "".to_string();
+    //                     for line_result in reader.lines() 
+    //                     {
+    //                         let line = line_result.unwrap();
+                            
+    //                         if line.contains(socket_ip)
+    //                         {
+    //                             let nodes_string: Vec<&str> = line.split(" ").collect();
+
+    //                             let level_usize: usize = level as usize;
+
+    //                             result = [_result.clone(), nodes_string.get(level_usize+1).unwrap().to_string()].join(", ");
+    //                             break;
+    //                         }
+    //                     }
+
+    //                     output.push(result);
+    //                 }
+
+
+    //             }
+    //         }
+            
+            
+            
+    //     });
+
+                        
+    //     s.spawn(|| {
+    //         let three_millis = time::Duration::from_millis(3);
+    //         thread::sleep(three_millis);
+
+    //         let mut count=1;
+
+            
+    //         if types.contains("individual")
+    //         {
+                
+    //             let additional_port = (args[2].parse::<u32>().unwrap())*10;
+
+                
+    //             newclient::match_tcp_client( connections_client.clone(), [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
+    //             [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
+    //             committee_id.clone(), value.clone(), args.clone());
+
+    //             // for (key, value) in connections_client {
+                            
+    //             //     client_map.insert(key, value);
+    //             // }
+                
+    //         }
+    //         else 
+    //         {
+    //             for ip in ip_address_clone.clone() 
+    //             {   
+    //                 count+=1;
+    //                 let mut additional_port = (count + args[2].parse::<u32>().unwrap())*5;
+
+    //                 if mode=="codeword"
+    //                 {   additional_port = (count + args[2].parse::<u32>().unwrap())*50;
+
+    //                 }
+
+    //                 newclient::match_tcp_client( connections_client.clone(), [ip.to_string(), (initial_port+port_count).to_string()].join(":"),
+    //                 [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
+    //                 committee_id.clone(), value.clone(), args.clone());
+
+    //                 // for (key, value) in connections_client {
+                            
+    //                 //     // client_map.insert(key, value);
+    //                 //     println!("{:?}, {:?}", key, value);
+    //                 //     client_map.insert(key, value);
+    //                 // }
+                    
+    //             }
+    //         }
 
             
 
-        });
+    //     });
 
-    });
+    // });
 
 
     return (output, server_map, client_map);

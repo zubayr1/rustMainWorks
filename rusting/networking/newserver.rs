@@ -36,7 +36,6 @@ pub async fn create_server( _ip_address: String, port: u32, testport: u32)
 }
 
 #[allow(unused)]
-#[tokio::main]
 pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, _ip_address: String, port: u32, testport: u32) 
     -> String
 {
