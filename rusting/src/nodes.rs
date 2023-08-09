@@ -159,7 +159,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
         let (_, _) = tokio::join!(handle_server_task, handle_client_task);
     };
-    
+    block_on(fut);
     // // Run the future inside the Tokio runtime
     // tokio::runtime::Builder::new_multi_thread()
     //     .worker_threads(2)
