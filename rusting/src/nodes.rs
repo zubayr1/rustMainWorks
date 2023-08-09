@@ -112,7 +112,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             for ip in node_ips.clone() 
             { 
                 
-                additional_port = (server_port_list[count])*50;
+                additional_port = server_port_list[count];
 
                 let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
                 , test_port.clone() + additional_port + 5000);
@@ -128,7 +128,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             for ip in node_ips.clone() 
             { 
                 
-                let additional_port = (client_port_list[count])*50;
+                let additional_port = client_port_list[count];
                 let val = newclient::handle_client([ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
                 [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
 
