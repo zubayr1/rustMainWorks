@@ -97,53 +97,53 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32,
     let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
 
 
-    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
-        println!("INITIAL_PORT_STR is not set.");
-        String::new()
-    });
-    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
-        println!("TEST_PORT_STR is not set.");
-        String::new()
-    });
+    // let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
+    //     println!("INITIAL_PORT_STR is not set.");
+    //     String::new()
+    // });
+    // let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
+    //     println!("TEST_PORT_STR is not set.");
+    //     String::new()
+    // });
    
-    let initial_port: u32 = initial_port_str.parse().unwrap();
-    let test_port: u32 = test_port_str.parse().unwrap();
+    // let initial_port: u32 = initial_port_str.parse().unwrap();
+    // let test_port: u32 = test_port_str.parse().unwrap();
 
 
 
-    thread::scope(|s| {
-        s.spawn(|| {
+    // thread::scope(|s| {
+    //     s.spawn(|| {
 
-            let mut count=1;
-            let mut additional_port;
-            for ip in ip_address.clone() 
-            { 
-                count+=1;
-                additional_port = (count + args[2].parse::<u32>().unwrap())*50;
+    //         let mut count=1;
+    //         let mut additional_port;
+    //         for ip in ip_address.clone() 
+    //         { 
+    //             count+=1;
+    //             additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
-                , test_port.clone() + additional_port + 5000);
+    //             let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
+    //             , test_port.clone() + additional_port + 5000);
             
-                println!("server {:?}", val);
-            }
+    //             println!("server {:?}", val);
+    //         }
 
-        });
-        s.spawn(|| {
+    //     });
+    //     s.spawn(|| {
 
-            let mut count=1;
-            for ip in ip_address.clone() 
-            { 
-                count+=1;
-                let additional_port =(count + args[2].parse::<u32>().unwrap())*50;
-                let val = newclient::handle_client([ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
+    //         let mut count=1;
+    //         for ip in ip_address.clone() 
+    //         { 
+    //             count+=1;
+    //             let additional_port =(count + args[2].parse::<u32>().unwrap())*50;
+    //             let val = newclient::handle_client([ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
+    //             [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
 
-                println!("client {:?}", val);
-            }
+    //             println!("client {:?}", val);
+    //         }
 
-        });
+    //     });
 
-    });
+    // });
 
     let committee_length = ip_address.len();
     

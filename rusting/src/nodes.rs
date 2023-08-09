@@ -5,6 +5,8 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
+use std::{thread, time};
+use std::env;
 
 
 #[path = "../crypto/schnorrkel.rs"]
@@ -29,7 +31,7 @@ pub fn create_keys() // schnorr key generation
 }
 
 
-pub fn _read_ports(file_name: String) -> Vec<u32>
+pub fn read_ports(file_name: String) -> Vec<u32>
 {
     let file = File::open(file_name).expect("Failed to open the file");
 
@@ -83,8 +85,58 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     }
 
    
-    // let server_port_list = read_ports("./server_port_list.txt".to_string());
-    // let client_port_list = read_ports("./client_port_list.txt".to_string());
+    let server_port_list = read_ports("./server_port_list.txt".to_string());
+    let client_port_list = read_ports("./client_port_list.txt".to_string());
+
+
+
+    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
+        println!("INITIAL_PORT_STR is not set.");
+        String::new()
+    });
+    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
+        println!("TEST_PORT_STR is not set.");
+        String::new()
+    });
+   
+    let initial_port: u32 = initial_port_str.parse().unwrap();
+    let test_port: u32 = test_port_str.parse().unwrap();
+
+
+
+    thread::scope(|s| {
+        s.spawn(|| {
+
+            let mut count=1;
+            let mut additional_port;
+            for ip in node_ips.clone() 
+            { 
+                count+=1;
+                additional_port = (count + args[2].parse::<u32>().unwrap())*50;
+
+                let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
+                , test_port.clone() + additional_port + 5000);
+            
+                println!("server {:?}", val);
+            }
+
+        });
+        s.spawn(|| {
+
+            let mut count=1;
+            for ip in node_ips.clone() 
+            { 
+                count+=1;
+                let additional_port =(count + args[2].parse::<u32>().unwrap())*50;
+                let val = newclient::handle_client([ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
+                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
+
+                println!("client {:?}", val);
+            }
+
+        });
+
+    });
     
              
 
