@@ -89,7 +89,10 @@ async fn communication(
 }
 
 
-pub async fn reactor_init(pvss_data: String, committee_id: u32, 
+pub async fn reactor_init(
+    connections_server: Arc<Mutex<HashMap<String, TcpStream>>>,
+    connections_client: Arc<Mutex<HashMap<String, TcpStream>>>,
+    pvss_data: String, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>, port_count: u32, medium: String)
 { 
@@ -107,8 +110,8 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32,
 
     let empty_vec: Vec<Vec<u8>> = Vec::new();    
     
-    // reactor(connections_server.clone(), connections_client.clone(), pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
-    //     "accum".to_string(), medium, committee_length).await;
+    reactor(connections_server.clone(), connections_client.clone(), pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
+        "accum".to_string(), medium, committee_length).await;
 }
 
 
@@ -415,10 +418,10 @@ pub async fn accum_reactor(
         let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length.clone());
 
 
-        let v1 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(),
-             V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-        let v2 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(), 
-            V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+        // let v1 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(),
+        //      V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+        // let v2 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(), 
+        //     V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
         let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
 

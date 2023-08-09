@@ -5,9 +5,10 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
-use std::{thread, time};
+use std::thread;
 use std::env;
-
+use std::sync::{Arc, Mutex};
+use tokio::net::TcpStream;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -149,9 +150,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     });
 
-    println!("{:?}", server_map);
-    println!("{:?}", client_map);
-             
+                
+    let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(server_map));
+    let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(client_map));
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
@@ -187,7 +188,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {                               
                 port_count+=1;              
                
-                reactor::reactor_init(
+                reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
@@ -250,8 +251,13 @@ pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<St
         ip_address.push(address);
         let level = 0;
 
+        let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
+        let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
+
+        let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(server_map));
+        let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(client_map));
         
-        reactor::reactor_init(
+        reactor::reactor_init(connections_server, connections_client, 
             pvss_data.clone(), 999, ip_address.clone(), level, 
         _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
     }
