@@ -31,8 +31,8 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
     (Vec<String>, HashMap<String, TcpStream>, HashMap<String, TcpStream>)
 {
 
-    let mut server_map: HashMap<String, TcpStream> = HashMap::new();
-    let mut client_map: HashMap<String, TcpStream> = HashMap::new();
+    let server_map: HashMap<String, TcpStream> = HashMap::new();
+    let client_map: HashMap<String, TcpStream> = HashMap::new();
 
 
     let mut client_count = 1;
@@ -103,9 +103,9 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                             
                 let additional_port = (client_count)*10;
 
-                let  future = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
+                let  _result = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
-                let _result = block_on(future);
+                
                
                 let witness_verify =  codeword::verify_codeword(_result.clone());
     
@@ -127,20 +127,19 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let future
+                        let _result
                          = newserver::handle_server(connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
-                        let _result = block_on(future);
                         
                         output.push(_result);
 
                     }
                     else if mode=="accum"
                     {
-                        let  future = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
+                        let  _result = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                        let _result = block_on(future);
+                        
 
                         let socket_vec: Vec<&str> = _result.split("/").collect();
                         let socket_ip = socket_vec[1];
@@ -191,7 +190,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                 let additional_port = (args[2].parse::<u32>().unwrap())*10;
 
                 
-                let connections_client = newclient::match_tcp_client( connections_client.clone(), [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
+                newclient::match_tcp_client( connections_client.clone(), [ip_address_clone[0].to_string(), (initial_port+port_count).to_string()].join(":"),
                 [ip_address_clone[0].to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                 committee_id.clone(), value.clone(), args.clone());
 
@@ -213,7 +212,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
 
                     }
 
-                    let connections_client = newclient::match_tcp_client( connections_client.clone(), [ip.to_string(), (initial_port+port_count).to_string()].join(":"),
+                    newclient::match_tcp_client( connections_client.clone(), [ip.to_string(), (initial_port+port_count).to_string()].join(":"),
                     [ip.to_string(), (test_port+port_count + additional_port).to_string()].join(":"), 
                     committee_id.clone(), value.clone(), args.clone());
 
