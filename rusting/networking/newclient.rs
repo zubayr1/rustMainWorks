@@ -52,18 +52,18 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
 
     
-    loop
-    {
+    // loop
+    // {
         // Write data.           
-        connections.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
-         let result = connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
+        connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await.unwrap();
+        //  let result: Result<(), std::io::Error> = connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
 
-        if  result.is_ok()
-        {
-            break;
-        }             
+        // if  result.is_ok()
+        // {
+        //     break;
+        // }             
 
-    }
+    //}
 
     let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
     file.write_all(text.as_bytes()).await.unwrap();

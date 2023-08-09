@@ -250,6 +250,7 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
 pub async fn dev_communication(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
     let _connections_client = newclient::match_tcp_client(connections_client.clone(), working_port, test_port, committee_id.clone(), value.clone(), args.clone());
+    
         
     value.push(committee_id.to_string());
 
