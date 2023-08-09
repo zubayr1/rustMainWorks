@@ -57,7 +57,7 @@ async fn communication(
         if medium=="prod_init"
         {
             (output, server_map, client_map) = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string());
+                _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
         }
@@ -73,7 +73,7 @@ async fn communication(
         if medium=="prod_init"
         {
             (output, server_map, client_map) = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string());
+                _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
         }

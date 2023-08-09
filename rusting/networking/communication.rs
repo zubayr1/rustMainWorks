@@ -23,7 +23,6 @@ mod nested_nodes_test;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
-#[tokio::main]
 pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, 
     connections_client: Arc<Mutex<HashMap<String, TcpStream>>>,
     committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
