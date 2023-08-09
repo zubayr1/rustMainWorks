@@ -59,7 +59,7 @@ pub fn read_ports(file_name: String) -> Vec<u32>
 }
 
 
-#[tokio::main]
+
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
@@ -67,6 +67,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
 
     sorted.sort_by_key(|a| a.0);
+
+
 
     let file_path = "./nodes_information.txt";
     let nodes_file = File::open(file_path).unwrap();
@@ -121,16 +123,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let mut additional_port;
         for ip in nodes_ip_clone.clone() {
             additional_port = server_port_list[count];
-            // let f = newserver::create_server(
-            //     ip.to_string(),
-            //     initial_port.clone() + additional_port + 5000,
-            //     test_port.clone() + additional_port + 5000,
-            // ).await;
-            // let val = block_on(f);
-            // count += 1;
-            // for (key, value) in val {
-            //     connections_server.lock().unwrap().insert(key, value);
-            // }
+            let val = newserver::create_server(
+                ip.to_string(),
+                initial_port.clone() + additional_port + 5000,
+                test_port.clone() + additional_port + 5000,
+            ).await;
+            count += 1;
+            for (key, value) in val {
+                connections_server.lock().unwrap().insert(key, value);
+            }
         }
     };
     
@@ -138,15 +139,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let mut count = 0;
         for ip in node_ips.clone() {
             let additional_port = client_port_list[count];
-            // let f = newclient::create_client(
-            //     [ip.to_string(), (initial_port + additional_port + 5000).to_string()].join(":"),
-            //     [ip.to_string(), (test_port + additional_port + 5000).to_string()].join(":"),
-            // ).await;
+            let val = newclient::create_client(
+                [ip.to_string(), (initial_port + additional_port + 5000).to_string()].join(":"),
+                [ip.to_string(), (test_port + additional_port + 5000).to_string()].join(":"),
+            ).await;
             count += 1;
-            // let val = block_on(f);
-            // for (key, value) in val {
-            //     connections_client.lock().unwrap().insert(key, value);
-            // }
+
+            for (key, value) in val {
+                connections_client.lock().unwrap().insert(key, value);
+            }
         }
     };
 
@@ -158,14 +159,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
         let (_, _) = tokio::join!(handle_server_task, handle_client_task);
     };
-    block_on(fut);
+    
     // Run the future inside the Tokio runtime
-    // tokio::runtime::Builder::new_multi_thread()
-    //     .worker_threads(2)
-    //     .enable_all()
-    //     .build()
-    //     .unwrap()
-    //     .block_on(fut);
+    tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(2)
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(fut);
 
                 
     println!("{:?}", connections_client_clone);
