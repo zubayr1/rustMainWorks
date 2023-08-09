@@ -151,10 +151,54 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         });
 
     });
+    
 
                 
     let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(server_map));
     let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(client_map));
+
+
+
+
+    thread::scope(|s| {
+        s.spawn(|| {
+
+            let mut count=0;
+            let mut additional_port;
+            for ip in node_ips.clone() 
+            { 
+                
+                additional_port = server_port_list[count];
+
+                let val = newserver::handle_server(connections_server.clone(), ip.to_string(), initial_port.clone() + additional_port + 5000
+                , test_port.clone() + additional_port + 5000);
+                
+                count+=1;
+
+                
+            }
+
+        });
+        s.spawn(|| {
+
+            let mut count=0;
+            for ip in node_ips.clone() 
+            { 
+                let mut val: Vec<String> = Vec::new();
+                val.push("EOF".to_string());
+                let additional_port = client_port_list[count];
+                 newclient::match_tcp_client(connections_client.clone(),
+                    [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
+                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), 1, val, args.clone() );
+
+                count+=1;
+                
+            }
+
+        });
+
+    });
+
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
@@ -190,10 +234,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {                               
                 port_count+=1;              
                
-                reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
-                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                level+=1;
+                // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
+                //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                // level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                // level+=1;
             }
 
             
