@@ -53,24 +53,49 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     
     if is_present {
-      println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
-    } else {
-      println!("TcpStream does not exist for key: {}", key_to_check);
+        println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
+
+        let stream = connection_client_lock.get_mut(&key_to_check).unwrap();
+            
+
+        let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
+
+        let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
+
+        let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
+
+        
+        // Write data.           
+        stream.write_all(final_string.as_bytes()).await.unwrap();
+        stream.write_all(b"EOF").await.unwrap();
+    } 
+    else 
+    {
+        println!("TcpStream does not exist for key: {}", key_to_check);
+
+        while TcpStream::connect(test_address.clone()).await.is_err() //waiting for client to be active, if not random wait and retry
+        {               
+            sleep(Duration::from_millis(1)).await;        
+        }    
+        
+        let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
+
+
+        let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
+
+        let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
+
+        let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
+
+        
+        // Write data.           
+        stream.write_all(final_string.as_bytes()).await.unwrap();
+        stream.write_all(b"EOF").await.unwrap();
+
+        
     }
 
-    let stream = connection_client_lock.get_mut(&key_to_check).unwrap();
-        
-
-    let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
-
-    let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
-
-    let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
-
     
-    // Write data.           
-    stream.write_all(final_string.as_bytes()).await.unwrap();
-    stream.write_all(b"EOF").await.unwrap();
 
     
     let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
