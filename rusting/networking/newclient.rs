@@ -6,22 +6,12 @@ use tokio::fs::OpenOptions;
 use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
 
-use tokio::runtime;
-
 
 #[allow(unused)]
 #[tokio::main]
 pub async fn create_client(address: String, test_address: String) 
 -> HashMap<String, TcpStream>
 {
-    let mut connections: HashMap<String, TcpStream> = HashMap::new();
-
-    let rt = runtime::Builder::new_multi_thread()
-        .enable_all()
-        .build()
-        .unwrap();
-
-    let result = rt.block_on(async {
     let address_clone = address.clone();
 
     let parts: Vec<&str> = address_clone.split(':').collect();
@@ -33,13 +23,9 @@ pub async fn create_client(address: String, test_address: String)
        
     let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
 
+    let mut connections: HashMap<String, TcpStream> = HashMap::new();
     
     connections.insert(parts[0].clone().to_string(), stream);  
-
-});
-
-// Drop the runtime
-drop(rt);
 
     connections
 

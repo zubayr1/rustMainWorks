@@ -7,29 +7,19 @@ use chrono::Utc;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 
-use tokio::runtime;
 
 #[allow(unused)]
 #[tokio::main]
 pub async fn create_server( _ip_address: String, port: u32, testport: u32) 
     -> HashMap<String, TcpStream>
 {
-    let mut connections: HashMap<String, TcpStream> = HashMap::new();
-
-    
-    let rt = runtime::Builder::new_multi_thread()
-        .enable_all()
-        .build()
-        .unwrap();
-
-let result = rt.block_on(async {
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
     
     let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
 
     let (_, _) = test_listener.accept().await.unwrap();
 
-    
+    let mut connections: HashMap<String, TcpStream> = HashMap::new();
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
 
@@ -41,11 +31,6 @@ let result = rt.block_on(async {
 
 
     connections.insert(socket_ip[0].clone().to_string(), socket);
-
-});
-
-// Drop the runtime
-drop(rt);
 
     connections
 
