@@ -102,6 +102,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let initial_port: u32 = initial_port_str.parse().unwrap();
     let test_port: u32 = test_port_str.parse().unwrap();
 
+    let mut server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
+    let mut client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
 
     thread::scope(|s| {
@@ -114,13 +116,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 
                 additional_port = server_port_list[count];
 
-                // println!("server {:?}", initial_port.clone() + additional_port + 5000);
-
                 let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
                 , test_port.clone() + additional_port + 5000);
                 
                 count+=1;
-                println!("server {:?}", val);
+
+                for (key, value) in val
+                {
+                    server_map.insert(key, value);
+                }
             }
 
         });
@@ -135,13 +139,18 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
 
                 count+=1;
-                println!("client {:?}", val);
+                for (key, value) in val
+                {
+                    client_map.insert(key, value);
+                }
             }
 
         });
 
     });
-    
+
+    println!("{:?}", server_map);
+    println!("{:?}", client_map);
              
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
