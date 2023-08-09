@@ -102,12 +102,9 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                             
                 let additional_port = (client_count)*10;
 
-                let (connections_server, _result) = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
+                let  _result = newserver::handle_server( connections_server.clone(), ip_address_clone[0].to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
-                for (key, value) in connections_server {
-                    
-                    server_map.insert(key, value);
-                }
+                
                
                 let witness_verify =  codeword::verify_codeword(_result.clone());
     
@@ -129,26 +126,19 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
                     {
                         additional_port = (count + args[2].parse::<u32>().unwrap())*50;
 
-                        let (connections_server, _result) = newserver::handle_server(connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
+                        let _result
+                         = newserver::handle_server(connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
-                        for (key, value) in connections_server {
-                            
-                            server_map.insert(key, value);
-                        }
-                       
-
+                        
                         output.push(_result);
 
                     }
                     else if mode=="accum"
                     {
-                        let (connections_server, _result) = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
+                        let  _result = newserver::handle_server( connections_server.clone(), _ip.clone().to_string(), initial_port+port_count, 
                         test_port+port_count + additional_port);
 
-                        for (key, value) in connections_server {
-
-                            server_map.insert(key, value);
-                        }
+                        
 
                         let socket_vec: Vec<&str> = _result.split("/").collect();
                         let socket_ip = socket_vec[1];
