@@ -79,11 +79,7 @@ pub async fn handle_server(connections_server: Arc<Mutex<HashMap<String, TcpStre
     {         
         let _bytes_read: usize = reader.read_line(&mut line).await.unwrap();
 
-        // if _bytes_read == 0 {
-        //     // End of stream, the client has closed the connection.
-        //     break;
-        // }
-    
+        
         if line.contains("EOF")  
         {
             line = line.replace("EOF", "");
