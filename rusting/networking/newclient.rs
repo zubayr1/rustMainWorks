@@ -53,11 +53,11 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     };
 
     
-    // if is_present {
-    //   println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
-    // } else {
-    //   println!("TcpStream does not exist for key: {}", key_to_check);
-    // }
+    if is_present {
+      println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
+    } else {
+      println!("TcpStream does not exist for key: {}", key_to_check);
+    }
 
     
     while TcpStream::connect(test_address.clone()).await.is_err() //waiting for client to be active, if not random wait and retry
