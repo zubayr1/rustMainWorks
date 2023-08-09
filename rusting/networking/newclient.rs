@@ -9,7 +9,7 @@ use std::collections::HashMap;
 #[allow(unused)]
 #[tokio::main]
 pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
--> Arc<Mutex<HashMap<String, TcpStream>>>
+-> HashMap<String, TcpStream>
  {
     let address_clone = address.clone();
 
@@ -43,7 +43,6 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     let mut connections: HashMap<String, TcpStream> = HashMap::new();
     
-    println!("{:?}", stream);
     connections.insert(parts[0].clone().to_string(), stream);  
 
     let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
@@ -56,7 +55,6 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     loop
     {
         // Write data.           
-        println!("{:?}", connections.get_mut(parts[0].clone()).unwrap());
         connections.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
          let result = connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
 
@@ -72,10 +70,10 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     file.write_all(b"\n").await.unwrap();
 
 
-    let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+    // let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(connections));
+    println!("{:?}",connections);
 
-
-    return connections_client;
+    return connections;
    
     
 }
