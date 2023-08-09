@@ -1,6 +1,7 @@
 use tokio::net::TcpStream;
 use tokio::io::AsyncWriteExt;
 
+use tokio::sync::RwLock;
 use tokio::time::{ sleep, Duration};
 use tokio::fs::OpenOptions;
 use std::sync::{Arc, Mutex};
@@ -31,7 +32,7 @@ pub async fn create_client(address: String, test_address: String)
 }
 
 #[allow(unused)]
-pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
+pub async fn match_tcp_client(connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
 {
     let address_clone = address.clone();
 
@@ -39,32 +40,34 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
 
     let mut file = OpenOptions::new().append(true).open("output.log").await.unwrap();
 
-    let mut connection_client_lock = connections_client.lock().unwrap();
+    
+    let read_lock: tokio::sync::RwLockReadGuard<'_, HashMap<String, TcpStream>> = connections_client.read().await;
+
 
     let key_to_check = parts[0].clone().to_string();
     let is_present = {
         
-        connection_client_lock.contains_key(&key_to_check)
+        read_lock.contains_key(&key_to_check)
     };
 
     
     if is_present 
     {
-        println!("TcpStream exists for key: {}, {:?}", key_to_check, connection_client_lock.get(&key_to_check));
+        println!("TcpStream exists for key: {}, {:?}", key_to_check, read_lock.get(&key_to_check));
 
-        let stream = connection_client_lock.get_mut(&key_to_check).unwrap();
+        // let stream = connection_client_lock.get_mut(&key_to_check).unwrap();
             
 
-        let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
+        // let value_string = value.iter().map(|n| n.to_string()).collect::<Vec<String>>().join(", ");
 
-        let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
+        // let temp_string = [value_string.to_string(), committee_id.to_string().clone()].join(", ");
 
-        let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
+        // let final_string = [temp_string.to_string(), args[2].to_string().clone()].join(", ");
 
         
-        // Write data.           
-        stream.write_all(final_string.as_bytes()).await.unwrap();
-        stream.write_all(b"EOF").await.unwrap();
+        // // Write data.           
+        // stream.write_all(final_string.as_bytes()).await.unwrap();
+        // stream.write_all(b"EOF").await.unwrap();
     } 
     else 
     {

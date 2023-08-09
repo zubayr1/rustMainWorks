@@ -239,15 +239,15 @@ pub async fn prod_communication(connections_server: Arc<Mutex<HashMap<String, Tc
 
 pub async fn dev_communication(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
-    let _connections_client = newclient::match_tcp_client(connections_client.clone(), working_port, test_port, committee_id.clone(), value.clone(), args.clone());
+    // let _connections_client = newclient::match_tcp_client(connections_client.clone(), working_port, test_port, committee_id.clone(), value.clone(), args.clone());
     
         
-    value.push(committee_id.to_string());
+    // value.push(committee_id.to_string());
 
-    let joined_string = value.join(", ");    
+    // let joined_string = value.join(", ");    
 
     let mut returnvec: Vec<String> = Vec::new();
-    returnvec.push(joined_string);
+    returnvec.push("joined_string".to_string());
 
     return returnvec;
 }
@@ -271,32 +271,32 @@ pub async fn nested_dev_communication(connections_client: Arc<Mutex<HashMap<Stri
     let test_port_client: u32 = test_port.parse().unwrap();
 
 
-    thread::scope(|s| { 
+    // thread::scope(|s| { 
 
-        s.spawn(|| 
-        {
+    //     s.spawn(|| 
+    //     {
             
-            let future = nested_nodes_test::initiate( 
-            initial_port_server + 500, test_port_server + 500);
+    //         let future = nested_nodes_test::initiate( 
+    //         initial_port_server + 500, test_port_server + 500);
 
-            block_on(future);
+    //         block_on(future);
             
             
-        });
+    //     });
 
                         
-        s.spawn(|| {
-            let three_millis = time::Duration::from_millis(3);
-            thread::sleep(three_millis);
+    //     s.spawn(|| {
+    //         let three_millis = time::Duration::from_millis(3);
+    //         thread::sleep(three_millis);
 
-            let _connections_client = newclient::match_tcp_client(connections_client.clone(), 
-                ["127.0.0.1".to_string(), (initial_port_client + 500).to_string()].join(":"),
-                ["127.0.0.1".to_string(), (test_port_client + 500).to_string()].join(":"),
-                committee_id.clone(), value.clone(), args.clone());
+    //         let _connections_client = newclient::match_tcp_client(connections_client.clone(), 
+    //             ["127.0.0.1".to_string(), (initial_port_client + 500).to_string()].join(":"),
+    //             ["127.0.0.1".to_string(), (test_port_client + 500).to_string()].join(":"),
+    //             committee_id.clone(), value.clone(), args.clone());
 
-        });
+    //     });
 
-    });
+    // });
     
     return value;
 }
