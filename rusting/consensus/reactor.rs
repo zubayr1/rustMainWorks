@@ -115,11 +115,14 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32,
         s.spawn(|| {
 
             let mut count=1;
+            let mut additional_port;
             for ip in ip_address.clone() 
             { 
                 count+=1;
-                let val = newserver::create_server(ip.to_string(), initial_port.clone() + count + 5000
-                , test_port.clone() + count + 5000);
+                additional_port = (count + args[2].parse::<u32>().unwrap())*50;
+
+                let val = newserver::create_server(ip.to_string(), initial_port.clone() + additional_port + 5000
+                , test_port.clone() + additional_port + 5000);
             
                 println!("server {:?}", val);
             }
@@ -131,8 +134,9 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32,
             for ip in ip_address.clone() 
             { 
                 count+=1;
-                let val = newclient::handle_client([ip.to_string(), (initial_port+ count + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ count + 5000).to_string()].join(":"));
+                let additional_port =(count + args[2].parse::<u32>().unwrap())*50;
+                let val = newclient::handle_client([ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
+                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"));
 
                 println!("client {:?}", val);
             }
