@@ -9,7 +9,6 @@ use std::sync::{Arc, Mutex};
 
 
 #[allow(unused)]
-#[tokio::main]
 pub async fn create_server( _ip_address: String, port: u32, testport: u32) 
     -> HashMap<String, TcpStream>
 {

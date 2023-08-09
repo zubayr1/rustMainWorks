@@ -8,7 +8,6 @@ use std::collections::HashMap;
 
 
 #[allow(unused)]
-#[tokio::main]
 pub async fn create_client(address: String, test_address: String) 
 -> HashMap<String, TcpStream>
 {
