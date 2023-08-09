@@ -3,6 +3,7 @@ use async_recursion::async_recursion;
 use tokio::net::TcpStream;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
+use std::{thread, time};
 
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -35,6 +36,11 @@ mod pvss_agreement;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
+#[path = "../networking/newclient.rs"]
+mod newclient;
+
+#[path ="../networking/newserver.rs"]
+mod newserver;
 
 async fn communication(
     connections_server: Arc<Mutex<HashMap<String, TcpStream>>>,
@@ -78,9 +84,7 @@ async fn communication(
     
         }
     }
-    
-    println!("{:?}", server_map);
-    println!("{:?}", client_map);
+  
     return output;
 }
 
@@ -91,6 +95,44 @@ pub async fn reactor_init(pvss_data: String, committee_id: u32,
 { 
     let connections_server: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
     let connections_client: Arc<Mutex<HashMap<String, TcpStream>>> = Arc::new(Mutex::new(HashMap::new()));
+
+
+    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
+        println!("INITIAL_PORT_STR is not set.");
+        String::new()
+    });
+    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
+        println!("TEST_PORT_STR is not set.");
+        String::new()
+    });
+   
+    let initial_port: u32 = initial_port_str.parse().unwrap();
+    let test_port: u32 = test_port_str.parse().unwrap();
+
+
+
+    thread::scope(|s| {
+        s.spawn(|| {
+            for ip in ip_address.clone() 
+            { 
+                let val = newserver::create_server(ip.to_string(), initial_port.clone(), test_port.clone());
+            
+                println!("server {:?}", val);
+            }
+
+        });
+        s.spawn(|| {
+            for ip in ip_address.clone() 
+            { 
+                let val = newclient::handle_client([ip.to_string(), (initial_port).to_string()].join(":"), 
+                [ip.to_string(), (test_port).to_string()].join(":"));
+
+                println!("client {:?}", val);
+            }
+
+        });
+
+    });
 
     let committee_length = ip_address.len();
     

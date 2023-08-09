@@ -6,6 +6,32 @@ use tokio::fs::OpenOptions;
 use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
 
+
+#[allow(unused)]
+#[tokio::main]
+pub async fn handle_client(address: String, test_address: String) 
+-> HashMap<String, TcpStream>
+{
+    let address_clone = address.clone();
+
+    let parts: Vec<&str> = address_clone.split(':').collect();
+
+    while TcpStream::connect(test_address.clone()).await.is_err() //waiting for client to be active, if not random wait and retry
+    {               
+        sleep(Duration::from_millis(1)).await;        
+    }    
+       
+    let mut stream: TcpStream = TcpStream::connect(address.clone()).await.unwrap();  
+
+    let mut connections: HashMap<String, TcpStream> = HashMap::new();
+    
+    connections.insert(parts[0].clone().to_string(), stream);  
+
+    connections
+
+
+}
+
 #[allow(unused)]
 #[tokio::main]
 pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, address: String, test_address: String, committee_id:u32, value: Vec<String>, args: Vec<String>) 
@@ -54,16 +80,16 @@ pub async fn match_tcp_client(connections_client: Arc<Mutex<HashMap<String, TcpS
     
     // loop
     // {
-        // Write data.           
+    //     // Write data.           
+        connections.get_mut(parts[0].clone()).unwrap().write_all(final_string.as_bytes()).await.unwrap();
         connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await.unwrap();
-        //  let result: Result<(), std::io::Error> = connections.get_mut(parts[0].clone()).unwrap().write_all(b"EOF").await;
 
-        // if  result.is_ok()
-        // {
-        //     break;
-        // }             
+    //     if  result.is_ok()
+    //     {
+    //         break;
+    //     }             
 
-    //}
+    // }
 
     let text = ["client at: ".to_string(), args[6].to_string()].join(": ");
     file.write_all(text.as_bytes()).await.unwrap();
