@@ -124,6 +124,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let connections_server_clone = Arc::clone(&connections_server);
     let connections_client_clone = Arc::clone(&connections_client);
 
+
+    let connections_server_clone1 = Arc::clone(&connections_server);
+    let connections_client_clone1 = Arc::clone(&connections_client);
+
     let handle_server_fut = async move {
         let mut count = 0;
         let mut additional_port;
@@ -276,10 +280,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {                               
                 port_count+=1;              
                
-                // reactor::reactor_init(connections_server_clone.clone(), connections_client_clone.clone(), 
-                //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                // level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                // level+=1;
+                reactor::reactor_init(connections_server_clone1.clone(), connections_client_clone1.clone(), 
+                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                level, _index, args_clone.clone(), port_count.clone(), "prod_init".to_string()).await;
+                level+=1;
             }
 
             
