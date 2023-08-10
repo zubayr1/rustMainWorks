@@ -125,8 +125,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let connections_client_clone = Arc::clone(&connections_client);
 
 
-    // let connections_server_clone1 = Arc::clone(&connections_server_clone);
-    // let connections_client_clone1 = Arc::clone(&connections_client_clone);
+    let connections_server_clone1 = Arc::clone(&connections_server_clone);
+    let connections_client_clone1 = Arc::clone(&connections_client_clone);
 
     //create connection
     let handle_server_fut = async move {
@@ -191,16 +191,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let mut additional_port;
         for ip in nodes_ip_clone1.clone() 
             { 
-                let connections_server_clone1 = connections_server_clone.clone();
+                // let connections_server_clone1 = connections_server_clone.clone();
                 
                 additional_port = server_port_list_clone[count];
 
-                let connections_server_clone = connections_server_clone.clone();
-
                 // Drop the original MutexGuard
-                drop(connections_server_clone);
+                // drop(connections_server_clone);
 
-                let val = newserver::handle_server(connections_server_clone1.clone(), ip.to_string(), 
+                let val = newserver::handle_server(connections_server_clone.clone(), ip.to_string(), 
                 initial_port.clone() + additional_port + 5000
                 , test_port.clone() + additional_port + 5000).await;
                 
@@ -214,18 +212,16 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let mut count = 0;
         for ip in nodes_ip_clone2.clone() 
             { 
-                let connections_client_clone1 = connections_client_clone.clone();
+                // let connections_client_clone1: Arc<RwLock<HashMap<String, TcpStream>>> = connections_client_clone.clone();
 
                 let mut val: Vec<String> = Vec::new();
                 val.push("EOF".to_string());
                 let additional_port = client_port_list_clone[count];
 
-                let connections_client_clone = connections_client_clone.clone();
-
                 // Drop the original MutexGuard
-                drop(connections_client_clone);
+                // drop(connections_client_clone);
 
-                 newclient::match_tcp_client(connections_client_clone1.clone(),
+                 newclient::match_tcp_client(connections_client_clone.clone(),
                     [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
                 [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), 1, val, 
                 args.clone()).await;
