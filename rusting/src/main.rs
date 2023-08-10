@@ -9,6 +9,10 @@ use std::env::{self};
 use chrono::prelude::*;
 use std::collections::HashMap;
 
+mod core;
+mod message;
+mod network;
+mod node;
 
 //import own files
 mod nodes;

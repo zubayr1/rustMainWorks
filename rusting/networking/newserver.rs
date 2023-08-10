@@ -102,9 +102,7 @@ pub async fn handle_server(connections_server: Arc<RwLock<HashMap<String, TcpStr
 
         line = [line.clone(), socket_addr_string.to_string()].join("/"); 
 
-        let serialized_data = serde_json::to_string(&line).unwrap();   
-
-        let _message_size = serialized_data.len();
+        
 
         let end_time = Utc::now().time();
 
