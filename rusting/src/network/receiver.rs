@@ -13,22 +13,23 @@ use crate::message::BroadcastMessage;
 // For each incoming request we spawn a new worker responsible to receive messages and forward them.
 pub struct MessageReceiver {
     /// Address to listen to.
-    address: SocketAddr,
+    // address: SocketAddr,
 
     /// Channel to send received messages to.
     deliver: Sender<BroadcastMessage>,
 }
 
 impl MessageReceiver {
-    pub fn spawn(address: SocketAddr, deliver: Sender<BroadcastMessage>) {
+    pub fn spawn(deliver: Sender<BroadcastMessage>) {
         tokio::spawn(async move {
-            Self { address, deliver }.run().await;
+            Self { deliver }.run().await;
         });
     }
 
     async fn run(&self) {
         // Bind to given ip address
         let addr = ["0.0.0.0", "7000"].join(":").parse::<SocketAddr>().unwrap();
+        println!("binded");
 
         let listener = TcpListener::bind(addr)
             .await

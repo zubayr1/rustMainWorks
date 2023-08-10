@@ -18,11 +18,19 @@ impl Node {
         // channel.
 
         let (tx, rx) = channel(1_000);
-        MessageReceiver::spawn(nodes[id], tx);
+        // MessageReceiver::spawn(nodes[id], tx);
         let sender = SimpleSender::new();
 
         sleep(Duration::from_millis(50)).await;
 
         Core::spawn(id, nodes, sender, rx);
     }
+
+    pub async fn create_binding()
+    {
+        let (tx, rx) = channel(1_000);
+        MessageReceiver::spawn( tx);
+    }
+
+
 }
