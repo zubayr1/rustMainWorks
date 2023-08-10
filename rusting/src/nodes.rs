@@ -295,7 +295,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                     sockets.push([ip, "7000"].join(":").parse::<SocketAddr>().unwrap());
                 }  
 
-                println!("{:?}", sockets);
 
                 //tokio::spawn(async move {
                     node::Node::new(1, sockets).await;
