@@ -248,7 +248,19 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // };
     // block_on(fut);
 
+    let nodes = 4;
 
+    let addresses = (0..nodes)
+    .map(|x| format!("127.0.0.1:123{}", x).parse::<SocketAddr>().unwrap())
+    .collect::<Vec<_>>();
+
+    // Spawn 4 nodes.
+    for i in 0..nodes {
+        let addresses = addresses.clone();
+        tokio::spawn(async move {
+            node::Node::new(i, addresses).await;
+        });
+    }
     
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
