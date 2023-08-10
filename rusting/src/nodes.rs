@@ -271,11 +271,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 port_count+=1;    
 
                    let connections_server_clonex = Arc::clone(&connections_server_clone);
-                    let connections_client_cloney = Arc::clone(&connections_client_clone);          
+                    let connections_client_cloney = Arc::clone(&connections_client_clone); 
+                             
                
                 reactor::reactor_init(connections_server_clonex, connections_client_cloney, 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+
+                drop(&connections_server_clone);
+                drop(&connections_client_clone);
                 level+=1;
             }
 
