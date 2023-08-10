@@ -16,6 +16,7 @@ impl Node {
         // Create a channel for the message receiver. The receiver receives data from incoming
         // tcp connections and puts this data into the channel. The data is retreives via the rx
         // channel.
+        println!("ss");
         let (tx, rx) = channel(1_000);
         MessageReceiver::spawn(nodes[id], tx);
         let sender = SimpleSender::new();
