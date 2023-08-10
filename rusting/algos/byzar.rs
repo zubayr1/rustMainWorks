@@ -1,13 +1,14 @@
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tokio::net::TcpStream;
+use tokio::sync::RwLock;
 
 #[path = "./gba.rs"]
 mod gba; 
 
 #[allow(non_snake_case)]
-pub async fn byzar(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, 
-    connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, 
+pub async fn byzar(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>, 
+    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, 
     committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, V: String, medium: String, mode: String, types: String, committee_length: usize) -> String
 {   

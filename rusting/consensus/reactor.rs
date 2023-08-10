@@ -2,9 +2,9 @@ use std::env;
 use async_recursion::async_recursion;
 use tokio::net::TcpStream;
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
-use std::{thread, time};
+use std::sync::Arc;
 
+use tokio::sync::RwLock;
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -43,20 +43,18 @@ mod newclient;
 mod newserver;
 
 async fn communication(
-    connections_server: Arc<Mutex<HashMap<String, TcpStream>>>,
-    connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, 
+    connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, 
     committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
     initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>
 {
     let mut output: Vec<String>= Vec::new();
-    let mut server_map: HashMap<String, TcpStream> = HashMap::new();
-    let mut client_map: HashMap<String, TcpStream> = HashMap::new();
-
+    
     if mode=="accum"
     {
         if medium=="prod_init"
         {
-            (output, server_map, client_map) = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
+            output = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
@@ -72,7 +70,7 @@ async fn communication(
     {
         if medium=="prod_init"
         {
-            (output, server_map, client_map) = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
+            output = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
@@ -90,8 +88,8 @@ async fn communication(
 
 
 pub async fn reactor_init(
-    connections_server: Arc<Mutex<HashMap<String, TcpStream>>>,
-    connections_client: Arc<Mutex<HashMap<String, TcpStream>>>,
+    connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>,
     pvss_data: String, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>, port_count: u32, medium: String)
@@ -116,7 +114,8 @@ pub async fn reactor_init(
 
 
 
-pub async fn reaction(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
+pub async fn reaction(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
 ) -> bool
@@ -251,8 +250,8 @@ pub async fn reaction(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>
 }
 
 #[async_recursion]
-pub async fn reactor<'a>(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, 
-    connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, 
+pub async fn reactor<'a>(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, 
     pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
@@ -301,8 +300,8 @@ pub async fn reactor<'a>(connections_server: Arc<Mutex<HashMap<String, TcpStream
 }
 
 
-pub async fn codeword_reactor(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, 
-    connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, 
+pub async fn codeword_reactor(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, 
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
 value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32)
 -> Vec<Vec<String>>
@@ -375,8 +374,8 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 
 #[allow(non_snake_case)]
 pub async fn accum_reactor(
-    connections_server: Arc<Mutex<HashMap<String, TcpStream>>>,
-    connections_client: Arc<Mutex<HashMap<String, TcpStream>>>,
+    connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>,
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
 {                    

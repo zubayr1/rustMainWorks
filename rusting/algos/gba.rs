@@ -1,8 +1,9 @@
 use crate::nodes::reactor::communication;
 
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tokio::net::TcpStream;
+use tokio::sync::RwLock;
 
 #[path = "../types/generic.rs"]
 mod generic; 
@@ -10,13 +11,13 @@ mod generic;
 use std::env;
 
 
-async fn gba_communication(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
+async fn gba_communication(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>, connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, medium: String, mode: String, types: String) -> Vec<String>
 {
     
     if medium=="prod_init"
     {
-        let (output, server_map, client_map)  = communication::prod_communication(connections_server, connections_client.clone(), committee_id, ip_address.clone(), level, port_count, _index, 
+        let output  = communication::prod_communication(connections_server, connections_client.clone(), committee_id, ip_address.clone(), level, port_count, _index, 
         args.clone(), value.clone(), mode.clone(), types.clone()).await;
 
         return output;
@@ -115,7 +116,7 @@ fn check_other_major(mut forward_output: Vec<String>, V: String, medium: String)
 }
 
 #[allow(non_snake_case)]
-pub async fn gba(connections_server: Arc<Mutex<HashMap<String, TcpStream>>>, connections_client: Arc<Mutex<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
+pub async fn gba(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>, connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, mut V: String, medium: String, mode: String, types: String, committee_length: usize) -> (String, usize)
 {
 
