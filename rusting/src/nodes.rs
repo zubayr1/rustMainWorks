@@ -4,6 +4,7 @@ use std::io::{BufRead, BufReader};
 use std::io::Write;
 use std::fs::OpenOptions;
 use std::collections::HashMap;
+use std::net::SocketAddr;
 use chrono::Utc;
 use futures::executor::block_on;
 use tokio::sync::RwLock;
@@ -11,6 +12,8 @@ use std::env;
 use std::sync::{Arc, Mutex};
 use tokio::net::TcpStream;
 use tokio::spawn;
+
+use crate::core::Core;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -272,7 +275,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         {
             let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
 
-            println!("{:?}", ip_address);     
+            println!("{:?}", ip_address);   
+
+            let mut sockets: Vec<SocketAddr> = Vec::new();  
             
             if ip_address.len()==1
             {
@@ -282,7 +287,18 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             }
             else 
             {                               
-                port_count+=1;              
+                port_count+=1;    
+
+                for ip in ip_address
+                {
+                    sockets.push([ip, "7000"].join(":").parse::<SocketAddr>().unwrap());
+                }
+
+                println!("{:?}", sockets);
+
+                // tokio::spawn(async move {
+                //     node::Node::new(i, addresses).await;
+                // });          
                
                 // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
                 //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
