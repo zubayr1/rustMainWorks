@@ -295,7 +295,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             {                               
                 port_count+=1;       
 
-                 
+                println!("len 2");
 
                 let committee_id_usize: usize = *committee_id as usize;
 
