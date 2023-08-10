@@ -125,8 +125,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let connections_client_clone = Arc::clone(&connections_client);
 
 
-    let connections_server_clone1 = Arc::clone(&connections_server);
-    let connections_client_clone1 = Arc::clone(&connections_client);
+    // let connections_server_clone1 = Arc::clone(&connections_server);
+    // let connections_client_clone1 = Arc::clone(&connections_client);
 
     let handle_server_fut = async move {
         let mut count = 0;
