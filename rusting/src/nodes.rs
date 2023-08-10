@@ -293,9 +293,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
                 
 
-                tokio::spawn(async move {
+                // tokio::spawn(async move {
                     node::Node::new(1, sockets).await;
-                }); 
+                //}); 
 
                
                 // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
