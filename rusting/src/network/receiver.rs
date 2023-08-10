@@ -28,7 +28,9 @@ impl MessageReceiver {
 
     async fn run(&self) {
         // Bind to given ip address
-        let listener = TcpListener::bind(&self.address)
+        let addr = ["0.0.0.0", "7000"].join(":").parse::<SocketAddr>().unwrap();
+
+        let listener = TcpListener::bind(addr)
             .await
             .expect("Failed to bind TCP port");
 
