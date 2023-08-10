@@ -141,7 +141,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             for (key, value) in val {
                 write_lock.insert(key, value);
             }
-            drop(write_lock);
+            // drop(write_lock);
         }
     };
     
@@ -159,7 +159,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             for (key, value) in val {
                 write_lock.insert(key, value);
             }
-            drop(write_lock);
+            // drop(write_lock);
         }
     };
 
