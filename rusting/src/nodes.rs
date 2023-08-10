@@ -249,7 +249,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // block_on(fut);
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
-    
+
     for ip in  node_ips
     {
         sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
@@ -257,9 +257,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     println!("{:?}", sockets);
 
-    // tokio::spawn(async move {
+    tokio::spawn(async move {
         node::Node::new(1, sockets).await;
-    //});     
+    });     
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
