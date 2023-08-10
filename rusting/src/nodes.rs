@@ -6,8 +6,6 @@ use std::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
 use futures::executor::block_on;
-use std::net::SocketAddr;
-
 use tokio::sync::RwLock;
 use std::env;
 use std::sync::{Arc, Mutex};
@@ -28,10 +26,6 @@ mod newclient;
 
 #[path = "../consensus/reactor.rs"]
 mod reactor;
-
-
-#[path = "./node.rs"]
-mod node;
 
 pub fn create_keys() // schnorr key generation
 {
@@ -66,11 +60,12 @@ pub fn read_ports(file_name: String) -> Vec<u32>
 
 
 
-pub async fn initiate(sortedvec: &Vec<(&u32, &String)>, args: Vec<String>)
+pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
 
-    let mut sorted = sortedvec.to_vec();
+    let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
+
     sorted.sort_by_key(|a| a.0);
 
 
@@ -96,7 +91,8 @@ pub async fn initiate(sortedvec: &Vec<(&u32, &String)>, args: Vec<String>)
     let server_port_list = read_ports("./server_port_list.txt".to_string());
     let client_port_list = read_ports("./client_port_list.txt".to_string());
 
-
+    let server_port_list_clone = server_port_list.clone();
+    let client_port_list_clone = client_port_list.clone();
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
@@ -175,7 +171,7 @@ pub async fn initiate(sortedvec: &Vec<(&u32, &String)>, args: Vec<String>)
     
         let (_, _) = tokio::join!(handle_server_task, handle_client_task);
     };
-    // block_on(fut);
+    block_on(fut);
     // // Run the future inside the Tokio runtime
     // tokio::runtime::Builder::new_multi_thread()
     //     .worker_threads(2)
@@ -185,6 +181,8 @@ pub async fn initiate(sortedvec: &Vec<(&u32, &String)>, args: Vec<String>)
     //     .block_on(fut);
 
                 
+    println!("{:?}", connections_client_clone);
+
     // let connections_server_clone = Arc::new(RwLock::new(HashMap::new()));
 
 
@@ -269,19 +267,10 @@ pub async fn initiate(sortedvec: &Vec<(&u32, &String)>, args: Vec<String>)
 
         let mut _pvss_data: String = "".to_string();
 
-        let sortedclone = sorted.clone();
-
-               
-        for (committee_id, ip_addresses_comb) in sortedclone
+       
+        for (committee_id, ip_addresses_comb) in sorted.clone()
         {
-            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();    
-
-            let mut ip_socet: Vec<SocketAddr> = Vec::new();   
-
-            for ip in ip_address.clone()
-            {
-                ip_socet.push([ip, "7000"].join(":").parse::<SocketAddr>().unwrap());
-            }    
+            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();           
             
             if ip_address.len()==1
             {
@@ -291,27 +280,12 @@ pub async fn initiate(sortedvec: &Vec<(&u32, &String)>, args: Vec<String>)
             }
             else 
             {                               
-                port_count+=1;       
-
-                 
-
-                let committee_id_usize: usize = *committee_id as usize;
-
-                // tokio::spawn(async move {
-                //     node::Node::new(committee_id_usize, ip_socet).await;
-                // });       
-               let connections_server_clone = connections_client_clone.clone();
-               let connections_client_clone = connections_client_clone.clone();
-                let pvssclone = _pvss_data.clone();
-                let argsclone = args.clone();
-
-                // tokio::spawn(async move {
+                port_count+=1;              
+               
                 reactor::reactor_init(connections_server_clone.clone(), connections_client_clone.clone(), 
-                pvssclone, committee_id.clone(), ip_address.clone(), 
-                level, _index, argsclone, port_count.clone(), "prod_init".to_string()).await;
+                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
-
-                // }); 
             }
 
             

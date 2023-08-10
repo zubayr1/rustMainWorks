@@ -122,9 +122,8 @@ async fn run_nodes(args: Vec<String>)
     } 
     else  // run in prod mode
     {
-        let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
-
-        nodes::initiate(&sorted, args.clone()).await; 
+        
+        nodes::initiate(filtered_committee.clone(), args.clone()).await; 
 
     }
          
