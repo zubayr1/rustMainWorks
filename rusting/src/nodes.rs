@@ -111,79 +111,79 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
     let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
-    let nodes_ip_clone = node_ips.clone();
-    let nodes_ip_clone1 = node_ips.clone();
-    let nodes_ip_clone2 = node_ips.clone();
+    // let nodes_ip_clone = node_ips.clone();
+    // let nodes_ip_clone1 = node_ips.clone();
+    // let nodes_ip_clone2 = node_ips.clone();
 
-    let args_clone = args.clone();
+    // let args_clone = args.clone();
 
-    let connections_server: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(server_map));
-    let connections_client: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(client_map));
+    // let connections_server: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(server_map));
+    // let connections_client: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(client_map));
 
 
-    let connections_server_clone = Arc::clone(&connections_server);
-    let connections_client_clone = Arc::clone(&connections_client);
+    // let connections_server_clone = Arc::clone(&connections_server);
+    // let connections_client_clone = Arc::clone(&connections_client);
 
-    let handle_server_fut = async move {
-        let mut count = 0;
-        let mut additional_port;
-        for ip in nodes_ip_clone.clone() {
-            additional_port = server_port_list[count];
-            let val = newserver::create_server(
-                ip.to_string(),
-                initial_port.clone() + additional_port + 5000,
-                test_port.clone() + additional_port + 5000,
-            ).await;
-            count += 1;
+    // let handle_server_fut = async move {
+    //     let mut count = 0;
+    //     let mut additional_port;
+    //     for ip in nodes_ip_clone.clone() {
+    //         additional_port = server_port_list[count];
+    //         let val = newserver::create_server(
+    //             ip.to_string(),
+    //             initial_port.clone() + additional_port + 5000,
+    //             test_port.clone() + additional_port + 5000,
+    //         ).await;
+    //         count += 1;
 
-            let mut write_lock = connections_server.write().await;
+    //         let mut write_lock = connections_server.write().await;
 
-            for (key, value) in val {
-                write_lock.insert(key, value);
-            }
-            drop(write_lock);
-        }
-    };
+    //         for (key, value) in val {
+    //             write_lock.insert(key, value);
+    //         }
+    //         drop(write_lock);
+    //     }
+    // };
     
-    let handle_client_fut = async move {
-        let mut count = 0;
-        for ip in node_ips.clone() {
-            let additional_port = client_port_list[count];
-            let val = newclient::create_client(
-                [ip.to_string(), (initial_port + additional_port + 5000).to_string()].join(":"),
-                [ip.to_string(), (test_port + additional_port + 5000).to_string()].join(":"),
-            ).await;
-            count += 1;
+    // let handle_client_fut = async move {
+    //     let mut count = 0;
+    //     for ip in node_ips.clone() {
+    //         let additional_port = client_port_list[count];
+    //         let val = newclient::create_client(
+    //             [ip.to_string(), (initial_port + additional_port + 5000).to_string()].join(":"),
+    //             [ip.to_string(), (test_port + additional_port + 5000).to_string()].join(":"),
+    //         ).await;
+    //         count += 1;
 
-            let mut write_lock = connections_client.write().await;
-            for (key, value) in val {
-                write_lock.insert(key, value);
-            }
-            drop(write_lock);
-        }
-    };
+    //         let mut write_lock = connections_client.write().await;
+    //         for (key, value) in val {
+    //             write_lock.insert(key, value);
+    //         }
+    //         drop(write_lock);
+    //     }
+    // };
 
     
     
-    let fut = async {
-        let handle_server_task = spawn(handle_server_fut);
-        let handle_client_task = spawn(handle_client_fut);
+    // let fut = async {
+    //     let handle_server_task = spawn(handle_server_fut);
+    //     let handle_client_task = spawn(handle_client_fut);
     
-        let (_, _) = tokio::join!(handle_server_task, handle_client_task);
-    };
-    block_on(fut);
-    // // Run the future inside the Tokio runtime
-    // tokio::runtime::Builder::new_multi_thread()
-    //     .worker_threads(2)
-    //     .enable_all()
-    //     .build()
-    //     .unwrap()
-    //     .block_on(fut);
+    //     let (_, _) = tokio::join!(handle_server_task, handle_client_task);
+    // };
+    // block_on(fut);
+    // // // Run the future inside the Tokio runtime
+    // // tokio::runtime::Builder::new_multi_thread()
+    // //     .worker_threads(2)
+    // //     .enable_all()
+    // //     .build()
+    // //     .unwrap()
+    // //     .block_on(fut);
 
                 
-    println!("{:?}", connections_client_clone);
+    // println!("{:?}", connections_client_clone);
 
-    // let connections_server_clone = Arc::new(RwLock::new(HashMap::new()));
+    // // let connections_server_clone = Arc::new(RwLock::new(HashMap::new()));
 
 
     // let handle_server_fut = async move {
@@ -248,7 +248,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
 
-    for _index in 1..(args_clone[7].parse::<u32>().unwrap()+1) // iterate for all epoch
+    for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
         let start_time = Utc::now().time(); 
 
@@ -270,22 +270,24 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
        
         for (committee_id, ip_addresses_comb) in sorted.clone()
         {
-            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();           
+            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
+
+            println!("{:?}", ip_address);     
             
             if ip_address.len()==1
             {
                 //GET PVSS DATA FROM DIMITRIS
-                _pvss_data = ["pvss_data".to_string(), args_clone[2].to_string()].join(" ");
+                _pvss_data = ["pvss_data".to_string(), args[2].to_string()].join(" ");
                 level+=1
             }
             else 
             {                               
                 port_count+=1;              
                
-                reactor::reactor_init(connections_server_clone.clone(), connections_client_clone.clone(), 
-                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                level+=1;
+                // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
+                //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                // level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                // level+=1;
             }
 
             
@@ -303,7 +305,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let diff = end_time - start_time;
         
-        println!("End by {}. time taken {} seconds", args_clone[6], diff.num_seconds());
+        println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
 
 
     }
