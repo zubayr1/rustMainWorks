@@ -13,7 +13,7 @@ use std::sync::{Arc, Mutex};
 use tokio::net::TcpStream;
 use tokio::spawn;
 
-use crate::core::Core;
+use crate::node;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -249,7 +249,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // block_on(fut);
 
 
-
+    
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
@@ -270,13 +270,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let mut _pvss_data: String = "".to_string();
 
+        
        
         for (committee_id, ip_addresses_comb) in sorted.clone()
         {
             let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
-
-
-            let mut sockets: Vec<SocketAddr> = Vec::new();  
+            let mut sockets: Vec<SocketAddr> = Vec::new();
             
             if ip_address.len()==1
             {
@@ -286,18 +285,19 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             }
             else 
             {                               
-                port_count+=1;    
+                port_count+=1; 
 
-                for ip in ip_address
+                for ip in  ip_address
                 {
                     sockets.push([ip, "7000"].join(":").parse::<SocketAddr>().unwrap());
-                }
+                }  
 
-                println!("{:?}", sockets);
+                
 
-                // tokio::spawn(async move {
-                //     node::Node::new(i, addresses).await;
-                // });          
+                tokio::spawn(async move {
+                    node::Node::new(1, sockets).await;
+                }); 
+
                
                 // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
                 //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
