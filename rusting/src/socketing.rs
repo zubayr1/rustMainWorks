@@ -1,5 +1,5 @@
 
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use tokio::net::TcpStream;
 use tokio::sync::RwLock;
 use std::collections::HashMap;
@@ -13,6 +13,11 @@ mod newserver;
 #[path ="../networking/newclient.rs"]
 mod newclient;
 
+
+pub fn get_sockets()
+{
+    
+}
 
 pub fn socket(server_map: HashMap<String, TcpStream>, client_map: HashMap<String, TcpStream>,
     server_port_list: Vec<u32>, client_port_list: Vec<u32>, initial_port: u32, test_port: u32,

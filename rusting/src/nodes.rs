@@ -114,87 +114,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
 
-    socketing::socket(server_map, client_map, server_port_list, client_port_list, initial_port, test_port, node_ips);
-
-    // let nodes_ip_clone = node_ips.clone();
-    // let nodes_ip_clone1 = node_ips.clone();
-    // let nodes_ip_clone2 = node_ips.clone();
-
-    // let args_clone = args.clone();
-      
-
-    // // let connections_server_clone = Arc::new(RwLock::new(HashMap::new()));
+    // socketing::socket(server_map, client_map, server_port_list, client_port_list, initial_port, test_port, node_ips);
 
 
-    // let handle_server_fut = async move {
-    //     let mut count = 0;
-    //     let mut additional_port;
-    //     for ip in nodes_ip_clone1.clone() 
-    //         { 
-    //             let connections_server_clone1 = connections_server_clone.clone();
-                
-    //             additional_port = server_port_list_clone[count];
-
-    //             let connections_server_clone = connections_server_clone.clone();
-
-    //             // Drop the original MutexGuard
-    //             drop(connections_server_clone);
-
-    //             let val = newserver::handle_server(connections_server_clone1.clone(), ip.to_string(), 
-    //             initial_port.clone() + additional_port + 5000
-    //             , test_port.clone() + additional_port + 5000).await;
-                
-    //             count+=1;
-
-                
-    //         }
-    // };
-    
-    // let handle_client_fut = async move {
-    //     let mut count = 0;
-    //     for ip in nodes_ip_clone2.clone() 
-    //         { 
-    //             let connections_client_clone1 = connections_client_clone.clone();
-
-    //             let mut val: Vec<String> = Vec::new();
-    //             val.push("EOF".to_string());
-    //             let additional_port = client_port_list_clone[count];
-
-    //             let connections_client_clone = connections_client_clone.clone();
-
-    //             // Drop the original MutexGuard
-    //             drop(connections_client_clone);
-
-    //              newclient::match_tcp_client(connections_client_clone1.clone(),
-    //                 [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-    //             [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), 1, val, 
-    //             args.clone()).await;
-
-    //             count+=1;
-                
-    //         }
-    // };
-
-    
-    
-    // let fut = async {
-    //     let handle_server_task = spawn(handle_server_fut);
-    //     let handle_client_task = spawn(handle_client_fut);
-    
-    //     let (_, _) = tokio::join!(handle_server_task, handle_client_task);
-    // };
-    // block_on(fut);
-
-
-
-    let (_, mut rx_rec) = channel(10_000);
-    tokio::spawn(async move {
-        rx_rec = node::Node::create_binding().await;
-
-        println!("{:?}", rx_rec);
-    });
-
-    // let (tx_send, rx_send) = channel(10_000);
+   
 
     
 
@@ -217,7 +140,19 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let mut _pvss_data: String = "".to_string();
 
+        let mut sockets: Vec<SocketAddr> = Vec::new();
         
+
+        for ip in  node_ips.clone()
+        {
+            sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
+        }  
+
+
+        tokio::spawn(async move {
+            node::Node::new(1, sockets).await;
+        }); 
+
        
         for (committee_id, ip_addresses_comb) in sorted.clone()
         {
@@ -235,18 +170,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 port_count+=1; 
 
                 
-                
-
-                // for ip in  ip_address
-                // {
-                //     sockets.push([ip, "7000"].join(":").parse::<SocketAddr>().unwrap());
-                // }  
-
-
-                // tokio::spawn(async move {
-                //     node::Node::new(1, sockets).await;
-                // }); 
-
                
                 // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
                 //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
