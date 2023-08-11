@@ -178,7 +178,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             node.get_client_sockets().read().await.len(),
         );
     }
-
+    for node in &nodes {
+        println!("Node {} has {} server sockets and {} client sockets", 
+            node.ip,
+            node.get_server_sockets().read().await.len(),
+            node.get_client_sockets().read().await.len(),
+        );
+    }
 
     
 
