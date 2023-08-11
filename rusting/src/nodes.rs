@@ -172,19 +172,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     // For each node, print the number of server and client sockets it has
     for node in &nodes {
-        println!("Node {} has {} server sockets and {} client sockets", 
+        println!("Node {} has {} server sockets and {} client sockets. socket: {:?}", 
             node.ip,
             node.get_server_sockets().read().await.len(),
             node.get_client_sockets().read().await.len(),
+            node.get_server_sockets()
         );
     }
-    for node in &nodes {
-        println!("Node {} has {} server sockets and {} client sockets", 
-            node.ip,
-            node.get_server_sockets().read().await.len(),
-            node.get_client_sockets().read().await.len(),
-        );
-    }
+    
 
     
 

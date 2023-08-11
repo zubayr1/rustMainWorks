@@ -50,7 +50,6 @@ impl Node {
                 test_port_server.clone() + 5000,
             ).await;
             let mut write_lock = connections_server_clone.write().await;
-            println!("fut");
             for (key, value) in val {
                 println!("{:?}", value);
                 write_lock.insert(key, value);
@@ -80,7 +79,6 @@ impl Node {
         let handle_server_task = spawn(handle_server_fut);
 
         tokio::spawn(async move {
-            println!("fut1");
             handle_server_task.await.unwrap();
         });
         
