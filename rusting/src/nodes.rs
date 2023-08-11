@@ -14,7 +14,7 @@ use tokio::net::TcpStream;
 use tokio::spawn;
 use tokio::sync::mpsc::channel;
 
-use crate::{node, socketing::*};
+use crate::{node, socketing::{*, self}};
 use crate::message::NetworkMessage;
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -113,6 +113,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
     let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
+
+    socketing::socket(server_map, client_map, server_port_list.clone(), client_port_list.clone(), initial_port, test_port, node_ips.clone());
+
     let mut server_initial_port: Vec<u32> = Vec::new();
     let mut server_test_port: Vec<u32> = Vec::new();
 
@@ -159,17 +162,17 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     
 
-    // Wait for all the futures to complete
-    futures::future::join_all(futures).await;
+    // // Wait for all the futures to complete
+    // futures::future::join_all(futures).await;
 
-    // For each node, print the number of server and client sockets it has
-    for node in &nodes {
-        println!("Node {} has {} server sockets and {} client sockets", 
-            node.ip,
-            node.get_server_sockets().read().await.len(),
-            node.get_client_sockets().read().await.len(),
-        );
-    }
+    // // For each node, print the number of server and client sockets it has
+    // for node in &nodes {
+    //     println!("Node {} has {} server sockets and {} client sockets", 
+    //         node.ip,
+    //         node.get_server_sockets().read().await.len(),
+    //         node.get_client_sockets().read().await.len(),
+    //     );
+    // }
 
 
     
