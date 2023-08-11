@@ -9,6 +9,8 @@ use std::env::{self};
 use chrono::prelude::*;
 use std::collections::HashMap;
 
+mod socketing;
+
 mod core;
 mod message;
 mod network;

@@ -14,7 +14,7 @@ use tokio::net::TcpStream;
 use tokio::spawn;
 use tokio::sync::mpsc::channel;
 
-use crate::node;
+use crate::{node, socketing};
 use crate::message::NetworkMessage;
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -95,8 +95,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_port_list = read_ports("./server_port_list.txt".to_string());
     let client_port_list = read_ports("./client_port_list.txt".to_string());
 
-    let server_port_list_clone = server_port_list.clone();
-    let client_port_list_clone = client_port_list.clone();
 
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
         println!("INITIAL_PORT_STR is not set.");
@@ -115,77 +113,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
     let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
+
+    socketing::socket(server_map, client_map, server_port_list, client_port_list, initial_port, test_port, node_ips);
+
     // let nodes_ip_clone = node_ips.clone();
     // let nodes_ip_clone1 = node_ips.clone();
     // let nodes_ip_clone2 = node_ips.clone();
 
     // let args_clone = args.clone();
-
-    // let connections_server: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(server_map));
-    // let connections_client: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(client_map));
-
-
-    // let connections_server_clone = Arc::clone(&connections_server);
-    // let connections_client_clone = Arc::clone(&connections_client);
-
-    // let handle_server_fut = async move {
-    //     let mut count = 0;
-    //     let mut additional_port;
-    //     for ip in nodes_ip_clone.clone() {
-    //         additional_port = server_port_list[count];
-    //         let val = newserver::create_server(
-    //             ip.to_string(),
-    //             initial_port.clone() + additional_port + 5000,
-    //             test_port.clone() + additional_port + 5000,
-    //         ).await;
-    //         count += 1;
-
-    //         let mut write_lock = connections_server.write().await;
-
-    //         for (key, value) in val {
-    //             write_lock.insert(key, value);
-    //         }
-    //         drop(write_lock);
-    //     }
-    // };
-    
-    // let handle_client_fut = async move {
-    //     let mut count = 0;
-    //     for ip in node_ips.clone() {
-    //         let additional_port = client_port_list[count];
-    //         let val = newclient::create_client(
-    //             [ip.to_string(), (initial_port + additional_port + 5000).to_string()].join(":"),
-    //             [ip.to_string(), (test_port + additional_port + 5000).to_string()].join(":"),
-    //         ).await;
-    //         count += 1;
-
-    //         let mut write_lock = connections_client.write().await;
-    //         for (key, value) in val {
-    //             write_lock.insert(key, value);
-    //         }
-    //         drop(write_lock);
-    //     }
-    // };
-
-    
-    
-    // let fut = async {
-    //     let handle_server_task = spawn(handle_server_fut);
-    //     let handle_client_task = spawn(handle_client_fut);
-    
-    //     let (_, _) = tokio::join!(handle_server_task, handle_client_task);
-    // };
-    // block_on(fut);
-    // // // Run the future inside the Tokio runtime
-    // // tokio::runtime::Builder::new_multi_thread()
-    // //     .worker_threads(2)
-    // //     .enable_all()
-    // //     .build()
-    // //     .unwrap()
-    // //     .block_on(fut);
-
-                
-    // println!("{:?}", connections_client_clone);
+      
 
     // // let connections_server_clone = Arc::new(RwLock::new(HashMap::new()));
 
@@ -249,12 +185,17 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // };
     // block_on(fut);
 
+
+
     let (_, mut rx_rec) = channel(10_000);
     tokio::spawn(async move {
         rx_rec = node::Node::create_binding().await;
 
         println!("{:?}", rx_rec);
     });
+
+    // let (tx_send, rx_send) = channel(10_000);
+
     
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
@@ -294,17 +235,17 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 port_count+=1; 
 
                 
-                let mut sockets: Vec<SocketAddr> = Vec::new();
+                
 
-                for ip in  ip_address
-                {
-                    sockets.push([ip, "7000"].join(":").parse::<SocketAddr>().unwrap());
-                }  
+                // for ip in  ip_address
+                // {
+                //     sockets.push([ip, "7000"].join(":").parse::<SocketAddr>().unwrap());
+                // }  
 
 
-                //tokio::spawn(async move {
-                    // node::Node::new(1, sockets).await;
-                //}); 
+                // tokio::spawn(async move {
+                //     node::Node::new(1, sockets).await;
+                // }); 
 
                
                 // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
