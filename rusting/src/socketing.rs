@@ -37,7 +37,7 @@ impl Node {
 
     // A method that creates and stores the server sockets for the node
     pub async fn create_server_sockets(&mut self, initial_port: u32, test_port: u32) {
-        println!("fut");
+        println!("nodes server{:?}, {:?}", initial_port, test_port);        
 
         let connections_server_clone = Arc::clone(&self.connections_server);
         let nodes_ip_clone = self.ip.clone();
@@ -65,6 +65,7 @@ impl Node {
 
     // A method that creates and stores the client sockets for the node
     pub async fn create_client_sockets(&mut self, initial_port: u32, test_port: u32) {
+        println!("nodes client{:?}, {:?}", initial_port, test_port);
         let connections_client_clone = Arc::clone(&self.connections_client);
         let nodes_ip_clone = self.ip.clone();
 
@@ -120,7 +121,7 @@ pub fn socket(server_map: HashMap<String, TcpStream>, client_map: HashMap<String
         let mut additional_port;
         for ip in nodes_ip_clone.clone() {
             additional_port = server_port_list[count];
-            println!("under socketing {:?}, {:?}", initial_port.clone() + additional_port + 5000, test_port.clone() + additional_port + 5000);
+            println!("under socketing {:?}, {:?}", initial_port.clone() + additional_port, test_port.clone() + additional_port);
             let val = newserver::create_server(
                 ip.to_string(),
                 initial_port.clone() + additional_port + 5000,
