@@ -50,7 +50,9 @@ impl Node {
             let mut write_lock = connections_server_clone.write().await;
 
             for (key, value) in val {
+                println!("{:?}", value);
                 write_lock.insert(key, value);
+                
             }
             drop(write_lock);
         };
