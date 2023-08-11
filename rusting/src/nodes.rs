@@ -124,14 +124,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     for i in server_port_list.clone()
     {
         server_initial_port.push(initial_port.clone() + i);
-        server_test_port.push(initial_port.clone() + i);
+        server_test_port.push(test_port.clone() + i);
     }
 
 
     for i in client_port_list.clone()
     {
         client_initial_port.push(initial_port.clone() + i);
-        client_test_port.push(initial_port.clone() + i);
+        client_test_port.push(test_port.clone() + i);
     }
 
 
@@ -141,7 +141,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let mut futures: Vec<_> = Vec::new();
 
     
-    for (count, node) in nodes.iter_mut().enumerate() {
+    for (count, node) in nodes.iter_mut().enumerate() 
+    {
       
       
         let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
