@@ -39,6 +39,7 @@ impl Node {
         initial_port_client: u32, test_port_client: u32
     )
     {
+        println!("{:?}, {:?}, {:?}, {:?}",initial_port_server, test_port_server, initial_port_client, test_port_client);
         let connections_server_clone = Arc::clone(&self.connections_server);
         let nodes_ip_clone = self.ip.clone();
 
