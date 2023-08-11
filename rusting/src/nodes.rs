@@ -147,13 +147,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     for (count, node) in nodes.iter_mut().enumerate() 
     {     
-        println!("{:?}, {:?}", server_initial_port, server_test_port);
-        println!("{:?}, {:?}", client_initial_port, client_test_port);
-
+        
         let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
         let server_test_port = server_test_port.get(count).copied().unwrap_or_default();
         let client_initial_port = client_initial_port.get(count).copied().unwrap_or_default();
         let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
+
+
+        println!("{:?}, {:?}", server_initial_port, server_test_port);
+        println!("{:?}, {:?}", client_initial_port, client_test_port);
         
         let future = async move {
             node.create_server_sockets(server_initial_port, server_test_port).await;
