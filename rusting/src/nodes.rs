@@ -14,7 +14,7 @@ use tokio::net::TcpStream;
 use tokio::spawn;
 use tokio::sync::mpsc::channel;
 
-use crate::{node, socketing};
+use crate::{node, socketing::*};
 use crate::message::NetworkMessage;
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -113,12 +113,54 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
     let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
+    let mut server_initial_port: Vec<u32> = Vec::new();
+    let mut server_test_port: Vec<u32> = Vec::new();
+
+
+    let mut client_initial_port: Vec<u32> = Vec::new();
+    let mut client_test_port: Vec<u32> = Vec::new();
 
     // socketing::socket(server_map, client_map, server_port_list, client_port_list, initial_port, test_port, node_ips);
 
+    // A vector of nodes that you create from the IP addresses
 
+    let nodes_ip_clone = node_ips.clone();
+
+    for i in server_port_list
+    {
+        server_initial_port.push(initial_port.clone() + i);
+        server_test_port.push(initial_port.clone() + i);
+    }
+
+
+    for i in client_port_list
+    {
+        client_initial_port.push(initial_port.clone() + i);
+        client_test_port.push(initial_port.clone() + i);
+    }
+
+
+    let mut nodes: Vec<Node> = node_ips.into_iter().map(Node::new).collect();
    
+    
+    let futures: Vec<_> = nodes.iter_mut().map(|node| async move {
+        node.create_server_sockets(initial_port, test_port).await;
+        node.create_client_sockets(initial_port, test_port).await;
+    }).collect();
 
+    // Wait for all the futures to complete
+    futures::future::join_all(futures).await;
+
+    // For each node, print the number of server and client sockets it has
+    for node in &nodes {
+        println!("Node {} has {} server sockets and {} client sockets", 
+            node.ip,
+            node.get_server_sockets().read().await.len(),
+            node.get_client_sockets().read().await.len(),
+        );
+    }
+
+    
     
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
@@ -141,17 +183,17 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let mut _pvss_data: String = "".to_string();
 
         let mut sockets: Vec<SocketAddr> = Vec::new();
-        
-
-        for ip in  node_ips.clone()
-        {
-            sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
-        }  
 
 
-        tokio::spawn(async move {
-            node::Node::new(1, sockets).await;
-        }); 
+        // for ip in  node_ips.clone()
+        // {
+        //     sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
+        // }  
+
+
+        // tokio::spawn(async move {
+        //     node::Node::new(1, sockets).await;
+        // }); 
 
        
         for (committee_id, ip_addresses_comb) in sorted.clone()
