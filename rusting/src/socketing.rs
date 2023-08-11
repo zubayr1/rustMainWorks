@@ -46,7 +46,7 @@ impl Node {
                 initial_port.clone() + 5000,
                 test_port.clone() + 5000,
             ).await;
-
+            println!("fut");
             let mut write_lock = connections_server_clone.write().await;
 
             for (key, value) in val {
