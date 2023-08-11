@@ -120,20 +120,15 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let mut client_initial_port: Vec<u32> = Vec::new();
     let mut client_test_port: Vec<u32> = Vec::new();
 
-    // socketing::socket(server_map, client_map, server_port_list, client_port_list, initial_port, test_port, node_ips);
 
-    // A vector of nodes that you create from the IP addresses
-
-    let nodes_ip_clone = node_ips.clone();
-
-    for i in server_port_list
+    for i in server_port_list.clone()
     {
         server_initial_port.push(initial_port.clone() + i);
         server_test_port.push(initial_port.clone() + i);
     }
 
 
-    for i in client_port_list
+    for i in client_port_list.clone()
     {
         client_initial_port.push(initial_port.clone() + i);
         client_test_port.push(initial_port.clone() + i);
@@ -143,10 +138,25 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let mut nodes: Vec<Node> = node_ips.into_iter().map(Node::new).collect();
    
     
-    let futures: Vec<_> = nodes.iter_mut().map(|node| async move {
-        node.create_server_sockets(initial_port, test_port).await;
-        node.create_client_sockets(initial_port, test_port).await;
-    }).collect();
+    let mut futures: Vec<_> = Vec::new();
+
+    
+    for (count, node) in nodes.iter_mut().enumerate() {
+      
+      
+        let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
+        let server_test_port = server_test_port.get(count).copied().unwrap_or_default();
+        let client_initial_port = client_initial_port.get(count).copied().unwrap_or_default();
+        let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
+        
+        let future = async move {
+            node.create_server_sockets(server_initial_port, server_test_port).await;
+            node.create_client_sockets(client_initial_port, client_test_port).await;
+        };
+        futures.push(future);
+    }
+    
+    
 
     // Wait for all the futures to complete
     futures::future::join_all(futures).await;
@@ -160,7 +170,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         );
     }
 
-    
+
     
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
