@@ -58,7 +58,7 @@ impl Node {
             }
             drop(write_lock);
         };
-
+        println!("fut");
 
         let connections_client_clone = Arc::clone(&self.connections_client);
         let nodes_ip_clone = self.ip.clone();
