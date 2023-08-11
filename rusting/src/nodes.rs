@@ -13,6 +13,7 @@ use std::sync::{Arc, Mutex};
 use tokio::net::TcpStream;
 use tokio::spawn;
 use tokio::sync::mpsc::channel;
+use tokio::task;
 
 use crate::{node, socketing::{*, self}};
 use crate::message::NetworkMessage;
@@ -146,20 +147,18 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     
     for (count, node) in nodes.iter_mut().enumerate() 
-    {     
-        
-        let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
-        let server_test_port = server_test_port.get(count).copied().unwrap_or_default();
-        let client_initial_port = client_initial_port.get(count).copied().unwrap_or_default();
-        let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
+{     
+    let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
+    let server_test_port = server_test_port.get(count).copied().unwrap_or_default();
+    let client_initial_port = client_initial_port.get(count).copied().unwrap_or_default();
+    let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
 
-        
-        let future = async move {
-            // node.create_server_sockets(server_initial_port, server_test_port).await;
-            node.create_client_sockets(client_initial_port, client_test_port).await;
-        };
-        futures.push(future);
-    }
+    let future = async move {
+        node.create_server_sockets(server_initial_port, server_test_port).await;
+        node.create_client_sockets(client_initial_port, client_test_port).await;
+    };
+    futures.push(future);
+}
     
     
 

@@ -5,7 +5,7 @@ use tokio::sync::RwLock;
 use std::collections::HashMap;
 use tokio::spawn;
 use futures::executor::block_on;
-
+use core::marker::PhantomData;
 
 #[path ="../networking/newserver.rs"]
 mod newserver;
@@ -16,26 +16,29 @@ mod newclient;
 
 
 // A struct that represents a node in your network
-pub struct Node {
+// Use a generic lifetime parameter 'a for Node
+pub struct Node<'a> {
     // The IP address of the node
     pub ip: String,
     // A map of server sockets for the node
     connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
     // A map of client sockets for the node
     connections_client: Arc<RwLock<HashMap<String, TcpStream>>>,
+    // Add a phantom data field to link the lifetime 'a to Node
+    _marker: PhantomData<&'a ()>,
 }
 
-impl Node {
-    // A method that creates a new node with the given IP address
+impl<'a> Node<'a> {
+    // Use the same lifetime 'a for the methods
     pub fn new(ip: String) -> Self {
         Node {
             ip,
             connections_server: Arc::new(RwLock::new(HashMap::new())),
             connections_client: Arc::new(RwLock::new(HashMap::new())),
+            _marker: PhantomData,
         }
     }
 
-    // A method that creates and stores the server sockets for the node
     pub async fn create_server_sockets(&mut self, initial_port: u32, test_port: u32) {
         println!("nodes server{:?}, {:?}", initial_port, test_port);        
 
@@ -63,7 +66,6 @@ impl Node {
         handle_server_task.await.unwrap();
     }
 
-    // A method that creates and stores the client sockets for the node
     pub async fn create_client_sockets(&mut self, initial_port: u32, test_port: u32) {
         println!("nodes client{:?}, {:?}", initial_port, test_port);
         let connections_client_clone = Arc::clone(&self.connections_client);
@@ -87,18 +89,14 @@ impl Node {
         handle_client_task.await.unwrap();
     }
 
-    // A method that returns a reference to the server sockets for the node
     pub fn get_server_sockets(&self) -> &Arc<RwLock<HashMap<String, TcpStream>>> {
         &self.connections_server
     }
 
-    // A method that returns a reference to the client sockets for the node
     pub fn get_client_sockets(&self) -> &Arc<RwLock<HashMap<String, TcpStream>>> {
         &self.connections_client
     }
 }
-
-
 
 
 pub fn socket(server_map: HashMap<String, TcpStream>, client_map: HashMap<String, TcpStream>,
