@@ -154,8 +154,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
 
 
-        println!("nodes server{:?}, {:?}", server_initial_port, server_test_port);
-        println!("nodes client{:?}, {:?}", client_initial_port, client_test_port);
+        // println!("nodes server{:?}, {:?}", server_initial_port, server_test_port);
+        // println!("nodes client{:?}, {:?}", client_initial_port, client_test_port);
         
         let future = async move {
             node.create_server_sockets(server_initial_port, server_test_port).await;
