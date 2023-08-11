@@ -37,6 +37,8 @@ impl Node {
 
     // A method that creates and stores the server sockets for the node
     pub async fn create_server_sockets(&mut self, initial_port: u32, test_port: u32) {
+        println!("fut");
+
         let connections_server_clone = Arc::clone(&self.connections_server);
         let nodes_ip_clone = self.ip.clone();
 
@@ -46,7 +48,6 @@ impl Node {
                 initial_port.clone() + 5000,
                 test_port.clone() + 5000,
             ).await;
-            println!("fut");
             let mut write_lock = connections_server_clone.write().await;
 
             for (key, value) in val {
