@@ -12,9 +12,10 @@ use std::env;
 use std::sync::{Arc, Mutex};
 use tokio::net::TcpStream;
 use tokio::spawn;
+use tokio::sync::mpsc::channel;
 
 use crate::node;
-
+use crate::message::NetworkMessage;
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
 
@@ -248,10 +249,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // };
     // block_on(fut);
 
+    let (_, mut rx_rec) = channel(10_000);
     tokio::spawn(async move {
-        node::Node::create_binding().await;
-    });
+        rx_rec = node::Node::create_binding().await;
 
+        println!("{:?}", rx_rec);
+    });
+    
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   

@@ -7,7 +7,7 @@ use crate::{
     core::Core,
     network::*,
 };
-
+use crate::message::NetworkMessage;
 
 pub struct Node;
 
@@ -33,7 +33,7 @@ impl Node {
          Core::spawn(id, nodes[id], nodes, tx_send, rx_rec);
     }
 
-    pub async fn create_binding()
+    pub async fn create_binding() -> tokio::sync::mpsc::Receiver<NetworkMessage>
     {
         let (tx_rec, rx_rec) = channel(10_000);
         let network_receiver: NetworkReceiver = NetworkReceiver::new(tx_rec);
@@ -42,6 +42,7 @@ impl Node {
              network_receiver.run().await;
          });
         
+        return rx_rec;
     }
 
 
