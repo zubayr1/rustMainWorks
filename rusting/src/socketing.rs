@@ -50,7 +50,7 @@ impl Node {
                 test_port_server.clone() + 5000,
             ).await;
             let mut write_lock = connections_server_clone.write().await;
-
+            println!("fut");
             for (key, value) in val {
                 println!("{:?}", value);
                 write_lock.insert(key, value);
@@ -58,7 +58,7 @@ impl Node {
             }
             drop(write_lock);
         };
-        println!("fut");
+        
 
         let connections_client_clone = Arc::clone(&self.connections_client);
         let nodes_ip_clone = self.ip.clone();
@@ -80,6 +80,7 @@ impl Node {
         let handle_server_task = spawn(handle_server_fut);
 
         tokio::spawn(async move {
+            println!("fut1");
             handle_server_task.await.unwrap();
         });
         
