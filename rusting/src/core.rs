@@ -1,34 +1,35 @@
 use std::net::SocketAddr;
 
-use bytes::Bytes;
 use rand::distributions::{Alphanumeric, DistString};
 use rand::{thread_rng, Rng};
-use tokio::sync::mpsc::{channel, Receiver};
+use tokio::sync::mpsc::{channel, Receiver, Sender};
 use tokio::time::Duration;
 
-use crate::{message::BroadcastMessage, network::SimpleSender};
+use crate::message::NetworkMessage;
 
 pub struct Core {
-    id: usize,                          // id of the node.
-    nodes: Vec<SocketAddr>,             // ip addresses of all nodes.
-    sender: SimpleSender,               // Network sender.
-    rx: Receiver<BroadcastMessage>,     // Channel to receive network messages.
-    rx_tick: Receiver<bool>,            // Channel to receive ticks.
+    id: usize,                    // id of the node.
+    name: SocketAddr,             // Note: a public key would make more sense as name.
+    nodes: Vec<SocketAddr>,       // ip addresses of all nodes.
+    tx: Sender<NetworkMessage>,   // Channel to send messages to the network.
+    rx: Receiver<NetworkMessage>, // Channel to receive network messages.
+    rx_tick: Receiver<bool>,      // Channel to receive ticks.
 }
 
 impl Core {
     pub fn spawn(
         id: usize,
+        name: SocketAddr,
         nodes: Vec<SocketAddr>,
-        sender: SimpleSender,
-        rx: Receiver<BroadcastMessage>,
+        tx: Sender<NetworkMessage>,
+        rx: Receiver<NetworkMessage>,
     ) {
         let (tx_tick, rx_tick) = channel(10);
 
-        // Spawn a ticker that sends a value to rx_tick at a random value between 500ms and 1000ms.
+        // Spawn a ticker that sends a value to rx_tick at a random value between 20ms and 500ms.
         tokio::spawn(async move {
             loop {
-                let duration = thread_rng().gen_range(500..1000);
+                let duration = thread_rng().gen_range(20..500);
                 tokio::time::sleep(Duration::from_millis(duration)).await;
                 tx_tick.send(true).await.unwrap();
             }
@@ -37,8 +38,9 @@ impl Core {
         tokio::spawn(async move {
             Self {
                 id,
+                name,
                 nodes,
-                sender,
+                tx,
                 rx,
                 rx_tick,
             }
@@ -48,9 +50,16 @@ impl Core {
     }
 
     /// Broadcast a given message to every node in the network.
-    async fn broadcast(&mut self, m: BroadcastMessage) {
-        let bytes = Bytes::from(bincode::serialize(&m).unwrap());
-        self.sender.broadcast(self.nodes.clone(), bytes).await;
+    async fn broadcast(&mut self, m: String) {
+        let message = NetworkMessage {
+            sender: self.name.clone(),
+            addresses: self.nodes.clone(),
+            message: m.clone(),
+        };
+        match self.tx.send(message).await {
+            Ok(_) => (),
+            Err(e) => println!("{}", e),
+        }
     }
 
     pub async fn run(&mut self) {
@@ -59,15 +68,13 @@ impl Core {
         loop {
             tokio::select! {
                 Some(message) = self.rx.recv() => {
-                    println!("{} got message from {}: {}", self.id, message.sender, message.content);
+                    println!("{} got message from {}: {}", self.id, message.sender, message.message);
                 }
                 Some(_) = self.rx_tick.recv() => {
                     // Create random string.
                     let content = Alphanumeric.sample_string(&mut thread_rng(), 32);
                     println!("{} broadcasting {}", self.id, content);
-                    self.broadcast(
-                        BroadcastMessage { sender: self.id, content: content, round: 0 }
-                    ).await;
+                    self.broadcast(content).await;
                 }
             };
         }

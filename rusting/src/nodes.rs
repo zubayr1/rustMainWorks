@@ -248,7 +248,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // };
     // block_on(fut);
 
-    node::Node::create_binding().await;
+    //node::Node::create_binding().await;
 
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch

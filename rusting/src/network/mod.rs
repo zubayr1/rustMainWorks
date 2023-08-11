@@ -1,5 +1,3 @@
-mod receiver;
-mod sender;
+mod network;
 
-pub use crate::network::receiver::*;
-pub use crate::network::sender::*;
+pub use crate::network::network::*;

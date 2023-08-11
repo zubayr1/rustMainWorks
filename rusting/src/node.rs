@@ -5,7 +5,7 @@ use tokio::time::{sleep, Duration};
 
 use crate::{
     core::Core,
-    network::{MessageReceiver, SimpleSender},
+    network::*,
 };
 
 
@@ -13,23 +13,31 @@ pub struct Node;
 
 impl Node {
     pub async fn new(id: usize, nodes: Vec<SocketAddr>) {
-        // Create a channel for the message receiver. The receiver receives data from incoming
-        // tcp connections and puts this data into the channel. The data is retreives via the rx
-        // channel.
-        println!("ss");
-        let (tx, rx) = channel(1_000);
-        // MessageReceiver::spawn(nodes[id], tx);
-        let sender = SimpleSender::new();
-
-        sleep(Duration::from_millis(50)).await;
-
-        Core::spawn(id, nodes, sender, rx);
+         // Create channels for the networking.
+         let (tx_rec, rx_rec) = channel(10_000);
+         let (tx_send, rx_send) = channel(10_000);
+ 
+         // Create a network receiver and sender.
+         let network_receiver = NetworkReceiver::new(nodes[id], tx_rec);
+         let mut network_sender = NetworkSender::new(rx_send);
+ 
+         tokio::spawn(async move {
+             network_receiver.run().await;
+         });
+         tokio::spawn(async move {
+             network_sender.run().await;
+         });
+ 
+         sleep(Duration::from_millis(50)).await;
+ 
+         Core::spawn(id, nodes[id], nodes, tx_send, rx_rec);
     }
 
     pub async fn create_binding()
     {
-        let (tx, rx) = channel(1_000);
-        MessageReceiver::spawn( tx);
+        // let (tx_rec, rx_rec) = channel(10_000);
+        // let network_receiver: NetworkReceiver = NetworkReceiver::new(nodes[id], tx_rec);
+        
     }
 
 
