@@ -99,15 +99,15 @@ impl NetworkSender {
 
 pub struct NetworkReceiver {
     // Our own network address.
-    address: SocketAddr,
+    // address: SocketAddr,
 
     // Channel where received messages are put in.
     deliver: Sender<NetworkMessage>,
 }
 
 impl NetworkReceiver {
-    pub fn new(address: SocketAddr, deliver: Sender<NetworkMessage>) -> Self {
-        Self { address, deliver }
+    pub fn new(deliver: Sender<NetworkMessage>) -> Self {
+        Self { deliver }
     }
 
     // Spawn a new worker for each incoming request. This worker is responsible for
@@ -119,7 +119,7 @@ impl NetworkReceiver {
             .await
             .expect("Failed to bind TCP port");
 
-        println!("Listening on {}", self.address);
+        println!("Listening on {}", addr);
 
         // Continuously accept new incoming connections.
         loop {

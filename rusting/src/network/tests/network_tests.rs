@@ -70,7 +70,7 @@ async fn receive() {
     // Create a network receiver and run it.
     let address = "127.0.0.1:8070".parse::<SocketAddr>().unwrap();
     let (tx, mut rx) = channel(10);
-    let receiver = NetworkReceiver::new(address.clone(), tx);
+    let receiver = NetworkReceiver::new( tx);
     tokio::spawn(async move {
         receiver.run().await;
     });
