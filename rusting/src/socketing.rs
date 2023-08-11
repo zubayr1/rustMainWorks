@@ -35,6 +35,57 @@ impl Node {
         }
     }
 
+    pub async fn create_sockets(&mut self, initial_port_server: u32, test_port_server: u32,
+        initial_port_client: u32, test_port_client: u32
+    )
+    {
+        let connections_server_clone = Arc::clone(&self.connections_server);
+        let nodes_ip_clone = self.ip.clone();
+
+        let handle_server_fut = async move {
+            let val = newserver::create_server(
+                nodes_ip_clone.to_string(),
+                initial_port_server.clone() + 5000,
+                test_port_server.clone() + 5000,
+            ).await;
+            let mut write_lock = connections_server_clone.write().await;
+
+            for (key, value) in val {
+                println!("{:?}", value);
+                write_lock.insert(key, value);
+                
+            }
+            drop(write_lock);
+        };
+
+
+        let connections_client_clone = Arc::clone(&self.connections_client);
+        let nodes_ip_clone = self.ip.clone();
+
+        let handle_client_fut = async move {
+            let val = newclient::create_client(
+                [nodes_ip_clone.to_string(), (initial_port_client + 5000).to_string()].join(":"),
+                [nodes_ip_clone.to_string(), (test_port_client + 5000).to_string()].join(":"),
+            ).await;
+
+            let mut write_lock = connections_client_clone.write().await;
+            for (key, value) in val {
+                write_lock.insert(key, value);
+            }
+            drop(write_lock);
+        };
+
+
+        let handle_server_task = spawn(handle_server_fut);
+
+        handle_server_task.await.unwrap();
+
+        let handle_client_task = spawn(handle_client_fut);
+
+        handle_client_task.await.unwrap();
+
+    }
+
     // A method that creates and stores the server sockets for the node
     pub async fn create_server_sockets(&mut self, initial_port: u32, test_port: u32) {
         println!("nodes server{:?}, {:?}", initial_port, test_port);        

@@ -157,8 +157,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         
         let future = async move {
-            node.create_server_sockets(server_initial_port, server_test_port).await;
-            node.create_client_sockets(client_initial_port, client_test_port).await;
+            node.create_sockets(server_initial_port, server_test_port,
+                client_initial_port, client_test_port
+            ).await;
+            
         };
         futures.push(future);
     }
