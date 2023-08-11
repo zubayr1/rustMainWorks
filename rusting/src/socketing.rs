@@ -119,6 +119,7 @@ pub fn socket(server_map: HashMap<String, TcpStream>, client_map: HashMap<String
         let mut additional_port;
         for ip in nodes_ip_clone.clone() {
             additional_port = server_port_list[count];
+            println!("{:?}, {:?}", initial_port.clone() + additional_port + 5000, test_port.clone() + additional_port + 5000);
             let val = newserver::create_server(
                 ip.to_string(),
                 initial_port.clone() + additional_port + 5000,
