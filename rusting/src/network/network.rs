@@ -114,7 +114,8 @@ impl NetworkReceiver {
     // receiving messages from exactly one connection and forwards those messages to
     // the deliver channel.
     pub async fn run(&self) {
-        let listener = TcpListener::bind(&self.address)
+        let addr = ["0.0.0.0", "7000"].join(":").parse::<SocketAddr>().unwrap();
+        let listener = TcpListener::bind(addr)
             .await
             .expect("Failed to bind TCP port");
 
