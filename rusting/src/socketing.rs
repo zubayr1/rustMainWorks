@@ -79,7 +79,10 @@ impl Node {
 
         let handle_server_task = spawn(handle_server_fut);
 
-        // handle_server_task.await.unwrap();
+        tokio::spawn(async move {
+            handle_server_task.await.unwrap();
+        });
+        
 
         let handle_client_task = spawn(handle_client_fut);
 
