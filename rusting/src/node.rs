@@ -32,9 +32,7 @@ impl Node {
 
         Core::spawn(id, self_socket, nodes, tx_send, rx_rec);
 
-        println!("check");
 
         sleep(Duration::from_millis(1000)).await;
-        println!("checked");
     }
 }
