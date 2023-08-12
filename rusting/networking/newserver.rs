@@ -32,8 +32,6 @@ pub async fn create_server( _ip_address: String, port: u32, testport: u32)
 
     connections.insert(socket_ip[0].clone().to_string(), socket);
 
-    println!("client created");
-
     connections
 
 }

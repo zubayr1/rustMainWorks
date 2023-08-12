@@ -27,8 +27,6 @@ pub async fn create_client(address: String, test_address: String)
     
     connections.insert(parts[0].clone().to_string(), stream);  
 
-    println!("client created");
-
     connections
 
 }
