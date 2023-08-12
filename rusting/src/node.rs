@@ -28,7 +28,7 @@ impl Node {
 
         println!("{:?}", self_ip);
 
-        let self_socket = self_ip.parse::<SocketAddr>().unwrap();
+        let self_socket = [self_ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap();
 
         Core::spawn(id, self_socket, nodes, tx_send, rx_rec);
 
