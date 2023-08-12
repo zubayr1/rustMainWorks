@@ -62,7 +62,7 @@ pub fn read_ports(file_name: String) -> Vec<u32>
 
 
 
-pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
+pub fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
     let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
 
@@ -167,7 +167,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                
                 reactor::reactor_init( 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                level, _index, args.clone(), port_count.clone(), "prod_init".to_string());
                 level+=1;
             }
 
