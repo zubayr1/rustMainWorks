@@ -47,10 +47,8 @@ async fn communication(
     initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>
 {
     let mut output: Vec<String>= Vec::new();
-    
-    if mode=="accum"
-    {
-        if medium=="prod_init"
+
+    if medium=="prod_init"
         {
             output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
@@ -59,28 +57,21 @@ async fn communication(
         }
         if medium=="dev_init"
         {
-            // output = communication::dev_communication(nodes, committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
+            if mode=="accum"
+             {
+            //     output = communication::dev_communication(nodes, committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
             //     ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
     
-        }
-    }
-    else if mode=="codeword"
-    {
-        if medium=="prod_init"
-        {
-            output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-                _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
+            }
+            else 
+            {
+                // output = communication::nested_dev_communication(nodes, committee_id, (initial_port + _index).to_string(), 
+                // (test_port + _index).to_string(), value.clone(), args.clone()).await;
     
-           
+            }
+            
         }
-        if medium=="dev_init"
-        {
-            // output = communication::nested_dev_communication(nodes, committee_id, (initial_port + _index).to_string(), 
-            //     (test_port + _index).to_string(), value.clone(), args.clone()).await;
     
-        }
-    }
-  
     return output;
 }
 
