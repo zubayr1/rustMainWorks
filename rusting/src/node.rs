@@ -22,6 +22,7 @@ impl Node {
             network_receiver.run().await;
         });
         tokio::spawn(async move {
+            println!("check");
             network_sender.run().await;
         });
 
