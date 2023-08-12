@@ -91,7 +91,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     while let Some(line_result) = line_stream.next_line().await.unwrap() {
         let line = line_result;
-        println!("Line: {}", line);
 
         let ip: Vec<&str> = line.split("-").collect();
         
