@@ -22,10 +22,10 @@ impl Node {
             network_receiver.run().await;
         });
         tokio::spawn(async move {
-            println!("check");
+            
             network_sender.run().await;
         });
-
+        println!("check");
         sleep(Duration::from_millis(50)).await;
 
         println!("{:?}", nodes[id]);
