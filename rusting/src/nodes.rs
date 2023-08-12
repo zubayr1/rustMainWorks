@@ -111,16 +111,19 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
 
-    for ip in  node_ips.clone()
-    {
-        sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
-    }  
+     
     
     println!("Before calling Node::new");
     
     // Use spawn to execute Node::new as an async task
     
     tokio::spawn(async move {
+
+        for ip in  node_ips.clone()
+    {
+        sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
+    } 
+    
         node::Node::new(1, sockets).await;
     });
     
@@ -208,6 +211,9 @@ pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<St
 
     let start_time = Utc::now().time();
 
+    let n=4;
+
+    
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     { 
         println!("epoch {}", _index);
