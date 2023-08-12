@@ -139,48 +139,58 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     }
 
 
-    let mut nodes: Vec<Node> = node_ips.into_iter().map(Node::new).collect();
+    // let mut nodes: Vec<Node> = node_ips.into_iter().map(Node::new).collect();
    
     
-    let mut futures: Vec<_> = Vec::new();
+    // let mut futures: Vec<_> = Vec::new();
 
     
     
-    for (count, node) in nodes.iter_mut().enumerate() 
-    {     
+    // for (count, node) in nodes.iter_mut().enumerate() 
+    // {     
         
-        let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
-        let server_test_port = server_test_port.get(count).copied().unwrap_or_default();
-        let client_initial_port = client_initial_port.get(count).copied().unwrap_or_default();
-        let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
+    //     let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
+    //     let server_test_port = server_test_port.get(count).copied().unwrap_or_default();
+    //     let client_initial_port = client_initial_port.get(count).copied().unwrap_or_default();
+    //     let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
         
 
         
-        let future = async move {
-            node.create_sockets(server_initial_port, server_test_port,
-                client_initial_port, client_test_port
-            ).await;
+    //     let future = async move {
+    //         node.create_sockets(server_initial_port, server_test_port,
+    //             client_initial_port, client_test_port
+    //         ).await;
             
-        };
-        futures.push(future);
-    }
+    //     };
+    //     futures.push(future);
+    // }
     
     
 
-    // Wait for all the futures to complete
-    futures::future::join_all(futures).await;
+    // // Wait for all the futures to complete
+    // futures::future::join_all(futures).await;
 
-    // For each node, print the number of server and client sockets it has
-    for node in &nodes {
-        println!("Node {} has {} server sockets and {} client sockets. socket: {:?}", 
-            node.ip,
-            node.get_server_sockets().read().await.len(),
-            node.get_client_sockets().read().await.len(),
-            node.get_server_sockets()
-        );
-    }
+    // // For each node, print the number of server and client sockets it has
+    // for node in &nodes {
+    //     println!("Node {} has {} server sockets and {} client sockets. socket: {:?}", 
+    //         node.ip,
+    //         node.get_server_sockets().read().await.len(),
+    //         node.get_client_sockets().read().await.len(),
+    //         node.get_server_sockets()
+    //     );
+    // }
+
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+
+
+    for ip in  node_ips.clone()
+    {
+        sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
+    }  
     
-
+    tokio::spawn(async move {
+            node::Node::new(1, sockets).await;
+    });
     
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
@@ -202,19 +212,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let mut _pvss_data: String = "".to_string();
 
-        let mut sockets: Vec<SocketAddr> = Vec::new();
-
-
-        // for ip in  node_ips.clone()
-        // {
-        //     sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
-        // }  
-
-
-        // tokio::spawn(async move {
-        //     node::Node::new(1, sockets).await;
-        // }); 
-
        
         for (committee_id, ip_addresses_comb) in sorted.clone()
         {
@@ -233,10 +230,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
                 
                
-                reactor::reactor_init(&nodes, 
-                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                level+=1;
+                // reactor::reactor_init(&nodes, 
+                //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                // level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                // level+=1;
             }
 
             
