@@ -191,7 +191,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     //tokio::spawn(async move {
         node::Node::new(1, sockets).await;
     //});
-    
+    println!("fuck");
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
