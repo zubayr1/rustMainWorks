@@ -9,7 +9,6 @@ pub struct Node;
 
 impl Node {
     pub async fn new(id: usize, nodes: Vec<SocketAddr>, self_ip: String) {
-        println!("new");
         // Create channels for the networking.
         let (tx_rec, rx_rec) = channel(10_000);
         let (tx_send, rx_send) = channel(10_000);
@@ -25,12 +24,13 @@ impl Node {
             
             network_sender.run().await;
         });
-        println!("check");
         // sleep(Duration::from_millis(50)).await;
 
         println!("{:?}", self_ip);
 
-        Core::spawn(id, nodes[id], nodes, tx_send, rx_rec);
+        let self_socket = self_ip.parse::<SocketAddr>().unwrap();
+
+        Core::spawn(id, self_socket, nodes, tx_send, rx_rec);
 
         println!("check");
 
