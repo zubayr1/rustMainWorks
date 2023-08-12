@@ -126,7 +126,8 @@ impl NetworkReceiver {
         println!("Listening on {}", addr);
 
         // Continuously accept new incoming connections.
-        loop {
+        loop 
+        {
             let (socket, peer) = match listener.accept().await {
                 Ok(value) => value,
                 // If there is an error with the connection just continue with the loop.
