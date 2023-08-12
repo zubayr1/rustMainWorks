@@ -107,11 +107,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let test_port: u32 = test_port_str.parse().unwrap();
 
 
-
-    let mut sockets: Vec<SocketAddr> = Vec::new();
-
-
-     
     
     println!("Before calling Node::new");
     
@@ -119,11 +114,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     tokio::spawn(async move {
 
+        let mut sockets: Vec<SocketAddr> = Vec::new();
+
         for ip in  node_ips.clone()
-    {
-        sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
-    } 
-    
+        {
+            sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
+        } 
+
         node::Node::new(1, sockets).await;
     });
     
