@@ -51,7 +51,7 @@ pub fn read_ports(file_name: String) -> Vec<u32>
     return ports;
 }
 
-pub async fn prod_communication<'a>(nodes: &Vec<Node>,
+pub async fn prod_communication<'a>(
     committee_id: u32, ip_address: Vec<&'a str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
 {
@@ -118,80 +118,80 @@ pub async fn prod_communication<'a>(nodes: &Vec<Node>,
 
     let mut outputclone = output.clone();
 
-    let nodes1 = nodes.clone();
+    // let nodes1 = nodes.clone();
 
-    let handle_server_fut = async move {
-        let mut count = 0;
+    // let handle_server_fut = async move {
+    //     let mut count = 0;
                 
-        for ip in ip_address_clone.clone() 
-            { 
-                let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
+    //     for ip in ip_address_clone.clone() 
+    //         { 
+    //             let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
                 
 
-                let mut connections_server: &Arc<RwLock<HashMap<String, TcpStream>>> = &Arc::new(RwLock::new(server_map));
+    //             let mut connections_server: &Arc<RwLock<HashMap<String, TcpStream>>> = &Arc::new(RwLock::new(server_map));
 
 
-                for node in nodes1.iter() {
+    //             for node in nodes1.iter() {
                     
-                    if node.ip==ip
-                    {
-                        connections_server = node.get_server_sockets();
-                    }
-                }
-                let additional_port = server_port_list[count];
+    //                 if node.ip==ip
+    //                 {
+    //                     connections_server = node.get_server_sockets();
+    //                 }
+    //             }
+    //             let additional_port = server_port_list[count];
                 
 
-                let val = newserver::handle_server(connections_server.clone(), ip.to_string(), 
-                initial_port.clone() + additional_port + 5000
-                , test_port.clone() + additional_port + 5000).await;
+    //             let val = newserver::handle_server(connections_server.clone(), ip.to_string(), 
+    //             initial_port.clone() + additional_port + 5000
+    //             , test_port.clone() + additional_port + 5000).await;
                 
-                count+=1;
-                outputclone.push(val);
+    //             count+=1;
+    //             outputclone.push(val);
                 
-            }
-    };
-    let nodes1 = nodes.clone();
+    //         }
+    // };
+    // let nodes1 = nodes.clone();
 
-    let handle_client_fut = async move {
-        let mut count = 0;
-        for ip in ip_address_clone1.clone() 
-            { 
-                let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
+    // let handle_client_fut = async move {
+    //     let mut count = 0;
+    //     for ip in ip_address_clone1.clone() 
+    //         { 
+    //             let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
 
-                let mut connections_client: &Arc<RwLock<HashMap<String, TcpStream>>> = &Arc::new(RwLock::new(client_map));
+    //             let mut connections_client: &Arc<RwLock<HashMap<String, TcpStream>>> = &Arc::new(RwLock::new(client_map));
 
 
-                for node in nodes1.iter() {
+    //             for node in nodes1.iter() {
                     
-                    if node.ip==ip
-                    {
-                        connections_client = node.get_client_sockets();
-                    }
-                }
+    //                 if node.ip==ip
+    //                 {
+    //                     connections_client = node.get_client_sockets();
+    //                 }
+    //             }
 
-                let additional_port = client_port_list[count];
+    //             let additional_port = client_port_list[count];
 
                 
-                 newclient::match_tcp_client(connections_client.clone(),
-                    [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), value.clone(), 
-                args.clone()).await;
+    //              newclient::match_tcp_client(connections_client.clone(),
+    //                 [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
+    //             [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), value.clone(), 
+    //             args.clone()).await;
 
-                count+=1;
+    //             count+=1;
                 
-            }
-    };
+    //         }
+    // };
 
     
     
-    let fut = async {
-        let handle_server_task = spawn(handle_server_fut);
-        let handle_client_task = spawn(handle_client_fut);
+    // let fut = async {
+    //     let handle_server_task = spawn(handle_server_fut);
+    //     let handle_client_task = spawn(handle_client_fut);
     
-        let (_, _) = tokio::join!(handle_server_task, handle_client_task);
-    };
-    block_on(fut);
+    //     let (_, _) = tokio::join!(handle_server_task, handle_client_task);
+    // };
+    // block_on(fut);
 
     
 

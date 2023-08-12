@@ -43,7 +43,6 @@ mod newclient;
 mod newserver;
 
 async fn communication(
-    nodes: &Vec<Node>, 
     committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
     initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>
 {
@@ -53,7 +52,7 @@ async fn communication(
     {
         if medium=="prod_init"
         {
-            output = communication::prod_communication(&nodes, committee_id, ip_address.clone(), level, port_count, 
+            output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
@@ -69,7 +68,7 @@ async fn communication(
     {
         if medium=="prod_init"
         {
-            output = communication::prod_communication(&nodes, committee_id, ip_address.clone(), level, port_count, 
+            output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
@@ -86,8 +85,7 @@ async fn communication(
 }
 
 
-pub async fn reactor_init(
-    nodes: &Vec<Node>,
+pub async fn reactor_init(    
     pvss_data: String, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>, port_count: u32, medium: String)
@@ -106,7 +104,7 @@ pub async fn reactor_init(
 
     let empty_vec: Vec<Vec<u8>> = Vec::new();    
     
-    reactor(nodes, pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
+    reactor(pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
         "accum".to_string(), medium, committee_length).await;
 }
 
@@ -157,7 +155,7 @@ pub async fn reaction(nodes: &Vec<Node>,
                                 
             }
             // send witness to nodes if have received the first valid code word: prod
-            let output = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "broadcast".to_string()).await;
 
             let mut s_values: Vec<String> = Vec::new();
@@ -238,7 +236,7 @@ pub async fn reaction(nodes: &Vec<Node>,
                 }
             }
             // send witness to nodes if have received the first valid code word: dev
-            let _output = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let _output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "individual".to_string()).await;
 
             // println!("{:?}", output);
@@ -248,7 +246,7 @@ pub async fn reaction(nodes: &Vec<Node>,
 }
 
 #[async_recursion]
-pub async fn reactor<'a>(nodes: &Vec<Node>,     
+pub async fn reactor<'a>(     
     pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
@@ -282,7 +280,6 @@ pub async fn reactor<'a>(nodes: &Vec<Node>,
     else 
     {
         let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(
-            nodes,
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
 
@@ -296,7 +293,7 @@ pub async fn reactor<'a>(nodes: &Vec<Node>,
 }
 
 
-pub async fn codeword_reactor(nodes: &Vec<Node>, 
+pub async fn codeword_reactor( 
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
 value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32)
 -> Vec<Vec<String>>
@@ -334,7 +331,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
             let codeword_vec = codeword.to_vec();
 
             // send codeword_vec individually to nodes: prod
-            let output = communication(nodes,  committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "individual".to_string()).await;
             
             codeword_output.push(output);
@@ -354,7 +351,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
             let codeword_vec = codeword.to_vec();
 
             // send codeword_vec individually to nodes: dev
-            let output = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "broadcast".to_string()).await;
             
             codeword_output.push(output);
@@ -368,8 +365,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 }
 
 #[allow(non_snake_case)]
-pub async fn accum_reactor(
-    nodes: &Vec<Node>,
+pub async fn accum_reactor(    
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
 {                    
@@ -377,7 +373,7 @@ pub async fn accum_reactor(
         let accum_vec = accum.to_vec();
 
         //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
-        let V: Vec<String> = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+        let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
         let mut V1_vec: Vec<String> = Vec::new();

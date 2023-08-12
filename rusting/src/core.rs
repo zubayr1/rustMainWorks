@@ -25,7 +25,7 @@ impl Core {
         rx: Receiver<NetworkMessage>,
     ) {
         let (tx_tick, rx_tick) = channel(10);
-
+        println!("spawn");
         // Spawn a ticker that sends a value to rx_tick at a random value between 20ms and 500ms.
         tokio::spawn(async move {
             loop {
