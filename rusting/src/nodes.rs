@@ -119,12 +119,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     println!("Before calling Node::new");
     
     // Use spawn to execute Node::new as an async task
-    let handle = tokio::spawn(async move {
+    
+    tokio::spawn(async move {
         node::Node::new(1, sockets).await;
     });
-    
-    // Await the handle to get the output of the task
-    handle.await.expect("Error in the spawned task");
     
     println!("After calling Node::new");
 
