@@ -188,9 +188,18 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
     }  
     
-    node::Node::new(1, sockets).await;
+    println!("Before calling Node::new");
     
-    println!("fuck");
+    // Use spawn_blocking to execute Node::new in a separate thread
+    tokio::task::spawn_blocking(move || {
+        tokio::runtime::Handle::current().block_on(async {
+            node::Node::new(1, sockets).await;
+        });
+    })
+    .await
+    .expect("Error in the spawned task");
+    
+    println!("After calling Node::new");
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
