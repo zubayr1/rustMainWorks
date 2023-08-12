@@ -122,7 +122,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     {
 
         let mut sockets: Vec<SocketAddr> = Vec::new();
-
+        
         for ip in  node_ips.clone()
         {
             sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
@@ -135,68 +135,68 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
 
-    // for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
-    // {   
-    //     let start_time = Utc::now().time(); 
+    for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
+    {   
+        let start_time = Utc::now().time(); 
 
-    //     println!("epoch {}", _index);
+        println!("epoch {}", _index);
 
-    //     let mut text;
+        let mut text;
 
-    //     text = ["epoch ".to_string(), _index.to_string()].join(": ");
-    //     file.write_all(text.as_bytes()).unwrap();
-    //     file.write_all(b"\n").unwrap();
+        text = ["epoch ".to_string(), _index.to_string()].join(": ");
+        file.write_all(text.as_bytes()).unwrap();
+        file.write_all(b"\n").unwrap();
 
-    //     let mut port_count: u32 = 0;
+        let mut port_count: u32 = 0;
         
         
-    //     let mut level = 0;
+        let mut level = 0;
 
-    //     let mut _pvss_data: String = "".to_string();
+        let mut _pvss_data: String = "".to_string();
 
        
-    //     for (committee_id, ip_addresses_comb) in sorted.clone()
-    //     {
-    //         let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
+        for (committee_id, ip_addresses_comb) in sorted.clone()
+        {
+            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
             
             
-    //         if ip_address.len()==1
-    //         {
-    //             //GET PVSS DATA FROM DIMITRIS
-    //             _pvss_data = ["pvss_data".to_string(), args[2].to_string()].join(" ");
-    //             level+=1
-    //         }
-    //         else 
-    //         {                               
-    //             port_count+=1; 
+            if ip_address.len()==1
+            {
+                //GET PVSS DATA FROM DIMITRIS
+                _pvss_data = ["pvss_data".to_string(), args[2].to_string()].join(" ");
+                level+=1
+            }
+            else 
+            {                               
+                port_count+=1; 
 
                 
                
-    //             reactor::reactor_init( 
-    //                 _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-    //             level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-    //             level+=1;
-    //         }
+                reactor::reactor_init( 
+                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                level+=1;
+            }
 
             
-    //     }                          
+        }                          
         
         
 
-    //     text = "--------------------------------".to_string();
+        text = "--------------------------------".to_string();
 
-    //     file.write_all(text.as_bytes()).unwrap();
-    //     file.write_all(b"\n").unwrap();
+        file.write_all(text.as_bytes()).unwrap();
+        file.write_all(b"\n").unwrap();
 
 
-    //     let end_time = Utc::now().time();
+        let end_time = Utc::now().time();
 
-    //     let diff = end_time - start_time;
+        let diff = end_time - start_time;
         
-    //     println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
+        println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
 
 
-    // }
+    }
 
     
     
