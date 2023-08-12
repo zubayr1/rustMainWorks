@@ -26,6 +26,8 @@ impl Node {
 
         sleep(Duration::from_millis(50)).await;
 
+        println!("{:?}", nodes[id]);
+
         Core::spawn(id, nodes[id], nodes, tx_send, rx_rec);
 
         println!("check");

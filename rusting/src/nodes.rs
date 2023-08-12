@@ -116,12 +116,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let test_port: u32 = test_port_str.parse().unwrap();
 
 
-    
-    println!("Before calling Node::new");
-    
     // Use spawn to execute Node::new as an async task
     
-    tokio::spawn(async move {
+    tokio::spawn(async move 
+    {
 
         let mut sockets: Vec<SocketAddr> = Vec::new();
 
@@ -133,7 +131,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         node::Node::new(1, sockets).await;
     });
     
-    println!("After calling Node::new");
+    println!("start core");
 
 
 
