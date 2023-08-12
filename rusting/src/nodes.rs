@@ -6,17 +6,14 @@ use std::fs::OpenOptions;
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use chrono::Utc;
-use futures::executor::block_on;
 use tokio::sync::RwLock;
 use std::env;
 use std::sync::{Arc, Mutex};
 use tokio::net::TcpStream;
-use tokio::spawn;
-use tokio::sync::mpsc::channel;
-use tokio::task;
+
 
 use crate::{node, socketing::{*, self}};
-use crate::message::NetworkMessage;
+
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
 
@@ -110,75 +107,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let test_port: u32 = test_port_str.parse().unwrap();
 
 
-    // create persistant connections
-    let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
-    let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
-
-
-    // socketing::socket(server_map, client_map, server_port_list.clone(), client_port_list.clone(), initial_port, test_port, node_ips.clone());
-
-    let mut server_initial_port: Vec<u32> = Vec::new();
-    let mut server_test_port: Vec<u32> = Vec::new();
-
-
-    let mut client_initial_port: Vec<u32> = Vec::new();
-    let mut client_test_port: Vec<u32> = Vec::new();
-
-
-    for i in server_port_list.clone()
-    {
-        server_initial_port.push(initial_port.clone() + i);
-        server_test_port.push(test_port.clone() + i);
-    }
-
-
-    for i in client_port_list.clone()
-    {
-        client_initial_port.push(initial_port.clone() + i);
-        client_test_port.push(test_port.clone() + i);
-    }
-
-
-    // let mut nodes: Vec<Node> = node_ips.into_iter().map(Node::new).collect();
-   
-    
-    // let mut futures: Vec<_> = Vec::new();
-
-    
-    
-    // for (count, node) in nodes.iter_mut().enumerate() 
-    // {     
-        
-    //     let server_initial_port = server_initial_port.get(count).copied().unwrap_or_default();
-    //     let server_test_port = server_test_port.get(count).copied().unwrap_or_default();
-    //     let client_initial_port = client_initial_port.get(count).copied().unwrap_or_default();
-    //     let client_test_port = client_test_port.get(count).copied().unwrap_or_default();
-        
-
-        
-    //     let future = async move {
-    //         node.create_sockets(server_initial_port, server_test_port,
-    //             client_initial_port, client_test_port
-    //         ).await;
-            
-    //     };
-    //     futures.push(future);
-    // }
-    
-    
-
-    // // Wait for all the futures to complete
-    // futures::future::join_all(futures).await;
-
-    // // For each node, print the number of server and client sockets it has
-    // for node in &nodes {
-    //     println!("Node {} has {} server sockets and {} client sockets. socket: {:?}", 
-    //         node.ip,
-    //         node.get_server_sockets().read().await.len(),
-    //         node.get_client_sockets().read().await.len(),
-    //         node.get_server_sockets()
-    //     );
-    // }
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
@@ -190,16 +118,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     println!("Before calling Node::new");
     
-    // Use spawn_blocking to execute Node::new in a separate thread
-    tokio::task::spawn_blocking(move || {
-        tokio::runtime::Handle::current().block_on(async {
-            node::Node::new(1, sockets).await;
-        });
-    })
-    .await
-    .expect("Error in the spawned task");
+    // Use spawn to execute Node::new as an async task
+    tokio::spawn(async move {
+        node::Node::new(1, sockets).await;
+    });
     
     println!("After calling Node::new");
+
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
