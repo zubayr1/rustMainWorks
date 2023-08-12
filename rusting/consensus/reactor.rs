@@ -2,9 +2,9 @@ use std::env;
 use async_recursion::async_recursion;
 use tokio::net::TcpStream;
 use std::collections::HashMap;
-use std::sync::Arc;
 use crate::nodes::Node;
-use tokio::sync::RwLock;
+
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -101,8 +101,7 @@ pub async fn reactor_init(
 
 
 
-pub async fn reaction(nodes: &Vec<Node>,
-    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
+pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
 ) -> bool

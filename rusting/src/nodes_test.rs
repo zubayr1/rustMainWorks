@@ -6,7 +6,7 @@ use tokio::fs::OpenOptions;
 use std::env;
 
 
-#[tokio::main]
+
 pub async fn handle_server(port: u32, testport: u32) -> String{
 
     let listener = TcpListener::bind(["127.0.0.1".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
@@ -85,9 +85,9 @@ pub async fn initiate(args: Vec<String>)
         if args[2]<args[3]
         {            
 
-            let _result = handle_server(initial_port+port_count, test_port+port_count );
+            let _result = handle_server(initial_port+port_count, test_port+port_count ).await;
             
-           println!("------------------{}-----------------------", _result);
+            println!("------------------{}-----------------------", _result);
 
             
         }

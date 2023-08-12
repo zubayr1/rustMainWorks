@@ -1,18 +1,17 @@
 
 use tokio::fs::File;
-use tokio::io::{self, AsyncBufReadExt, BufReader};
-use std::io::Write;
-use std::fs::OpenOptions;
+use tokio::io::{ AsyncBufReadExt, BufReader};
+use tokio::io::AsyncWriteExt;
+use tokio::fs::OpenOptions;
+
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use chrono::Utc;
-use tokio::sync::RwLock;
 use std::env;
-use std::sync::{Arc, Mutex};
-use tokio::net::TcpStream;
 
 
-use crate::{node, socketing::{*, self}};
+
+use crate::{node, socketing::*};
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -50,7 +49,7 @@ pub async fn read_ports(file_name: String) -> Vec<u32>
     let mut line_stream = reader.lines();
     while let Some(line_result) = line_stream.next_line().await.unwrap() {
         let line = line_result;
-        println!("Line: {}", line);
+
         if let Ok(num) = line.parse::<u32>() {
             ports.push(num);
         } else {
@@ -67,11 +66,8 @@ pub async fn read_ports(file_name: String) -> Vec<u32>
 
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
-    let mut file = tokio::task::spawn_blocking(|| {
-        OpenOptions::new().append(true).open("output.log").unwrap()
-    })
-    .await
-    .unwrap();
+    let mut file = OpenOptions::new().write(true).create(true).open("output.log").await.unwrap();
+
 
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
 
@@ -122,7 +118,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     {
 
         let mut sockets: Vec<SocketAddr> = Vec::new();
-        
+
         for ip in  node_ips.clone()
         {
             sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
@@ -133,7 +129,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
     println!("start core");
 
-
+    
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     {   
@@ -144,8 +140,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let mut text;
 
         text = ["epoch ".to_string(), _index.to_string()].join(": ");
-        file.write_all(text.as_bytes()).unwrap();
-        file.write_all(b"\n").unwrap();
+        file.write_all(text.as_bytes()).await.unwrap();
+        file.write_all(b"\n").await.unwrap();
 
         let mut port_count: u32 = 0;
         
@@ -169,15 +165,13 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             else 
             {                               
                 port_count+=1; 
-
-                
+               
                
                 reactor::reactor_init( 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
             }
-
             
         }                          
         
@@ -185,8 +179,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         text = "--------------------------------".to_string();
 
-        file.write_all(text.as_bytes()).unwrap();
-        file.write_all(b"\n").unwrap();
+        file.write_all(text.as_bytes()).await.unwrap();
+        file.write_all(b"\n").await.unwrap();
 
 
         let end_time = Utc::now().time();
@@ -206,7 +200,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {
 
-    let mut file: std::fs::File = OpenOptions::new().append(true).open("output.log").unwrap();
+    let mut file = OpenOptions::new().write(true).create(true).open("output.log").await.unwrap();
+
 
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
 
@@ -214,8 +209,6 @@ pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<St
 
 
     let start_time = Utc::now().time();
-
-    let n=4;
 
     
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
@@ -225,8 +218,10 @@ pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<St
         let text;
 
         text = ["epoch ".to_string(), _index.to_string()].join(": ");
-        file.write_all(text.as_bytes()).unwrap();
-        file.write_all(b"\n").unwrap();
+        file.write_all(text.as_bytes()).await.unwrap();
+        file.write_all(b"\n").await.unwrap();
+
+        file.flush().await.unwrap();
 
         let port_count: u32 = 0;        
 
@@ -238,15 +233,10 @@ pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<St
         ip_address.push(address);
         let level = 0;
 
-        let server_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
-        let client_map: HashMap<String, tokio::net::TcpStream> = HashMap::new();
-
-        let connections_server: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(server_map));
-        let connections_client: Arc<RwLock<HashMap<String, TcpStream>>> = Arc::new(RwLock::new(client_map));
-        
-        // reactor::reactor_init(connections_server, connections_client, 
-        //     pvss_data.clone(), 999, ip_address.clone(), level, 
-        // _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
+       
+        reactor::reactor_init( 
+            pvss_data.clone(), 999, ip_address.clone(), level, 
+        _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
     }
 
     let end_time = Utc::now().time();

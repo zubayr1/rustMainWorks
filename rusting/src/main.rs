@@ -1,9 +1,8 @@
 //imports
-use std::thread;
-use std::fs::File;
+use tokio::spawn;
+use tokio::fs::File;
 
-use std::io::{ prelude::*, BufReader};
-use futures::executor::block_on;
+use tokio::io::{ AsyncBufReadExt, BufReader};
 
 use std::env::{self};
 use chrono::prelude::*;
@@ -16,9 +15,7 @@ mod message;
 mod network;
 mod node;
 
-//import own files
 mod nodes;
-// mod nodes_test;
 mod nodes_test;
 
 #[tokio::main]
@@ -35,13 +32,15 @@ async fn run_nodes(args: Vec<String>)
 
     // get nodes information: with committees.
     
-    let nodesfile = File::open("./updatednodeinfo.txt").expect("cant open the file"); // get all nodes information from nodes_information file
+    let nodesfile = File::open("./updatednodeinfo.txt").await.unwrap(); // get all nodes information from nodes_information file
+
     let reader = BufReader::new(nodesfile);
 
-        
-    for line in reader.lines() 
-    {
-        let line_uw = line.unwrap();       
+    let mut line_stream = reader.lines();
+    while let Some(line_result) = line_stream.next_line().await.unwrap() {
+        let line = line_result;
+
+        let line_uw = line;      
         
         let textsplit: Vec<&str> = line_uw.split("-").collect();      
 
@@ -67,10 +66,10 @@ async fn run_nodes(args: Vec<String>)
                 committee.insert(committeesplit[_i].replace("l", "").replace("r", "").parse::<u32>().unwrap(),   participants);     
             }     
             
-        }
-    
-    }  
-    
+        }         
+    }
+        
+   
 
     // filter committees: based on self ip being exist
     let self_ip = args[6].to_string();
@@ -89,38 +88,22 @@ async fn run_nodes(args: Vec<String>)
     if args[5]=="dev" // run in dev mode
     {
         let args_clone = args.clone();
+        let filtered_committee_clone = filtered_committee.clone();
 
-        // since in dev mode, localhost runs as both client and server, need to use threading so that client and 
-        // server runs concurrently
-
-        let handle1 = thread::spawn(move || {  
-        
-
-            let future1 =nodes::dev_initiate(filtered_committee.clone(), args_clone); //client
-
-            block_on(future1);
-
-            
-    
+        let handle1 = spawn(async move {
+            let future1 = nodes::dev_initiate(filtered_committee_clone, args_clone); // client
+            future1.await;
         });
+
         let args_clone_new = args.clone();
 
-        let handle2 = thread::spawn(move || {
-            
-    
-            let future1 = nodes_test::initiate(args_clone_new); //server
-
-        
-            block_on(future1);
-            
-    
+        let handle2 = spawn(async move {
+            let future2 = nodes_test::initiate(args_clone_new); // server
+            future2.await;
         });
-            
-        
-        handle1.join().unwrap();
-            
-        
-        handle2.join().unwrap();
+
+        handle1.await.unwrap();
+        handle2.await.unwrap();
     } 
     else  // run in prod mode
     {
