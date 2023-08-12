@@ -7,7 +7,6 @@ use crate::{
     core::Core,
     network::*,
 };
-use crate::message::NetworkMessage;
 
 pub struct Node;
 
