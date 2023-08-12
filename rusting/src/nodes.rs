@@ -233,10 +233,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
                 
                
-                // reactor::reactor_init(connections_server.clone(), connections_client.clone(), 
-                //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                // level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                // level+=1;
+                reactor::reactor_init(&nodes, 
+                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                level+=1;
             }
 
             

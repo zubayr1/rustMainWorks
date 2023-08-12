@@ -3,7 +3,7 @@ use async_recursion::async_recursion;
 use tokio::net::TcpStream;
 use std::collections::HashMap;
 use std::sync::Arc;
-
+use crate::nodes::Node;
 use tokio::sync::RwLock;
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -43,8 +43,7 @@ mod newclient;
 mod newserver;
 
 async fn communication(
-    connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
-    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, 
+    nodes: &Vec<Node>, 
     committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, medium: String, mode: String,
     initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>
 {
@@ -54,15 +53,15 @@ async fn communication(
     {
         if medium=="prod_init"
         {
-            output = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
+            output = communication::prod_communication(&nodes, committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
         }
         if medium=="dev_init"
         {
-            output = communication::dev_communication(connections_client.clone(), committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
-                ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
+            // output = communication::dev_communication(nodes, committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
+            //     ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
     
         }
     }
@@ -70,15 +69,15 @@ async fn communication(
     {
         if medium=="prod_init"
         {
-            output = communication::prod_communication(connections_server.clone(), connections_client.clone(), committee_id, ip_address.clone(), level, port_count, 
+            output = communication::prod_communication(&nodes, committee_id, ip_address.clone(), level, port_count, 
                 _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
     
            
         }
         if medium=="dev_init"
         {
-            output = communication::nested_dev_communication(connections_client.clone(), committee_id, (initial_port + _index).to_string(), 
-                (test_port + _index).to_string(), value.clone(), args.clone()).await;
+            // output = communication::nested_dev_communication(nodes, committee_id, (initial_port + _index).to_string(), 
+            //     (test_port + _index).to_string(), value.clone(), args.clone()).await;
     
         }
     }
@@ -88,8 +87,7 @@ async fn communication(
 
 
 pub async fn reactor_init(
-    connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
-    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>,
+    nodes: &Vec<Node>,
     pvss_data: String, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>, port_count: u32, medium: String)
@@ -108,13 +106,13 @@ pub async fn reactor_init(
 
     let empty_vec: Vec<Vec<u8>> = Vec::new();    
     
-    reactor(connections_server.clone(), connections_client.clone(), pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
+    reactor(nodes, pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
         "accum".to_string(), medium, committee_length).await;
 }
 
 
 
-pub async fn reaction(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+pub async fn reaction(nodes: &Vec<Node>,
     connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
@@ -159,7 +157,7 @@ pub async fn reaction(connections_server: Arc<RwLock<HashMap<String, TcpStream>>
                                 
             }
             // send witness to nodes if have received the first valid code word: prod
-            let output = communication(connections_server.clone(), connections_client.clone(), committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "broadcast".to_string()).await;
 
             let mut s_values: Vec<String> = Vec::new();
@@ -240,7 +238,7 @@ pub async fn reaction(connections_server: Arc<RwLock<HashMap<String, TcpStream>>
                 }
             }
             // send witness to nodes if have received the first valid code word: dev
-            let _output = communication(connections_server.clone(), connections_client.clone(), committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let _output = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
                                 medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "individual".to_string()).await;
 
             // println!("{:?}", output);
@@ -250,8 +248,7 @@ pub async fn reaction(connections_server: Arc<RwLock<HashMap<String, TcpStream>>
 }
 
 #[async_recursion]
-pub async fn reactor<'a>(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
-    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, 
+pub async fn reactor<'a>(nodes: &Vec<Node>,     
     pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
 { 
@@ -285,8 +282,7 @@ pub async fn reactor<'a>(connections_server: Arc<RwLock<HashMap<String, TcpStrea
     else 
     {
         let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(
-            connections_server.clone(), 
-            connections_client.clone(),
+            nodes,
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
 
@@ -300,8 +296,7 @@ pub async fn reactor<'a>(connections_server: Arc<RwLock<HashMap<String, TcpStrea
 }
 
 
-pub async fn codeword_reactor(connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
-    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>, 
+pub async fn codeword_reactor(nodes: &Vec<Node>, 
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
 value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32)
 -> Vec<Vec<String>>
@@ -339,7 +334,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
             let codeword_vec = codeword.to_vec();
 
             // send codeword_vec individually to nodes: prod
-            let output = communication(connections_server.clone(), connections_client.clone(), committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(nodes,  committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "individual".to_string()).await;
             
             codeword_output.push(output);
@@ -359,7 +354,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
             let codeword_vec = codeword.to_vec();
 
             // send codeword_vec individually to nodes: dev
-            let output = communication(connections_server.clone(), connections_client.clone(), committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            let output = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, codeword_vec, "broadcast".to_string()).await;
             
             codeword_output.push(output);
@@ -374,8 +369,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 
 #[allow(non_snake_case)]
 pub async fn accum_reactor(
-    connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
-    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>,
+    nodes: &Vec<Node>,
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
 {                    
@@ -383,7 +377,7 @@ pub async fn accum_reactor(
         let accum_vec = accum.to_vec();
 
         //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
-        let V: Vec<String> = communication(connections_server.clone(), connections_client.clone(), committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+        let V: Vec<String> = communication(nodes, committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
         let mut V1_vec: Vec<String> = Vec::new();

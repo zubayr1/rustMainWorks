@@ -16,13 +16,14 @@ mod newclient;
 
 
 // A struct that represents a node in your network
+#[derive(Clone)]
 pub struct Node {
     // The IP address of the node
     pub ip: String,
     // A map of server sockets for the node
-    connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
+    pub connections_server: Arc<RwLock<HashMap<String, TcpStream>>>,
     // A map of client sockets for the node
-    connections_client: Arc<RwLock<HashMap<String, TcpStream>>>,
+    pub connections_client: Arc<RwLock<HashMap<String, TcpStream>>>,
 }
 
 impl Node {
@@ -89,57 +90,7 @@ impl Node {
 
     }
 
-    // A method that creates and stores the server sockets for the node
-    pub async fn create_server_sockets(&mut self, initial_port: u32, test_port: u32) {
-        println!("nodes server{:?}, {:?}", initial_port, test_port);        
-
-        let connections_server_clone = Arc::clone(&self.connections_server);
-        let nodes_ip_clone = self.ip.clone();
-
-        let handle_server_fut = async move {
-            let val = newserver::create_server(
-                nodes_ip_clone.to_string(),
-                initial_port.clone() + 5000,
-                test_port.clone() + 5000,
-            ).await;
-            let mut write_lock = connections_server_clone.write().await;
-
-            for (key, value) in val {
-                println!("{:?}", value);
-                write_lock.insert(key, value);
-                
-            }
-            drop(write_lock);
-        };
-
-        let handle_server_task = spawn(handle_server_fut);
-
-        handle_server_task.await.unwrap();
-    }
-
-    // A method that creates and stores the client sockets for the node
-    pub async fn create_client_sockets(&mut self, initial_port: u32, test_port: u32) {
-        println!("nodes client{:?}, {:?}", initial_port, test_port);
-        let connections_client_clone = Arc::clone(&self.connections_client);
-        let nodes_ip_clone = self.ip.clone();
-
-        let handle_client_fut = async move {
-            let val = newclient::create_client(
-                [nodes_ip_clone.to_string(), (initial_port + 5000).to_string()].join(":"),
-                [nodes_ip_clone.to_string(), (test_port + 5000).to_string()].join(":"),
-            ).await;
-
-            let mut write_lock = connections_client_clone.write().await;
-            for (key, value) in val {
-                write_lock.insert(key, value);
-            }
-            drop(write_lock);
-        };
-
-        let handle_client_task = spawn(handle_client_fut);
-
-        handle_client_task.await.unwrap();
-    }
+    
 
     // A method that returns a reference to the server sockets for the node
     pub fn get_server_sockets(&self) -> &Arc<RwLock<HashMap<String, TcpStream>>> {
