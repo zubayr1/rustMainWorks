@@ -26,7 +26,7 @@ impl Node {
             network_sender.run().await;
         });
         println!("check");
-        sleep(Duration::from_millis(50)).await;
+        // sleep(Duration::from_millis(50)).await;
 
         println!("{:?}", nodes[id]);
 
