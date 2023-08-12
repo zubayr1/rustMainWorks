@@ -113,6 +113,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     // Use spawn to execute Node::new as an async task
+
+    let self_ip = args[6].clone();
     
     tokio::spawn(async move 
     {
@@ -124,7 +126,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
         } 
 
-        node::Node::new(1, sockets).await;
+        node::Node::new(1, sockets, self_ip).await;
     });
     
     println!("start core");
