@@ -14,6 +14,7 @@ pub struct Node;
 impl Node {
     pub async fn new(id: usize, nodes: Vec<SocketAddr>) 
     {
+        println!("fuck");
          // Create channels for the networking.
          let (tx_rec, rx_rec) = channel(10_000);
          let (tx_send, rx_send) = channel(10_000);
