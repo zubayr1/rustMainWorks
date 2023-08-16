@@ -34,7 +34,7 @@ impl Core {
                 tx_tick.send(true).await.unwrap();
             }
         });
-        println!("ss");
+        
         tokio::spawn(async move {
             Self {
                 id,
@@ -63,6 +63,7 @@ impl Core {
     }
 
     pub async fn run(&mut self) {
+        println!("ss");
         // Listen to incoming messages and process them. Note: self.rx is the channel where we can
         // retreive data from the message receiver.
         loop {
