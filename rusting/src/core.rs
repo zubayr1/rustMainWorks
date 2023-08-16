@@ -63,10 +63,10 @@ impl Core {
     }
 
     pub async fn run(&mut self) {
-        println!("ss");
         // Listen to incoming messages and process them. Note: self.rx is the channel where we can
         // retreive data from the message receiver.
         loop {
+            println!("ss");
             tokio::select! {
                 Some(message) = self.rx.recv() => {
                     println!("{} got message from {}: {}", self.id, message.sender, message.message);
