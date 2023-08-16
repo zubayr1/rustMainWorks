@@ -34,7 +34,7 @@ impl Core {
                 tx_tick.send(true).await.unwrap();
             }
         });
-
+        println!("ss");
         tokio::spawn(async move {
             Self {
                 id,
