@@ -120,7 +120,8 @@ pub async fn prod_communication<'a>(
         
                 
         for ip in ip_address_clone.clone() 
-            {              let mut count = 0;                   
+            {              
+                let mut count = 0;                   
                 let file_path = "./nodes_information.txt";
                 let file = File::open(file_path).unwrap();
             
@@ -132,7 +133,6 @@ pub async fn prod_communication<'a>(
                     
                     if line.contains(&ip.clone())
                     {
-                        println!("{}", count);
                         break;
                     }
                     else {
@@ -167,7 +167,6 @@ pub async fn prod_communication<'a>(
                     
                     if line.contains(&ip.clone())
                     {
-                        println!("{}", count);
                         break;
                     }
                     else {

@@ -96,7 +96,6 @@ pub async fn handle_server(_ip_address: String, port: u32, testport: u32)
 
     let _diff = end_time - start_time;   
 
-    println!("{:?}", line);    
 
     return line;
     
