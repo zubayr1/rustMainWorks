@@ -392,7 +392,7 @@ pub async fn accum_reactor(
                 let ipdetails = data_stream[4].clone();
                 let substrings: Vec<&str> = ipdetails.split("/").collect();
                 let ip = substrings[1];
-                println!("{}", ip);
+
                 while let Some(line_result) = line_stream.next_line().await.unwrap() {
                     let line1 = line_result;
 
@@ -400,7 +400,7 @@ pub async fn accum_reactor(
                         let substrings: Vec<&str> = line1.split(" ").collect();
 
                         let level_usize = level as usize;
-                        println!("{:?}", substrings.get(level_usize));
+                        println!("{:?}", substrings[level_usize + 1]);
                     }
                 }
             }
