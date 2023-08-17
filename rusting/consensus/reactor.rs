@@ -372,48 +372,49 @@ pub async fn accum_reactor(
         println!("{:?}", V);
         if medium=="prod_init"
         {
-            
             let file_path = "./updatednodeinfo.txt";
-    
+
+            // Open the file for writing
             let file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
-            let reader = BufReader::new(file1);
+
+            // Write to the file (assuming you have this part somewhere)
+
+            // Open the file for reading
+            let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
+            let reader = BufReader::new(file2);
 
             let mut line_stream = reader.lines();
 
-            for val in V.clone()
-            {
-                let data_stream: Vec<&str>  = val.split(", ").collect();
+            for val in V.clone() {
+                let data_stream: Vec<&str> = val.split(", ").collect();
 
                 let ipdetails = data_stream[4].clone();
-
                 let substrings: Vec<&str> = ipdetails.split("/").collect();
-
                 let ip = substrings[1];
 
-                
                 while let Some(line_result) = line_stream.next_line().await.unwrap() {
                     let line1 = line_result;
 
-                    if line1.contains(ip)
-                    {
+                    if line1.contains(ip) {
                         let substrings: Vec<&str> = line1.split(" ").collect();
 
                         println!("{:?}, {:?}", level.clone(), substrings[1]);
                     }
-                    
-                            
-                }
-
-                if data_stream[5].contains("l")
-                {
-                    V1_vec.push(val);
-                }
-                else 
-                {
-                    V2_vec.push(val);
                 }
             }
-        }
+            
+          
+
+                // if data_stream[5].contains("l")
+                // {
+                //     V1_vec.push(val);
+                // }
+                // else 
+                // {
+                //     V2_vec.push(val);
+                // }
+            }
+        
         else 
         {
             V1_vec =V.clone();
