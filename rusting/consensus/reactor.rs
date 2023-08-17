@@ -399,7 +399,8 @@ pub async fn accum_reactor(
                     if line1.contains(ip) {
                         let substrings: Vec<&str> = line1.split(" ").collect();
 
-                        println!("{:?}, {:?}", level.clone(), substrings[1]);
+                        let level_usize = level as usize;
+                        println!("{:?}", substrings.get(level_usize));
                     }
                 }
             }
