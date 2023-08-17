@@ -144,7 +144,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         {
             let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
             
-            
+            println!("{:?}", ip_address);
             if ip_address.len()==1
             {
                 //GET PVSS DATA FROM DIMITRIS

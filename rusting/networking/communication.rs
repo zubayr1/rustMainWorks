@@ -120,11 +120,8 @@ pub async fn prod_communication<'a>(
         let mut count = 0;
                 
         for ip in ip_address_clone.clone() 
-            { 
-                
-                
-                let additional_port = server_port_list[count];
-                
+            {                                 
+                let additional_port = server_port_list[count];                
 
                 let val = newserver::handle_server(ip.to_string(), 
                 initial_port.clone() + additional_port + 5000
@@ -139,10 +136,8 @@ pub async fn prod_communication<'a>(
     let handle_client_fut = async move {
         let mut count = 0;
         for ip in ip_address_clone1.clone() 
-            { 
-                                
+            {                                 
                 let additional_port = client_port_list[count];
-
                 
                  newclient::match_tcp_client(
                     [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
