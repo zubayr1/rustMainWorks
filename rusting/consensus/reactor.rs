@@ -373,7 +373,12 @@ pub async fn accum_reactor(
         if medium=="prod_init"
         {
             
+            let file_path = "./updatednodeinfo.txt";
+    
+            let file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
+            let reader = BufReader::new(file1);
 
+            let mut line_stream = reader.lines();
 
             for val in V.clone()
             {
@@ -385,13 +390,7 @@ pub async fn accum_reactor(
 
                 let ip = substrings[1];
 
-                let file_path = "./updatednodeinfo.txt";
-    
-                let file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
-                let reader = BufReader::new(file1);
                 
-                let mut line_stream = reader.lines();
-
                 while let Some(line_result) = line_stream.next_line().await.unwrap() {
                     let line1 = line_result;
 
