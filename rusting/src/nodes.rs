@@ -99,37 +99,24 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let client_port_list = read_ports("./client_port_list.txt".to_string());
 
 
-    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
-        println!("INITIAL_PORT_STR is not set.");
-        String::new()
-    });
-    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
-        println!("TEST_PORT_STR is not set.");
-        String::new()
-    });
-   
-    let initial_port: u32 = initial_port_str.parse().unwrap();
-    let test_port: u32 = test_port_str.parse().unwrap();
-
-
     // Use spawn to execute Node::new as an async task
 
-    let self_ip = args[6].clone();
+    // let self_ip = args[6].clone();
     
-    tokio::spawn(async move 
-    {
+    // tokio::spawn(async move 
+    // {
 
-        let mut sockets: Vec<SocketAddr> = Vec::new();
+    //     let mut sockets: Vec<SocketAddr> = Vec::new();
 
-        for ip in  node_ips.clone()
-        {
-            sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
-        } 
+    //     for ip in  node_ips.clone()
+    //     {
+    //         sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
+    //     } 
 
-        node::Node::new(1, sockets, self_ip).await;
-    });
+    //     node::Node::new(1, sockets, self_ip).await;
+    // });
     
-    println!("start core");
+    // println!("start core");
 
     
 
@@ -169,10 +156,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 port_count+=1; 
                
                
-                // reactor::reactor_init( 
-                //     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                // level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
-                // level+=1;
+                reactor::reactor_init( 
+                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                level+=1;
             }
             
         }                          

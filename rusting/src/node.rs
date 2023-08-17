@@ -33,6 +33,6 @@ impl Node {
         Core::spawn(id, self_socket, nodes, tx_send, rx_rec);
 
 
-        sleep(Duration::from_millis(1000)).await;
+        sleep(Duration::from_millis(10)).await;
     }
 }
