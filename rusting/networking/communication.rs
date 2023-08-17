@@ -121,13 +121,28 @@ pub async fn prod_communication<'a>(
                 
         for ip in ip_address_clone.clone() 
             {                                 
+                let file_path = "./nodes_information.txt";
+                let file = File::open(file_path).unwrap();
+            
+                let reader = BufReader::new(file);
+            
+            
+                for line_result in reader.lines() {
+                    let line = line_result.unwrap();
+                    
+                    if line.contains(&ip.clone())
+                    {
+                        break;
+                    }
+                    count+=1;
+                }
+
                 let additional_port = server_port_list[count];                
 
                 let val = newserver::handle_server(ip.to_string(), 
                 initial_port.clone() + additional_port + 5000
                 , test_port.clone() + additional_port + 5000).await;
                 
-                count+=1;
                 outputclone.push(val);
                 
             }
@@ -136,7 +151,24 @@ pub async fn prod_communication<'a>(
     let handle_client_fut = async move {
         let mut count = 0;
         for ip in ip_address_clone1.clone() 
-            {                                 
+            {                              
+
+                let file_path = "./nodes_information.txt";
+                let file = File::open(file_path).unwrap();
+            
+                let reader = BufReader::new(file);
+            
+            
+                for line_result in reader.lines() {
+                    let line = line_result.unwrap();
+                    
+                    if line.contains(&ip.clone())
+                    {
+                        break;
+                    }
+                    count+=1;
+                }
+
                 let additional_port = client_port_list[count];
                 
                  newclient::match_tcp_client(
@@ -144,7 +176,6 @@ pub async fn prod_communication<'a>(
                 [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), value.clone(), 
                 args.clone()).await;
 
-                count+=1;
                 
             }
     };
