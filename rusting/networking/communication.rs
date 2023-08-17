@@ -201,8 +201,8 @@ pub async fn prod_communication<'a>(
 
     
     let final_output = Arc::try_unwrap(output_clone).unwrap().into_inner().unwrap();
-    println!("{:?}", final_output);
-    return output;
+
+    return final_output;
 
 }
 
