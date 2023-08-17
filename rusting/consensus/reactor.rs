@@ -375,13 +375,13 @@ pub async fn accum_reactor(
             let file_path = "./updatednodeinfo.txt";
 
             // Open the file for writing
-            let file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
+            let _file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
 
             // Write to the file (assuming you have this part somewhere)
 
             // Open the file for reading
             
-
+            println!("{:?}", V);
             for val in V.clone() {
                 let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
                 let reader = BufReader::new(file2);
@@ -400,7 +400,6 @@ pub async fn accum_reactor(
                         let substrings: Vec<&str> = line1.split(" ").collect();
 
                         let level_usize = level as usize;
-                        println!("{:?}", substrings[level_usize + 1]);
 
                         if substrings[level_usize + 1].contains("l")
                         {
