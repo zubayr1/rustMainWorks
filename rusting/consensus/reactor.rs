@@ -380,12 +380,13 @@ pub async fn accum_reactor(
             // Write to the file (assuming you have this part somewhere)
 
             // Open the file for reading
-            let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
-            let reader = BufReader::new(file2);
-
-            let mut line_stream = reader.lines();
+            
 
             for val in V.clone() {
+                let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
+                let reader = BufReader::new(file2);
+                let mut line_stream = reader.lines();
+
                 let data_stream: Vec<&str> = val.split(", ").collect();
 
                 let ipdetails = data_stream[4].clone();
