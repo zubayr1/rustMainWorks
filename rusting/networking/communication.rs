@@ -117,10 +117,10 @@ pub async fn prod_communication<'a>(
 
 
     let handle_server_fut = async move {
-        let mut count = 0;
+        
                 
         for ip in ip_address_clone.clone() 
-            {                                 
+            {              let mut count = 0;                   
                 let file_path = "./nodes_information.txt";
                 let file = File::open(file_path).unwrap();
             
@@ -152,10 +152,10 @@ pub async fn prod_communication<'a>(
     };
 
     let handle_client_fut = async move {
-        let mut count = 0;
+        
         for ip in ip_address_clone1.clone() 
             {                              
-
+                let mut count = 0;
                 let file_path = "./nodes_information.txt";
                 let file = File::open(file_path).unwrap();
             
