@@ -3,9 +3,9 @@ use std::io::Write;
 use std::env;
 use futures::executor::block_on;
 use std::thread;
+use std::sync::{Arc, Mutex};
 
-use std::sync::mpsc::{channel, Sender};
-
+use tokio::spawn;
 use std::time;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -113,9 +113,9 @@ pub async fn prod_communication<'a>(
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
 
+    let output_clone = Arc::new(Mutex::new(Vec::<String>::new()));
 
-
-    let (sender, receiver) = channel(); // create a channel
+    let handle_server_clone = Arc::clone(&output_clone);
 
     let handle_server_thread = thread::spawn(move || {        
                 
@@ -141,19 +141,18 @@ pub async fn prod_communication<'a>(
                 }
                 
                 let additional_port = server_port_list[count];                
-    
+
                 let f = newserver::handle_server(ip.to_string(), 
                 initial_port.clone() + additional_port + 5000
                 , test_port.clone() + additional_port + 5000);
-    
+
                 let val = block_on(f);
                 
-                // send the value to the channel
-                sender.send(val).unwrap();
+                handle_server_clone.lock().unwrap().push(val);
                 
             }
     });
-    
+
     let handle_client_thread = thread::spawn(move || {
         
         for ip in ip_address_clone1.clone() 
@@ -188,18 +187,16 @@ pub async fn prod_communication<'a>(
                 
             }
     });
-    
+
     
     
     handle_server_thread.join().unwrap();
     handle_client_thread.join().unwrap();
+
     
-    
-    
-    // collect the values from the channel
-    let outputclone: Vec<String> = receiver.iter().collect();
-    
-    println!("{:?}", outputclone);
+
+    println!("{:?}", output_clone.lock().unwrap());
+    println!("{:?}", output);
     return output;
 
 }
