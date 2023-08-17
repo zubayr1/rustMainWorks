@@ -132,11 +132,14 @@ pub async fn prod_communication<'a>(
                     
                     if line.contains(&ip.clone())
                     {
+                        println!("{}", count);
                         break;
                     }
-                    count+=1;
+                    else {
+                        count+=1;
+                    }
                 }
-                println!("{}", count);
+                
                 let additional_port = server_port_list[count];                
 
                 let val = newserver::handle_server(ip.to_string(), 
@@ -164,11 +167,15 @@ pub async fn prod_communication<'a>(
                     
                     if line.contains(&ip.clone())
                     {
+                        println!("{}", count);
                         break;
                     }
-                    count+=1;
+                    else {
+                        count+=1;
+                    }
+                    
                 }
-                println!("{}", count);
+                
                 let additional_port = client_port_list[count];
                 
                  newclient::match_tcp_client(
