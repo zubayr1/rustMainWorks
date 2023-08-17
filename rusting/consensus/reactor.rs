@@ -368,7 +368,7 @@ pub async fn accum_reactor(
 
         let mut V1_vec: Vec<String> = Vec::new();
         let mut V2_vec: Vec<String> = Vec::new();
-
+        println!("{:?}", V);
         if medium=="prod_init"
         {
             for val in V.clone()
