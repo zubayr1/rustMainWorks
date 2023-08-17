@@ -386,7 +386,7 @@ pub async fn accum_reactor(
                 let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
                 let reader = BufReader::new(file2);
                 let mut line_stream = reader.lines();
-
+                let val_clone = val.clone();
                 let data_stream: Vec<&str> = val.split(", ").collect();
 
                 let ipdetails = data_stream[4].clone();
@@ -401,27 +401,27 @@ pub async fn accum_reactor(
 
                         let level_usize = level as usize;
                         println!("{:?}", substrings[level_usize + 1]);
+
+                        if substrings[level_usize + 1].contains("l")
+                        {
+                            V1_vec.push(val_clone.clone());
+                        }
+                        else 
+                        {
+                            V2_vec.push(val_clone.clone());
+                        }
                     }
                 }
             }
             
           
-
-                // if data_stream[5].contains("l")
-                // {
-                //     V1_vec.push(val);
-                // }
-                // else 
-                // {
-                //     V2_vec.push(val);
-                // }
-            }
+        }
         
         else 
         {
             V1_vec =V.clone();
         }
-        
+        println!("{:?},   {:?}", V1_vec, V2_vec);
         
         // Get majority accum value
         let V1 = accum::accum_check(V1_vec.clone(), medium.clone(), committee_length.clone());
