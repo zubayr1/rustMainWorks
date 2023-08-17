@@ -200,7 +200,8 @@ pub async fn prod_communication<'a>(
     block_on(fut);
 
     
-    println!("{:?}", output_clone.lock().unwrap());
+    let final_output = Arc::try_unwrap(output_clone).unwrap().into_inner().unwrap();
+    println!("{:?}", final_output);
     return output;
 
 }
