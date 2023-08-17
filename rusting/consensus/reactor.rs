@@ -369,7 +369,7 @@ pub async fn accum_reactor(
 
         let mut V1_vec: Vec<String> = Vec::new();
         let mut V2_vec: Vec<String> = Vec::new();
-        
+
         if medium=="prod_init"
         {
             let file_path = "./updatednodeinfo.txt";
@@ -381,7 +381,6 @@ pub async fn accum_reactor(
 
             // Open the file for reading
             
-            println!("{:?}", V);
             for val in V.clone() {
                 let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
                 let reader = BufReader::new(file2);
@@ -420,14 +419,13 @@ pub async fn accum_reactor(
         {
             V1_vec =V.clone();
         }
-        println!("{:?},   {:?}", V1_vec, V2_vec);
         
         // Get majority accum value
         let V1 = accum::accum_check(V1_vec.clone(), medium.clone(), committee_length.clone());
 
         let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length.clone());
 
-        // println!("{:?},    {:?}", V1, V2);
+        println!("{:?},    {:?}", V1, V2);
         // let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
         //      V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
         // let v2 = byzar::byzar( committee_id, ip_address, level, port_count, _index, args.clone(), 
