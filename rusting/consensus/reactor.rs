@@ -3,7 +3,8 @@ use async_recursion::async_recursion;
 use tokio::net::TcpStream;
 use std::collections::HashMap;
 use crate::nodes::Node;
-
+use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+use tokio::fs::OpenOptions;
 
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -363,7 +364,7 @@ pub async fn accum_reactor(
         let accum_vec = accum.to_vec();
 
         //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
-        let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+        let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level.clone(), _index, args.clone(), port_count, 
             medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
         let mut V1_vec: Vec<String> = Vec::new();
@@ -371,9 +372,38 @@ pub async fn accum_reactor(
         println!("{:?}", V);
         if medium=="prod_init"
         {
+            
+
+
             for val in V.clone()
             {
                 let data_stream: Vec<&str>  = val.split(", ").collect();
+
+                let ipdetails = data_stream[4].clone();
+
+                let substrings: Vec<&str> = ipdetails.split("/").collect();
+
+                let ip = substrings[1];
+
+                let file_path = "./updatednodeinfo.txt";
+    
+                let file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
+                let reader = BufReader::new(file1);
+                
+                let mut line_stream = reader.lines();
+
+                while let Some(line_result) = line_stream.next_line().await.unwrap() {
+                    let line1 = line_result;
+
+                    if line1.contains(ip)
+                    {
+                        let substrings: Vec<&str> = line1.split(" ").collect();
+
+                        println!("{:?}, {:?}", level.clone(), substrings[1]);
+                    }
+                    
+                            
+                }
 
                 if data_stream[5].contains("l")
                 {
