@@ -59,8 +59,8 @@ async fn communication(
         {
             if mode=="accum"
              {
-            //     output = communication::dev_communication(nodes, committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
-            //     ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
+                output = communication::dev_communication(committee_id, ["127.0.0.1".to_string(), (initial_port + _index).to_string()].join(":"), 
+                ["127.0.0.1".to_string(), (test_port + _index).to_string()].join(":"), value.clone(), args.clone()).await;
     
             }
             else 
@@ -397,9 +397,9 @@ pub async fn accum_reactor(
         let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length.clone());
 
 
-        // let v1 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(),
+        // let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
         //      V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-        // let v2 = byzar::byzar(connections_server.clone(), connections_client.clone(), committee_id, ip_address, level, port_count, _index, args.clone(), 
+        // let v2 = byzar::byzar( committee_id, ip_address, level, port_count, _index, args.clone(), 
         //     V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
         let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
