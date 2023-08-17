@@ -136,7 +136,7 @@ pub async fn prod_communication<'a>(
                     }
                     count+=1;
                 }
-
+                println!("{}", count);
                 let additional_port = server_port_list[count];                
 
                 let val = newserver::handle_server(ip.to_string(), 
@@ -168,7 +168,7 @@ pub async fn prod_communication<'a>(
                     }
                     count+=1;
                 }
-
+                println!("{}", count);
                 let additional_port = client_port_list[count];
                 
                  newclient::match_tcp_client(
