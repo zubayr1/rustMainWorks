@@ -359,90 +359,101 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 pub async fn accum_reactor(    
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
-{                    
-        let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl);
-        let accum_vec = accum.to_vec();
+{
+    let mut qual: Vec<u32> = Vec::new();
 
-        //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
-        let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level.clone(), _index, args.clone(), port_count, 
-            medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
+    let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl.clone());
+    let accum_vec = accum.to_vec();
 
-        let mut V1_vec: Vec<String> = Vec::new();
-        let mut V2_vec: Vec<String> = Vec::new();
+    //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
+    let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level.clone(), _index, args.clone(), port_count, 
+        medium.clone(), mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
 
-        if medium=="prod_init"
-        {
-            let file_path = "./updatednodeinfo.txt";
+    let mut V1_vec: Vec<String> = Vec::new();
+    let mut V2_vec: Vec<String> = Vec::new();
 
-            // Open the file for writing
-            let _file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
+    if medium=="prod_init"
+    {
+        let file_path = "./updatednodeinfo.txt";
 
-            // Write to the file (assuming you have this part somewhere)
+        // Open the file for writing
+        let _file1 = OpenOptions::new().append(true).open(file_path).await.unwrap();
 
-            // Open the file for reading
-            
-            for val in V.clone() {
-                let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
-                let reader = BufReader::new(file2);
-                let mut line_stream = reader.lines();
-                let val_clone = val.clone();
-                let data_stream: Vec<&str> = val.split(", ").collect();
+        // Write to the file (assuming you have this part somewhere)
 
-                let ipdetails = data_stream[4].clone();
-                let substrings: Vec<&str> = ipdetails.split("/").collect();
-                let ip = substrings[1];
+        // Open the file for reading
+        
+        for val in V.clone() {
+            let file2 = OpenOptions::new().read(true).open(file_path).await.unwrap();
+            let reader = BufReader::new(file2);
+            let mut line_stream = reader.lines();
+            let val_clone = val.clone();
+            let data_stream: Vec<&str> = val.split(", ").collect();
 
-                while let Some(line_result) = line_stream.next_line().await.unwrap() {
-                    let line1 = line_result;
+            let ipdetails = data_stream[4].clone();
+            let substrings: Vec<&str> = ipdetails.split("/").collect();
+            let ip = substrings[1];
 
-                    if line1.contains(ip) {
-                        let substrings: Vec<&str> = line1.split(" ").collect();
+            while let Some(line_result) = line_stream.next_line().await.unwrap() {
+                let line1 = line_result;
 
-                        let level_usize = level as usize;
+                if line1.contains(ip) {
+                    let substrings: Vec<&str> = line1.split(" ").collect();
 
-                        if substrings[level_usize + 1].contains("l")
-                        {
-                            V1_vec.push(val_clone.clone());
-                        }
-                        else 
-                        {
-                            V2_vec.push(val_clone.clone());
-                        }
+                    let level_usize = level as usize;
+
+                    if substrings[level_usize + 1].contains("l")
+                    {
+                        V1_vec.push(val_clone.clone());
+                    }
+                    else 
+                    {
+                        V2_vec.push(val_clone.clone());
                     }
                 }
             }
+        }
+        
+        
+    }
+    
+    else 
+    {
+        V1_vec =V.clone();
+    }
+    
+    // Get majority accum value
+    let V1 = accum::accum_check(V1_vec.clone(), medium.clone(), committee_length.clone());
+
+    let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length.clone());
+
+    
+    let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
+            V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+    let v2 = byzar::byzar( committee_id, ip_address, level, port_count, _index, args.clone(), 
+        V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
+
+
+    println!("{:?},    {:?},       {:?}", v1, v2, acc_value_zl);
+
+    let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
+
+    let mut _merkle_len: usize= 0;
+
+    
+    if v1!="bot"
+    {
+        qual.push(1);
+    }
+    if v2!="bot"
+    {
+        qual.push(2);
+    }
             
-          
-        }
-        
-        else 
-        {
-            V1_vec =V.clone();
-        }
-        
-        // Get majority accum value
-        let V1 = accum::accum_check(V1_vec.clone(), medium.clone(), committee_length.clone());
+    // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
 
-        let V2 = accum::accum_check(V2_vec.clone(), medium.clone(), committee_length.clone());
+    // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
+    
 
-        
-        let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
-             V1.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-        let v2 = byzar::byzar( committee_id, ip_address, level, port_count, _index, args.clone(), 
-            V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-
-
-        println!("{:?},    {:?}", v1, v2);
-
-        let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
-
-        let mut _merkle_len: usize= 0;
-
-                
-        // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
-
-        // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
-        
-
-        return (_witnesses_vec, _merkle_len);
+    return (_witnesses_vec, _merkle_len);
     }
