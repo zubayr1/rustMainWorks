@@ -4,7 +4,6 @@ use std::env;
 use futures::executor::block_on;
 use std::thread;
 use std::sync::{Arc, Mutex};
-
 use tokio::spawn;
 use std::time;
 use std::fs::File;
@@ -94,6 +93,9 @@ pub async fn prod_communication<'a>(
     let mut text;
 
     let output: Vec<String> = Vec::new();
+    let output_clone = Arc::new(Mutex::new(Vec::<String>::new()));
+
+    let handle_server_clone = Arc::clone(&output_clone);
 
 
     let server_port_list = read_ports("./server_port_list.txt".to_string());
@@ -113,11 +115,12 @@ pub async fn prod_communication<'a>(
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
 
-    let output_clone = Arc::new(Mutex::new(Vec::<String>::new()));
+    let mut outputclone = output.clone();
 
-    let handle_server_clone = Arc::clone(&output_clone);
 
-    let handle_server_thread = thread::spawn(move || {        
+
+    let handle_server_fut = async move {
+        
                 
         for ip in ip_address_clone.clone() 
             {              
@@ -142,18 +145,16 @@ pub async fn prod_communication<'a>(
                 
                 let additional_port = server_port_list[count];                
 
-                let f = newserver::handle_server(ip.to_string(), 
+                let val = newserver::handle_server(ip.to_string(), 
                 initial_port.clone() + additional_port + 5000
-                , test_port.clone() + additional_port + 5000);
-
-                let val = block_on(f);
+                , test_port.clone() + additional_port + 5000).await;
                 
                 handle_server_clone.lock().unwrap().push(val);
                 
             }
-    });
+    };
 
-    let handle_client_thread = thread::spawn(move || {
+    let handle_client_fut = async move {
         
         for ip in ip_address_clone1.clone() 
             {                              
@@ -179,24 +180,27 @@ pub async fn prod_communication<'a>(
                 
                 let additional_port = client_port_list[count];
                 
-                let f =  newclient::match_tcp_client(
+                 newclient::match_tcp_client(
                     [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
                 [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), value.clone(), 
-                args.clone());
-                block_on(f);
+                args.clone()).await;
+
                 
             }
-    });
+    };
 
     
     
-    handle_server_thread.join().unwrap();
-    handle_client_thread.join().unwrap();
+    let fut = async {
+        let handle_server_task = spawn(handle_server_fut);
+        let handle_client_task = spawn(handle_client_fut);
+    
+        let (_, _) = tokio::join!(handle_server_task, handle_client_task);
+    };
+    block_on(fut);
 
     
-
     println!("{:?}", output_clone.lock().unwrap());
-    println!("{:?}", output);
     return output;
 
 }
