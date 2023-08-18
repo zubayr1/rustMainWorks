@@ -259,17 +259,16 @@ pub async fn reactor<'a>(
     let initial_port: u32 = initial_port_str.parse().unwrap();
     let test_port: u32 = test_port_str.parse().unwrap();
         
-    let codeword_output: Vec<Vec<String>>;
+    let mut codeword_output: Vec<Vec<String>>= Vec::new();
 
     
     if mode.contains("codeword")
     {        
-        println!("{:?},  {:?}", codeword_vec, codeword_vec.len());
-        println!("{:?},  {:?}", witnesses_vec, witnesses_vec.len());
+        
+        codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
+            value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
 
-        // codeword_output = codeword_reactor(pvss_data.clone(), committee_id, ip_address, level, _index, args.clone(), port_count, 
-        //     value, merkle_len,  witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
-
+        println!("{:?}", codeword_output);
         // let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
         //     committee_id, ip_address, level, _index,  args, port_count, 
         //     initial_port, test_port
@@ -293,13 +292,11 @@ pub async fn reactor<'a>(
 
 
 pub async fn codeword_reactor( 
-    pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32)
+    committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32)
 -> Vec<Vec<String>>
 {
     let mut index = 0;
-
-    let code_words = pvss_agreement::encoder(pvss_data.as_bytes(), committee_length/2, medium.clone());
 
     let mut codeword_output: Vec<Vec<String>> =  Vec::new();
     for witness in witnesses_vec
@@ -317,7 +314,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
             }
             let mut subset_vec: Vec<&str> = Vec::new();
             subset_vec.push(subset_ip);
-            let leaf_values_to_prove = code_words[index].to_string();
+            let leaf_values_to_prove = codeword_vec[index].to_string();
     
             
             let indices_to_prove = index.clone().to_string();
@@ -337,7 +334,7 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
         }
         else 
         {            
-            let leaf_values_to_prove = code_words[index].to_string();
+            let leaf_values_to_prove = codeword_vec[index].to_string();
 
             
             let indices_to_prove = index.clone().to_string();

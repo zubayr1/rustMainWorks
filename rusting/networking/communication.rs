@@ -92,7 +92,6 @@ pub async fn prod_communication<'a>(
 
     let mut text;
 
-    let output: Vec<String> = Vec::new();
     let output_clone = Arc::new(Mutex::new(Vec::<String>::new()));
 
     let handle_server_clone = Arc::clone(&output_clone);
@@ -114,8 +113,6 @@ pub async fn prod_communication<'a>(
     text = ["Level ".to_string(), level.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
-
-    let mut outputclone = output.clone();
 
 
 
@@ -143,7 +140,9 @@ pub async fn prod_communication<'a>(
                     }
                 }
                 
-                let additional_port = server_port_list[count];                
+                let additional_port = server_port_list[count];  
+
+
 
                 let val = newserver::handle_server(ip.to_string(), 
                 initial_port.clone() + additional_port + 5000
