@@ -111,7 +111,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
     initial_port: u32, test_port: u32
 ) -> String
 {
-    let check: String = "pvss".to_string();
+    let data: String = "pvss".to_string();
 
     if medium.clone()=="prod_init"
     {
@@ -137,7 +137,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
             }
         }
 
-        println!("{}", level);
+        let mut pvss_wrapper: Vec<String> = Vec::new();
         if level==1
         {
             for output in received_output.clone()
@@ -154,12 +154,15 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 
                 let decoded_string = String::from_utf8(codeword).unwrap();
 
-                println!("{}", decoded_string);
-            }
-            
+                pvss_wrapper.push(decoded_string);
+                
+            }         
             
         }
+
+        pvss_wrapper.sort();
         
+        println!("{:?}", pvss_wrapper);
         
         
     }
