@@ -270,7 +270,7 @@ pub async fn reactor<'a>(
     }
     else 
     {
-        let (witnesses_vec, merkle_len): (Vec<Vec<u8>>, usize) = accum_reactor(
+        let (_witnesses_vec, _merkle_len, qual): (Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
 
@@ -358,7 +358,8 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 #[allow(non_snake_case)]
 pub async fn accum_reactor(    
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) ->  (Vec<Vec<u8>>, usize)
+    acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) 
+    ->  (Vec<Vec<u8>>, usize, Vec<u32>)
 {
     let mut qual: Vec<u32> = Vec::new();
 
@@ -449,11 +450,23 @@ pub async fn accum_reactor(
     {
         qual.push(2);
     }
-            
-    // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
+    let qual_clone = qual.clone();
 
-    // (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
-    
+    println!("{:?}",committee_length);
+    for val in qual
+    {
+        if val==1 && v1==acc_value_zl
+        {
+            (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
 
-    return (_witnesses_vec, _merkle_len);
+        }
+
+        if val==2 && v1==acc_value_zl
+        {
+            (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
+
+        }
+    }
+           
+    return (_witnesses_vec, _merkle_len, qual_clone);
     }
