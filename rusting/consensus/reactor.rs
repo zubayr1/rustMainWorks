@@ -322,11 +322,11 @@ value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<
             }
             let mut subset_vec: Vec<&str> = Vec::new();
             subset_vec.push(subset_ip);
-            let leaf_values_to_prove = codeword_vec[index].to_string();
+            let mut leaf_values_to_prove = codeword_vec[index].to_string();
     
             
             let indices_to_prove = index.clone().to_string();
-            println!("aa   {:?}, {:?}",leaf_values_to_prove,  witness);
+            leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
     
             let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
             value.to_string(), indices_to_prove.clone(), merkle_len);
