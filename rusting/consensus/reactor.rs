@@ -180,7 +180,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 
         }
     }
-    return check;
+    return data;
 }
 
 #[async_recursion]
