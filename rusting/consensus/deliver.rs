@@ -38,6 +38,22 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
     let mut i = 0;
     let merkle_root = merkle_tree.root().ok_or("couldn't get the merkle root").unwrap();
     println!("{:?}   {:?}", merkle_root, _accum_value);
+
+    let hex_bytes = _accum_value
+        .as_bytes()
+        .chunks(2)
+        .map(|chunk| u8::from_str_radix(std::str::from_utf8(chunk).unwrap(), 16).unwrap())
+        .collect::<Vec<u8>>();
+
+    if hex_bytes.len() != 32 {
+        panic!("Hexadecimal string must be 32 bytes long");
+    }
+
+    let mut u8_array: [u8; 32] = Default::default();
+    u8_array.copy_from_slice(&hex_bytes);
+
+    println!("{:?}", u8_array);
+
     // for i in 1..index
     // {
     //     let ivec: Vec<usize> = Vec::new();
