@@ -19,7 +19,7 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
 
     let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
-    for word in code_words.clone()
+    for _word in code_words.clone()
     {
         // let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
         // leaf_values_to_prove.push(word.to_string());
@@ -60,9 +60,9 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
         let mut codevec: Vec<String> = Vec::new();
         codevec.push(code_words[i].clone());
         let proof = merkle_tree::merkle_proof(witnesses_vec[i].clone(), ivec, 
-            codevec, u8_array, merkle_tree.leaves_len());
+            codevec.clone(), u8_array, merkle_tree.leaves_len());
 
-        println!("{}", proof);
+        println!("{:?}  {:?}  {:?}", witnesses_vec[i].clone(), codevec, u8_array);
     }
 
 
