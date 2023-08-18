@@ -5,7 +5,7 @@ mod merkle_tree;
 
 
 #[allow(unused)]
-pub fn verify_codeword(output: Vec<String>) -> bool
+pub fn verify_codeword(output: Vec<String>) -> (bool,Vec<String>)
 {
     let parts: Vec<&str> = output[0].split(", ").collect();
 
@@ -55,8 +55,7 @@ pub fn verify_codeword(output: Vec<String>) -> bool
     
 
     let proof = merkle_tree::merkle_proof(witness, indices_to_prove, 
-        codeword, u8_array, merkle_len);
+        codeword.clone(), u8_array, merkle_len);
 
-    println!("{}", proof);
-    return false;
+    return (proof, codeword);
 }

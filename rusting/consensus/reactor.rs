@@ -118,12 +118,26 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
         // codevec, witnesses_vec[i].clone(), u8_array
         // ("".to_string(), leaf_values_to_prove.clone(), witness.clone(), value.to_string(), indices_to_prove.clone(), merkle_len)
         
+        let mut reaction_output: Vec<Vec<String>> = Vec::new();
         
         for value in output.clone()
         {
-            let proof = codeword::verify_codeword(value);
+            let (proof, codeword) = codeword::verify_codeword(value);
+
+            if proof==true
+            {
+
+                // send witness to nodes if have received the first valid code word: prod
+                let comm_output = communication(committee_id.clone(), ip_address.clone(), 
+                level, _index, args.clone(), port_count, 
+                    medium.clone(), mode.clone(), initial_port, test_port, codeword, 
+                    "broadcast".to_string()).await;
+
+                reaction_output.push(comm_output);
+            }
         }
         
+        println!("{:?}", reaction_output);
         
         // let mut witness_to_deliver: Vec<String> = Vec::new();
 
@@ -214,7 +228,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
             let proof = codeword::verify_codeword(value);
         }
 
-        
+
         }
     }
     return check;
