@@ -140,8 +140,12 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
         println!("{}", level);
         if level==1
         {
-            let codeword = received_output[0].clone();
-            println!("{:?}", codeword);
+            for output in received_output.clone()
+            {
+                let codeword_wrapper = output.clone();
+                println!("{:?}", codeword_wrapper);
+            }
+            
             // pvss_agreement::decode(pvss_data, committee_size, medium);
         }
         
