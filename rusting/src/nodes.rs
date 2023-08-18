@@ -160,6 +160,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
                 level+=1;
 
+                println!("{}", _pvss_data);
+
             }
             
         }                          
