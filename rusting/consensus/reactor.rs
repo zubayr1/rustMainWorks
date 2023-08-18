@@ -162,7 +162,16 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
         } 
         else 
         {
-            println!("{:?}", received_output[0]);
+            let mut codeword: Vec<u8> = Vec::new();
+
+            for str_data in received_output[0].clone()
+            {
+                let split_str: Vec<&str> = str_data.split("]").collect();
+
+                let codeword_str = split_str[0].replace("[", "");
+
+                println!("{}", codeword_str);
+            }
         }       
         
     }
