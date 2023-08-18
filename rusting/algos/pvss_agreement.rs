@@ -42,7 +42,7 @@ pub fn from_shards(mut data: Vec<Option<Vec<u8>>>, num_nodes: usize, num_faults:
 
 
 
-
+#[allow(unused)]
 pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> Vec<String>
 {
     

@@ -8,8 +8,7 @@ mod pvss_agreement;
 
 
 pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: usize, medium: String) -> (Vec<String>, Vec<Vec<u8>>, usize)
-{  
-
+{ 
     // Step 1.1: Partition m and run Encode algorithm
     let code_words = pvss_agreement::encoder(pvss_data, committee_length, medium);
 
@@ -22,8 +21,8 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
 
     for word in code_words.clone()
     {
-        let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
-        leaf_values_to_prove.push(word.to_string());
+        // let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
+        // leaf_values_to_prove.push(word.to_string());
 
         let indices_to_prove = vec![index];
 
@@ -35,6 +34,22 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
 
 
     }
+
+    let mut i = 0;
+    let merkle_root = merkle_tree.root().ok_or("couldn't get the merkle root").unwrap();
+    println!("{:?}   {:?}", merkle_root, _accum_value);
+    // for i in 1..index
+    // {
+    //     let ivec: Vec<usize> = Vec::new();
+    //     ivec.push(i);
+
+    //     let codevec: Vec<String> = Vec::new();
+    //     codevec.push(code_words[i]);
+    //     let proof = merkle_tree::merkle_proof(witnesses_vec[i], ivec, 
+    //         codevec, _accum_value, merkle_tree.leaves_len());
+
+    //     println!("{}", proof);
+    // }
 
 
     return (code_words, witnesses_vec, merkle_tree.leaves_len());

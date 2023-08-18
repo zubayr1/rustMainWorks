@@ -263,15 +263,14 @@ pub async fn reactor<'a>(
 
     
     if mode.contains("codeword")
-    {        
-        
+    {     
         codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
-            value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), medium.clone(), committee_length, initial_port, test_port).await;
+            value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), medium.clone(), initial_port, test_port).await;
 
-        for output in codeword_output
-        {
-            println!("{:?}", output);
-        }
+        // for output in codeword_output
+        // {
+        //     println!("{:?}", output);
+        // }
         // let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
         //     committee_id, ip_address, level, _index,  args, port_count, 
         //     initial_port, test_port
@@ -280,7 +279,8 @@ pub async fn reactor<'a>(
     }
     else 
     {
-        let (codeword_vec, witnesses_vec, merkle_len, qual): (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
+        let (codeword_vec, witnesses_vec, merkle_len, qual): 
+        (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port, qual).await;
 
@@ -296,7 +296,7 @@ pub async fn reactor<'a>(
 
 pub async fn codeword_reactor( 
     committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32)
+value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, initial_port: u32, test_port: u32)
 -> Vec<Vec<String>>
 {
     let mut index = 0;
