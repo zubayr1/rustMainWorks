@@ -178,12 +178,10 @@ pub async fn reactor<'a>(
     let initial_port: u32 = initial_port_str.parse().unwrap();
     let test_port: u32 = test_port_str.parse().unwrap();
         
-    let mut codeword_output: Vec<Vec<String>>= Vec::new();
-
     
     if mode.contains("codeword")
     {     
-        codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
+        let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), medium.clone(), initial_port, test_port).await;
 
         
@@ -194,7 +192,7 @@ pub async fn reactor<'a>(
         
         return _codeword_reaction_check;
     }
-    else 
+    else if mode.contains("accum")
     {
         let (codeword_vec, witnesses_vec, merkle_len, qual): 
         (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
@@ -202,10 +200,14 @@ pub async fn reactor<'a>(
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port, qual).await;
 
 
-        reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
+        return reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), medium, committee_length, qual).await;
     }
-    return "".to_string();
+    else 
+    {
+        return "".to_string();
+    }
+    
     
      
 }
