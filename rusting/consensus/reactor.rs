@@ -455,12 +455,14 @@ pub async fn accum_reactor(
     {
         if val==1 && v1==acc_value_zl
         {
+            println!("v1 {}", v1);
             (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone(), medium.clone());
 
         }
 
-        if val==2 && v1==acc_value_zl
+        if val==2 && v2==acc_value_zl
         {
+            println!("v2 {}", v1);
             (_witnesses_vec, _merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
 
         }
