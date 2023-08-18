@@ -435,8 +435,6 @@ pub async fn accum_reactor(
         V2.clone(), medium.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
 
-    println!("{:?},    {:?},       {:?}", v1, v2, acc_value_zl);
-
     let mut _witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
     let mut _merkle_len: usize= 0;
@@ -452,7 +450,7 @@ pub async fn accum_reactor(
     }
     let qual_clone = qual.clone();
 
-    println!("{:?}",committee_length);
+    
     for val in qual
     {
         if val==1 && v1==acc_value_zl
