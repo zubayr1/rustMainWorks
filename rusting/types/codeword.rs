@@ -15,6 +15,8 @@ pub fn verify_codeword(output: Vec<String>) -> bool
     let indices_to_prove_str = parts[4];
     let merkle_len_str = parts[5];
 
+    let codeword_str = codeword_str.to_string().replace(";", ",");
+    let witness_str = witness_str.to_string().replace(";", ",");
 
     let hex_bytes = accum_value_str.to_string()
         .as_bytes()
@@ -30,15 +32,15 @@ pub fn verify_codeword(output: Vec<String>) -> bool
     u8_array.copy_from_slice(&hex_bytes);
 
 
-    let mut codeword: Vec<String> = Vec::new();
-    codeword.push(codeword_str.to_string());
+    // let mut codeword: Vec<String> = Vec::new();
+    // codeword.push(codeword_str.to_string());
 
-    let witness = witness_str.as_bytes().to_vec();
+    // let witness = witness_str.as_bytes().to_vec();
 
-    let indices_to_prove: Vec<usize> = indices_to_prove_str.chars().map(|c| c as usize).collect();
+    // let indices_to_prove: Vec<usize> = indices_to_prove_str.chars().map(|c| c as usize).collect();
 
 
-    println!("{:?},   {:?},   {:?},   {:?},   {:?}", witness, indices_to_prove, codeword, u8_array, merkle_len_str);
+    println!("{:?},   {:?},   {:?},   {:?},   {:?}", witness_str, indices_to_prove_str, codeword_str, u8_array, merkle_len_str);
 
     // let proof = merkle_tree::merkle_proof(witness, indices_to_prove, 
     // codeword, u8_array, merkle_len_str);
