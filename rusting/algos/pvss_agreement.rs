@@ -82,8 +82,3 @@ pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> V
 
 }
 
-// pub fn _decoder(encoded: reed_solomon::Buffer, e: usize)
-// {
-    
-// }
-

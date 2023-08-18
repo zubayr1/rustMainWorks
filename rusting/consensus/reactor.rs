@@ -122,6 +122,11 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
             println!("{:?}\n", a);
         }
         
+        for value in output.clone()
+        {
+            let proof = codeword::verify_codeword(value);
+        }
+        
         
         // let mut witness_to_deliver: Vec<String> = Vec::new();
 
@@ -206,37 +211,36 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
         
         if mode=="codeword"
         {
-            timer::wait(1);
 
-            let mut s_values: Vec<String> = Vec::new();
+            // let mut s_values: Vec<String> = Vec::new();
 
-            let mut witness_to_deliver: Vec<String> = Vec::new();
+            // let mut witness_to_deliver: Vec<String> = Vec::new();
 
 
-            for words in output
-            {
-                let value = words[1].clone();
-                if s_values.contains(&value.clone())
-                {
+            // for words in output
+            // {
+            //     let value = words[1].clone();
+            //     if s_values.contains(&value.clone())
+            //     {
 
-                }
-                else 
-                {
-                    s_values.push(value);
+            //     }
+            //     else 
+            //     {
+            //         s_values.push(value);
 
-                    let words_string: String = words.join(", ");
+            //         let words_string: String = words.join(", ");
                     
-                    let witness_verify =  codeword::verify_codeword(words_string.clone());
+            //         let witness_verify =  codeword::verify_codeword(words_string.clone());
 
-                    if witness_verify==true
-                    {
-                        witness_to_deliver.push(words[1].to_string());
-                    }
-                }
-            }
+            //         if witness_verify==true
+            //         {
+            //             witness_to_deliver.push(words[1].to_string());
+            //         }
+            //     }
+            // }
             // send witness to nodes if have received the first valid code word: dev
-            let _output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-                                medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "individual".to_string()).await;
+            // let _output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
+            //                     medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "individual".to_string()).await;
 
             // println!("{:?}", output);
         }
@@ -322,8 +326,8 @@ value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<
     
             
             let indices_to_prove = index.clone().to_string();
+            println!("aa   {:?}   , {:?}",indices_to_prove,  witness);
     
-            println!("{:?},  {:?}", subset_vec, witness);
             let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
             value.to_string(), indices_to_prove.clone(), merkle_len);
             index+=1;
