@@ -37,7 +37,6 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
 
     let mut i = 0;
     let merkle_root = merkle_tree.root().ok_or("couldn't get the merkle root").unwrap();
-    println!("{:?}   {:?}", merkle_root, _accum_value);
 
     let hex_bytes = _accum_value
         .as_bytes()
@@ -54,18 +53,18 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
 
     println!("{:?}", u8_array);
 
-    // for i in 1..index
-    // {
-    //     let ivec: Vec<usize> = Vec::new();
-    //     ivec.push(i);
+    for i in 1..index
+    {
+        let mut ivec: Vec<usize> = Vec::new();
+        ivec.push(i);
 
-    //     let codevec: Vec<String> = Vec::new();
-    //     codevec.push(code_words[i]);
-    //     let proof = merkle_tree::merkle_proof(witnesses_vec[i], ivec, 
-    //         codevec, _accum_value, merkle_tree.leaves_len());
+        let mut codevec: Vec<String> = Vec::new();
+        codevec.push(code_words[i].clone());
+        let proof = merkle_tree::merkle_proof(witnesses_vec[i].clone(), ivec, 
+            codevec, u8_array, merkle_tree.leaves_len());
 
-    //     println!("{}", proof);
-    // }
+        println!("{}", proof);
+    }
 
 
     return (code_words, witnesses_vec, merkle_tree.leaves_len());
