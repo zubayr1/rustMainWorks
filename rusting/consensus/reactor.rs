@@ -106,7 +106,7 @@ pub async fn reactor_init(
 
 
 
-pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
+pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, committee_length: usize,
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
 ) -> String
@@ -162,7 +162,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
         } 
         else 
         {
-            let mut codeword: Vec<u8> = Vec::new();
+            let mut codeword_vec: Vec<Vec<u8>> = Vec::new();
 
             for str_data in received_output[0].clone()
             {
@@ -170,8 +170,18 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 
                 let codeword_str = split_str[0].replace("[", "");
 
-                println!("{}", codeword_str);
+                let codeword: Vec<u8> = codeword_str
+                    .split(", ")
+                    .map(|s| s.parse::<u8>().expect("Failed to parse u8"))
+                    .collect();
+
+                codeword_vec.push(codeword);
+
             }
+            let pvss = pvss_agreement::decode(codeword_vec, committee_length);
+
+            println!("{}", pvss);
+
         }       
         
     }
