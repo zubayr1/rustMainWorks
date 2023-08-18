@@ -111,7 +111,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
     initial_port: u32, test_port: u32
 ) -> String
 {
-    let data: String = "pvss".to_string();
+    let mut data: String = "pvss".to_string();
 
     if medium.clone()=="prod_init"
     {
@@ -126,7 +126,6 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 
             if proof==true
             {
-
                 // send witness to nodes if have received the first valid code word: prod
                 let comm_output = communication(committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count, 
@@ -156,14 +155,12 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 
                 pvss_wrapper.push(decoded_string);
                 
-            }         
-            
-        }
+            }
 
-        pvss_wrapper.sort();
-        
-        println!("{:?}", pvss_wrapper);
-        
+            pvss_wrapper.sort();        
+            data = pvss_wrapper.concat();         
+            
+        }        
         
     }
     else 
