@@ -137,7 +137,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
             }
         }
         
-        println!("{:?}", reaction_output);
+        for i in reaction_output
+        {
+            println!("{:?}", i);
+        }
         
         // let mut witness_to_deliver: Vec<String> = Vec::new();
 
