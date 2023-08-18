@@ -142,8 +142,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
         {
             for output in received_output.clone()
             {
-                let codeword_wrapper = output.clone();
-                println!("{:?}", codeword_wrapper);
+                let codeword_wrapper = output[0].clone();
+                let codeword_temp: Vec<&str> = codeword_wrapper.split("]").collect();
+
+                println!("{:?}", codeword_temp);
             }
             
             // pvss_agreement::decode(pvss_data, committee_size, medium);
