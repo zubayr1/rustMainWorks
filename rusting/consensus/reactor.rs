@@ -160,7 +160,11 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
             pvss_wrapper.sort();        
             data = pvss_wrapper.concat();         
             
-        }        
+        } 
+        else 
+        {
+            println!("{:?}", received_output);
+        }       
         
     }
     else 
