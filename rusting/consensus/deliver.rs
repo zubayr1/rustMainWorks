@@ -52,7 +52,7 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
     u8_array.copy_from_slice(&hex_bytes);
 
 
-    for i in 1..index
+    for i in 0..index
     {
         let mut ivec: Vec<usize> = Vec::new();
         ivec.push(i);
