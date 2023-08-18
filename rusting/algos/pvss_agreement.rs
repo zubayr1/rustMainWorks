@@ -82,3 +82,10 @@ pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> V
 
 }
 
+
+
+// #[allow(unused)]
+// pub fn decode(pvss_data: &[u8], mut committee_size: usize, medium: String) -> Vec<String>
+// {
+
+// }

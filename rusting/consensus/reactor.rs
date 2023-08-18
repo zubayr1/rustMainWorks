@@ -80,7 +80,7 @@ async fn communication(
 pub async fn reactor_init(    
     pvss_data: String, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
-    args: Vec<String>, port_count: u32, medium: String)
+    args: Vec<String>, port_count: u32, medium: String) -> String
 { 
  
     let committee_length = ip_address.len();
@@ -99,7 +99,7 @@ pub async fn reactor_init(
     let empty_codeword_vec: Vec<String> = Vec::new();
     let empty_witness_vec: Vec<Vec<u8>> = Vec::new();    
     
-    reactor(pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, 
+    return reactor(pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, 
         empty_codeword_vec, empty_witness_vec, 
         "accum".to_string(), medium, committee_length, qual).await;
 }
@@ -109,17 +109,17 @@ pub async fn reactor_init(
 pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _committee_length: usize,
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
-) -> bool
+) -> String
 {
-    let check: bool = false;
+    let check: String = "pvss".to_string();
 
     if medium.clone()=="prod_init"
     {
         // codevec, witnesses_vec[i].clone(), u8_array
         // ("".to_string(), leaf_values_to_prove.clone(), witness.clone(), value.to_string(), indices_to_prove.clone(), merkle_len)
         
-        let mut reaction_output: Vec<Vec<String>> = Vec::new();
-        
+        let mut received_output: Vec<Vec<String>> = Vec::new();
+
         for value in output.clone()
         {
             let (proof, codeword) = codeword::verify_codeword(value);
@@ -132,92 +132,14 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
                 level, _index, args.clone(), port_count, 
                     medium.clone(), mode.clone(), initial_port, test_port, codeword.clone(), 
                     "broadcast".to_string()).await;
-                println!("comm {:?},   {:?}", comm_output, codeword);
-                reaction_output.push(comm_output);
+
+                received_output.push(comm_output);
             }
         }
+
+        println!("{}", level);
         
-        for i in reaction_output
-        {
-            println!("{:?}", i);
-        }
         
-        // let mut witness_to_deliver: Vec<String> = Vec::new();
-
-        // witness_to_deliver.push(" ".to_string());
-
-        // let mut check=false;
-        
-        // for words in output
-        // {   
-        //     if check==false
-        //     {
-        //         for value in words.clone()
-        //         {                    
-        //             let value_split: Vec<&str> = value.split(", ").collect();
-
-                    
-        //             let witness_verify =  codeword::verify_codeword(value.clone());
-
-        //             if witness_verify==true
-        //             {
-        //                 witness_to_deliver.push(value_split[1].to_string());
-
-        //                 check = true;
-                        
-        //                 break;
-        //             }
-                    
-        //         }
-        //     }             
-                            
-        // }
-        // // send witness to nodes if have received the first valid code word: prod
-        // let output = communication(committee_id.clone(), ip_address.clone(), level, _index, args.clone(), port_count, 
-        //                     medium.clone(), mode.clone(), initial_port, test_port, witness_to_deliver, "broadcast".to_string()).await;
-
-        // let mut s_values: Vec<String> = Vec::new();
-
-        // for data in output
-        // {
-        //     let parts: Vec<&str> = data.split(", ").collect();
-
-        //     s_values.push(parts[1].trim().to_string());
-        // }
-        
-
-        // let _converted_s_values: Vec<u8> = s_values.iter()
-        //         .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
-        //         .collect();
-
-
-        // for output_string in output
-        // {
-        //     let modified_vec: Vec<String> = output_string.split(", ")
-        //         .map(|s| s.to_string())
-        //         .collect();
-
-
-        //     let encoded = &modified_vec[1..modified_vec.len() - 1];
-
-        //     let ecc_len = 2*committee_length/2;
-
-
-        //     let converted_data: Vec<u8> = encoded.iter()
-        //         .map(|s| s.parse::<u8>().expect("Failed to convert to u8"))
-        //         .collect();
-
-
-        //     let enc = Encoder::new(ecc_len);
-        //     let encoded = enc.encode(&converted_data[..]);
-
-        //     // println!("{:?},   {:?},   {:?}", committee_length, converted_data, encoded);
-
-        //     // let encoded = enc.encode(&[192, 137][..]); 
-        //     // pvss_agreement::decoder(encoded, committee_length/2);
-        // }
-        
-    
         
     }
     else 
@@ -241,7 +163,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 pub async fn reactor<'a>(     
     pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize,
-    qual: Vec<u32>) 
+    qual: Vec<u32>) -> String
 { 
  
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -270,6 +192,7 @@ pub async fn reactor<'a>(
             initial_port, test_port
         ).await;
         
+        return _codeword_reaction_check;
     }
     else 
     {
@@ -282,7 +205,7 @@ pub async fn reactor<'a>(
         reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), medium, committee_length, qual).await;
     }
-
+    return "".to_string();
     
      
 }
