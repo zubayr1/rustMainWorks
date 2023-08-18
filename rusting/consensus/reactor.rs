@@ -132,7 +132,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
                 level, _index, args.clone(), port_count, 
                     medium.clone(), mode.clone(), initial_port, test_port, codeword, 
                     "broadcast".to_string()).await;
-
+                println!("comm {:?}", comm_output);
                 reaction_output.push(comm_output);
             }
         }
