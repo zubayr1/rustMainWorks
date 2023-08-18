@@ -326,7 +326,7 @@ value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<
     
             
             let indices_to_prove = index.clone().to_string();
-            println!("aa   {:?}   , {:?}",indices_to_prove,  witness);
+            println!("aa   {:?}, {:?}",leaf_values_to_prove,  witness);
     
             let codeword = generic::Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
             value.to_string(), indices_to_prove.clone(), merkle_len);
