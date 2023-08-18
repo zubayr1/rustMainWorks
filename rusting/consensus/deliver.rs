@@ -62,7 +62,7 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
         let proof = merkle_tree::merkle_proof(witnesses_vec[i].clone(), ivec, 
             codevec.clone(), u8_array, merkle_tree.leaves_len());
 
-        println!("{:?}  {:?}  {:?}", witnesses_vec[i].clone(), codevec, u8_array);
+        println!("{:?}  {:?}  {:?}", codevec, witnesses_vec[i].clone(), u8_array);
     }
 
 

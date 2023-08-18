@@ -115,7 +115,8 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 
     if medium.clone()=="prod_init"
     {
-
+        // codevec, witnesses_vec[i].clone(), u8_array
+        // ("".to_string(), leaf_values_to_prove.clone(), witness.clone(), value.to_string(), indices_to_prove.clone(), merkle_len)
         for a in output.clone()
         {
             println!("{:?}\n", a);
