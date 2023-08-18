@@ -130,9 +130,9 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
                 // send witness to nodes if have received the first valid code word: prod
                 let comm_output = communication(committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count, 
-                    medium.clone(), mode.clone(), initial_port, test_port, codeword, 
+                    medium.clone(), mode.clone(), initial_port, test_port, codeword.clone(), 
                     "broadcast".to_string()).await;
-                println!("comm {:?}", comm_output);
+                println!("comm {:?},   {:?}", comm_output, codeword);
                 reaction_output.push(comm_output);
             }
         }
