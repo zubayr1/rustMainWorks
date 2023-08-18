@@ -51,7 +51,6 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
     let mut u8_array: [u8; 32] = Default::default();
     u8_array.copy_from_slice(&hex_bytes);
 
-    println!("{:?}", u8_array);
 
     for i in 1..index
     {
