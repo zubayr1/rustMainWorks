@@ -32,19 +32,34 @@ pub fn verify_codeword(output: Vec<String>) -> bool
     u8_array.copy_from_slice(&hex_bytes);
 
 
-    // let mut codeword: Vec<String> = Vec::new();
-    // codeword.push(codeword_str.to_string());
+    let mut codeword: Vec<String> = Vec::new();
+    codeword.push(codeword_str.to_string());
 
     // let witness = witness_str.as_bytes().to_vec();
 
     // let indices_to_prove: Vec<usize> = indices_to_prove_str.chars().map(|c| c as usize).collect();
 
 
-    println!("{:?},   {:?},   {:?},   {:?},   {:?}", witness_str, indices_to_prove_str, codeword_str, u8_array, merkle_len_str);
+    let trimmed_str = witness_str.trim_start_matches('[').trim_end_matches(']');
+    let witness: Vec<u8> = trimmed_str
+        .split(',')
+        .map(|s| s.trim().parse::<u8>().unwrap())
+        .collect();
 
-    // let proof = merkle_tree::merkle_proof(witness, indices_to_prove, 
-    // codeword, u8_array, merkle_len_str);
 
+    let indices_to_prove_nested: usize = indices_to_prove_str.to_string().parse().unwrap();
+    let mut indices_to_prove: Vec<usize> = Vec::new();
+    indices_to_prove.push(indices_to_prove_nested);
+
+    let merkle_len: usize = merkle_len_str.to_string().parse().unwrap();
     
+
+
+    println!("{:?},   {:?},   {:?},   {:?},   {:?}", witness, indices_to_prove, codeword, u8_array, merkle_len);
+
+    let proof = merkle_tree::merkle_proof(witness, indices_to_prove, 
+        codeword, u8_array, merkle_len);
+
+    println!("{}", proof);
     return false;
 }
