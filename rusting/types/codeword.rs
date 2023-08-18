@@ -1,10 +1,10 @@
 
-use hex::FromHex;
-use std::convert::TryInto;
 
 #[path = "../merkle_tree/merkle_tree.rs"]
 mod merkle_tree;
 
+
+#[allow(unused)]
 pub fn verify_codeword(output: Vec<String>) -> bool
 {
     let parts: Vec<&str> = output[0].split(", ").collect();
@@ -53,9 +53,6 @@ pub fn verify_codeword(output: Vec<String>) -> bool
 
     let merkle_len: usize = merkle_len_str.to_string().parse().unwrap();
     
-
-
-    println!("{:?},   {:?},   {:?},   {:?},   {:?}", witness, indices_to_prove, codeword, u8_array, merkle_len);
 
     let proof = merkle_tree::merkle_proof(witness, indices_to_prove, 
         codeword, u8_array, merkle_len);

@@ -20,10 +20,7 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
     let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
     for _word in code_words.clone()
-    {
-        // let mut leaf_values_to_prove: Vec<String> = Vec::new(); 
-        // leaf_values_to_prove.push(word.to_string());
-
+    {        
         let indices_to_prove = vec![index];
 
         let witness_proof_bytes = merkle_tree::create_proof_bytes(indices_to_prove.clone(), merkle_tree.clone());
@@ -31,43 +28,10 @@ pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: 
         witnesses_vec.push(witness_proof_bytes.clone());
 
         index+=1;
-
-
     }
+   
 
-    let mut i = 0;
-    let merkle_root = merkle_tree.root().ok_or("couldn't get the merkle root").unwrap();
-
-    let hex_bytes = _accum_value
-        .as_bytes()
-        .chunks(2)
-        .map(|chunk| u8::from_str_radix(std::str::from_utf8(chunk).unwrap(), 16).unwrap())
-        .collect::<Vec<u8>>();
-
-    if hex_bytes.len() != 32 {
-        panic!("Hexadecimal string must be 32 bytes long");
-    }
-
-    let mut u8_array: [u8; 32] = Default::default();
-    u8_array.copy_from_slice(&hex_bytes);
-
-
-    for i in 0..index
-    {
-        let mut ivec: Vec<usize> = Vec::new();
-        ivec.push(i);
-
-        let mut codevec: Vec<String> = Vec::new();
-        codevec.push(code_words[i].clone());
-        let proof = merkle_tree::merkle_proof(witnesses_vec[i].clone(), ivec, 
-            codevec.clone(), u8_array, merkle_tree.leaves_len());
-
-        println!("{:?}  {:?}  {:?}", codevec, witnesses_vec[i].clone(), u8_array);
-    }
-
-
-    return (code_words, witnesses_vec, merkle_tree.leaves_len());
-    
+    return (code_words, witnesses_vec, merkle_tree.leaves_len());    
     
     
 }
