@@ -89,15 +89,17 @@ pub async fn reactor_init(
     let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone(), medium.clone());
 
 
+    // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
 
+    let mut qual: Vec<u32> = Vec::new();
 
     let empty_vec: Vec<Vec<u8>> = Vec::new();    
     
     reactor(pvss_data, committee_id, &ip_address, level, _index, args, port_count, acc_value_zl, 0, empty_vec, 
-        "accum".to_string(), medium, committee_length).await;
+        "accum".to_string(), medium, committee_length, qual).await;
 }
 
 
@@ -239,7 +241,8 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
 #[async_recursion]
 pub async fn reactor<'a>(     
     pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize) 
+    value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, medium: String, committee_length: usize,
+    qual: Vec<u32>) 
 { 
  
     let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
@@ -272,11 +275,12 @@ pub async fn reactor<'a>(
     {
         let (_witnesses_vec, _merkle_len, qual): (Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
-            value.clone(), mode, medium.clone(), committee_length, initial_port, test_port).await;
+            value.clone(), mode, medium.clone(), committee_length, initial_port, test_port, qual).await;
 
+            println!("witness {:?}", _witnesses_vec);
 
-        // reactor(server_stream_vec, client_stream_vec, pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
-        //     merkle_len, witnesses_vec, "codeword".to_string(), medium, committee_length).await;
+        reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
+            merkle_len, witnesses_vec, "codeword".to_string(), medium, committee_length, qual).await;
     }
 
     
@@ -358,10 +362,10 @@ value: String, merkle_len: usize,  witnesses_vec: Vec<Vec<u8>>, mode: String, me
 #[allow(non_snake_case)]
 pub async fn accum_reactor(    
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32) 
+    acc_value_zl: String, mode: String, medium: String, committee_length: usize, initial_port: u32, test_port: u32, mut qual: Vec<u32>) 
     ->  (Vec<Vec<u8>>, usize, Vec<u32>)
 {
-    let mut qual: Vec<u32> = Vec::new();
+    
 
     let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl.clone());
     let accum_vec = accum.to_vec();
