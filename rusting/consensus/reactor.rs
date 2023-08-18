@@ -163,7 +163,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, _c
         } 
         else 
         {
-            println!("{:?}", received_output);
+            for output in received_output
+            {
+                println!("{:?}", output);
+            }
         }       
         
     }
