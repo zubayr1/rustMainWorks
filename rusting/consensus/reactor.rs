@@ -87,7 +87,6 @@ pub async fn reactor_init(
 
     let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone(), medium.clone());
 
-    println!("{:?}", leaves);
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
