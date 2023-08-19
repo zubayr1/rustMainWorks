@@ -126,8 +126,10 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         let mut check_first_codeword_list: Vec<String> = Vec::new();
 
         for value in output.clone()
-        {
-            println!("{:?}", value);
+        {            
+            let val_split: Vec<&str> = value[0].split(", ").collect();
+
+            println!("{:?}", val_split[1]);
 
             let (proof, codeword) = codeword::verify_codeword(value);
 
