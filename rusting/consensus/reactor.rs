@@ -190,12 +190,13 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                     codeword_vec.push(codeword);
 
                 }
-                println!("{:?}", codeword_vec);
+                
+                let pvss = pvss_agreement::decode(codeword_vec, committee_length);
+
+                println!("{}", pvss);
             }        
             
-            // let pvss = pvss_agreement::decode(codeword_vec, committee_length);
-
-            // println!("{}", pvss);
+            
 
         }       
         
