@@ -81,14 +81,12 @@ pub async fn reactor_init(
     pvss_data: String, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>, port_count: u32, medium: String) -> String
-{ 
-    println!("{}", pvss_data);
-    let committee_length = ip_address.len();
-    
+{     
+    let committee_length = ip_address.len();    
 
     let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone(), medium.clone());
 
-
+    println!("{:?}", leaves);
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
