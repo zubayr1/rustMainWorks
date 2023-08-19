@@ -53,7 +53,7 @@ pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> V
 
     let original_data = pvss_data;
     let num_nodes = committee_size;      // Total number of shards
-    let num_faults = committee_size/2;
+    let num_faults = committee_size/2 -1;
     
 
     if committee_size==2
@@ -88,7 +88,7 @@ pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> V
 pub fn decode(shards: Vec<Vec<u8>>, mut committee_size: usize) -> String
 {
     let num_nodes = committee_size;      // Total number of shards
-    let num_faults = committee_size/2;
+    let num_faults = committee_size/2 -1;
 
     let mut received: Vec<_> = shards.iter().cloned().map(Some).collect();
 
