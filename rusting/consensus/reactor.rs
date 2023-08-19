@@ -410,7 +410,7 @@ pub async fn accum_reactor(
 
     let mut merkle_len: usize= 0;
 
-    
+    println!("{:?},   {:?}", v1, v2);
     if v1!="bot"
     {
         qual.push(1);
