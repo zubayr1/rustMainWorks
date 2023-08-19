@@ -29,16 +29,23 @@ pub fn from_shards(mut data: Vec<Option<Vec<u8>>>, num_nodes: usize, num_faults:
     let num_data_shards = num_nodes - num_faults;
     let r = ReedSolomon::new(num_data_shards, num_faults).unwrap();
     r.reconstruct(&mut data).unwrap();
-    let mut result = Vec::with_capacity(num_data_shards * data[0].as_ref().unwrap().len());
+
+    let shard_size = data[0].as_ref().unwrap().len();
+
+    let mut result = Vec::with_capacity(num_data_shards * shard_size);
+
     for shard in 0..num_data_shards {
-        result.append(&mut data[shard].clone().unwrap());
+        let mut shard_data = data[shard].clone().unwrap();
+        if shard == num_data_shards - 1 {
+            // Trim the padding for the last shard
+            shard_data.truncate(shard_size);
+        }
+        result.extend(shard_data);
     }
-    if let Some(last_byte) = result.last() {
-        let new_length = result.len().saturating_sub(*last_byte as usize);
-        result.truncate(new_length);
-    }
+
     result
 }
+
 
 
 
@@ -91,8 +98,6 @@ pub fn decode(shards: Vec<Vec<u8>>, mut committee_size: usize) -> String
     let num_faults = committee_size/2;
 
     let mut received: Vec<_> = shards.iter().cloned().map(Some).collect();
-
-    println!("{:?}", received);
 
     let reconstructed = from_shards(received, num_nodes, num_faults);
 
