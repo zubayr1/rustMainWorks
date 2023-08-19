@@ -227,7 +227,7 @@ pub async fn reactor<'a>(
         let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), medium.clone(), initial_port, test_port).await;
 
-        
+        println!("{:?}", codeword_output);
         let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
             committee_id, ip_address, level, _index,  args, port_count, 
             initial_port, test_port
@@ -410,7 +410,6 @@ pub async fn accum_reactor(
 
     let mut merkle_len: usize= 0;
 
-    println!("{:?},   {:?}", v1, v2);
     if v1!="bot"
     {
         qual.push(1);
@@ -435,8 +434,7 @@ pub async fn accum_reactor(
             (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone(), medium.clone());
 
         }
-    }
-           
-           println!("{:?},  {:?},  {:?},  {:?}", codeword_vec, witnesses_vec, merkle_len, qual_clone);
+    }           
+    
     return (codeword_vec, witnesses_vec, merkle_len, qual_clone);
     }
