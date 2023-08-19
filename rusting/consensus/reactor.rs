@@ -225,7 +225,10 @@ pub async fn reactor<'a>(
         let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
             value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), medium.clone(), initial_port, test_port).await;
 
-        println!("\n{:?}", codeword_output);
+        for output in codeword_output.clone()
+        {
+            println!("\n{:?}", output);
+        }
         let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
             committee_id, ip_address, level, _index,  args, port_count, 
             initial_port, test_port
