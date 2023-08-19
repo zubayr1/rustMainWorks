@@ -101,8 +101,6 @@ pub fn decode(shards: Vec<Vec<u8>>, mut committee_size: usize) -> String
 
     let reconstructed = from_shards(received, num_nodes, num_faults);
 
-    println!("RECONSTRUCTED: {:?}", reconstructed);
-
     let string: String = String::from_utf8_lossy(&reconstructed).into();
 
     return string;
