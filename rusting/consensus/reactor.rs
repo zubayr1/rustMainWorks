@@ -115,12 +115,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
     {
         // codevec, witnesses_vec[i].clone(), u8_array
         // ("".to_string(), leaf_values_to_prove.clone(), witness.clone(), value.to_string(), indices_to_prove.clone(), merkle_len)
-
-        // for i in output.clone()
-        // {
-        //     println!("\n{:?}", i);
-        // }
-        
+               
         let mut received_output: Vec<Vec<String>> = Vec::new();
 
         let mut check_first_codeword_list: Vec<String> = Vec::new();
@@ -176,8 +171,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             
         } 
         else 
-        {
-            println!("{:?}",received_output);
+        {            
             let mut codeword_vec: Vec<Vec<u8>> = Vec::new();
 
             for str_data in received_output[0].clone()
@@ -194,6 +188,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 codeword_vec.push(codeword);
 
             }
+            println!("{:?}", codeword_vec);
             let pvss = pvss_agreement::decode(codeword_vec, committee_length);
 
             println!("{}", pvss);
@@ -258,7 +253,6 @@ pub async fn reactor<'a>(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, medium.clone(), committee_length, initial_port, test_port, qual).await;
 
-            println!("{:?},    {:?},     {:?},   {:?}", codeword_vec, witnesses_vec, merkle_len, qual);
         return reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), medium, committee_length, qual).await;
     }
