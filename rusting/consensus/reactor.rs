@@ -127,21 +127,27 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
         for value in output.clone()
         {            
-            let val_split: Vec<&str> = value[0].split(", ").collect();
+            let value_clone = value.clone();
+            let val_split: Vec<&str> = value_clone[0].split(", ").collect();
 
-            println!("{:?}", val_split[1]);
-
-            let (proof, codeword) = codeword::verify_codeword(value);
-
-            if proof==true
+            if !check_first_codeword_list.contains(&val_split[1].to_string())
             {
-                // send witness to nodes if have received the first valid code word: prod
-                let comm_output = communication(committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone(), port_count, 
-                    medium.clone(), mode.clone(), initial_port, test_port, codeword.clone(), 
-                    "broadcast".to_string()).await;
-                received_output.push(comm_output);
+                let (proof, codeword) = codeword::verify_codeword(value);
+
+                if proof==true
+                {
+                    check_first_codeword_list.push(val_split[1].to_string());
+
+                    // send witness to nodes if have received the first valid code word: prod
+                    let comm_output = communication(committee_id.clone(), ip_address.clone(), 
+                    level, _index, args.clone(), port_count, 
+                        medium.clone(), mode.clone(), initial_port, test_port, codeword.clone(), 
+                        "broadcast".to_string()).await;
+                    received_output.push(comm_output);
+                }
             }
+
+            
         }
 
         let mut pvss_wrapper: Vec<String> = Vec::new();
@@ -171,6 +177,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
         } 
         else 
         {
+            println!("{:?}",received_output);
             let mut codeword_vec: Vec<Vec<u8>> = Vec::new();
 
             for str_data in received_output[0].clone()
