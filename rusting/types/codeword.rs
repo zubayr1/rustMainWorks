@@ -35,11 +35,7 @@ pub fn verify_codeword(output: Vec<String>) -> (bool,Vec<String>)
     let mut codeword: Vec<String> = Vec::new();
     codeword.push(codeword_str.to_string());
 
-    // let witness = witness_str.as_bytes().to_vec();
-
-    // let indices_to_prove: Vec<usize> = indices_to_prove_str.chars().map(|c| c as usize).collect();
-
-
+    
     let trimmed_str = witness_str.trim_start_matches('[').trim_end_matches(']');
     let witness: Vec<u8> = trimmed_str
         .split(',')

@@ -437,5 +437,6 @@ pub async fn accum_reactor(
         }
     }
            
+           println!("{:?},  {:?},  {:?},  {:?}", codeword_vec, witnesses_vec, merkle_len, qual_clone);
     return (codeword_vec, witnesses_vec, merkle_len, qual_clone);
     }
