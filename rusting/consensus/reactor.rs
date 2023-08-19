@@ -175,23 +175,22 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             for op in received_output.clone()
             {
                 let mut codeword_vec: Vec<Vec<u8>> = Vec::new();
-                println!("{:?}", op);
+                
+                for str_data in op.clone()
+                {
+                    let split_str: Vec<&str> = str_data.split("]").collect();
 
-                // for str_data in op[0].clone()
-                // {
-                //     let split_str: Vec<&str> = str_data.split("]").collect();
+                    let codeword_str = split_str[0].replace("[", "");
 
-                //     let codeword_str = split_str[0].replace("[", "");
+                    let codeword: Vec<u8> = codeword_str
+                        .split(", ")
+                        .map(|s| s.parse::<u8>().expect("Failed to parse u8"))
+                        .collect();
 
-                //     let codeword: Vec<u8> = codeword_str
-                //         .split(", ")
-                //         .map(|s| s.parse::<u8>().expect("Failed to parse u8"))
-                //         .collect();
+                    codeword_vec.push(codeword);
 
-                //     codeword_vec.push(codeword);
-
-                // }
-                // println!("{:?}", codeword_vec);
+                }
+                println!("{:?}", codeword_vec);
             }        
             
             // let pvss = pvss_agreement::decode(codeword_vec, committee_length);
