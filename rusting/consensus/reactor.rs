@@ -175,7 +175,7 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
             for op in received_output.clone()
             {
                 let mut codeword_vec: Vec<Vec<u8>> = Vec::new();
-                println!("{:?}", op[0]);
+                println!("{:?}", op);
 
                 // for str_data in op[0].clone()
                 // {
