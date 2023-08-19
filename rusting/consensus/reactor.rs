@@ -82,7 +82,7 @@ pub async fn reactor_init(
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>, port_count: u32, medium: String) -> String
 { 
- 
+    println!("{}", pvss_data);
     let committee_length = ip_address.len();
     
 
