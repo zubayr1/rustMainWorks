@@ -147,7 +147,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             if ip_address.len()==1
             {
                 //GET PVSS DATA FROM DIMITRIS
-                _pvss_data = ["pvss_data".to_string(), args[2].to_string()].join(" ");
+                _pvss_data = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ");
                 level+=1
             }
             else 
