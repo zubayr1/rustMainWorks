@@ -77,8 +77,7 @@ pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> V
         .map(|inner_vec| format!("{:?}", inner_vec))
         .collect();
 
-    println!("{:?}", original_data);
-    println!("{:?}", leaves);
+    println!("{:?}, {:?}, {:?}", original_data, leaves, num_nodes);
     return leaves;
 
 
