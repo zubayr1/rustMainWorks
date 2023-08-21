@@ -102,18 +102,19 @@ pub async fn reactor_init(
 }
 
 
-
+#[allow(non_snake_case)]
 pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, committee_length: usize,
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
-) -> String
+) -> (String, String, String)
 {
     let mut data: String = "pvss".to_string();
 
+    let mut W1: String = "".to_string();
+    let mut W2: String = "".to_string();;
+
     if medium.clone()=="prod_init"
     {
-        // codevec, witnesses_vec[i].clone(), u8_array
-        // ("".to_string(), leaf_values_to_prove.clone(), witness.clone(), value.to_string(), indices_to_prove.clone(), merkle_len)
                
         let mut received_output: Vec<Vec<String>> = Vec::new();
 
@@ -192,7 +193,15 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
                 
                 let pvss = pvss_agreement::decode(codeword_vec, committee_length);
 
-                data+=&pvss;
+                
+                if W1=="".to_string()
+                {
+                    W1 = pvss;
+                }
+                else 
+                {
+                    W2 = pvss;
+                }
             }        
             
             
@@ -214,7 +223,49 @@ pub async fn reaction(output: Vec<Vec<String>>, medium: String, mode: String, co
 
         }
     }
-    return data;
+    return (data, W1, W2);
+}
+
+#[allow(non_snake_case)]
+pub async fn committee_selection(W1: String, W2: String, mut qual: Vec<u32>) -> String
+{
+    let mut b: Vec<u32> = Vec::new();
+    b.push(1);
+    b.push(2);
+
+    if qual.contains(&1)
+    {
+        //2BA for W1
+        // update b
+    }
+    if qual.contains(&2)
+    {
+        //2BA for W2
+        // update b
+    }
+    qual.retain(|&x| b.contains(&x));
+
+
+    for val in qual
+    {
+        if val==1 && W1!="".to_string()
+        {
+            // deliver
+            // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
+        }
+
+        if val==2 && W2!="".to_string()
+        {
+            //deliver
+            // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
+        }
+    }  
+    let mut data = "".to_string();
+    data+=&W1;
+    data+=&W2;
+
+    data
+
 }
 
 #[async_recursion]
@@ -243,12 +294,18 @@ pub async fn reactor<'a>(
             value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), medium.clone(), initial_port, test_port).await;
 
         
-        let _codeword_reaction_check = reaction(codeword_output, medium, mode, committee_length,            
+        let (pvss_data, W1, W2) = reaction(codeword_output, medium, mode, committee_length,            
             committee_id, ip_address, level, _index,  args, port_count, 
             initial_port, test_port
         ).await;
         
-        return _codeword_reaction_check;
+        if level==1
+        {
+            return pvss_data;
+        }
+        
+        return committee_selection(W1, W2, qual).await;
+
     }
     else if mode.contains("accum")
     {
