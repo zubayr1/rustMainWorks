@@ -26,6 +26,10 @@ mod newclient;
 #[path = "../consensus/reactor.rs"]
 mod reactor;
 
+
+#[path = "../algos/GRand.rs"]
+mod GRand;
+
 pub fn create_keys() // schnorr key generation
 {
     schnorrkel::_create_keys_schnorrkel();
@@ -162,9 +166,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
             }
             
-        }                          
+        }    
+
+        let end_time = Utc::now().time();
+        let diff = end_time - start_time;
         
-        
+        println!("Setup End by {}. time taken {} seconds", args[6], diff.num_seconds());  
+
+
 
         text = "--------------------------------".to_string();
 
@@ -172,11 +181,21 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         file.write_all(b"\n").await.unwrap();
 
 
-        let end_time = Utc::now().time();
+        
+        text = "GRand Start".to_string();
 
+        file.write_all(text.as_bytes()).await.unwrap();
+        file.write_all(b"\n").await.unwrap();
+
+        let start_time = Utc::now().time(); 
+
+        GRand::initiate(_pvss_data);
+
+        let end_time = Utc::now().time();
         let diff = end_time - start_time;
         
-        println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
+        println!("GRand End by {}. time taken {} seconds", args[6], diff.num_seconds()); 
+        
 
 
     }
