@@ -282,7 +282,7 @@ pub async fn reactor<'a>(
         (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, committee_length, initial_port, test_port, qual).await;
-            println!("codeword {:?}", codeword_vec);
+            
         return reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), committee_length, qual).await;
     }
@@ -445,6 +445,6 @@ pub async fn accum_reactor(
 
         }
     }           
-    println!("{:?}", codeword_vec);
+
     return (codeword_vec, witnesses_vec, merkle_len, qual_clone);
     }
