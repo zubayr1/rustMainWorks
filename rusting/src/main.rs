@@ -1,5 +1,4 @@
 //imports
-use tokio::spawn;
 use tokio::fs::File;
 
 use tokio::io::{ AsyncBufReadExt, BufReader};
@@ -16,7 +15,6 @@ mod network;
 mod node;
 
 mod nodes;
-mod nodes_test;
 
 #[tokio::main]
 async fn run_nodes(args: Vec<String>)
@@ -84,34 +82,8 @@ async fn run_nodes(args: Vec<String>)
         }
     }
     
-   
-    if args[5]=="dev" // run in dev mode
-    {
-        let args_clone = args.clone();
-        let filtered_committee_clone = filtered_committee.clone();
-
-        let handle1 = spawn(async move {
-            let future1 = nodes::dev_initiate(filtered_committee_clone, args_clone); // client
-            future1.await;
-        });
-
-        let args_clone_new = args.clone();
-
-        let handle2 = spawn(async move {
-            let future2 = nodes_test::initiate(args_clone_new); // server
-            future2.await;
-        });
-
-        handle1.await.unwrap();
-        handle2.await.unwrap();
-    } 
-    else  // run in prod mode
-    {
-        
-        nodes::initiate(filtered_committee.clone(), args.clone()).await; 
-
-    }
-         
+       
+    nodes::initiate(filtered_committee.clone(), args.clone()).await; 
 
 
     

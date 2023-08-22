@@ -208,7 +208,14 @@ pub async fn prod_communication<'a>(
 
 pub async fn dev_communication(committee_id: u32, working_port: String, test_port: String, mut value: Vec<String>, args: Vec<String>) -> Vec<String>
 {    
+    
    
+    newclient::match_tcp_client( 
+        working_port,
+        test_port,
+        committee_id.clone(), value.clone(), args.clone()).await;
+
+
     value.push(committee_id.to_string());
 
     let joined_string = value.join(", ");    
@@ -254,10 +261,10 @@ pub async fn nested_dev_communication(committee_id: u32, working_port: String, t
             let three_millis = time::Duration::from_millis(3);
             thread::sleep(three_millis);
 
-            // let _connections_client = newclient::match_tcp_client( 
-            //     ["127.0.0.1".to_string(), (initial_port_client + 500).to_string()].join(":"),
-            //     ["127.0.0.1".to_string(), (test_port_client + 500).to_string()].join(":"),
-            //     committee_id.clone(), value.clone(), args.clone());
+            let _connections_client = newclient::match_tcp_client( 
+                ["127.0.0.1".to_string(), (initial_port_client + 500).to_string()].join(":"),
+                ["127.0.0.1".to_string(), (test_port_client + 500).to_string()].join(":"),
+                committee_id.clone(), value.clone(), args.clone());
 
         });
 

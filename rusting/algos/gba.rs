@@ -4,116 +4,66 @@ use crate::nodes::reactor::communication;
 #[path = "../types/generic.rs"]
 mod generic; 
 
-use std::env;
-
 
 async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, value: Vec<String>, medium: String, mode: String, types: String) -> Vec<String>
-{
+    args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
+{    
     
-    if medium=="prod_init"
-     {
-        let output  = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-        args.clone(), value.clone(), mode.clone(), types.clone()).await;
+    let output  = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, _index, 
+    args.clone(), value.clone(), mode.clone(), types.clone()).await;
 
-        return output;
-    }
-    else 
-    {
-        let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
-            println!("INITIAL_PORT_STR is not set.");
-            String::new()
-        });
-        let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
-            println!("TEST_PORT_STR is not set.");
-            String::new()
-        });
-    
-        let initial_port: u32 = initial_port_str.parse().unwrap();
-        let test_port: u32 = test_port_str.parse().unwrap();
+    return output;
 
-        let output = communication::nested_dev_communication(committee_id, (initial_port + _index).to_string(), 
-        (test_port + _index).to_string(), value.clone(), args.clone()).await;
-
-        return output;
-    }
-
-    
 
 }
 
 #[allow(non_snake_case)]
-fn check_echo_major_v(echo_phase_output: Vec<String>, V: String, medium: String) -> (usize, Vec<String>)
+fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<String>)
 {
     let mut count: usize = 0;
 
     let val: &str = V.as_str();
 
     let mut pi: Vec<String> = Vec::new();
-
-    if medium.clone()=="prod_init"
+    
+    for output in echo_phase_output
     {
-        for output in echo_phase_output
+        let split_output: Vec<&str> = output.split(", ").collect();
+
+        if split_output[1].contains(&val.clone())
         {
-            let split_output: Vec<&str> = output.split(", ").collect();
-    
-            if split_output[1].contains(&val.clone())
-            {
-                count+=1;
-    
-                pi.push(split_output[0].to_string());
-            }
+            count+=1;
+
+            pi.push(split_output[0].to_string());
         }
-    
-        return (count, pi);
-    }
-    else 
-    {
-        let val = echo_phase_output[1].clone();
-        pi.push(val);
-        return (1, pi);
     }
 
+    return (count, pi);
+    
     
 
 }
 
 #[allow(non_snake_case)]
-fn check_other_major(mut forward_output: Vec<String>, V: String, medium: String) -> bool
+fn check_other_major(forward_output: Vec<String>, V: String) -> bool
 {
-    if medium.clone()=="prod_init"
+    
+    for output in forward_output
     {
-        for output in forward_output
-        {
-            let split_output: Vec<&str> = output.split(", ").collect();
+        let split_output: Vec<&str> = output.split(", ").collect();
 
-            if !split_output[0].contains(&V)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-    else 
-    {
-        forward_output.pop().expect("Vector is empty.");
-        
-        let split_output: Vec<&str> = forward_output[0].split(" ").collect();
-
-        for output in split_output.clone()
+        if !split_output[0].contains(&V)
         {
-            if output!=V
-            {
-                return false;
-            }
+            return false;
         }
-        return true;
     }
+    return true;
+    
 }
 
 #[allow(non_snake_case)]
 pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, mut V: String, medium: String, mode: String, types: String, committee_length: usize) -> (String, usize)
+    args: Vec<String>, mut V: String, mode: String, types: String, committee_length: usize) -> (String, usize)
 {
 
     let own_signature = args[6].clone().to_string();
@@ -132,10 +82,10 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     let echo_vec = echo.to_vec();
 
     let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, port_count, _index, 
-    args.clone(), echo_vec, medium.clone(), mode.clone(), types.clone()).await;
+    args.clone(), echo_vec, mode.clone(), types.clone()).await;
 
     
-    let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone(), medium.clone());
+    let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone());
    
     
     if count > b
@@ -158,7 +108,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
         W_vec.push([pi_val, v].join(" "));
 
         forward_output = gba_communication(committee_id, ip_address.clone(), level, port_count+250, _index, 
-            args.clone(), W_vec, medium.clone(), mode.clone(), types.clone()).await;
+            args.clone(), W_vec, mode.clone(), types.clone()).await;
         
         sent = true;
     }
@@ -167,7 +117,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     if sent==true
     {        
-        let check = check_other_major(forward_output.clone(), V.clone(), medium.clone());
+        let check = check_other_major(forward_output.clone(), V.clone());
 
         if check==true
         {
@@ -175,26 +125,21 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
             let vote1_vec = vote1.to_vec();
 
             first_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+300, _index, 
-                args.clone(), vote1_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
+                args.clone(), vote1_vec.clone(), mode.clone(), types.clone()).await;
         }
     }
 
     if first_vote_output.len() >=b
     {
-
-        if medium.clone()=="prod_init"
+        
+        for output in first_vote_output
         {
-            for output in first_vote_output
-            {
-                let split_output: Vec<&str> = output.split(", ").collect();
-                C1.push((split_output[0].to_string(), split_output[1].to_string()));
+            let split_output: Vec<&str> = output.split(", ").collect();
+            C1.push((split_output[0].to_string(), split_output[1].to_string()));
 
-            }
         }
-        else 
-        {
-            C1.push((first_vote_output[0].to_string(), first_vote_output[1].to_string()));
-        }
+    
+        
     }
 
     let mut second_vote_output: Vec<String> = Vec::new();
@@ -210,27 +155,20 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
 
         second_vote_output = gba_communication(committee_id, ip_address.clone(), level, port_count+350, _index, 
-            args.clone(), vote2_vec.clone(), medium.clone(), mode.clone(), types.clone()).await;
+            args.clone(), vote2_vec.clone(), mode.clone(), types.clone()).await;
 
     }
 
     if second_vote_output.len()>=b
-    {
-        if medium.clone()=="prod_init"
+    {        
+        for output in second_vote_output
         {
-            for output in second_vote_output
-            {
-                let split_output: Vec<&str> = output.split(", ").collect();
-                C2.push((split_output[1].to_string(), split_output[2].to_string()));
+            let split_output: Vec<&str> = output.split(", ").collect();
+            C2.push((split_output[1].to_string(), split_output[2].to_string()));
 
-            }
         }
-        else 
-        {
-            let split_output: Vec<&str> = second_vote_output[1].split(", ").collect();
-
-            C2.push((split_output[0].to_string(), split_output[1].to_string()));
-        }
+        
+        
     }
     
     

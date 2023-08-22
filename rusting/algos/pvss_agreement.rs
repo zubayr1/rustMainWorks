@@ -50,13 +50,9 @@ pub fn from_shards(mut data: Vec<Option<Vec<u8>>>, num_nodes: usize, num_faults:
 
 
 #[allow(unused)]
-pub fn encoder(pvss_data: &[u8], mut committee_size: usize, medium: String) -> Vec<String>
+pub fn encoder(pvss_data: &[u8], mut committee_size: usize) -> Vec<String>
 {
     
-    if medium.clone()=="dev_init".to_string()
-    {
-        committee_size=2;
-    }
 
     let original_data = pvss_data;
     let num_nodes = committee_size;      // Total number of shards

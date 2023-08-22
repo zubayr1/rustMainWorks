@@ -5,9 +5,7 @@ use tokio::io::AsyncWriteExt;
 use tokio::fs::OpenOptions;
 
 use std::collections::HashMap;
-use std::net::SocketAddr;
 use chrono::Utc;
-use std::env;
 
 
 
@@ -157,7 +155,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                
                 _pvss_data = reactor::reactor_init( 
                     _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone(), port_count.clone(), "prod_init".to_string()).await;
+                level, _index, args.clone(), port_count.clone()).await;
                 level+=1;
                 
                 println!("{}", _pvss_data);
@@ -187,52 +185,3 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     
 }
 
-
-pub async fn dev_initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
-{
-
-    let mut file = OpenOptions::new().write(true).create(true).open("output.log").await.unwrap();
-
-
-    let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
-
-    sorted.sort_by_key(|a| a.0);
-
-
-    let start_time = Utc::now().time();
-
-    
-    for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
-    { 
-        println!("epoch {}", _index);
-
-        let text;
-
-        text = ["epoch ".to_string(), _index.to_string()].join(": ");
-        file.write_all(text.as_bytes()).await.unwrap();
-        file.write_all(b"\n").await.unwrap();
-
-        file.flush().await.unwrap();
-
-        let port_count: u32 = 0;        
-
-        let mut _pvss_data: String = "".to_string();
-
-        let pvss_data = ["pvss_data".to_string(), 999.to_string()].join(" ");     
-        let mut ip_address: Vec<&str> = Vec::new();
-        let address:&str = "127.0.0.1";
-        ip_address.push(address);
-        let level = 0;
-
-       
-        reactor::reactor_init( 
-            pvss_data.clone(), 999, ip_address.clone(), level, 
-        _index, args.clone(), port_count.clone(), "dev_init".to_string()).await;
-    }
-
-    let end_time = Utc::now().time();
-
-    let diff = end_time - start_time;
-    
-    println!("End by {}. time taken {} seconds", args[6], diff.num_seconds());
-}

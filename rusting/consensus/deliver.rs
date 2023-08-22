@@ -7,10 +7,10 @@ mod pvss_agreement;
 
 
 
-pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: usize, medium: String) -> (Vec<String>, Vec<Vec<u8>>, usize)
+pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: usize) -> (Vec<String>, Vec<Vec<u8>>, usize)
 { 
     // Step 1.1: Partition m and run Encode algorithm
-    let code_words = pvss_agreement::encoder(pvss_data, committee_length, medium);
+    let code_words = pvss_agreement::encoder(pvss_data, committee_length);
 
     // Step 1.2: create merkle proof: createWit
     let merkle_tree = merkle_tree::create_tree(code_words.clone());
