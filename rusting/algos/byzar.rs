@@ -31,8 +31,6 @@ pub async fn twobyzar<'a>(
 {   
     let ip_address_vec: Vec<&str> = ip_address.to_vec();
 
-    let (V, _g) = ("".to_string(), 1);
-
     // let (V, _g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
     // V.clone(), mode.clone(), types.clone(), committee_length).await;
 
