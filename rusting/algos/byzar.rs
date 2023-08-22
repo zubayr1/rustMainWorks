@@ -41,8 +41,8 @@ pub async fn twobyzar<'a>(
     
         let new_committee_length = committee_length/2;
 
-        println!("first half {:?},    {:?}", first_half, V);
-        println!("second half {:?},    {:?}", second_half, V);
+        println!("first half {:?}", first_half);
+        println!("second half {:?}", second_half);
 
         twobyzar( 
             committee_id, &first_half.to_vec(), level, port_count, _index, 
