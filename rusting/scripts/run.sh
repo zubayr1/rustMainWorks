@@ -27,7 +27,7 @@ done
 adversary = 0
 
 # check if adversary
-FILE="${1:-adversaries.txt}"
+FILENEW="${1:-adversaries.txt}"
 
 # Read ip file
 while IFS= read -r line; do
@@ -35,7 +35,7 @@ while IFS= read -r line; do
         adversary=1
         break  
     fi
-done < $FILE
+done < $FILENEW
 
 
 
