@@ -70,7 +70,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 {  
     let mut file = OpenOptions::new().write(true).create(true).open("output.log").await.unwrap();
 
-    println!("{:?}", args[8]);
+    println!("{:?}", args[7]);
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
 
     sorted.sort_by_key(|a| a.0);
