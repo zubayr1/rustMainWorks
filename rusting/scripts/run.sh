@@ -41,4 +41,4 @@ done < $FILE
 
 cd "rustMainWorks/rusting"
 
-/home/ubuntu/.cargo/bin/cargo run -- nok "$ID" 4 05050021  prod "$IP" 10 "$adversary"
+/home/ubuntu/.cargo/bin/cargo run -- nok "$ID" 4 05050021  prod "$IP" 1 "$adversary"
