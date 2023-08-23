@@ -37,7 +37,7 @@ while IFS= read -r line; do
     fi
 done < $FILENEW
 
-
+echo "$adversary"
 
 cd "rustMainWorks/rusting"
 
