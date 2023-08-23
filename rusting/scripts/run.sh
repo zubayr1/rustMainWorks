@@ -31,7 +31,7 @@ FILE="${1:-adversaries.txt}"
 
 # Read ip file
 while IFS= read -r line; do
-     if [[ "$line" == *"$OWN_IP"* ]]; then
+     if [[ "$line" == *"$IP"* ]]; then
         adversary=1
         break  
     fi
