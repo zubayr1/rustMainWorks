@@ -49,8 +49,6 @@ pub async fn BA<'a>(
         _index, args.clone(), value.clone(), mode.clone(), "broadcast".to_string()).await;
 
 
-    println!("{:?}", output);
-
     if g==0
     {
         let mut value_vec: Vec<String> = Vec::new();
