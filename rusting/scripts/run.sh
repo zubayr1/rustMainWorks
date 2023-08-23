@@ -24,7 +24,21 @@ do
         fi
 done
 
+adversary = 0
+
+# check if adversary
+FILE="${1:-adversaries.txt}"
+
+# Read ip file
+while IFS= read -r line; do
+     if [[ "$line" == *"$OWN_IP"* ]]; then
+        adversary=1
+        break  
+    fi
+done < $FILE
+
+
 
 cd "rustMainWorks/rusting"
 
-/home/ubuntu/.cargo/bin/cargo run -- nok "$ID" 4 05050021  prod "$IP" 10 1
+/home/ubuntu/.cargo/bin/cargo run -- nok "$ID" 4 05050021  prod "$IP" 10 "$adversary"
