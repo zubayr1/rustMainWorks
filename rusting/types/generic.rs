@@ -108,3 +108,26 @@ impl Accum
         vec![self.sign, self.accumulation_value, self.types]
     }
 }
+
+
+
+#[allow(unused)]
+pub struct Propose
+{
+    pub sign: String,
+    pub value: String,
+    pub types: String
+}
+
+#[allow(unused)]
+impl Propose
+{
+    pub fn create_propose(sign: String, value: String) -> Self
+    {
+        Propose{sign:sign, value: value, types: "propose".to_string()}
+    }
+
+    pub fn to_vec(self) -> Vec<String> {
+        vec![self.sign, self.value, self.types]
+    }
+}
