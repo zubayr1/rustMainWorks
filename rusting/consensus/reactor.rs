@@ -410,9 +410,9 @@ pub async fn accum_reactor(
     let V2 = accum::accum_check(V2_vec.clone(), committee_length.clone());
 
     
-    let v1 = byzar::BA(committee_id, ip_address, level, port_count, _index, args.clone(),
+    let v1 = byzar::byzar(committee_id, ip_address, level, port_count, _index, args.clone(),
             V1.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
-    let v2 = byzar::BA( committee_id, ip_address, level, port_count, _index, args.clone(), 
+    let v2 = byzar::byzar( committee_id, ip_address, level, port_count, _index, args.clone(), 
         V2.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
 
