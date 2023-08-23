@@ -3,6 +3,9 @@
 mod gba; 
 use async_recursion::async_recursion;
 
+use std::collections::HashMap;
+
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -26,6 +29,7 @@ pub async fn byzar(
 }
 
 
+
 #[allow(non_snake_case)]
 #[async_recursion]
 pub async fn BA<'a>( 
@@ -34,7 +38,7 @@ pub async fn BA<'a>(
 {   
     let ip_address_vec: Vec<&str> = ip_address.to_vec();
 
-    let (V, _g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
+    let (V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
     V.clone(), mode.clone(), types.clone(), committee_length).await;
 
     let mut value: Vec<String> = Vec::new();
@@ -46,6 +50,33 @@ pub async fn BA<'a>(
 
 
     println!("{:?}", output);
+
+    if g==0 || g==1
+    {
+        let mut value_vec: Vec<String> = Vec::new();
+        let mut count_map: HashMap<String, u32> = HashMap::new();
+
+        for val in output
+        {
+            let split_val: Vec<&str> = val.split(", ").collect();
+            value_vec.push(split_val[0].to_string());
+        }
+
+        for element in value_vec {
+            let count = count_map.entry(element).or_insert(0);
+            *count += 1;
+        }
+
+        let tempval = &"".to_string();
+    
+        let (most_common_element, max_count) = count_map
+            .iter()
+            .max_by_key(|&(_, count)| count)
+            .unwrap_or((&tempval, &0));
+
+        println!("{:?},  {:?}", most_common_element, max_count);
+        
+    }
 
     if committee_length!=2
     {
