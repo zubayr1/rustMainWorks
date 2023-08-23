@@ -38,7 +38,7 @@ pub async fn BA<'a>(
 {   
     let ip_address_vec: Vec<&str> = ip_address.to_vec();
 
-    let (V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
+    let (mut V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
     V.clone(), mode.clone(), types.clone(), committee_length).await;
 
     let mut value: Vec<String> = Vec::new();
@@ -51,7 +51,7 @@ pub async fn BA<'a>(
 
     println!("{:?}", output);
 
-    if g==0 || g==1
+    if g==0
     {
         let mut value_vec: Vec<String> = Vec::new();
         let mut count_map: HashMap<String, u32> = HashMap::new();
@@ -69,12 +69,12 @@ pub async fn BA<'a>(
 
         let tempval = &"".to_string();
     
-        let (most_common_element, max_count) = count_map
+        let (most_common_element, _) = count_map
             .iter()
             .max_by_key(|&(_, count)| count)
             .unwrap_or((&tempval, &0));
 
-        println!("{:?},  {:?}", most_common_element, max_count);
+        V = most_common_element.to_string();
         
     }
 
