@@ -45,7 +45,7 @@ pub async fn BA<'a>(
         _index, args.clone(), value.clone(), mode.clone(), "broadcast".to_string()).await;
 
 
-    println!("{:?}", output);
+    // println!("{:?}", output);
 
     if committee_length!=2
     {
