@@ -45,7 +45,7 @@ pub async fn BA<'a>(
         _index, args.clone(), value.clone(), mode.clone(), "broadcast".to_string()).await;
 
 
-    // println!("{:?}", output);
+    println!("{:?}", output);
 
     if committee_length!=2
     {
@@ -54,15 +54,12 @@ pub async fn BA<'a>(
     
         let new_committee_length = committee_length/2;
 
-        println!("first half {:?}", first_half);
-        println!("second half {:?}", second_half);
-
+        
         let first_result = BA( 
             committee_id, &first_half.to_vec(), level, port_count, _index, 
             args.clone(), V.clone(), mode.clone(), types.clone(), new_committee_length).await;
 
             
-
         let second_result =BA( 
             committee_id, &second_half.to_vec(), level, port_count, _index, 
             args, V, mode, types, new_committee_length).await;
