@@ -279,10 +279,10 @@ pub async fn codeword_reactor(
 {
     let mut index = 0;
     let mut codeword_output: Vec<Vec<String>> =  Vec::new();
-    println!("{:?}", witnesses_vec);
+    
     for witness in witnesses_vec
     {
-    
+        println!("bla");
         let subset_ip: &str;
         if ip_address.len()==1
         {
