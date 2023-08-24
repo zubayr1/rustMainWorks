@@ -1,6 +1,10 @@
 
 #[path = "./gba.rs"]
 mod gba; 
+
+#[path = "../types/generic.rs"]
+mod generic; 
+
 use async_recursion::async_recursion;
 
 use std::collections::HashMap;
@@ -33,12 +37,12 @@ pub async fn BA<'a>(
     let (mut V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
     V.clone(), mode.clone(), types.clone(), committee_length).await;
 
-    let mut value: Vec<String> = Vec::new();
-
-    value.push(V.clone());
+    
+    let propose = generic::Propose::create_propose("".to_string(), V.to_string());
+    let propose_vec = propose.to_vec();
 
     let output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-        _index, args.clone(), value.clone(), mode.clone(), "broadcast".to_string()).await;
+        _index, args.clone(), propose_vec.clone(), mode.clone(), "broadcast".to_string()).await;
 
 
     if g==0
