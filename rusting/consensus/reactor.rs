@@ -283,7 +283,7 @@ pub async fn reactor<'a>(
         (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, committee_length, initial_port, test_port, qual).await;
-         println!("{:?},    {:?}", codeword_vec, witnesses_vec) ;  
+
         return reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), committee_length, qual).await;
     }
@@ -415,7 +415,7 @@ pub async fn accum_reactor(
     let v2 = byzar::BA( committee_id, ip_address, level, port_count, _index, args.clone(), 
         V2.clone(), mode.clone(), "broadcast".to_string(), committee_length.clone()).await;
 
-
+    println!("{:?},   {:?}", v1, v2);
     let mut codeword_vec: Vec<String> = Vec::new();
     let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
