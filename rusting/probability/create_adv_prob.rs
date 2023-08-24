@@ -8,11 +8,13 @@ pub fn create_prob(num_nodes: usize) -> bool
 
     let n1: usize = rng.gen();
 
-    if n1 % num_nodes ==0
-    {
-        return true;
-    }
-    return false;
+    // if n1 % num_nodes ==0
+    // {
+    //     return true;
+    // }
+    // return false;
+
+    return true;
 }
 
 fn modify_accum(input: String) -> String

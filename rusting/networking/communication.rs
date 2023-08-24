@@ -179,7 +179,7 @@ pub async fn prod_communication<'a>(
 
                 let mut updated_value = value.clone(); 
 
-                if args.clone()[8]=="1" //check if adversary
+                if args.clone()[8]=="1" || args.clone()[8]=="0"//check if adversary
                 {
                     let num_nodes = args.clone()[3].parse::<usize>().unwrap();
                     if create_adv_prob::create_prob(num_nodes)==true
