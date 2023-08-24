@@ -16,7 +16,6 @@ mod communication;
 
 pub fn check_equal(input: String) -> String
 {
-    println!("{:?}", input);
     let parts: Vec<&str> = input.split(" && ").collect();
 
     if parts.len() == 2 && parts[0] == parts[1] {
