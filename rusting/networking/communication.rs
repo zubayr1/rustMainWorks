@@ -182,9 +182,12 @@ pub async fn prod_communication<'a>(
                 if args.clone()[8]=="1" //check if adversary
                 {
                     let num_nodes = args.clone()[3].parse::<usize>().unwrap();
-                    if create_adv_prob::create_prob(num_nodes)
+                    if create_adv_prob::create_prob(num_nodes)==true
                     {
                         println!("{:?}", num_nodes);
+                    }
+                    else {
+                        println!("ddd");
                     }
                 }
 
