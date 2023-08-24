@@ -401,6 +401,7 @@ pub async fn accum_reactor(
 
     if v1!="bot" && v1!=""
     {
+        println!("{:?}", v1);
         qual.push(1);
     }
     if v2!="bot" && v2!=""
@@ -408,7 +409,7 @@ pub async fn accum_reactor(
         qual.push(2);
     }
     let qual_clone = qual.clone();
-    println!("{:?}", v1);
+    
     for val in qual
     {
         if val==1 && v1==acc_value_zl
