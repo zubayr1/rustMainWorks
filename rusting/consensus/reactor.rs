@@ -152,7 +152,8 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
         
     } 
     else 
-    {    
+    { 
+        println!("received_output{:?}", received_output)   ;
         for op in received_output.clone()
         {
             let mut codeword_vec: Vec<Vec<u8>> = Vec::new();
