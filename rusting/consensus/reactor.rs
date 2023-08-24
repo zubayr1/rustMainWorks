@@ -91,7 +91,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
 ) -> (String, String, String)
-{   println!("{:?}", output);
+{   
     let mut data: String = "pvss".to_string();
 
     let mut W1: String = "".to_string();
@@ -304,7 +304,7 @@ pub async fn codeword_reactor(
 -> Vec<Vec<String>>
 {
     let mut index = 0;
-
+    println!("{:?}", witnesses_vec);
     let mut codeword_output: Vec<Vec<String>> =  Vec::new();
     for witness in witnesses_vec
     {
