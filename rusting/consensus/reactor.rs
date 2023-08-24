@@ -1,9 +1,6 @@
-use std::env;
 use async_recursion::async_recursion;
-use tokio::net::TcpStream;
-use std::collections::HashMap;
-use crate::nodes::Node;
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
+
+use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::fs::OpenOptions;
 
 #[path = "../networking/communication.rs"]
@@ -45,17 +42,13 @@ mod newserver;
 
 async fn communication(
     committee_id: u32, ip_address: Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, mode: String,
-    initial_port: u32, test_port: u32, value: Vec<String>, communication_type: String) -> Vec<String>
+    value: Vec<String>, communication_type: String) -> Vec<String>
 {
-    let mut output: Vec<String>= Vec::new();
-
     
-    output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
+    let output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
         _index, args.clone(), value.clone(), mode.clone(), communication_type.to_string()).await;
 
     
-        
-        
     
     return output;
 }
@@ -88,8 +81,7 @@ pub async fn reactor_init(
 
 #[allow(non_snake_case)]
 pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: usize,
-    committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    initial_port: u32, test_port: u32
+    committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32
 ) -> (String, String, String)
 {   
     let mut data: String = "pvss".to_string();
@@ -117,7 +109,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
                 // send witness to nodes if have received the first valid code word: prod
                 let comm_output = communication(committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count, 
-                    mode.clone(), initial_port, test_port, codeword.clone(), 
+                    mode.clone(), codeword.clone(), 
                     "broadcast".to_string()).await;
                 received_output.push(comm_output);
             }
@@ -243,29 +235,15 @@ pub async fn reactor<'a>(
     value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, mode: String, committee_length: usize,
     qual: Vec<u32>) -> String
 { 
- 
-    let initial_port_str = env::var("INITIAL_PORT").unwrap_or_else(|_| {
-        println!("INITIAL_PORT_STR is not set.");
-        String::new()
-    });
-    let test_port_str = env::var("TEST_PORT").unwrap_or_else(|_| {
-        println!("TEST_PORT_STR is not set.");
-        String::new()
-    });
-   
-    let initial_port: u32 = initial_port_str.parse().unwrap();
-    let test_port: u32 = test_port_str.parse().unwrap();
-        
-    
+     
     if mode.contains("codeword")
     {     
         let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
-            value, merkle_len, codeword_vec, witnesses_vec, mode.clone(), initial_port, test_port).await;
+            value, merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
 
         
         let (pvss_data, w1, w2) = reaction(codeword_output, mode, committee_length,            
-            committee_id, ip_address, level, _index,  args, port_count, 
-            initial_port, test_port
+            committee_id, ip_address, level, _index,  args, port_count
         ).await;
         
         if level==1
@@ -281,7 +259,7 @@ pub async fn reactor<'a>(
         let (codeword_vec, witnesses_vec, merkle_len, qual): 
         (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
-            value.clone(), mode, committee_length, initial_port, test_port, qual).await;
+            value.clone(), mode, committee_length, qual).await;
 
         return reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), committee_length, qual).await;
@@ -299,7 +277,7 @@ pub async fn reactor<'a>(
 pub async fn codeword_reactor( 
     committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, 
-    mode: String, initial_port: u32, test_port: u32)
+    mode: String)
 -> Vec<Vec<String>>
 {
     let mut index = 0;
@@ -332,7 +310,7 @@ pub async fn codeword_reactor(
 
         // send codeword_vec individually to nodes: prod
         let output = communication(committee_id.clone(), subset_vec.clone(), level, _index, args.clone(), port_count, 
-        mode.clone(), initial_port, test_port, codeword_vec, "individual".to_string()).await;
+        mode.clone(), codeword_vec, "individual".to_string()).await;
         
         codeword_output.push(output);
     
@@ -347,7 +325,7 @@ pub async fn codeword_reactor(
 #[allow(non_snake_case)]
 pub async fn accum_reactor(    
     pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
-    acc_value_zl: String, mode: String, committee_length: usize, initial_port: u32, test_port: u32, mut qual: Vec<u32>) 
+    acc_value_zl: String, mode: String, committee_length: usize, mut qual: Vec<u32>) 
     ->  (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>)
 {   
 
@@ -356,7 +334,7 @@ pub async fn accum_reactor(
 
     //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
     let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level.clone(), _index, args.clone(), port_count, 
-        mode.clone(), initial_port, test_port, accum_vec, "broadcast".to_string()).await;
+        mode.clone(), accum_vec, "broadcast".to_string()).await;
 
     let mut V1_vec: Vec<String> = Vec::new();
     let mut V2_vec: Vec<String> = Vec::new();
