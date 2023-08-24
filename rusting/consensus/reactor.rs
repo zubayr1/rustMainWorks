@@ -401,7 +401,7 @@ pub async fn accum_reactor(
 
     if v1!="bot" && v1!=""
     {
-        println!("{:?}", v1);
+        println!("zzz{:?}", v1);
         qual.push(1);
     }
     if v2!="bot" && v2!=""
