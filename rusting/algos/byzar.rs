@@ -10,6 +10,17 @@ use std::collections::HashMap;
 mod communication;
 
 
+pub fn check_equal(input: String) -> String
+{
+    let parts: Vec<&str> = input.split(" && ").collect();
+
+    if parts.len() == 2 && parts[0] == parts[1] {
+        return parts[0].to_string();
+    } else {
+        return "bot".to_string();
+    }
+}
+
 #[allow(non_snake_case)]
 #[async_recursion]
 pub async fn BA<'a>( 
