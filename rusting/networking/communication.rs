@@ -186,8 +186,6 @@ pub async fn prod_communication<'a>(
                     {
                         updated_value = create_adv_prob::modify_string(value.clone());
 
-                        println!("{:?}", updated_value);
-
                     }
                     
                 }

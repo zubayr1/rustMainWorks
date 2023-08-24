@@ -33,6 +33,8 @@ pub fn modify_string(mut input_str: Vec<String>) -> Vec<String>
 
         input_str[1] = mutable_input;
 
+        println!("{:?}", input_str);
+
     }
     
     input_str
