@@ -283,7 +283,7 @@ pub async fn reactor<'a>(
         (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>) = accum_reactor(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(), port_count, 
             value.clone(), mode, committee_length, initial_port, test_port, qual).await;
-            
+         println!("{:?},    {:?}", codeword_vec, witnesses_vec) ;  
         return reactor(pvss_data, committee_id, ip_address, level, _index, args, port_count, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), committee_length, qual).await;
     }
@@ -304,7 +304,6 @@ pub async fn codeword_reactor(
 -> Vec<Vec<String>>
 {
     let mut index = 0;
-    println!("{:?}", witnesses_vec);
     let mut codeword_output: Vec<Vec<String>> =  Vec::new();
     for witness in witnesses_vec
     {
