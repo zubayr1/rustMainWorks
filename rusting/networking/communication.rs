@@ -184,9 +184,7 @@ pub async fn prod_communication<'a>(
                     let num_nodes = args.clone()[3].parse::<usize>().unwrap();
                     if create_adv_prob::create_prob(num_nodes)==true
                     {
-                        let modified_probability = 0.1; // Modify each bit with a probability of 10%
-
-                        updated_value = create_adv_prob::modify_string(value.clone(), modified_probability);
+                        updated_value = create_adv_prob::modify_string(value.clone());
 
                         println!("{:?}", updated_value);
 
