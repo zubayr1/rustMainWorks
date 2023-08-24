@@ -60,7 +60,7 @@ pub async fn reactor_init(
     let committee_length = ip_address.len();    
 
     let leaves = pvss_agreement::encoder(pvss_data.as_bytes(), committee_length.clone());
-
+    println!("{:?}", leaves);
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
