@@ -109,7 +109,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
         if !check_first_codeword_list.contains(&val_split[1].to_string())
         {
             let (proof, codeword) = codeword::verify_codeword(value);
-
+            println!("{:?},   {:?}", proof, codeword);
             if proof==true
             {
                 check_first_codeword_list.push(val_split[1].to_string());
