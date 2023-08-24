@@ -13,8 +13,6 @@ mod generic;
 #[path = "../types/accum.rs"]
 mod accum;
 
-#[path = "../algos/pvss_agreement.rs"]
-mod encoder;
 
 #[path = "../algos/byzar.rs"]
 mod byzar;
@@ -61,7 +59,7 @@ pub async fn reactor_init(
 {     
     let committee_length = ip_address.len();    
 
-    let leaves = encoder::encoder(pvss_data.as_bytes(), committee_length.clone());
+    let leaves = pvss_agreement::encoder(pvss_data.as_bytes(), committee_length.clone());
 
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
