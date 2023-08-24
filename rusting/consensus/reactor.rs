@@ -91,7 +91,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
     committee_id: u32, ip_address:  &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     initial_port: u32, test_port: u32
 ) -> (String, String, String)
-{
+{   println!("{:?}", output);
     let mut data: String = "pvss".to_string();
 
     let mut W1: String = "".to_string();
@@ -109,7 +109,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
         if !check_first_codeword_list.contains(&val_split[1].to_string())
         {
             let (proof, codeword) = codeword::verify_codeword(value);
-            println!("{:?},   {:?}", proof, codeword);
+            
             if proof==true
             {
                 check_first_codeword_list.push(val_split[1].to_string());
