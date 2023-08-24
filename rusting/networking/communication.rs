@@ -21,6 +21,10 @@ mod nested_nodes_test;
 mod codeword;
 
 
+#[path = "../probability/create_adv_prob.rs"]
+mod create_adv_prob;
+
+
 pub fn read_ports(file_name: String) -> Vec<u32>
 {
     let file = File::open(file_name).expect("Failed to open the file");
@@ -49,8 +53,6 @@ pub async fn prod_communication<'a>(
     committee_id: u32, ip_address: Vec<&'a str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
 {
-
-
     let mut client_count = 1;
 
     if mode.contains("codeword")
@@ -174,12 +176,24 @@ pub async fn prod_communication<'a>(
                     }
                     
                 }
+
+                let mut updated_value = value.clone(); 
+
+                if args.clone()[8]=="1" //check if adversary
+                {
+                    let num_nodes = args.clone()[3].parse::<usize>().unwrap();
+                    if create_adv_prob::create_prob(num_nodes)
+                    {
+                        println!("{:?}", num_nodes);
+                    }
+                }
+
                 
                 let additional_port = client_port_list[count];
                 
                  newclient::match_tcp_client(
                     [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), value.clone(), 
+                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), updated_value.clone(), 
                 args.clone()).await;
 
                 
