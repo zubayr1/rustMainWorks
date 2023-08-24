@@ -14,14 +14,13 @@ mod communication;
 #[async_recursion]
 pub async fn BA<'a>( 
     committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, mut V: String, mode: String, types: String, committee_length: usize) -> String
+    args: Vec<String>, V: String, mode: String, types: String, committee_length: usize) -> String
 {   
     let ip_address_vec: Vec<&str> = ip_address.to_vec();
 
-    let g=1;
 
-    // let (mut V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
-    // V.clone(), mode.clone(), types.clone(), committee_length).await;
+    let (mut V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
+    V.clone(), mode.clone(), types.clone(), committee_length).await;
 
     let mut value: Vec<String> = Vec::new();
 
