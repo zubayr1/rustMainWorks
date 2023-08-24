@@ -60,7 +60,6 @@ pub async fn reactor_init(
     let committee_length = ip_address.len();    
 
     let leaves = pvss_agreement::encoder(pvss_data.as_bytes(), committee_length.clone());
-    println!("{:?}", leaves);
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -409,7 +408,7 @@ pub async fn accum_reactor(
         qual.push(2);
     }
     let qual_clone = qual.clone();
-
+    println!("{:?}", v1);
     for val in qual
     {
         if val==1 && v1==acc_value_zl
