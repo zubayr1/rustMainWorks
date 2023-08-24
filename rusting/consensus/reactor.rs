@@ -399,11 +399,11 @@ pub async fn accum_reactor(
 
     let mut merkle_len: usize= 0;
 
-    if v1!="bot"
+    if v1!="bot" && v1!=""
     {
         qual.push(1);
     }
-    if v2!="bot"
+    if v2!="bot" && v2!=""
     {
         qual.push(2);
     }
