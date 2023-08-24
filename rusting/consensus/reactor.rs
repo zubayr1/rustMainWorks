@@ -279,6 +279,7 @@ pub async fn codeword_reactor(
 {
     let mut index = 0;
     let mut codeword_output: Vec<Vec<String>> =  Vec::new();
+    println!("{:?}", witnesses_vec);
     for witness in witnesses_vec
     {
     
@@ -423,6 +424,5 @@ pub async fn accum_reactor(
 
         }
     }           
-    println!("{:?} ,   {:?}", codeword_vec, witnesses_vec);
     return (codeword_vec, witnesses_vec, merkle_len, qual_clone);
     }
