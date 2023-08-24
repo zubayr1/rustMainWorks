@@ -24,7 +24,7 @@ do
         fi
 done
 
-adversary = 0
+adversary=0
 
 # check if adversary
 FILENEW="${1:-adversaries.txt}"
