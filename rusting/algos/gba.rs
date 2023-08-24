@@ -88,7 +88,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     let (count, pi) = check_echo_major_v(echo_phase_output.clone(), V.clone());
    
     
-    if count > b
+    if count > b // forward phase
     {
         let tuples: Vec<(String, String)> = pi
         .iter()
@@ -115,7 +115,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let mut first_vote_output: Vec<String> = Vec::new();
 
-    if sent==true
+    if sent==true //first vote phase
     {        
         let check = check_other_major(forward_output.clone(), V.clone());
 
@@ -129,7 +129,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
         }
     }
 
-    if first_vote_output.len() >=b
+    if first_vote_output.len() >=b //update C1
     {
         
         for output in first_vote_output
@@ -144,7 +144,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     let mut second_vote_output: Vec<String> = Vec::new();
 
-    if C1.len() >0
+    if C1.len() >0 //second vote phase
     {
         let (_, val): (String, String) = C1[0].clone();
 
@@ -159,7 +159,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
 
     }
 
-    if second_vote_output.len()>=b
+    if second_vote_output.len()>=b //update C2
     {        
         for output in second_vote_output
         {
@@ -172,7 +172,7 @@ pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, port_coun
     }
     
     
-    if C1.len()>0
+    if C1.len()>0 // output generation
     {
         let (_, v1_prime) =  C1[0].clone();
 
