@@ -400,8 +400,7 @@ pub async fn accum_reactor(
     let mut merkle_len: usize= 0;
 
     if v1!="bot" && v1!=""
-    {
-        println!("zzz{:?}", v1);
+    {        
         qual.push(1);
     }
     if v2!="bot" && v2!=""
@@ -411,7 +410,7 @@ pub async fn accum_reactor(
     let qual_clone = qual.clone();
     
     for val in qual
-    {
+    {   println!("{:?}", val);
         if val==1 && v1==acc_value_zl
         {
             (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone());
