@@ -214,7 +214,7 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
     }
     qual.retain(|&x| b.contains(&x));
 
-
+    println!("{:?}", qual);
     let mut codeword_vec: Vec<String> = Vec::new();
     let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
@@ -241,7 +241,7 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
         }
     }
-      
+
     let mut data = "".to_string();
     data+=&W1;
     data+=&W2;
