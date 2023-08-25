@@ -8,7 +8,7 @@ mod pvss_agreement;
 
 
 pub fn deliver_encode(pvss_data: &[u8], _accum_value: String, committee_length: usize) -> (Vec<String>, Vec<Vec<u8>>, usize)
-{   println!("{:?}", pvss_data);
+{   println!("aa {:?}", pvss_data);
     // Step 1.1: Partition m and run Encode algorithm
     let code_words = pvss_agreement::encoder(pvss_data, committee_length);
 
