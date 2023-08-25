@@ -229,7 +229,7 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
         if val==1 && W1!="".to_string()
         {
             // deliver
-            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), 
+            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W1.as_bytes(), 
                 W1.clone(), committee_length.clone());
 
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
@@ -246,7 +246,7 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
         if val==2 && W2!="".to_string()
         {
             //deliver
-            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), 
+            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W2.as_bytes(), 
                 W2.clone(), committee_length.clone());
 
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
