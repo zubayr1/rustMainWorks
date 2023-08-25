@@ -217,7 +217,7 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
     }
     qual.retain(|&x| b.contains(&x));
 
-    println!("{:?}", qual);
+
     let mut codeword_vec: Vec<String> = Vec::new();
     let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
 
@@ -233,6 +233,10 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
                 W1.clone(), committee_length.clone());
 
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
+            let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
+            W1.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
+
+            println!("{:?}", codeword_output);
         }
 
         if val==2 && W2!="".to_string()
@@ -242,6 +246,10 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
                 W2.clone(), committee_length.clone());
 
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
+            let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
+            W2.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
+
+            println!("{:?}", codeword_output);
         }
     }
 
@@ -277,7 +285,7 @@ pub async fn reactor<'a>(
         
         return committee_selection(pvss_data, committee_id, ip_address, level, port_count, _index, args, w1, w2, mode, committee_length, qual).await;
 
-    }
+    }    
     else if mode.contains("accum")
     {
         let (codeword_vec, witnesses_vec, merkle_len, qual): 
