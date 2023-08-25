@@ -355,7 +355,7 @@ pub async fn codeword_reactor(
         codeword_output.push(output);
     
     }
-
+    println!("{:?}\n", codeword_output);
     return codeword_output;
 }
 
