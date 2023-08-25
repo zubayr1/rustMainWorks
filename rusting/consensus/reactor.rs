@@ -236,6 +236,8 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
             let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
             W1.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
 
+            println!("{:?}", codeword_output);
+
             let (pvss_data, w1, w2) = reaction(codeword_output, mode.clone(), committee_length,            
                     committee_id, ip_address, level, _index,  args.clone(), port_count
                 ).await;
@@ -252,7 +254,8 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
             let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
             W2.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
-
+            println!("{:?}", codeword_output);
+            
             let (pvss_data, w1, w2) = reaction(codeword_output, mode.clone(), committee_length,            
                     committee_id, ip_address, level, _index,  args.clone(), port_count
                 ).await;
