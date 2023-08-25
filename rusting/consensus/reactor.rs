@@ -187,6 +187,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
 pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
     args: Vec<String>, W1: String, W2: String, mode: String, committee_length: usize,  mut qual: Vec<u32>) -> String
 {
+    println!("committee selection");
     let mut b: Vec<u32> = Vec::new();
     
     if qual.contains(&1)
