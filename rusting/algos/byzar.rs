@@ -26,6 +26,18 @@ pub fn check_equal(input: String) -> String
 }
 
 #[allow(non_snake_case)]
+pub async fn twoBA(ba_value: String) -> bool
+{
+    let splitvalue: Vec<&str> = ba_value.split(" && ").collect();
+
+    if splitvalue[0]==splitvalue[1]
+    {
+        return true;
+    }
+    return false;
+}
+
+#[allow(non_snake_case)]
 #[async_recursion]
 pub async fn BA<'a>( 
     committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
