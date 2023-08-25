@@ -232,11 +232,16 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
             (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W1.as_bytes(), 
                 W1.clone(), committee_length.clone());
 
+            let leaves = pvss_agreement::encoder(W1.as_bytes(), committee_length.clone());
+            // create accum value
+            let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
+
+            let acc_value_zl_W1 = merkle_tree::get_root(merkle_tree.clone());
+
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
             let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
-            W1.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
+            acc_value_zl_W1.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
 
-            println!("{:?}", codeword_output);
 
             let (pvss_data, w1, w2) = reaction(codeword_output, mode.clone(), committee_length,            
                     committee_id, ip_address, level, _index,  args.clone(), port_count
@@ -251,11 +256,17 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
             (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W2.as_bytes(), 
                 W2.clone(), committee_length.clone());
 
+            let leaves = pvss_agreement::encoder(W2.as_bytes(), committee_length.clone());
+            // create accum value
+            let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
+
+            let acc_value_zl_W2 = merkle_tree::get_root(merkle_tree.clone());
+
             // where 𝑧𝑗 ∈ 𝑉𝑗 and 𝐴𝑇𝑗 ∈ 𝑊𝑗 . Upon decoding a valid APVSS transcript 𝐴𝑇𝑗 for an 𝑗 ∈ Qual s.t. 𝑊𝑗 = ∅, update 𝑊𝑗 := 𝑊𝑗 ∪ {𝐴𝑇𝑗 }}.
             let codeword_output = codeword_reactor(committee_id, ip_address, level, _index, args.clone(), port_count, 
-            W2.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
-            println!("{:?}", codeword_output);
-            
+            acc_value_zl_W2.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
+
+
             let (pvss_data, w1, w2) = reaction(codeword_output, mode.clone(), committee_length,            
                     committee_id, ip_address, level, _index,  args.clone(), port_count
                 ).await;
