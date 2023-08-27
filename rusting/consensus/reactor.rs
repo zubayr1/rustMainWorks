@@ -184,31 +184,31 @@ pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_addre
 {
     let mut b: Vec<u32> = Vec::new();
 
-    // b.push(1);
-    // b.push(2);
+    b.push(1);
+    b.push(2);
     
     if qual.contains(&1)
     {
-        //2BA for W1
-        let v1 = byzar::BA(committee_id, ip_address, level, _index, args.clone(),
-            W1.clone(), mode.clone(), committee_length.clone()).await;
-        // update b
-        if byzar::twoBA(v1).await
-        {
-            b.push(1);
-        }
+        // //2BA for W1
+        // let v1 = byzar::BA(committee_id, ip_address, level, _index, args.clone(),
+        //     W1.clone(), mode.clone(), committee_length.clone()).await;
+        // // update b
+        // if byzar::twoBA(v1).await
+        // {
+        //     b.push(1);
+        // }
 
     }
     if qual.contains(&2)
     {
-        //2BA for W2
-        let v2 = byzar::BA( committee_id, ip_address, level, _index, args.clone(), 
-        W2.clone(), mode.clone(), committee_length.clone()).await;
-        // update b
-        if byzar::twoBA(v2).await
-        {
-            b.push(2);
-        }
+        // //2BA for W2
+        // let v2 = byzar::BA( committee_id, ip_address, level, _index, args.clone(), 
+        // W2.clone(), mode.clone(), committee_length.clone()).await;
+        // // update b
+        // if byzar::twoBA(v2).await
+        // {
+        //     b.push(2);
+        // }
     }
     qual.retain(|&x| b.contains(&x));
 
