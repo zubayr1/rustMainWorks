@@ -14,8 +14,6 @@ mod newclient;
 #[path ="./newserver.rs"]
 mod newserver;
 
-#[path = "./nested_nodes_test.rs"]
-mod nested_nodes_test;
 
 #[path = "../types/codeword.rs"]
 mod codeword;
