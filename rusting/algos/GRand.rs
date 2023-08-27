@@ -1,6 +1,6 @@
 
 
-pub fn initiate(pvss_data: String)
+pub fn initiate(pvss_data: Vec<u8>)
 {
     
 }

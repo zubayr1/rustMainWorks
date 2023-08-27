@@ -40,21 +40,21 @@ pub async fn twoBA(ba_value: String) -> bool
 #[allow(non_snake_case)]
 #[async_recursion]
 pub async fn BA<'a>( 
-    committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, V: String, mode: String, types: String, committee_length: usize) -> String
+    committee_id: u32, ip_address: &Vec<&str>, level: u32, _index:u32, 
+    args: Vec<String>, V: String, mode: String, committee_length: usize) -> String
 {   
     let ip_address_vec: Vec<&str> = ip_address.to_vec();
 
 
-    let (mut V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, port_count, _index, args.clone(),
-    V.clone(), mode.clone(), types.clone(), committee_length).await;
+    let (mut V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, _index, args.clone(),
+    V.clone(), mode.clone(), committee_length).await;
 
     
     let propose = generic::Propose::create_propose("".to_string(), V.to_string());
     let propose_vec = propose.to_vec();
 
-    let output = communication::prod_communication(committee_id, ip_address.clone(), level, port_count, 
-        _index, args.clone(), propose_vec.clone(), mode.clone(), "broadcast".to_string()).await;
+    let output = communication::prod_communication(committee_id, ip_address.clone(), level,  
+        _index, args.clone(), propose_vec.clone(), mode.clone()).await;
 
 
     if g==0
@@ -93,13 +93,13 @@ pub async fn BA<'a>(
 
         
         let first_result = BA( 
-            committee_id, &first_half.to_vec(), level, port_count, _index, 
-            args.clone(), V.clone(), mode.clone(), types.clone(), new_committee_length).await;
+            committee_id, &first_half.to_vec(), level, _index, 
+            args.clone(), V.clone(), mode.clone(), new_committee_length).await;
 
             
         let second_result =BA( 
-            committee_id, &second_half.to_vec(), level, port_count, _index, 
-            args, V, mode, types, new_committee_length).await;
+            committee_id, &second_half.to_vec(), level, _index, 
+            args, V, mode, new_committee_length).await;
         
         format!("{} && {}", first_result, second_result)
 

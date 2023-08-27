@@ -134,8 +134,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         file.write_all(text.as_bytes()).await.unwrap();
         file.write_all(b"\n").await.unwrap();
 
-        let mut port_count: u32 = 0;
-        
+      
         
         let mut level = 0;
 
@@ -156,12 +155,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             }
             else 
             {                               
-                port_count+=1; 
-               
+              
                
                 pvss_data = reactor::reactor_init( 
                     pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone(), port_count.clone()).await;
+                level, _index, args.clone()).await;
                 level+=1;
                 
                 println!("{:?}", String::from_utf8(pvss_data.clone()));
@@ -191,7 +189,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let start_time = Utc::now().time(); 
 
-        // GRand::initiate(_pvss_data);
+        GRand::initiate(pvss_data);
 
         let end_time = Utc::now().time();
         let diff = end_time - start_time;

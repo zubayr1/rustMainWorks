@@ -50,8 +50,8 @@ pub fn read_ports(file_name: String) -> Vec<u32>
 }
 
 pub async fn prod_communication<'a>(
-    committee_id: u32, ip_address: Vec<&'a str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, value: Vec<String>, mode: String, types: String) -> Vec<String>
+    committee_id: u32, ip_address: Vec<&'a str>, level: u32,  index:u32, 
+    args: Vec<String>, value: Vec<String>, mode: String) -> Vec<String>
 {
     let mut client_count = 1;
 
@@ -101,7 +101,7 @@ pub async fn prod_communication<'a>(
     let client_port_list = read_ports("./client_port_list.txt".to_string());
     
 
-    text = ["epoch ".to_string(), _index.to_string()].join(": ");
+    text = ["epoch ".to_string(), index.to_string()].join(": ");
     file.write_all(text.as_bytes()).unwrap();
     file.write_all(b"\n").unwrap();
     
