@@ -139,7 +139,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         
         let mut level = 0;
 
-        let mut _pvss_data: String = "".to_string();
+        let pvss_data_str: String = "".to_string();
+
+        let mut pvss_data: Vec<u8> = pvss_data_str.into_bytes();
 
        
         for (committee_id, ip_addresses_comb) in sorted.clone()
@@ -149,7 +151,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             if ip_address.len()==1
             {
                 //GET PVSS DATA FROM DIMITRIS
-                _pvss_data = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ");
+                pvss_data = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ").into_bytes();
                 level+=1
             }
             else 
@@ -157,12 +159,12 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
                 port_count+=1; 
                
                
-                _pvss_data = reactor::reactor_init( 
-                    _pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+                pvss_data = reactor::reactor_init( 
+                    pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone(), port_count.clone()).await;
                 level+=1;
                 
-                println!("{}", _pvss_data);
+                println!("{:?}", pvss_data);
 
             }
             
@@ -189,7 +191,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let start_time = Utc::now().time(); 
 
-        GRand::initiate(_pvss_data);
+        // GRand::initiate(_pvss_data);
 
         let end_time = Utc::now().time();
         let diff = end_time - start_time;

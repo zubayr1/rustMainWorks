@@ -53,13 +53,13 @@ async fn communication(
 
 
 pub async fn reactor_init(    
-    pvss_data: String, committee_id: u32, 
+    pvss_data: Vec<u8>, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
-    args: Vec<String>, port_count: u32) -> String
+    args: Vec<String>, port_count: u32) -> Vec<u8>
 {     
     let committee_length = ip_address.len();    
 
-    let leaves = pvss_agreement::encoder(pvss_data.as_bytes(), committee_length.clone());
+    let leaves = pvss_agreement::encoder(pvss_data.clone(), committee_length.clone());
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -84,7 +84,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
     let mut data: String = "pvss".to_string();
 
     let mut W1: String = "".to_string();
-    let mut W2: String = "".to_string();;
+    let mut W2: String = "".to_string();
              
     let mut received_output: Vec<Vec<String>> = Vec::new();
 
@@ -184,8 +184,8 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
 }
 
 #[allow(non_snake_case)]
-pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
-    args: Vec<String>, W1: String, W2: String, mode: String, committee_length: usize,  mut qual: Vec<u32>) -> String
+pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, port_count: u32, _index:u32, 
+    args: Vec<String>, W1: String, W2: String, mode: String, committee_length: usize,  mut qual: Vec<u32>) -> Vec<u8>
 {
     let mut b: Vec<u32> = Vec::new();
 
@@ -218,10 +218,9 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
     qual.retain(|&x| b.contains(&x));
 
 
-    let mut codeword_vec: Vec<String> = Vec::new();
-    let mut witnesses_vec: Vec<Vec<u8>>= Vec::new();
-
-    let mut merkle_len: usize= 0;
+    let mut codeword_vec: Vec<String>;
+    let mut witnesses_vec: Vec<Vec<u8>>;
+    let mut merkle_len: usize;
 
 
     for val in qual
@@ -229,10 +228,10 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
         if val==1 && W1!="".to_string()
         {
             // deliver
-            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W1.as_bytes(), 
+            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W1.clone().into_bytes(), 
                 W1.clone(), committee_length.clone());
 
-            let leaves = pvss_agreement::encoder(W1.as_bytes(), committee_length.clone());
+            let leaves = pvss_agreement::encoder(W1.clone().into_bytes(), committee_length.clone());
             // create accum value
             let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -253,10 +252,10 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
         if val==2 && W2!="".to_string()
         {
             //deliver
-            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W2.as_bytes(), 
+            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(W2.clone().into_bytes(), 
                 W2.clone(), committee_length.clone());
 
-            let leaves = pvss_agreement::encoder(W2.as_bytes(), committee_length.clone());
+            let leaves = pvss_agreement::encoder(W2.clone().into_bytes(), committee_length.clone());
             // create accum value
             let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -279,16 +278,16 @@ pub async fn committee_selection(pvss_data: String, committee_id: u32, ip_addres
     data+=&W1;
     data+=&W2;
 
-    data
+    data.into_bytes()
 
 }
 
 
 #[async_recursion]
 pub async fn reactor<'a>(     
-    pvss_data: String, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+    pvss_data: Vec<u8>, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, mode: String, committee_length: usize,
-    qual: Vec<u32>) -> String
+    qual: Vec<u32>) -> Vec<u8>
 { 
      
     if mode.contains("codeword")
@@ -302,7 +301,7 @@ pub async fn reactor<'a>(
         
         if level==1
         {
-            return pvss_data;
+            return pvss_data.into_bytes();
         }
         
         return committee_selection(pvss_data, committee_id, ip_address, level, port_count, _index, args, w1, w2, mode, committee_length, qual).await;
@@ -320,9 +319,8 @@ pub async fn reactor<'a>(
     }
     else 
     {
-        return "".to_string();
+        return "".to_string().into_bytes();
     }
-    
     
      
 }
@@ -375,7 +373,7 @@ pub async fn codeword_reactor(
 
 #[allow(non_snake_case)]
 pub async fn accum_reactor(    
-    pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
+    pvss_data: Vec<u8>, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index: u32, args: Vec<String>, port_count: u32, 
     acc_value_zl: String, mode: String, committee_length: usize, mut qual: Vec<u32>) 
     ->  (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>)
 {   
@@ -467,13 +465,13 @@ pub async fn accum_reactor(
     {   
         if val==1 && v1==acc_value_zl
         {
-            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v1.clone(), committee_length.clone());
+            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.clone(), v1.clone(), committee_length.clone());
 
         }
 
         if val==2 && v2==acc_value_zl
         {   
-            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.as_bytes(), v2.clone(), committee_length.clone());
+            (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.clone(), v2.clone(), committee_length.clone());
 
         }
     }           
