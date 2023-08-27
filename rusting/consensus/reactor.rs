@@ -180,7 +180,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
 
 #[allow(non_snake_case)]
 pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index:u32, 
-    args: Vec<String>, W1: String, W2: String, mode: String, committee_length: usize,  mut qual: Vec<u32>) -> Vec<u8>
+    args: Vec<String>, mut W1: String, mut W2: String, mode: String, committee_length: usize,  mut qual: Vec<u32>) -> Vec<u8>
 {
     let mut b: Vec<u32> = Vec::new();
 
@@ -237,11 +237,14 @@ pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_addre
             acc_value_zl_W1.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
 
 
-            let (pvss_data, w1, w2) = reaction(codeword_output, mode.clone(), committee_length,            
+            let (_, w, _) = reaction(codeword_output, mode.clone(), committee_length,            
                     committee_id, ip_address, level, _index,  args.clone()
                 ).await;
 
-            println!("{:?},      {:?},     {:?}", pvss_data, w1, w2);
+            if W1!=w
+            {
+                W1="bot".to_string();
+            }
         }
 
         if val==2 && W2!="".to_string()
@@ -261,11 +264,15 @@ pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_addre
             acc_value_zl_W2.clone(), merkle_len, codeword_vec, witnesses_vec, mode.clone()).await;
 
 
-            let (pvss_data, w1, w2) = reaction(codeword_output, mode.clone(), committee_length,            
+            let (_, w, _) = reaction(codeword_output, mode.clone(), committee_length,            
                     committee_id, ip_address, level, _index,  args.clone()
                 ).await;
 
-            println!("{:?},      {:?},     {:?}", pvss_data, w1, w2);
+            
+            if W2!=w
+            {
+                W2="bot".to_string();
+            }
         }
     }
 
