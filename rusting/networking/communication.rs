@@ -175,7 +175,7 @@ pub async fn prod_communication<'a>(
                     
                 }
 
-                let mut updated_value = value.clone(); 
+                // let mut updated_value = value.clone(); 
 
                 // if args.clone()[8]=="1" //check if adversary
                 // {
@@ -193,7 +193,7 @@ pub async fn prod_communication<'a>(
                 
                  newclient::match_tcp_client(
                     [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
-                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), updated_value.clone(), 
+                [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), value.clone(), 
                 args.clone()).await;
 
                 
