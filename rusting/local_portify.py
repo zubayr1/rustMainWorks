@@ -38,8 +38,8 @@ def portify(my_port, n, port_range_start, port_range_end):
         client_port_list.append(create_ports(client_str, port_range_start, port_range_end))
         
     
-    write_port(server_port_list, "server_port_list.txt")
-    write_port(client_port_list, "client_port_list.txt")
+    write_port(server_port_list, "server_port_list" + my_port+ ".txt")
+    write_port(client_port_list, "client_port_list" + my_port+ ".txt")
     print("ports created")
 
 

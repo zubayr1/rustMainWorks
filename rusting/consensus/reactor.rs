@@ -417,7 +417,7 @@ pub async fn accum_reactor(
 
             if line1.contains(ip) {
                 let substrings: Vec<&str> = line1.split(" ").collect();
-
+                println!("{:?}", substrings);
                 let level_usize = level as usize;
 
                 if substrings[level_usize + 1].contains("l")

@@ -94,9 +94,18 @@ pub async fn prod_communication<'a>(
 
     let handle_server_clone = Arc::clone(&output_clone);
 
+    let mut server_port_list_str = "./server_port_list{}.txt".to_string();
+    let mut client_port_list_str = "./client_port_list{}.txt".to_string();
 
-    let server_port_list = read_ports("./server_port_list.txt".to_string());
-    let client_port_list = read_ports("./client_port_list.txt".to_string());
+    if args[5]=="dev"
+    {
+        server_port_list_str = format!("./server_port_list{}.txt", args.clone()[2]);
+        client_port_list_str = format!("./client_port_list{}.txt", args.clone()[2]);
+    }
+    
+
+    let server_port_list = read_ports(server_port_list_str);
+    let client_port_list = read_ports(client_port_list_str);
     
 
     text = ["epoch ".to_string(), index.to_string()].join(": ");
@@ -147,7 +156,7 @@ pub async fn prod_communication<'a>(
                         let line = line_result.unwrap();
                         let parts: Vec<&str> = line.split("-").collect();
                         if parts[0].contains(&id.clone())
-                        {   println!("{}", parts[0]);
+                        {   
                             break;
                         }
                         else {
@@ -213,7 +222,6 @@ pub async fn prod_communication<'a>(
                         }
                     }
                 }
-            
                 // let mut updated_value = value.clone(); 
 
                 // if args.clone()[8]=="1" //check if adversary
