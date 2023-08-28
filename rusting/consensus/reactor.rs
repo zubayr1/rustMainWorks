@@ -55,7 +55,7 @@ pub async fn reactor_init(
     args: Vec<String>) -> Vec<u8>
 {     
     let committee_length = ip_address.len();    
-
+    
     let leaves = pvss_agreement::encoder(pvss_data.clone(), committee_length.clone());
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
@@ -379,7 +379,6 @@ pub async fn accum_reactor(
     acc_value_zl: String, mode: String, committee_length: usize, mut qual: Vec<u32>) 
     ->  (Vec<String>, Vec<Vec<u8>>, usize, Vec<u32>)
 {   
-
     let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl.clone());
     let accum_vec = accum.to_vec();
 

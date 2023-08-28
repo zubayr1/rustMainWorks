@@ -165,7 +165,6 @@ pub async fn prod_communication<'a>(
                     }
                 }
                 
-                
                 let additional_port = server_port_list[count];  
 
 
@@ -237,7 +236,6 @@ pub async fn prod_communication<'a>(
 
                 
                 let additional_port = client_port_list[count];
-                
                  newclient::match_tcp_client(
                     [ip.to_string(), (initial_port+ additional_port + 5000).to_string()].join(":"), 
                 [ip.to_string(), (test_port+ additional_port + 5000).to_string()].join(":"), committee_id.clone(), value.clone(), 

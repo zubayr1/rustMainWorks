@@ -38,13 +38,24 @@ async fn run_nodes(args: Vec<String>)
     while let Some(line_result) = line_stream.next_line().await.unwrap() {
         let line = line_result;
 
-        let line_uw = line;      
+        let line_uw = line;
+
+        let committeesplit: Vec<&str>;
+
+        if args[5]=="prod"
+        {
+            let textsplit: Vec<&str> = line_uw.split("-").collect();      
+
+            ids.push(textsplit[0].to_string());
+
+            committeesplit = textsplit[1].split(" ").collect();
+        }             
+        else 
+        {
+            committeesplit = line_uw.split(" ").collect();
+        }
+
         
-        let textsplit: Vec<&str> = line_uw.split("-").collect();      
-
-        ids.push(textsplit[0].to_string());
-
-        let committeesplit: Vec<&str> = textsplit[1].split(" ").collect();
 
         ip_address.push(committeesplit[0].to_string());
 
@@ -71,15 +82,32 @@ async fn run_nodes(args: Vec<String>)
 
     // filter committees: based on self ip being exist
     let self_ip = args[6].to_string();
-
-    
-    
+   
     for (i, j) in committee
     {
-        if j.contains(&self_ip.to_string())
+        if args.clone()[5]=="prod"
         {
-            filtered_committee.insert(i, j.to_string());
-        }
+            if j.contains(&self_ip.to_string())
+            {
+                
+                filtered_committee.insert(i, j.to_string());
+                
+                
+            }
+        } 
+        else 
+        {
+            let self_ip = format!("{}-{}", args[2], args[6].to_string()); 
+
+            if j.contains(&self_ip.to_string())
+            {
+                
+                filtered_committee.insert(i, j.to_string());
+                
+                
+            }
+        }       
+        
     }
     
        

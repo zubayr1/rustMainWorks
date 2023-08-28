@@ -37,7 +37,7 @@ pub async fn create_server( _ip_address: String, port: u32, testport: u32)
 #[allow(unused)]
 pub async fn handle_server(_ip_address: String, port: u32, testport: u32) 
     -> String
-{
+{    
     let start_time = Utc::now().time();
 
     let listener = TcpListener::bind(["0.0.0.0".to_string(), port.to_string()].join(":")).await.unwrap(); // open connection
@@ -45,7 +45,6 @@ pub async fn handle_server(_ip_address: String, port: u32, testport: u32)
     let test_listener = TcpListener::bind(["0.0.0.0".to_string(), testport.to_string()].join(":")).await.unwrap();
 
     let (_, _) = test_listener.accept().await.unwrap();
-
 
     let (mut socket, socket_addr) = listener.accept().await.unwrap(); // accept listening
     
