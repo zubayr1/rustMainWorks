@@ -94,8 +94,8 @@ pub async fn prod_communication<'a>(
 
     let handle_server_clone = Arc::clone(&output_clone);
 
-    let mut server_port_list_str = "./server_port_list{}.txt".to_string();
-    let mut client_port_list_str = "./client_port_list{}.txt".to_string();
+    let mut server_port_list_str = "./server_port_list.txt".to_string();
+    let mut client_port_list_str = "./client_port_list.txt".to_string();
 
     if args[5]=="dev"
     {
