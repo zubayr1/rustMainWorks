@@ -147,7 +147,7 @@ pub async fn prod_communication<'a>(
                         let line = line_result.unwrap();
                         let parts: Vec<&str> = line.split("-").collect();
                         if parts[0].contains(&id.clone())
-                        {
+                        {   println!("{}", parts[0]);
                             break;
                         }
                         else {

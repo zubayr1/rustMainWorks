@@ -390,7 +390,7 @@ pub async fn accum_reactor(
     let mut V1_vec: Vec<String> = Vec::new();
     let mut V2_vec: Vec<String> = Vec::new();
 
-    
+    println!("{:?}", V);
     let file_path = "./updatednodeinfo.txt";
 
     // Open the file for writing
