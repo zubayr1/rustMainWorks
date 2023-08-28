@@ -113,9 +113,11 @@ pub async fn prod_communication<'a>(
     file.write_all(b"\n").unwrap();
 
 
+    let types = args[5].clone();
+    let id = args[2].clone();
 
-    let handle_server_fut = async move {
-        
+
+    let handle_server_fut = async move {        
                 
         for ip in ip_address_clone.clone() 
             {              
@@ -125,18 +127,35 @@ pub async fn prod_communication<'a>(
             
                 let reader = BufReader::new(file);
             
-            
-                for line_result in reader.lines() {
-                    let line = line_result.unwrap();
-                    
-                    if line.contains(&ip.clone())
-                    {
-                        break;
-                    }
-                    else {
-                        count+=1;
+                if types.clone()=="prod"
+                {
+                    for line_result in reader.lines() {
+                        let line = line_result.unwrap();
+                        
+                        if line.contains(&ip.clone())
+                        {
+                            break;
+                        }
+                        else {
+                            count+=1;
+                        }
                     }
                 }
+                else 
+                {
+                    for line_result in reader.lines() {
+                        let line = line_result.unwrap();
+                        let parts: Vec<&str> = line.split("-").collect();
+                        if parts[0].contains(&id.clone())
+                        {
+                            break;
+                        }
+                        else {
+                            count+=1;
+                        }
+                    }
+                }
+                
                 
                 let additional_port = server_port_list[count];  
 
@@ -151,6 +170,9 @@ pub async fn prod_communication<'a>(
             }
     };
 
+    let types = args[5].clone();
+    let id = args[2].clone();
+
     let handle_client_fut = async move {
         
         for ip in ip_address_clone1.clone() 
@@ -160,21 +182,38 @@ pub async fn prod_communication<'a>(
                 let file = File::open(file_path).unwrap();
             
                 let reader = BufReader::new(file);
-            
-            
-                for line_result in reader.lines() {
-                    let line = line_result.unwrap();
-                    
-                    if line.contains(&ip.clone())
-                    {
-                        break;
-                    }
-                    else {
-                        count+=1;
-                    }
-                    
-                }
 
+
+
+                if types.clone()=="prod"
+                {
+                    for line_result in reader.lines() {
+                        let line = line_result.unwrap();
+                        
+                        if line.contains(&ip.clone())
+                        {
+                            break;
+                        }
+                        else {
+                            count+=1;
+                        }
+                    }
+                }
+                else 
+                {
+                    for line_result in reader.lines() {
+                        let line = line_result.unwrap();
+                        let parts: Vec<&str> = line.split("-").collect();
+                        if parts[0].contains(&id.clone())
+                        {
+                            break;
+                        }
+                        else {
+                            count+=1;
+                        }
+                    }
+                }
+            
                 // let mut updated_value = value.clone(); 
 
                 // if args.clone()[8]=="1" //check if adversary
@@ -216,4 +255,8 @@ pub async fn prod_communication<'a>(
     return final_output;
 
 }
+
+
+
+
 
