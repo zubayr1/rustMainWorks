@@ -183,7 +183,7 @@ pub async fn prod_communication<'a>(
 
     let handle_client_fut = async move {
         
-        for ip in ip_address_clone1.clone() 
+        for mut ip in ip_address_clone1.clone() 
             {                              
                 let mut count = 0;
                 let file_path = "./nodes_information.txt";
@@ -233,7 +233,13 @@ pub async fn prod_communication<'a>(
                 //     }
                     
                 // }
+                    if args.clone()[5]=="dev"
+                    {
+                        let ip_split: Vec<&str> = ip.split("-").collect();
 
+                        ip = ip_split[1].to_string();
+
+                    }
                 
                 let additional_port = client_port_list[count];
                  newclient::match_tcp_client(

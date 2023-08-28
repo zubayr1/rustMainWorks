@@ -142,7 +142,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let mut pvss_data: Vec<u8> = pvss_data_str.into_bytes();
 
-       println!("{:?}", sorted);
         for (committee_id, ip_addresses_comb) in sorted.clone()
         {
             let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
