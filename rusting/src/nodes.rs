@@ -143,7 +143,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // Sleep to make sure sender and receiver are ready.
     sleep(Duration::from_millis(50)).await;
 
+    
 
+    tokio::spawn(async move {
+        reactor::reactor(rx_receiver).await;
+    });
     
     
 

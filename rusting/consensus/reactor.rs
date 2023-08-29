@@ -3,9 +3,9 @@ use async_recursion::async_recursion;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::fs::OpenOptions;
 
-use tokio::sync::mpsc::{channel, Receiver, Sender};
+use tokio::sync::mpsc::Receiver;
 
-use serde::{Deserialize, Serialize};
+use crate::message::{NetworkMessage, ConsensusMessage};
 
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -54,26 +54,16 @@ async fn communication(
 
 
 
-// Enum to represent the different message types
-#[derive(Serialize, Deserialize, Clone)]
-enum ConsensusMessage {
-    EchoMessage(generic::Echo),
-    VoteMessage(generic::Vote),
-    CommitteeMessage(generic::Committee),
-    CodewordMessage(generic::Codeword),
-    AccumMessage(generic::Accum),
-    ProposeMessage(generic::Propose),
-}
 
 
 
-async fn reactor(mut rx: Receiver<ConsensusMessage>)
+pub async fn reactor(mut rx: Receiver<NetworkMessage>)
 {
     loop 
     {
         tokio::select! 
         {
-            Some(message) = rx.recv() => match message 
+            Some(message) = rx.recv() => match message.message
             {                
                  // Match the Echo message type
                  ConsensusMessage::EchoMessage(echo) => {
