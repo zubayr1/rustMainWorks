@@ -7,9 +7,16 @@ use tokio::fs::OpenOptions;
 use std::collections::HashMap;
 use chrono::Utc;
 
+use std::net::SocketAddr;
 
+use crate::message::NetworkMessage;
+use crate::network::NetworkReceiver;
+use crate::network::NetworkSender;
 
-use crate::{node, socketing::*};
+use tokio::sync::mpsc::channel;
+
+use tokio::time::sleep;
+use tokio::time::Duration;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -101,25 +108,43 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let client_port_list = read_ports("./client_port_list.txt".to_string());
 
 
-    // Use spawn to execute Node::new as an async task
 
-    // let self_ip = args[6].clone();
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+    for ip in &node_ips {
+        sockets.push(ip.parse::<SocketAddr>().unwrap());
+    }
+
+    // Get own node id from command line arguments.
+    let node_id: usize = args[2].parse().unwrap();
+    // Get own node ip from ip file. Note: not from command line, this is redundant and leads to errors.
+    let node_ip = &sockets[node_id - 1];
+
     
-    // tokio::spawn(async move 
-    // {
+    // Create channels for communication for receiver. Use rx_receiver to receive network messages.
+    let (tx_receiver, mut rx_receiver) = channel(10_000);
+    // Create channels for communication with sender. Use tx_sender to send messages to the network.
+    let (tx_sender, rx_sender) = channel(10_000);
 
-    //     let mut sockets: Vec<SocketAddr> = Vec::new();
 
-    //     for ip in  node_ips.clone()
-    //     {
-    //         sockets.push([ip, "7000".to_string()].join(":").parse::<SocketAddr>().unwrap());
-    //     } 
 
-    //     node::Node::new(1, sockets, self_ip).await;
-    // });
+    // Create and start the sender and receiver.
+    let network_receiver = NetworkReceiver::new(*node_ip, tx_receiver.clone());
+    let mut network_sender = NetworkSender::new(rx_sender);
+
+
+    tokio::spawn(async move {
+        network_receiver.run().await;
+    });
+    tokio::spawn(async move {
+        network_sender.run().await;
+    });
+
+
+    // Sleep to make sure sender and receiver are ready.
+    sleep(Duration::from_millis(50)).await;
+
+
     
-    // println!("start core");
-
     
 
     for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch

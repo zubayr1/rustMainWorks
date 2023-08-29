@@ -1,5 +1,9 @@
-#[allow(unused)]
+use serde::{Deserialize, Serialize};
 
+
+
+#[allow(unused)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Echo
 {
     pub sign: String,
@@ -21,6 +25,8 @@ impl Echo
 }
 
 #[allow(unused)]
+#[derive(Serialize, Deserialize, Default, Clone)]
+
 pub struct Vote
 {
     pub sign: String,
@@ -42,6 +48,7 @@ impl Vote
 }
 
 #[allow(unused)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Committee
 {
     pub sign: String,
@@ -59,6 +66,7 @@ impl Committee
 }
 
 #[allow(unused)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Codeword
 {
     pub sign: String,
@@ -89,6 +97,7 @@ impl Codeword
 }
 
 #[allow(unused)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Accum
 {
     pub sign: String,
@@ -112,6 +121,7 @@ impl Accum
 
 
 #[allow(unused)]
+#[derive(Serialize, Deserialize, Default, Clone)]
 pub struct Propose
 {
     pub sign: String,

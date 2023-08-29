@@ -3,6 +3,10 @@ use async_recursion::async_recursion;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::fs::OpenOptions;
 
+use tokio::sync::mpsc::{channel, Receiver, Sender};
+
+use serde::{Deserialize, Serialize};
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -49,6 +53,75 @@ async fn communication(
 }
 
 
+
+// Enum to represent the different message types
+#[derive(Serialize, Deserialize, Clone)]
+enum ConsensusMessage {
+    EchoMessage(generic::Echo),
+    VoteMessage(generic::Vote),
+    CommitteeMessage(generic::Committee),
+    CodewordMessage(generic::Codeword),
+    AccumMessage(generic::Accum),
+    ProposeMessage(generic::Propose),
+}
+
+
+
+async fn reactor(mut rx: Receiver<ConsensusMessage>)
+{
+    loop 
+    {
+        tokio::select! 
+        {
+            Some(message) = rx.recv() => match message 
+            {                
+                 // Match the Echo message type
+                 ConsensusMessage::EchoMessage(echo) => {
+                    // Handle Echo message
+                    println!("received echo");
+                }
+
+                // Match the Vote message type
+                ConsensusMessage::VoteMessage(vote) => {
+                    // Handle Vote message
+                    println!("received vote");
+                }
+
+                // Match the Committee message type
+                ConsensusMessage::CommitteeMessage(committee) => {
+                    // Handle Committee message
+                    println!("received committee");
+                }
+
+
+                 // Match the Codeword message type
+                 ConsensusMessage::CodewordMessage(codeword) => {
+                    // Handle Codeword message
+                    println!("received codeword");
+                }
+
+                 // Match the Accum message type
+                 ConsensusMessage::AccumMessage(accum) => {
+                    // Handle Accum message
+                    println!("received accum");
+                    
+                }
+
+
+                 // Match the Propose message type
+                 ConsensusMessage::ProposeMessage(propose) => {
+                    // Handle Propose message
+                    println!("received propose");
+                }
+
+                
+                
+            },
+        }    
+    }
+}
+
+
 pub async fn reactor_init(    
     pvss_data: Vec<u8>, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
@@ -65,11 +138,15 @@ pub async fn reactor_init(
     let qual: Vec<u32> = Vec::new();
 
     let empty_codeword_vec: Vec<String> = Vec::new();
-    let empty_witness_vec: Vec<Vec<u8>> = Vec::new();    
+    let empty_witness_vec: Vec<Vec<u8>> = Vec::new();  
+
+    let retunval:   Vec<u8> = Vec::new();
+
+    retunval
     
-    return reactor(pvss_data, committee_id, &ip_address, level, _index, args, acc_value_zl, 0, 
-        empty_codeword_vec, empty_witness_vec, 
-        "accum".to_string(), committee_length, qual).await;
+    // return reactor_helper(pvss_data, committee_id, &ip_address, level, _index, args, acc_value_zl, 0, 
+    //     empty_codeword_vec, empty_witness_vec, 
+    //     "accum".to_string(), committee_length, qual).await;
 }
 
 
@@ -286,7 +363,7 @@ pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_addre
 
 
 #[async_recursion]
-pub async fn reactor<'a>(     
+pub async fn reactor_helper<'a>(     
     pvss_data: Vec<u8>, committee_id: u32, ip_address: &'a Vec<&str>, level: u32, _index: u32, args: Vec<String>,  
     value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, mode: String, committee_length: usize,
     qual: Vec<u32>) -> Vec<u8>
@@ -316,7 +393,7 @@ pub async fn reactor<'a>(
             pvss_data.clone(), committee_id, &ip_address, level, _index, args.clone(),  
             value.clone(), mode, committee_length, qual).await;
 
-        return reactor(pvss_data, committee_id, ip_address, level, _index, args, value, 
+        return reactor_helper(pvss_data, committee_id, ip_address, level, _index, args, value, 
             merkle_len, codeword_vec, witnesses_vec, "codeword".to_string(), committee_length, qual).await;
     }
     else 

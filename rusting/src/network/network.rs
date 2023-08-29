@@ -103,15 +103,15 @@ impl NetworkSender {
 
 pub struct NetworkReceiver {
     // Our own network address.
-    // address: SocketAddr,
+    address: SocketAddr,
 
     // Channel where received messages are put in.
     deliver: Sender<NetworkMessage>,
 }
 
 impl NetworkReceiver {
-    pub fn new(deliver: Sender<NetworkMessage>) -> Self {
-        Self { deliver }
+    pub fn new(address: SocketAddr, deliver: Sender<NetworkMessage>) -> Self {
+        Self { address, deliver }
     }
 
     // Spawn a new worker for each incoming request. This worker is responsible for
@@ -119,7 +119,7 @@ impl NetworkReceiver {
     // the deliver channel.
     pub async fn run(&self) {
         let addr = ["0.0.0.0", "7000"].join(":").parse::<SocketAddr>().unwrap();
-        let listener = TcpListener::bind(addr)
+        let listener = TcpListener::bind(self.address)
             .await
             .expect("Failed to bind TCP port");
 
