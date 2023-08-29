@@ -71,7 +71,7 @@ pub struct Codeword
     pub sign: String,
     pub codewords: String,
     pub witness: Vec<u8>,
-    pub accumulation_value: String,
+    pub value: String,
     pub index: String,
     pub leaves_len: usize,
     pub types: String
@@ -80,9 +80,9 @@ pub struct Codeword
 #[allow(unused)]
 impl Codeword
 {
-    pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, accumulation_value: String, index: String, leaves_len: usize) -> Self
+    pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize) -> Self
     {
-        Codeword{sign:sign, codewords: codewords, witness: witness, accumulation_value: accumulation_value, 
+        Codeword{sign:sign, codewords: codewords, witness: witness, value: value, 
             index: index, leaves_len: leaves_len, types: "codeword".to_string()}
     }
 
@@ -91,7 +91,7 @@ impl Codeword
 
         let modified_string = witness_string.replace(", ", "; ");
 
-        vec![self.sign, self.codewords, modified_string, self.accumulation_value, self.index, self.leaves_len.to_string(), self.types]
+        vec![self.sign, self.codewords, modified_string, self.value, self.index, self.leaves_len.to_string(), self.types]
     }
 }
 
@@ -100,20 +100,20 @@ impl Codeword
 pub struct Accum
 {
     pub sign: String,
-    pub accumulation_value: String,
+    pub value: String,
     pub types: String
 }
 
 #[allow(unused)]
 impl Accum
 {
-    pub fn create_accum(sign: String, accumulation_value: String) -> Self
+    pub fn create_accum(sign: String, value: String) -> Self
     {
-        Accum{sign:sign, accumulation_value: accumulation_value, types: "accum".to_string()}
+        Accum{sign:sign, value: value, types: "accum".to_string()}
     }
 
     pub fn to_vec(self) -> Vec<String> {
-        vec![self.sign, self.accumulation_value, self.types]
+        vec![self.sign, self.value, self.types]
     }
 }
 
