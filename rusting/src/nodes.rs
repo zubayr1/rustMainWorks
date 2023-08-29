@@ -155,7 +155,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             else 
             {                               
               
-               
                 pvss_data = reactor::reactor_init( 
                     pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
                 level, _index, args.clone()).await;

@@ -129,7 +129,7 @@ pub async fn prod_communication<'a>(
     let handle_server_fut = async move {        
                 
         for ip in ip_address_clone.clone() 
-            {              
+            {           
                 let mut count = 0;                   
                 let file_path = "./nodes_information.txt";
                 let file = File::open(file_path).unwrap();
@@ -152,21 +152,22 @@ pub async fn prod_communication<'a>(
                 }
                 else 
                 {
-                    for line_result in reader.lines() {
+                    let mut dev_port_count=1;
+                    for line_result in reader.lines() 
+                    {
                         let line = line_result.unwrap();
-                        let parts: Vec<&str> = line.split("-").collect();
-                        if parts[0].contains(&id.clone())
+                        if line.contains(&ip)
                         {   
                             break;
                         }
                         else {
                             count+=1;
+                            dev_port_count+=1;
                         }
                     }
                 }
                 
                 let additional_port = server_port_list[count];  
-
 
 
                 let val = newserver::handle_server(ip.to_string(), 
@@ -209,15 +210,17 @@ pub async fn prod_communication<'a>(
                 }
                 else 
                 {
+                    let mut dev_port_count=1;
                     for line_result in reader.lines() {
                         let line = line_result.unwrap();
-                        let parts: Vec<&str> = line.split("-").collect();
-                        if parts[0].contains(&id.clone())
+
+                        if line.contains(&ip)
                         {
                             break;
                         }
                         else {
                             count+=1;
+                            dev_port_count+=1;
                         }
                     }
                 }

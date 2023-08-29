@@ -279,7 +279,7 @@ pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_addre
     let mut data = "".to_string();
     data+=&W1;
     data+=&W2;
-
+    println!("{:?}", data);
     data.into_bytes()
 
 }
@@ -385,7 +385,7 @@ pub async fn accum_reactor(
     //WORK ON THIS: WHEN RECEIVED SAME ACCUM VALUE FROM q/2 PARTIES: STOP ; also V1, V2
     let V: Vec<String> = communication(committee_id.clone(), ip_address.clone(), level.clone(), _index, args.clone(),  
         mode.clone(), accum_vec).await;
-
+    
     let mut V1_vec: Vec<String> = Vec::new();
     let mut V2_vec: Vec<String> = Vec::new();
 
@@ -474,6 +474,6 @@ pub async fn accum_reactor(
             (codeword_vec, witnesses_vec, merkle_len) = deliver::deliver_encode(pvss_data.clone(), v2.clone(), committee_length.clone());
 
         }
-    }           
+    }       
     return (codeword_vec, witnesses_vec, merkle_len, qual_clone);
     }
