@@ -7,6 +7,7 @@ use tokio::sync::mpsc::Receiver;
 
 use crate::message::{NetworkMessage, ConsensusMessage};
 
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -53,34 +54,58 @@ async fn communication(
 }
 
 
-// fn reactor_init(pvss_data: Vec<u8>) -> String
-// {
-//     let committee_length = ip_address.len();    
-
-//     let leaves = pvss_agreement::encoder(pvss_data.clone(), committee_length.clone());
-//     // create accum value
-//     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
-
-//     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
-
-//     acc_value_zl
-
-// }
-
-
-
-pub async fn reactor(mut rx: Receiver<NetworkMessage>, pvss_data: Vec<u8>)
+fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> String
 {
+    let committee_length = ip_address.len();    
 
-    // reactor_init(pvss_data);
+    let leaves = pvss_agreement::encoder(pvss_data.clone(), committee_length.clone());
+    // create accum value
+    let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
+
+    let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
+
+    acc_value_zl
+
+}
+
+
+
+pub async fn reactor(mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
+{
+    let mut level = 0;
+
+    let (mut committee_id, mut ip_addresses_comb) = sorted[level];
+    let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
+
+    let mut pvss_data: Vec<u8> = "".to_string().into_bytes();
+
+
+    if ip_address.len()==1
+    {
+        //GET PVSS DATA FROM DIMITRIS
+        pvss_data = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ").into_bytes();
+        level+=1
+    }
+
+
+    (committee_id, ip_addresses_comb) = sorted[level];
+
+    ip_address = ip_addresses_comb.split(" ").collect();
+            
+    let acc_value_zl = reactor_init(pvss_data, ip_address);
+
+    let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl.clone());
+    let accum_vec = accum.to_vec();
+
+    let accum_consensus_message: ConsensusMessage = ConsensusMessage::AccumMessage(accum);
 
     loop 
     {
         if let Some(message) = rx.recv().await {
             match message.message 
             {                
-                 // Match the Echo message type
-                 ConsensusMessage::EchoMessage(echo) => {
+                // Match the Echo message type
+                ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message
                     println!("received echo");
                 }
@@ -98,30 +123,32 @@ pub async fn reactor(mut rx: Receiver<NetworkMessage>, pvss_data: Vec<u8>)
                 }
 
 
-                 // Match the Codeword message type
-                 ConsensusMessage::CodewordMessage(codeword) => {
+                // Match the Codeword message type
+                ConsensusMessage::CodewordMessage(codeword) => {
                     // Handle Codeword message
                     println!("received codeword");
                 }
 
-                 // Match the Accum message type
-                 ConsensusMessage::AccumMessage(accum) => {
+                // Match the Accum message type
+                ConsensusMessage::AccumMessage(accum) => {
                     // Handle Accum message
                     println!("received accum");
                     
                 }
 
 
-                 // Match the Propose message type
-                 ConsensusMessage::ProposeMessage(propose) => {
+                // Match the Propose message type
+                ConsensusMessage::ProposeMessage(propose) => {
                     // Handle Propose message
                     println!("received propose");
                 }
-               
+            
                 
             }
         }    
+        
     }
+
 }
 
 

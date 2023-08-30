@@ -154,11 +154,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     sleep(Duration::from_millis(50)).await;
 
 
-    println!("{:?}", sorted);
-    //GET PVSS DATA FROM DIMITRIS
-    let pvss_data: Vec<u8> = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ").into_bytes();
+
     
-    reactor::reactor(rx_receiver, pvss_data).await;
+    reactor::reactor(rx_receiver, sorted, args).await;
    
     
     
