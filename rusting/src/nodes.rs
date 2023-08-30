@@ -1,15 +1,12 @@
 
 use tokio::fs::File;
 use tokio::io::{ AsyncBufReadExt, BufReader};
-use tokio::io::AsyncWriteExt;
 use tokio::fs::OpenOptions;
 
 use std::collections::HashMap;
-use chrono::Utc;
 
 use std::net::SocketAddr;
 
-use crate::message::NetworkMessage;
 use crate::network::NetworkReceiver;
 use crate::network::NetworkSender;
 
@@ -91,7 +88,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     let mut node_ips: Vec<String> = Vec::new();
-    let mut ids: Vec<u32> = Vec::new();
 
     let mut line_stream = reader.lines();
 
@@ -102,26 +98,25 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
         let ip: Vec<&str> = line.split("-").collect();
         
         node_ips.push(ip[1].to_string()); 
-        let id: u32 = ip[0].to_string().parse::<u32>().unwrap();
-        ids.push(id);       
+              
     }
 
-
+    
 
     let mut port: u32 = 7000;
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
-    let mut count=0;
-    for ip in &node_ips {
+    for ip in &node_ips 
+    {
 
-        port+=ids[count];
+        port+=args.clone()[2].parse::<u32>().unwrap();
 
         let ip_with_port = format!("{}:{}", ip, port.to_string()); 
 
         sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
 
-        count+=1;
+        port = 7000;
     }
 
     // Get own node id from command line arguments.
@@ -156,7 +151,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     
-    reactor::reactor(rx_receiver, sorted, args).await;
+    reactor::reactor(tx_sender, rx_receiver, sorted, args).await;
    
     
     

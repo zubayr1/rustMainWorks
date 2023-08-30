@@ -3,9 +3,11 @@ use async_recursion::async_recursion;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::fs::OpenOptions;
 
-use tokio::sync::mpsc::Receiver;
+use tokio::sync::mpsc::{Receiver, Sender};
 
-use crate::message::{NetworkMessage, ConsensusMessage};
+use crate::message::{NetworkMessage, ConsensusMessage, *};
+
+use std::net::SocketAddr;
 
 
 #[path = "../networking/communication.rs"]
@@ -70,11 +72,101 @@ fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> String
 
 
 
-pub async fn reactor(mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
+fn waitasync(lastlevel: &String, args: Vec<String>) -> NetworkMessage
 {
+    let ip_address: Vec<&str> = lastlevel.split(" ").collect();
+
+
+    let mut port = 7000;
+
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+
+    for ip_str in ip_address
+    {
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        port = 7000;
+    }
+
+
+    let check: Check = Check::create_check("check".to_string().clone());
+
+    let check_message: ConsensusMessage = ConsensusMessage::CheckMessage(check);
+
+
+    let senderport = 7000 + args[2].parse::<u32>().unwrap();
+    let sender_str = format!("{}:{}", args[6], senderport.to_string());
+
+    let check_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+        addresses: sockets, message: check_message
+    };
+
+    check_network_message
+
+
+}
+
+
+fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>) -> NetworkMessage
+{
+    let accum: Accum = Accum::create_accum("sign".to_string(), acc_value_zl.clone());
+
+    let accum_consensus_message: ConsensusMessage = ConsensusMessage::AccumMessage(accum);
+
+
+    let mut port = 7000;
+
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+
+    for ip_str in ip_address
+    {
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        port = 7000;
+    }
+
+
+    let senderport = 7000 + args[2].parse::<u32>().unwrap();
+    let sender_str = format!("{}:{}", args[6], senderport.to_string());
+
+    let accum_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+        addresses: sockets, message: accum_consensus_message
+    };
+
+    accum_network_message
+
+}
+
+
+
+
+pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
+{
+
+
+    let (_, last_level) = sorted[sorted.len() -1];
+
+
+    let check_network_message = waitasync(last_level, args.clone());
+
+    let result = tx_sender.send(check_network_message).await;
+
+
     let mut level = 0;
 
-    let (mut committee_id, mut ip_addresses_comb) = sorted[level];
+    let (_, mut ip_addresses_comb) = sorted[level];
     let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
 
     let mut pvss_data: Vec<u8> = "".to_string().into_bytes();
@@ -88,22 +180,29 @@ pub async fn reactor(mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &Strin
     }
 
 
-    (committee_id, ip_addresses_comb) = sorted[level];
+    (_, ip_addresses_comb) = sorted[level];
 
     ip_address = ip_addresses_comb.split(" ").collect();
             
-    let acc_value_zl = reactor_init(pvss_data, ip_address);
+    let acc_value_zl: String = reactor_init(pvss_data, ip_address.clone());
 
-    let accum = generic::Accum::create_accum("sign".to_string(), acc_value_zl.clone());
-    let accum_vec = accum.to_vec();
+    
+    let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
 
-    let accum_consensus_message: ConsensusMessage = ConsensusMessage::AccumMessage(accum);
+    let result = tx_sender.send(accum_network_message).await;
+
 
     loop 
     {
         if let Some(message) = rx.recv().await {
             match message.message 
-            {                
+            {
+                // Match the Check message type
+                ConsensusMessage::CheckMessage(check) => {
+                    // Handle Check message
+                    println!("received check");
+                }
+
                 // Match the Echo message type
                 ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message
