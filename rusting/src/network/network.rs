@@ -60,14 +60,14 @@ impl NetworkSender {
             // Connect to provided socket address.
             let stream = match TcpStream::connect(address).await {
                 Ok(stream) => {
-                    println!("Outgoing connection established with {}", address);
+                    //println!("Outgoing connection established with {}", address);
                     stream
                 }
                 // If the connection fails return. This means this worker thread is killed. Therefore
                 // using the above created channel will fail. Because of this a new worker will be
                 // spawned by the NetworkSender.
                 Err(e) => {
-                    println!("Failed to connect to {}: {}", address, e);
+                    //println!("Failed to connect to {}: {}", address, e);
                     return;
                 }
             };
@@ -82,9 +82,11 @@ impl NetworkSender {
 
                 // Send the message to the nework
                 match transport.send(bytes).await {
-                    Ok(_) => println!("Successfully sent message to {}", address),
+                    Ok(_) => {
+                        //println!("Successfully sent message to {}", address)
+                    },
                     Err(e) => {
-                        println!("Failed to send message to {}: {}", address, e);
+                        //println!("Failed to send message to {}: {}", address, e);
                         return;
                     }
                 }
@@ -137,7 +139,7 @@ impl NetworkReceiver {
                     continue;
                 }
             };
-            println!("incoming connection established with {}", peer);
+            //println!("incoming connection established with {}", peer);
             // Spawn a new worker that handles the just established connection.
             Self::spawn_worker(socket, peer, self.deliver.clone()).await;
         }

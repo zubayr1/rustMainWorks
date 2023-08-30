@@ -10,6 +10,7 @@ use crate::message::{NetworkMessage, ConsensusMessage, *};
 use std::net::SocketAddr;
 
 
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -72,7 +73,7 @@ fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> String
 
 
 
-fn waitasync(lastlevel: &String, args: Vec<String>) -> NetworkMessage
+fn waitasync(lastlevel: String, args: Vec<String>) -> (NetworkMessage, Vec<SocketAddr>)
 {
     let ip_address: Vec<&str> = lastlevel.split(" ").collect();
 
@@ -85,13 +86,17 @@ fn waitasync(lastlevel: &String, args: Vec<String>) -> NetworkMessage
     {
         let splitted_ip: Vec<&str> = ip_str.split("-").collect();
 
-        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
-
-        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
-
-        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
-
-        port = 7000;
+        if splitted_ip!=[""]
+        {
+            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+    
+            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+    
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+    
+            port = 7000;
+        }
+        
     }
 
 
@@ -104,10 +109,10 @@ fn waitasync(lastlevel: &String, args: Vec<String>) -> NetworkMessage
     let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
     let check_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
-        addresses: sockets, message: check_message
+        addresses: sockets.clone(), message: check_message
     };
 
-    check_network_message
+    (check_network_message, sockets)
 
 
 }
@@ -156,12 +161,48 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 {
 
 
-    let (_, last_level) = sorted[sorted.len() -1];
+    let (_, last_level_ptr) = sorted[sorted.len() -1];
+
+    let mut last_level = last_level_ptr.to_string();
+
+    
+    loop 
+    {
+        let (check_network_message, mut all_sockets) = waitasync(last_level.clone(), args.clone()); // method to wait for all nodes to be active
+        let result = tx_sender.send(check_network_message).await;
 
 
-    let check_network_message = waitasync(last_level, args.clone());
+        let message = rx.recv().await.unwrap();         
+        
 
-    let result = tx_sender.send(check_network_message).await;
+        let ip = message.sender.ip().to_string();
+        let port = message.sender.port().to_string();
+       
+
+        let default_port: u32 = 7000;
+
+        let id = port.parse::<u32>().unwrap() - default_port;
+
+        let sender_ip_addr = format!("{}-{}", id.to_string(), ip);
+        
+
+        last_level = last_level.replace(&sender_ip_addr, "");
+
+
+
+        if let Some(index) = all_sockets.iter().position(|&x| x == message.sender) {
+            all_sockets.remove(index);
+        }    
+        
+        if all_sockets.len()==0
+        {   println!("BREAAAKKK");
+            
+            break;
+        }
+
+        
+    }
+
 
 
     let mut level = 0;
@@ -200,7 +241,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Check message type
                 ConsensusMessage::CheckMessage(check) => {
                     // Handle Check message
-                    println!("received check");
+                    println!("received check, {:?}", message.sender);
                 }
 
                 // Match the Echo message type
@@ -231,7 +272,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Accum message type
                 ConsensusMessage::AccumMessage(accum) => {
                     // Handle Accum message
-                    println!("received accum");
+                    println!("received accum, {:?}", message.sender);
                     
                 }
 
