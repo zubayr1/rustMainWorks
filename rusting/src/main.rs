@@ -9,10 +9,8 @@ use std::collections::HashMap;
 
 mod socketing;
 
-mod core;
 mod message;
 mod network;
-mod node;
 
 mod nodes;
 

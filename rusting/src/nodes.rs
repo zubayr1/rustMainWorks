@@ -94,7 +94,8 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     let mut line_stream = reader.lines();
 
-    while let Some(line_result) = line_stream.next_line().await.unwrap() {
+    while let Some(line_result) = line_stream.next_line().await.unwrap() 
+    {
         let line = line_result;
 
         let ip: Vec<&str> = line.split("-").collect();
@@ -107,11 +108,14 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let server_port_list = read_ports("./server_port_list.txt".to_string());
     let client_port_list = read_ports("./client_port_list.txt".to_string());
 
-
+    let port = "7000".to_string();
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
     for ip in &node_ips {
-        sockets.push(ip.parse::<SocketAddr>().unwrap());
+
+        let ip_with_port = format!("{}:{}", ip, port); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
     }
 
     // Get own node id from command line arguments.
@@ -173,7 +177,9 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         for (committee_id, ip_addresses_comb) in sorted.clone()
         {
-            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect();   
+            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
+
+            
             
             if ip_address.len()==1
             {

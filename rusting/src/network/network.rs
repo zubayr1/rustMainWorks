@@ -8,9 +8,6 @@ use tokio::{
 };
 use tokio_util::codec::{Framed, LengthDelimitedCodec};
 
-#[cfg(test)]
-#[path = "tests/network_tests.rs"]
-pub mod network_tests;
 
 pub struct NetworkSender {
     // Channel for communication between NetworkSender and other threads.
@@ -118,12 +115,12 @@ impl NetworkReceiver {
     // receiving messages from exactly one connection and forwards those messages to
     // the deliver channel.
     pub async fn run(&self) {
-        let addr = ["0.0.0.0", "7000"].join(":").parse::<SocketAddr>().unwrap();
+
         let listener = TcpListener::bind(self.address)
             .await
             .expect("Failed to bind TCP port");
 
-        println!("Listening on {}", addr);
+        println!("Listening on {}", self.address);
 
         // Continuously accept new incoming connections.
         loop 

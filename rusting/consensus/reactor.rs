@@ -61,9 +61,8 @@ pub async fn reactor(mut rx: Receiver<NetworkMessage>)
 {
     loop 
     {
-        tokio::select! 
-        {
-            Some(message) = rx.recv() => match message.message
+        if let Some(message) = rx.recv().await {
+            match message.message 
             {                
                  // Match the Echo message type
                  ConsensusMessage::EchoMessage(echo) => {
@@ -103,10 +102,9 @@ pub async fn reactor(mut rx: Receiver<NetworkMessage>)
                     // Handle Propose message
                     println!("received propose");
                 }
-
+               
                 
-                
-            },
+            }
         }    
     }
 }
@@ -118,7 +116,7 @@ pub async fn reactor_init(
     args: Vec<String>) -> Vec<u8>
 {     
     let committee_length = ip_address.len();    
-    
+
     let leaves = pvss_agreement::encoder(pvss_data.clone(), committee_length.clone());
     // create accum value
     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
