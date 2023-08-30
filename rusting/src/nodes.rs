@@ -44,7 +44,7 @@ pub fn create_keys() // schnorr key generation
 }
 
 
-pub async fn read_ports(file_name: String) -> Vec<u32>
+pub async fn _read_ports(file_name: String) -> Vec<u32>
 {
     let file = File::open(file_name).await.unwrap();
 
@@ -91,6 +91,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     let mut node_ips: Vec<String> = Vec::new();
+    let mut ids: Vec<u32> = Vec::new();
 
     let mut line_stream = reader.lines();
 
@@ -100,22 +101,27 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
         let ip: Vec<&str> = line.split("-").collect();
         
-        node_ips.push(ip[1].to_string());         
+        node_ips.push(ip[1].to_string()); 
+        let id: u32 = ip[0].to_string().parse::<u32>().unwrap();
+        ids.push(id);       
     }
 
 
-   
-    let server_port_list = read_ports("./server_port_list.txt".to_string());
-    let client_port_list = read_ports("./client_port_list.txt".to_string());
 
-    let port = "7000".to_string();
+    let mut port: u32 = 7000;
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
+
+    let mut count=0;
     for ip in &node_ips {
 
-        let ip_with_port = format!("{}:{}", ip, port); 
+        port+=ids[count];
+
+        let ip_with_port = format!("{}:{}", ip, port.to_string()); 
 
         sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        count+=1;
     }
 
     // Get own node id from command line arguments.
@@ -147,91 +153,93 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // Sleep to make sure sender and receiver are ready.
     sleep(Duration::from_millis(50)).await;
 
+
+    println!("{:?}", sorted);
+    //GET PVSS DATA FROM DIMITRIS
+    let pvss_data: Vec<u8> = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ").into_bytes();
+    
+    reactor::reactor(rx_receiver, pvss_data).await;
+   
+    
     
 
-    tokio::spawn(async move {
-        reactor::reactor(rx_receiver).await;
-    });
-    
-    
+    // for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
+    // {   
+    //     let start_time = Utc::now().time(); 
 
-    for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
-    {   
-        let start_time = Utc::now().time(); 
+    //     println!("epoch {}", _index);
 
-        println!("epoch {}", _index);
+    //     let mut text;
 
-        let mut text;
-
-        text = ["epoch ".to_string(), _index.to_string()].join(": ");
-        file.write_all(text.as_bytes()).await.unwrap();
-        file.write_all(b"\n").await.unwrap();
+    //     text = ["epoch ".to_string(), _index.to_string()].join(": ");
+    //     file.write_all(text.as_bytes()).await.unwrap();
+    //     file.write_all(b"\n").await.unwrap();
 
       
         
-        let mut level = 0;
+    //     let mut level = 0;
 
-        let pvss_data_str: String = "".to_string();
+    //     let pvss_data_str: String = "".to_string();
 
-        let mut pvss_data: Vec<u8> = pvss_data_str.into_bytes();
+    //     let mut pvss_data: Vec<u8> = pvss_data_str.into_bytes();
 
-        for (committee_id, ip_addresses_comb) in sorted.clone()
-        {
-            let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
+    //     for (committee_id, ip_addresses_comb) in sorted.clone()
+    //     {`
+    //         let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
 
             
             
-            if ip_address.len()==1
-            {
-                //GET PVSS DATA FROM DIMITRIS
-                pvss_data = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ").into_bytes();
-                level+=1
-            }
-            else 
-            {                               
+    //         if ip_address.len()==1
+    //         {
+    //             //GET PVSS DATA FROM DIMITRIS
+    //             pvss_data = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ").into_bytes();
+    //             level+=1
+    //         }
+    //         else 
+    //         {                               
               
-                pvss_data = reactor::reactor_init( 
-                    pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
-                level, _index, args.clone()).await;
-                level+=1;
+    //             pvss_data = reactor::reactor_init( 
+    //                 pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
+    //             level, _index, args.clone()).await;
+    //             level+=1;
                 
-                println!("{:?}", String::from_utf8(pvss_data.clone()));
+    //             println!("{:?}", String::from_utf8(pvss_data.clone()));
 
-            }
+    //         }
             
-        }    
+    //     }    
 
-        let end_time = Utc::now().time();
-        let diff = end_time - start_time;
+    //     let end_time = Utc::now().time();
+    //     let diff = end_time - start_time;
         
-        println!("Setup End by {}. time taken {} seconds", args[6], diff.num_seconds());  
+    //     println!("Setup End by {}. time taken {} seconds", args[6], diff.num_seconds());  
 
 
 
-        text = "--------------------------------".to_string();
+    //     text = "--------------------------------".to_string();
 
-        file.write_all(text.as_bytes()).await.unwrap();
-        file.write_all(b"\n").await.unwrap();
+    //     file.write_all(text.as_bytes()).await.unwrap();
+    //     file.write_all(b"\n").await.unwrap();
 
 
         
-        text = "GRand Start".to_string();
+    //     text = "GRand Start".to_string();
 
-        file.write_all(text.as_bytes()).await.unwrap();
-        file.write_all(b"\n").await.unwrap();
+    //     file.write_all(text.as_bytes()).await.unwrap();
+    //     file.write_all(b"\n").await.unwrap();
 
-        let start_time = Utc::now().time(); 
+    //     let start_time = Utc::now().time(); 
 
-        GRand::initiate(pvss_data);
+    //     GRand::initiate(pvss_data);
 
-        let end_time = Utc::now().time();
-        let diff = end_time - start_time;
+    //     let end_time = Utc::now().time();
+    //     let diff = end_time - start_time;
         
-        println!("GRand End by {}. time taken {} seconds", args[6], diff.num_seconds()); 
+    //     println!("GRand End by {}. time taken {} seconds", args[6], diff.num_seconds()); 
         
 
 
-    }
+    // }
 
     
     

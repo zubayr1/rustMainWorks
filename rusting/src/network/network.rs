@@ -116,11 +116,15 @@ impl NetworkReceiver {
     // the deliver channel.
     pub async fn run(&self) {
 
-        let listener = TcpListener::bind(self.address)
+        let address_str = self.address.to_string().replace("127.0.0.1", "0.0.0.0");
+
+        let address = address_str.parse::<SocketAddr>().unwrap();
+
+        let listener = TcpListener::bind(address)
             .await
             .expect("Failed to bind TCP port");
 
-        println!("Listening on {}", self.address);
+        println!("Listening on {}", address);
 
         // Continuously accept new incoming connections.
         loop 

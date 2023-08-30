@@ -53,12 +53,27 @@ async fn communication(
 }
 
 
+// fn reactor_init(pvss_data: Vec<u8>) -> String
+// {
+//     let committee_length = ip_address.len();    
+
+//     let leaves = pvss_agreement::encoder(pvss_data.clone(), committee_length.clone());
+//     // create accum value
+//     let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
+
+//     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
+
+//     acc_value_zl
+
+// }
 
 
 
-
-pub async fn reactor(mut rx: Receiver<NetworkMessage>)
+pub async fn reactor(mut rx: Receiver<NetworkMessage>, pvss_data: Vec<u8>)
 {
+
+    // reactor_init(pvss_data);
+
     loop 
     {
         if let Some(message) = rx.recv().await {
@@ -110,7 +125,7 @@ pub async fn reactor(mut rx: Receiver<NetworkMessage>)
 }
 
 
-pub async fn reactor_init(    
+pub async fn reactor_init1(    
     pvss_data: Vec<u8>, committee_id: u32, 
     ip_address: Vec<&str>, level: u32, _index: u32, 
     args: Vec<String>) -> Vec<u8>
