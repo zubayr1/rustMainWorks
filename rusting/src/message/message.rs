@@ -17,33 +17,12 @@ pub struct NetworkMessage {
 // Enum to represent the different message types
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ConsensusMessage {
-    CheckMessage(Check),
     EchoMessage(Echo),
     VoteMessage(Vote),
     CommitteeMessage(Committee),
     CodewordMessage(Codeword),
     AccumMessage(Accum),
     ProposeMessage(Propose),
-}
-
-
-
-#[allow(unused)]
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
-pub struct Check
-{    
-    pub value: String,
-    pub types: String
-}
-
-#[allow(unused)]
-impl Check
-{
-    pub fn create_check(value: String) -> Self
-    {
-        Check{value: value, types: "check".to_string()}
-    }
-
 }
 
 

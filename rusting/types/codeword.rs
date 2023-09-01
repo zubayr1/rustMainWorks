@@ -4,8 +4,50 @@
 mod merkle_tree;
 
 
+
+
 #[allow(unused)]
-pub fn verify_codeword(output: Vec<String>) -> (bool,Vec<String>)
+pub fn verify_codeword(mut codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize) -> (bool,Vec<String>)
+{
+    let splitted_value: Vec<&str> = value.split(" ").collect();
+
+    codewords = codewords.replace(";", ",");
+
+    let hex_bytes = splitted_value[0].to_string()
+        .as_bytes()
+        .chunks(2)
+        .map(|chunk| u8::from_str_radix(std::str::from_utf8(chunk).unwrap(), 16).unwrap())
+        .collect::<Vec<u8>>();
+
+    if hex_bytes.len() != 32 {
+        panic!("Hexadecimal string must be 32 bytes long");
+    }
+
+    let mut u8_array: [u8; 32] = Default::default();
+    u8_array.copy_from_slice(&hex_bytes);
+
+
+    let mut codeword: Vec<String> = Vec::new();
+    codeword.push(codewords);
+
+    
+    
+    let indices_to_prove_nested: usize = index.to_string().parse().unwrap();
+    let mut indices_to_prove: Vec<usize> = Vec::new();
+    indices_to_prove.push(indices_to_prove_nested);
+
+    let merkle_len: usize = leaves_len.to_string().parse().unwrap();    
+
+    let proof = merkle_tree::merkle_proof(witness, indices_to_prove, 
+        codeword.clone(), u8_array, merkle_len);
+
+    return (proof, codeword);
+}
+
+
+
+#[allow(unused)]
+pub fn verify_codeword1(output: Vec<String>) -> (bool,Vec<String>)
 {
     let parts: Vec<&str> = output[0].split(", ").collect();
 

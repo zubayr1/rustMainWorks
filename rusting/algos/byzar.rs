@@ -8,7 +8,7 @@ mod generic;
 use async_recursion::async_recursion;
 
 use std::collections::HashMap;
-
+use crate::nodes::reactor::NetworkMessage;
 
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -37,16 +37,26 @@ pub async fn twoBA(ba_value: String) -> bool
     return false;
 }
 
+
+#[allow(non_snake_case)]
+pub fn BA_setup( 
+    ip_address: Vec<&str>, level: usize,  
+    args: Vec<String>, V: String, committee_length: usize) -> NetworkMessage
+{
+
+    return gba::gba_setup(ip_address, args, V);
+}   
+
 #[allow(non_snake_case)]
 #[async_recursion]
-pub async fn BA<'a>( 
+pub async fn BA11<'a>( 
     committee_id: u32, ip_address: &Vec<&str>, level: u32, _index:u32, 
     args: Vec<String>, V: String, mode: String, committee_length: usize) -> String
 {   
     let ip_address_vec: Vec<&str> = ip_address.to_vec();
 
 
-    let (mut V, g) = gba::gba(committee_id, ip_address_vec.clone(), level, _index, args.clone(),
+    let (mut V, g) = gba::gba1(committee_id, ip_address_vec.clone(), level, _index, args.clone(),
     V.clone(), mode.clone(), committee_length).await;
 
     
@@ -92,12 +102,12 @@ pub async fn BA<'a>(
         let new_committee_length = committee_length/2;
 
         
-        let first_result = BA( 
+        let first_result = BA11( 
             committee_id, &first_half.to_vec(), level, _index, 
             args.clone(), V.clone(), mode.clone(), new_committee_length).await;
 
             
-        let second_result =BA( 
+        let second_result =BA11( 
             committee_id, &second_half.to_vec(), level, _index, 
             args, V, mode, new_committee_length).await;
         

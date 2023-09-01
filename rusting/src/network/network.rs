@@ -7,6 +7,8 @@ use tokio::{
     sync::mpsc::{channel, Receiver, Sender},
 };
 use tokio_util::codec::{Framed, LengthDelimitedCodec};
+use tokio::time::{sleep, Duration};
+
 
 
 pub struct NetworkSender {
@@ -57,20 +59,30 @@ impl NetworkSender {
         let (tx, mut rx) = channel(10_000);
 
         tokio::spawn(async move {
-            // Connect to provided socket address.
-            let stream = match TcpStream::connect(address).await {
-                Ok(stream) => {
-                    //println!("Outgoing connection established with {}", address);
-                    stream
+            // Initialize a stream variable
+            let stream: Option<TcpStream>;
+
+            // Loop until the stream is successfully connected
+            loop {
+                // Try to connect to the socket address
+                match TcpStream::connect(address).await {
+                    Ok(s) => {
+                        //println!("Outgoing connection established with {}", address);
+                        // Assign the stream to the variable
+                        stream = Some(s);
+                        // Break the loop
+                        break;
+                    }
+                    Err(_) => {
+                        // println!("Failed to connect to {}: {}", address, e);
+                        // Sleep for 1 second before retrying
+                        sleep(Duration::from_millis(10)).await;
+                    }
                 }
-                // If the connection fails return. This means this worker thread is killed. Therefore
-                // using the above created channel will fail. Because of this a new worker will be
-                // spawned by the NetworkSender.
-                Err(e) => {
-                    //println!("Failed to connect to {}: {}", address, e);
-                    return;
-                }
-            };
+            }
+
+    // Unwrap the stream
+    let stream = stream.unwrap();
 
             // Frame the TCP stream.
             let mut transport = Framed::new(stream, LengthDelimitedCodec::new());
@@ -86,7 +98,7 @@ impl NetworkSender {
                         //println!("Successfully sent message to {}", address)
                     },
                     Err(e) => {
-                        //println!("Failed to send message to {}: {}", address, e);
+                        println!("Failed to send message to {}: {}", address, e);
                         return;
                     }
                 }

@@ -4,6 +4,10 @@ use crate::nodes::reactor::communication;
 #[path = "../types/generic.rs"]
 mod generic; 
 
+use crate::message::{NetworkMessage, ConsensusMessage, *};
+
+use std::net::SocketAddr;
+
 
 async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, mode: String) -> Vec<String>
@@ -18,8 +22,9 @@ async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32,
 }
 
 #[allow(non_snake_case)]
-fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<String>)
+pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<String>)
 {
+    println!("{:?}, {:?}", echo_phase_output, V);
     let mut count: usize = 0;
 
     let val: &str = V.as_str();
@@ -28,13 +33,13 @@ fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<
     
     for output in echo_phase_output
     {
-        let split_output: Vec<&str> = output.split(", ").collect();
+        let split_output: Vec<&str> = output.split(" ").collect();
 
-        if split_output[1].contains(&val.clone())
+        if split_output[0].contains(&val.clone())
         {
             count+=1;
 
-            pi.push(split_output[0].to_string());
+            pi.push(split_output[1].to_string());
         }
     }
 
@@ -61,8 +66,55 @@ fn check_other_major(forward_output: Vec<String>, V: String) -> bool
     
 }
 
+
 #[allow(non_snake_case)]
-pub async fn gba(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u32, 
+pub fn gba_setup(ip_address: Vec<&str>, 
+    args: Vec<String>, V: String) 
+    -> NetworkMessage
+{
+    
+    let echo = Echo::create_echo("".to_string(), V.to_string());
+    
+    let echo_consensus_message: ConsensusMessage = ConsensusMessage::EchoMessage(echo);
+
+
+    let mut port = 7000;
+
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+
+    for ip_str in ip_address
+    {
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        port = 7000;
+    }
+
+
+    let senderport = 7000 + args[2].parse::<u32>().unwrap();
+    let sender_str = format!("{}:{}", args[6], senderport.to_string());
+
+    let echo_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+        addresses: sockets, message: echo_consensus_message
+    };
+
+
+    echo_network_message
+
+}
+
+
+
+
+
+
+#[allow(non_snake_case)]
+pub async fn gba1(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u32, 
     args: Vec<String>, mut V: String, mode: String, committee_length: usize) -> (String, usize)
 {
 

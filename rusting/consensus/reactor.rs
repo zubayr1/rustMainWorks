@@ -24,6 +24,8 @@ mod accum;
 
 #[path = "../algos/byzar.rs"]
 mod byzar;
+#[path = "../algos/gba.rs"]
+mod gba;
 
 #[path = "./timer.rs"]
 mod timer; 
@@ -73,51 +75,6 @@ fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> String
 
 
 
-fn waitasync(lastlevel: String, args: Vec<String>) -> (NetworkMessage, Vec<SocketAddr>)
-{
-    let ip_address: Vec<&str> = lastlevel.split(" ").collect();
-
-
-    let mut port = 7000;
-
-    let mut sockets: Vec<SocketAddr> = Vec::new();
-
-    for ip_str in ip_address
-    {
-        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
-
-        if splitted_ip!=[""]
-        {
-            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
-    
-            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
-    
-            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
-    
-            port = 7000;
-        }
-        
-    }
-
-
-    let check: Check = Check::create_check("check".to_string().clone());
-
-    let check_message: ConsensusMessage = ConsensusMessage::CheckMessage(check);
-
-
-    let senderport = 7000 + args[2].parse::<u32>().unwrap();
-    let sender_str = format!("{}:{}", args[6], senderport.to_string());
-
-    let check_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
-        addresses: sockets.clone(), message: check_message
-    };
-
-    (check_network_message, sockets)
-
-
-}
-
-
 fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>) -> NetworkMessage
 {
     let accum: Accum = Accum::create_accum("sign".to_string(), acc_value_zl.clone());
@@ -154,56 +111,217 @@ fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>) ->
 
 }
 
-
-
-
-pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
+#[allow(non_snake_case)]
+async fn accum_helper(accum_value: Vec<String>, level: usize, committee_length: usize) -> (String, String)
 {
-
-
-    let (_, last_level_ptr) = sorted[sorted.len() -1];
-
-    let mut last_level = last_level_ptr.to_string();
-
+    let mut V1_vec: Vec<String> = Vec::new();
+    let mut V2_vec: Vec<String> = Vec::new();
     
-    loop 
+
+    let file_path = "./updatednodeinfo.txt";
+
+
+    for val in accum_value.clone() 
     {
-        let (check_network_message, mut all_sockets) = waitasync(last_level.clone(), args.clone()); // method to wait for all nodes to be active
-        let result = tx_sender.send(check_network_message).await;
+        let file = OpenOptions::new().read(true).open(file_path).await.unwrap();
+        let reader = BufReader::new(file);
+        let mut line_stream = reader.lines();
+        let val_clone = val.clone();
+        let data_stream: Vec<&str> = val.split(" ").collect();
 
+        let ipdetails = data_stream[1].clone();        
 
-        let message = rx.recv().await.unwrap();         
-        
+        let ip_port_split: Vec<&str> = ipdetails.split(":").collect();
 
-        let ip = message.sender.ip().to_string();
-        let port = message.sender.port().to_string();
-       
 
         let default_port: u32 = 7000;
 
-        let id = port.parse::<u32>().unwrap() - default_port;
+        let mut count = ip_port_split[1].parse::<u32>().unwrap() - default_port;
 
-        let sender_ip_addr = format!("{}-{}", id.to_string(), ip);
         
+        while let Some(line_result) = line_stream.next_line().await.unwrap() 
+        {
+            let line1 = line_result;
 
-        last_level = last_level.replace(&sender_ip_addr, "");
+            count-=1;
 
 
+            if count==0 
+            {
+                let substrings: Vec<&str> = line1.split(" ").collect();
+                let level_usize = level as usize;
 
-        if let Some(index) = all_sockets.iter().position(|&x| x == message.sender) {
-            all_sockets.remove(index);
-        }    
-        
-        if all_sockets.len()==0
-        {   println!("BREAAAKKK");
-            
-            break;
+                if substrings[level_usize + 1].contains("l")
+                {
+                    V1_vec.push(val_clone.clone());
+                }
+                else 
+                {
+                    V2_vec.push(val_clone.clone());
+                }
+
+                break;
+            }
         }
 
-        
     }
 
 
+    // Get majority accum value
+    let V1 = accum::accum_check(V1_vec.clone(), committee_length.clone());
+
+    let V2 = accum::accum_check(V2_vec.clone(), committee_length.clone());
+
+    
+
+    (V1, V2)
+
+
+}
+
+
+fn codeword_init( 
+    ip_address: Vec<&str>, level: usize, args: Vec<String>, 
+    value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>) -> Vec<NetworkMessage>
+{
+
+    let mut index = 0;
+    let mut network_vec: Vec<NetworkMessage> =  Vec::new();
+
+    let mut count=0;
+    
+    for witness in witnesses_vec
+    {
+        let subset_ip: &str;
+        if ip_address.clone().len()==1
+        {
+            subset_ip = ip_address.clone()[0];
+        }
+        else {
+            subset_ip = ip_address.clone()[index];
+
+        }
+        let mut subset_vec: Vec<&str> = Vec::new();
+        subset_vec.push(subset_ip);
+        let mut leaf_values_to_prove = codeword_vec[index].to_string();
+
+        
+        let indices_to_prove = index.clone().to_string();
+        leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
+
+        let codeword = Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
+        value.to_string(), indices_to_prove.clone(), merkle_len);
+        index+=1;
+
+        
+        let codeword_consensus_message: ConsensusMessage = ConsensusMessage::CodewordMessage(codeword);
+
+
+        let mut port = 7000;
+
+        let mut sockets: Vec<SocketAddr> = Vec::new();
+
+        let ip_str = ip_address.clone()[count];
+
+        count+=1;
+
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        
+
+        let senderport = 7000 + args[2].parse::<u32>().unwrap();
+        let sender_str = format!("{}:{}", args[6], senderport.to_string());
+
+        let codeword_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+            addresses: sockets, message: codeword_consensus_message
+        };
+
+        network_vec.push(codeword_network_message)
+
+           
+    }
+
+    network_vec
+    
+}
+
+#[allow(non_snake_case)]
+fn codeword_helper(ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize)
+    -> (String, String, String)
+{
+    let mut data: String = "pvss".to_string();
+
+    let mut W1: String = "".to_string();
+    let mut W2: String = "".to_string();
+             
+    let mut received_output: Vec<Vec<String>> = Vec::new();
+
+    let mut check_first_codeword_list: Vec<String> = Vec::new();
+
+    
+    if ip_address.len()==2
+    {
+        let bytes = codewords.trim_matches('[').trim_matches(']').split("; ");
+
+        // Parse each substring as u8 and collect into a vector
+        let bytes: Vec<u8> = bytes.map(|s| s.parse().unwrap()).collect();
+
+        // Decode the vector as UTF-8 and handle errors
+        let output = match std::str::from_utf8(&bytes) {
+            Ok(s) => s,
+            Err(e) => {
+                // Handle invalid UTF-8 error
+                return (data, W1, W2);
+            }
+        };
+
+        data  = output.to_string();
+
+
+        return (data, W1, W2);
+
+    }
+
+
+    if !check_first_codeword_list.contains(&value)
+    {
+        let (proof, codeword) = codeword::verify_codeword(codewords, witness, value, index, leaves_len);
+
+        println!("{}", proof);
+        
+        // if proof==true
+        // {
+        //     check_first_codeword_list.push(val_split[1].to_string());
+
+        //     // send witness to nodes if have received the first valid code word: prod
+        //     let comm_output = communication(committee_id.clone(), ip_address.clone(), 
+        //     level, _index, args.clone(), 
+        //         mode.clone(), codeword.clone()).await;
+        //     received_output.push(comm_output);
+        // }
+    }
+    (data, W1, W2)
+
+}
+
+fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
+{
+    updated_pvss.sort();
+
+    let pvss = updated_pvss.join("");
+
+    return pvss.into_bytes();
+}
+
+#[allow(non_snake_case)]
+pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
+{  
 
     let mut level = 0;
 
@@ -212,42 +330,58 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut pvss_data: Vec<u8> = "".to_string().into_bytes();
 
+    
+
 
     if ip_address.len()==1
     {
         //GET PVSS DATA FROM DIMITRIS
         pvss_data = ["pvss_datapvss_data".to_string(), args[2].to_string()].join(" ").into_bytes();
-        level+=1
+        level+=1;
+        
     }
 
 
     (_, ip_addresses_comb) = sorted[level];
 
+
     ip_address = ip_addresses_comb.split(" ").collect();
             
-    let acc_value_zl: String = reactor_init(pvss_data, ip_address.clone());
+    let acc_value_zl: String = reactor_init(pvss_data.clone(), ip_address.clone());
 
     
     let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
 
-    let result = tx_sender.send(accum_network_message).await;
+    let _ = tx_sender.send(accum_network_message).await;
 
+
+    let mut accum_value: Vec<String> = Vec::new();
+    let mut echo_value: Vec<String> = Vec::new();
+    let mut updated_pvss: Vec<String> = Vec::new();
 
     loop 
     {
         if let Some(message) = rx.recv().await {
             match message.message 
-            {
-                // Match the Check message type
-                ConsensusMessage::CheckMessage(check) => {
-                    // Handle Check message
-                    println!("received check, {:?}", message.sender);
-                }
-
+            {               
                 // Match the Echo message type
                 ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message
-                    println!("received echo");
+                    println!("received echo {:?}", message.sender);
+
+                    let value = format!("{} {}", echo.value, message.sender);
+
+                    echo_value.push(value);
+
+
+                    if echo_value.len()==2*ip_address.clone().len()
+                    {  
+                        gba::check_echo_major_v(echo_value.clone(), echo.value);
+
+                        echo_value = Vec::new(); 
+                    }
+
+
                 }
 
                 // Match the Vote message type
@@ -264,15 +398,128 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                 // Match the Codeword message type
-                ConsensusMessage::CodewordMessage(codeword) => {
+                ConsensusMessage::CodewordMessage(codeword) => 
+                {
                     // Handle Codeword message
-                    println!("received codeword");
+                    println!("received codeword, {:?}", message.sender);
+
+                    let (data, W1, W2) = codeword_helper(ip_address.clone(), codeword.codewords, codeword.witness, codeword.value,
+                        codeword.index, codeword.leaves_len);
+
+                        updated_pvss.push(data);
+
+                    if updated_pvss.len()==ip_address.clone().len()
+                    {                      
+                        pvss_data = aggregate(updated_pvss.clone());
+                    
+                        println!("{:?}", pvss_data);
+
+                        if sorted.clone().len()>level-1
+                        {
+                            level+=1;
+
+                            (_, ip_addresses_comb) = sorted[level];
+
+                            ip_address = ip_addresses_comb.split(" ").collect();
+                                    
+                            let acc_value_zl: String = reactor_init(pvss_data.clone(), ip_address.clone());
+                        
+                            
+                            let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
+                        
+                            let _ = tx_sender.send(accum_network_message).await;
+                        }
+
+                        updated_pvss = Vec::new();
+
+                    }
+                    
                 }
 
                 // Match the Accum message type
                 ConsensusMessage::AccumMessage(accum) => {
                     // Handle Accum message
                     println!("received accum, {:?}", message.sender);
+
+                    let value = format!("{} {}", accum.value, message.sender);
+
+                    accum_value.push(value);
+
+                    if accum_value.len()==ip_address.clone().len()
+                    {                         
+                                               
+                        let (mut V1, mut V2) = accum_helper(accum_value.clone(), level.clone(), ip_address.clone().len()).await;
+
+                        // let v1_comm = byzar::BA_setup(ip_address.clone(), level,  args.clone(),
+                        //         V1.clone(), ip_address.clone().len());
+                        // let v2_comm = byzar::BA_setup(ip_address.clone(), level,  args.clone(),
+                        //     V2.clone(), ip_address.clone().len());
+
+                        // let _ = tx_sender.send(v1_comm).await;
+                        // let _ = tx_sender.send(v2_comm).await;
+
+
+                        if level!=1
+                        {
+                            V1 = byzar::check_equal(V1);
+                            V2 = byzar::check_equal(V2);
+                        }
+
+                        let mut qual: Vec<u32> = Vec::new();
+
+
+                        if V1!="bot" && V1!=""
+                        {        
+                            qual.push(1);
+                        }
+                        if V2!="bot" && V2!=""
+                        {
+                            qual.push(2);
+                        }
+
+
+                        for val in qual
+                        {   
+                            if val==1 && V1==acc_value_zl
+                            {
+                               let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
+                                ip_address.clone().len());
+
+
+                                let network_vec = codeword_init( 
+                                    ip_address.clone(), level, args.clone(), 
+                                    V1.clone(), merkle_len, codeword_vec, witnesses_vec);
+
+
+                                for network_msg in network_vec
+                                {   
+                                    let _  = tx_sender.send(network_msg).await;
+                                }
+
+                            }
+
+                            if val==2 && V2==acc_value_zl
+                            {                                    
+                               let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
+                                ip_address.clone().len());
+                                
+                                
+                                let network_vec = codeword_init( 
+                                    ip_address.clone(), level, args.clone(), 
+                                    V2.clone(), merkle_len, codeword_vec, witnesses_vec);
+
+                                
+                                for network_msg in network_vec
+                                {   
+                                    let _  = tx_sender.send(network_msg).await;
+                                }
+                            }
+                        }
+                        
+                        accum_value = Vec::new();
+                    }
                     
                 }
 
@@ -340,7 +587,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
 
         if !check_first_codeword_list.contains(&val_split[1].to_string())
         {
-            let (proof, codeword) = codeword::verify_codeword(value);
+            let (proof, codeword) = codeword::verify_codeword1(value);
             
             if proof==true
             {
@@ -426,7 +673,7 @@ pub async fn reaction(output: Vec<Vec<String>>, mode: String, committee_length: 
 }
 
 #[allow(non_snake_case)]
-pub async fn committee_selection(_pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index:u32, 
+pub async fn committee_selection1(_pvss_data: String, committee_id: u32, ip_address: &Vec<&str>, level: u32, _index:u32, 
     args: Vec<String>, mut W1: String, mut W2: String, mode: String, committee_length: usize,  mut qual: Vec<u32>) -> Vec<u8>
 {
     let mut b: Vec<u32> = Vec::new();
@@ -553,7 +800,7 @@ pub async fn reactor_helper<'a>(
             return pvss_data.into_bytes();
         }
         
-        return committee_selection(pvss_data, committee_id, ip_address, level, _index, args, w1, w2, mode, committee_length, qual).await;
+        return committee_selection1(pvss_data, committee_id, ip_address, level, _index, args, w1, w2, mode, committee_length, qual).await;
 
     }    
     else if mode.contains("accum")
@@ -683,9 +930,9 @@ pub async fn accum_reactor(
     let V2 = accum::accum_check(V2_vec.clone(), committee_length.clone());
 
     
-    let mut v1 = byzar::BA(committee_id, ip_address, level, _index, args.clone(),
+    let mut v1 = byzar::BA11(committee_id, ip_address, level, _index, args.clone(),
             V1.clone(), mode.clone(), committee_length.clone()).await;
-    let mut v2 = byzar::BA( committee_id, ip_address, level, _index, args.clone(), 
+    let mut v2 = byzar::BA11( committee_id, ip_address, level, _index, args.clone(), 
         V2.clone(), mode.clone(), committee_length.clone()).await;
 
     if level!=1

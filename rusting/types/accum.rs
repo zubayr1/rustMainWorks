@@ -17,9 +17,9 @@ pub fn accum_check(received_texts: Vec<String>, committee_length: usize) -> Stri
     let mut accum_values: Vec<String> = Vec::new();
     for text in received_texts.clone()
     {
-        let split_text: Vec<&str> = text.split(", ").collect();
+        let split_text: Vec<&str> = text.split(" ").collect();
 
-        accum_val = split_text[1].to_string();
+        accum_val = split_text[0].to_string();
 
         accum_values.push(accum_val);
         

@@ -127,11 +127,11 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     
     // Create channels for communication for receiver. Use rx_receiver to receive network messages.
-    let (tx_receiver, mut rx_receiver) = channel(10_000);
+    let (tx_receiver, rx_receiver) = channel(10_000);
     // Create channels for communication with sender. Use tx_sender to send messages to the network.
     let (tx_sender, rx_sender) = channel(10_000);
 
-
+    
 
     // Create and start the sender and receiver.
     let network_receiver = NetworkReceiver::new(*node_ip, tx_receiver.clone());
@@ -152,22 +152,22 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
 
     
-    reactor::reactor(tx_sender, rx_receiver, sorted, args).await;
+   reactor::reactor(tx_sender, rx_receiver, sorted, args).await;
    
     
     
 
     // for _index in 1..(args[7].parse::<u32>().unwrap()+1) // iterate for all epoch
     // {   
-    //     let start_time = Utc::now().time(); 
+    //     // let start_time = Utc::now().time(); 
 
     //     println!("epoch {}", _index);
 
     //     let mut text;
 
-    //     text = ["epoch ".to_string(), _index.to_string()].join(": ");
-    //     file.write_all(text.as_bytes()).await.unwrap();
-    //     file.write_all(b"\n").await.unwrap();
+    //     // text = ["epoch ".to_string(), _index.to_string()].join(": ");
+    //     // file.write_all(text.as_bytes()).await.unwrap();
+    //     // file.write_all(b"\n").await.unwrap();
 
       
         
@@ -178,7 +178,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     //     let mut pvss_data: Vec<u8> = pvss_data_str.into_bytes();
 
     //     for (committee_id, ip_addresses_comb) in sorted.clone()
-    //     {`
+    //     {
     //         let ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
 
             
@@ -192,7 +192,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     //         else 
     //         {                               
               
-    //             pvss_data = reactor::reactor_init( 
+    //             pvss_data = reactor::reactor_init1( 
     //                 pvss_data.clone(),committee_id.clone(), ip_address.clone(), 
     //             level, _index, args.clone()).await;
     //             level+=1;
@@ -203,33 +203,33 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
             
     //     }    
 
-    //     let end_time = Utc::now().time();
-    //     let diff = end_time - start_time;
+    //     // let end_time = Utc::now().time();
+    //     // let diff = end_time - start_time;
         
-    //     println!("Setup End by {}. time taken {} seconds", args[6], diff.num_seconds());  
+    //     // println!("Setup End by {}. time taken {} seconds", args[6], diff.num_seconds());  
 
 
 
     //     text = "--------------------------------".to_string();
 
-    //     file.write_all(text.as_bytes()).await.unwrap();
-    //     file.write_all(b"\n").await.unwrap();
+    //     // file.write_all(text.as_bytes()).await.unwrap();
+    //     // file.write_all(b"\n").await.unwrap();
 
 
         
     //     text = "GRand Start".to_string();
 
-    //     file.write_all(text.as_bytes()).await.unwrap();
-    //     file.write_all(b"\n").await.unwrap();
+    //     // file.write_all(text.as_bytes()).await.unwrap();
+    //     // file.write_all(b"\n").await.unwrap();
 
-    //     let start_time = Utc::now().time(); 
+    //     // let start_time = Utc::now().time(); 
 
     //     GRand::initiate(pvss_data);
 
-    //     let end_time = Utc::now().time();
-    //     let diff = end_time - start_time;
+    //     // let end_time = Utc::now().time();
+    //     // let diff = end_time - start_time;
         
-    //     println!("GRand End by {}. time taken {} seconds", args[6], diff.num_seconds()); 
+    //     // println!("GRand End by {}. time taken {} seconds", args[6], diff.num_seconds()); 
         
 
 
