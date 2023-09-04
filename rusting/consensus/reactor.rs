@@ -55,36 +55,18 @@ fn set_state(ip_address: Vec<&str>, env: String) -> InternalState
 
     let mut port = 7000;
 
-    if env=="dev".to_string()
+    
+    for ip_str in ip_address.clone()
     {
-        for ip_str in ip_address.clone()
-        {
-            let splitted_ip: Vec<&str> = ip_str.split("-").collect();
-            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
 
-            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
 
-            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
 
-            port = 7000;
-        }
+        port = 7000;
     }
-    else 
-    {   let mut count = 1;
-        for ip_str in ip_address.clone()
-        {
-            port+=count;
-
-            let ip_with_port = format!("{}:{}", ip_str, port.to_string()); 
-
-            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
-
-            port = 7000;
-
-            count+=1;
-        }
-    }
-
     
 
     let length = ip_address.len();
@@ -132,37 +114,19 @@ fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>) ->
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
-    if args[5]=="dev".to_string()
+    
+    for ip_str in ip_address.clone()
     {
-        for ip_str in ip_address.clone()
-        {
-            let splitted_ip: Vec<&str> = ip_str.split("-").collect();
-            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
 
-            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
 
-            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
 
-            port = 7000;
-        }
+        port = 7000;
     }
-    else 
-    {   let mut count = 1;
-        for ip_str in ip_address.clone()
-        {
-            port+=count;
-
-            let ip_with_port = format!("{}:{}", ip_str, port.to_string()); 
-
-            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
-
-            port = 7000;
-
-            count+=1;
-        }
-    }
-
-
+    
     let senderport = 7000 + args[2].parse::<u32>().unwrap();
     let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
@@ -295,27 +259,15 @@ fn codeword_init(
 
         count+=1;
 
-        if args[5]=="dev".to_string()
-        {
-            let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+        
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
 
-            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
     
-            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
-    
-            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
-        }
-        else 
-        {
-            let mut port_usize = port as usize;
-            port_usize+=count;
-
-            let ip_with_port = format!("{}:{}", ip_str, port_usize.to_string()); 
-
-            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
-
-        }
-
         
 
         let senderport = 7000 + args[2].parse::<u32>().unwrap();

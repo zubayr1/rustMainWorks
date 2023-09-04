@@ -80,7 +80,6 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
 
     sorted.sort_by_key(|a| a.0);
-    println!("{:?}", filtered_committee);
 
 
     let file_path = "./nodes_information.txt";
