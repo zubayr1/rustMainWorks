@@ -40,18 +40,7 @@ async fn run_nodes(args: Vec<String>)
 
         let committeesplit: Vec<&str>;
 
-        if args[5]=="prod"
-        {
-            let textsplit: Vec<&str> = line_uw.split("-").collect();      
-
-            ids.push(textsplit[0].to_string());
-
-            committeesplit = textsplit[1].split(" ").collect();
-        }             
-        else 
-        {
-            committeesplit = line_uw.split(" ").collect();
-        }
+        committeesplit = line_uw.split(" ").collect();
 
         
 
