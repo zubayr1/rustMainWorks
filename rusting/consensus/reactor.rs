@@ -49,24 +49,43 @@ mod newclient;
 mod newserver;
 
 
-fn set_state(ip_address: Vec<&str>) -> InternalState
+fn set_state(ip_address: Vec<&str>, env: String) -> InternalState
 {
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
     let mut port = 7000;
 
-    for ip_str in ip_address.clone()
+    if env=="dev".to_string()
     {
-        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
-        println!("{:?}", splitted_ip[0]);
-        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+        for ip_str in ip_address.clone()
+        {
+            let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
 
-        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
 
-        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
 
-        port = 7000;
+            port = 7000;
+        }
     }
+    else 
+    {   let mut count = 1;
+        for ip_str in ip_address.clone()
+        {
+            port+=count;
+
+            let ip_with_port = format!("{}:{}", ip_str, port.to_string()); 
+
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+            port = 7000;
+
+            count+=1;
+        }
+    }
+
+    
 
     let length = ip_address.len();
 
@@ -84,7 +103,7 @@ fn set_state(ip_address: Vec<&str>) -> InternalState
 }
 
 
-fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalState)
+fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>, env: String) -> (String, InternalState)
 {
     let committee_length = ip_address.len();    
 
@@ -94,7 +113,7 @@ fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalS
 
     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
 
-    let state = set_state(ip_address) ;
+    let state = set_state(ip_address, env) ;
 
     (acc_value_zl, state)
 
@@ -654,7 +673,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String;
             
-    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
+    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
 
     
     let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
@@ -776,7 +795,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
                                         
-                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
+                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
                             
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
@@ -824,7 +843,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             ip_address = ip_addresses_comb.split(" ").collect();
                                     
-                            (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
+                            (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
                         
                             
                             let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
