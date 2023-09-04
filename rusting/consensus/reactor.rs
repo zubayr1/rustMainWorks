@@ -658,7 +658,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
 
     let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
-    println!("{:?}", accum_network_message);
 
     let _ = tx_sender.send(accum_network_message).await;
 
@@ -700,12 +699,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Vote message type
                 ConsensusMessage::VoteMessage(vote) => {
                     // Handle Vote message
-                    println!("received vote, {:?}", message.sender);
+                    // println!("received vote, {:?}", message.sender);
                 }
 
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
-                {   println!("received committee, {:?}", message.sender);
+                {   
+                    // println!("received committee, {:?}", message.sender);
                     // Handle Committee message
 
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), ip_address.clone(), committee.codewords, committee.witness, 
@@ -713,7 +713,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 }
 
                 ConsensusMessage::CodewordRetrieveMessage(retrieve) =>
-                {   println!("received cordwordretrieve, {:?}", message.sender);
+                {   
+                    // println!("received cordwordretrieve, {:?}", message.sender);
                     // Handle Retrieve message
                     retrieved_hashmap
                     .entry(retrieve.part)
@@ -800,7 +801,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::CodewordMessage(codeword) => 
                 {
                     // Handle Codeword message
-                    println!("received codeword, {:?}", message.sender);
+                    // println!("received codeword, {:?}", message.sender);
                     let data: String;
 
                     (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), ip_address.clone(), codeword.codewords, codeword.witness, 
@@ -845,7 +846,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::AccumMessage(accum) => 
                 {
                     // Handle Accum message
-                    println!("received accum, {:?}", message.sender);
+                    // println!("received accum, {:?}", message.sender);
                     let value = format!("{} {:?}", accum.value, message.sender);
 
                     if state.get_level() == message.level
@@ -962,7 +963,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Propose message type
                 ConsensusMessage::ProposeMessage(propose) => {
                     // Handle Propose message
-                    println!("received propose, {:?}", message.sender);
+                    // println!("received propose, {:?}", message.sender);
                 }
             
                 
