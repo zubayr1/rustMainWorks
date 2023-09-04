@@ -38,19 +38,10 @@ else
 fi
 
 
-
-
 # run script
 cd "rusting"
 python3 Structuring.py
 
-arg1="$ID"
-arg2=4
-arg3=700
-arg4=1300
-
-# Call the Python script with the arguments
-python3 portify.py "$arg1" "$arg2" "$arg3" "$arg4"
 
 /home/ubuntu/.cargo/bin/cargo run -- keys "$ID" 4 03282129 prod "$IP" 10 1
 exit 0
