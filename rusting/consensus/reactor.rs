@@ -132,17 +132,34 @@ fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>) ->
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
-    for ip_str in ip_address.clone()
+    if args[5]=="dev".to_string()
     {
-        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+        for ip_str in ip_address.clone()
+        {
+            let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
 
-        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
 
-        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
 
-        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+            port = 7000;
+        }
+    }
+    else 
+    {   let mut count = 1;
+        for ip_str in ip_address.clone()
+        {
+            port+=count;
 
-        port = 7000;
+            let ip_with_port = format!("{}:{}", ip_str, port.to_string()); 
+
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+            port = 7000;
+
+            count+=1;
+        }
     }
 
 
