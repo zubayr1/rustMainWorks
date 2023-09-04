@@ -623,7 +623,7 @@ fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
 pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
 {  
     let mut level = 0;
-    println!("{:?}", sorted);
+
     let (_, mut ip_addresses_comb) = sorted[level];
     let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
 

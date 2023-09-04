@@ -78,7 +78,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
 
     println!("adversary? {:?}", args[8]);
     let mut sorted: Vec<(&u32, &String)> = filtered_committee.iter().collect();
-    
+    println!("{:?}", filtered_committee);
 
     sorted.sort_by_key(|a| a.0);
 
