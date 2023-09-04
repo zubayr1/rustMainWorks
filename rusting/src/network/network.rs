@@ -129,8 +129,8 @@ impl NetworkReceiver {
     // receiving messages from exactly one connection and forwards those messages to
     // the deliver channel.
     pub async fn run(&self) {
-
-        let address_str = self.address.to_string().replace("127.0.0.1", "0.0.0.0");
+        let split: Vec<String> = self.address.to_string().split(":").map(|s| s.to_string()).collect();
+        let address_str = format!("{}:{}", "0.0.0.0".to_string(), split[1]);
 
         let address = address_str.parse::<SocketAddr>().unwrap();
 
