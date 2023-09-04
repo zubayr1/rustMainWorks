@@ -704,7 +704,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
-                {
+                {   println!("received committee");
                     // Handle Committee message
 
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), ip_address.clone(), committee.codewords, committee.witness, 
@@ -712,7 +712,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 }
 
                 ConsensusMessage::CodewordRetrieveMessage(retrieve) =>
-                {
+                {   println!("received cordwordretrieve");
                     // Handle Retrieve message
                     retrieved_hashmap
                     .entry(retrieve.part)
@@ -799,7 +799,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::CodewordMessage(codeword) => 
                 {
                     // Handle Codeword message
-
+                    println!("received codeword");
                     let data: String;
 
                     (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), ip_address.clone(), codeword.codewords, codeword.witness, 
@@ -844,7 +844,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::AccumMessage(accum) => 
                 {
                     // Handle Accum message
-
+                    println!("received accum");
                     let value = format!("{} {:?}", accum.value, message.sender);
 
                     if state.get_level() == message.level
