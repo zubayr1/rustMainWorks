@@ -705,8 +705,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
             
     (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
 
-    println!("{:?}", acc_value_zl);
     let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
+    println!("{:?}", accum_network_message);
 
     let _ = tx_sender.send(accum_network_message).await;
 
