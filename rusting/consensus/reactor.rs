@@ -295,13 +295,26 @@ fn codeword_init(
 
         count+=1;
 
-        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+        if args[5]=="dev".to_string()
+        {
+            let splitted_ip: Vec<&str> = ip_str.split("-").collect();
 
-        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+    
+            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+    
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+        }
+        else 
+        {
+            let mut port_usize = port as usize;
+            port_usize+=count;
 
-        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+            let ip_with_port = format!("{}:{}", ip_str, port_usize.to_string()); 
 
-        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        }
 
         
 
