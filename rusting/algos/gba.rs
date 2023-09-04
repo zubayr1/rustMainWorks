@@ -82,7 +82,7 @@ pub fn gba_setup(ip_address: Vec<&str>,
 
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
-    for ip_str in ip_address
+    for ip_str in ip_address.clone()
     {
         let splitted_ip: Vec<&str> = ip_str.split("-").collect();
 
@@ -99,8 +99,14 @@ pub fn gba_setup(ip_address: Vec<&str>,
     let senderport = 7000 + args[2].parse::<u32>().unwrap();
     let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
+    let length = ip_address.len();
+
+    let level_f = (length as f64).sqrt();
+
+    let level = level_f.round() as usize;
+
     let echo_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
-        addresses: sockets, message: echo_consensus_message
+        addresses: sockets, message: echo_consensus_message, level: level
     };
 
 

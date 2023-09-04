@@ -7,7 +7,7 @@ mod merkle_tree;
 
 
 #[allow(unused)]
-pub fn verify_codeword(mut codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize) -> (bool,Vec<String>)
+pub fn verify_codeword(mut codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize) -> (bool, String)
 {
     let splitted_value: Vec<&str> = value.split(" ").collect();
 
@@ -28,7 +28,7 @@ pub fn verify_codeword(mut codewords: String, witness: Vec<u8>, value: String, i
 
 
     let mut codeword: Vec<String> = Vec::new();
-    codeword.push(codewords);
+    codeword.push(codewords.clone());
 
     
     
@@ -41,7 +41,7 @@ pub fn verify_codeword(mut codewords: String, witness: Vec<u8>, value: String, i
     let proof = merkle_tree::merkle_proof(witness, indices_to_prove, 
         codeword.clone(), u8_array, merkle_len);
 
-    return (proof, codeword);
+    return (proof, codewords);
 }
 
 

@@ -2,14 +2,31 @@ use std::net::SocketAddr;
 
 use serde::{Deserialize, Serialize};
 
-#[path = "../../types/generic.rs"]
-mod generic; 
+pub struct InternalState {
+    pub level: usize,
+    pub addresses: Vec<SocketAddr>,
+}
+
+impl InternalState {
+    
+    // Method to return the 'level'
+    pub fn get_level(&self) -> usize {
+        self.level
+    }
+
+    // Method to return the 'addresses'
+    pub fn _get_addresses(&self) -> &Vec<SocketAddr> {
+        &self.addresses
+    }
+}
+
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NetworkMessage {
     pub sender: SocketAddr,
     pub addresses: Vec<SocketAddr>, // Vector containing all recipients.
     pub message: ConsensusMessage,
+    pub level: usize
 }
 
 
@@ -21,6 +38,7 @@ pub enum ConsensusMessage {
     VoteMessage(Vote),
     CommitteeMessage(Committee),
     CodewordMessage(Codeword),
+    CodewordRetrieveMessage(CodewordRetrieve),
     AccumMessage(Accum),
     ProposeMessage(Propose),
 }
@@ -77,16 +95,22 @@ impl Vote
 pub struct Committee
 {
     pub sign: String,
+    pub codewords: String,
+    pub witness: Vec<u8>,
     pub value: String,
+    pub index: String,
+    pub leaves_len: usize,
+    pub part: usize,
     pub types: String
 }
 
 #[allow(unused)]
 impl Committee
 {
-    pub fn create_committee(sign: String, value: String) -> Self
+    pub fn create_committee(sign: String, codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize, part: usize) -> Self
     {
-        Committee{sign:sign, value: value, types: "committee".to_string()}
+        Committee{sign:sign, codewords: codewords, witness: witness, value: value, 
+            index: index, leaves_len: leaves_len, part, types: "committee".to_string()}
     }
 }
 
@@ -100,16 +124,17 @@ pub struct Codeword
     pub value: String,
     pub index: String,
     pub leaves_len: usize,
+    pub part: usize,
     pub types: String
 }
 
 #[allow(unused)]
 impl Codeword
 {
-    pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize) -> Self
+    pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize, part: usize) -> Self
     {
         Codeword{sign:sign, codewords: codewords, witness: witness, value: value, 
-            index: index, leaves_len: leaves_len, types: "codeword".to_string()}
+            index: index, leaves_len: leaves_len, part, types: "codeword".to_string()}
     }
 
     pub fn to_vec(self) -> Vec<String> {
@@ -120,6 +145,30 @@ impl Codeword
         vec![self.sign, self.codewords, modified_string, self.value, self.index, self.leaves_len.to_string(), self.types]
     }
 }
+
+
+
+#[allow(unused)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct CodewordRetrieve
+{
+    pub sign: String,
+    pub codewords: String,  
+    pub part: usize,  
+    pub types: String
+}
+
+#[allow(unused)]
+impl CodewordRetrieve
+{
+    pub fn create_codeword_retrieve(sign: String, codewords: String, part: usize) -> Self
+    {
+        CodewordRetrieve{sign:sign, codewords: codewords, part, types: "codewordretrieve".to_string()}
+    }
+
+}
+
+
 
 #[allow(unused)]
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]

@@ -25,9 +25,12 @@ pub fn to_shards(data: &[u8], num_nodes: usize, num_faults: usize) -> Vec<Vec<u8
 }
 
 #[allow(unused)]
-pub fn from_shards(mut data: Vec<Option<Vec<u8>>>, num_nodes: usize, num_faults: usize) -> Vec<u8> {
+pub fn from_shards(mut data: Vec<Option<Vec<u8>>>, num_nodes: usize, num_faults: usize) -> Vec<u8> 
+{   
     let num_data_shards = num_nodes - num_faults;
+
     let r = ReedSolomon::new(num_data_shards, num_faults).unwrap();
+
     r.reconstruct(&mut data).unwrap();
 
     let shard_size = data[0].as_ref().unwrap().len();
