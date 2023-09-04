@@ -58,7 +58,7 @@ fn set_state(ip_address: Vec<&str>) -> InternalState
     for ip_str in ip_address.clone()
     {
         let splitted_ip: Vec<&str> = ip_str.split("-").collect();
-
+        println!("{:?}", splitted_ip[0]);
         port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
 
         let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
