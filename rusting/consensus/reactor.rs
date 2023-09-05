@@ -49,7 +49,7 @@ mod newclient;
 mod newserver;
 
 
-fn set_state(ip_address: Vec<&str>, env: String) -> InternalState
+fn set_state(ip_address: Vec<&str>) -> InternalState
 {
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
@@ -85,7 +85,7 @@ fn set_state(ip_address: Vec<&str>, env: String) -> InternalState
 }
 
 
-fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>, env: String) -> (String, InternalState)
+fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalState)
 {
     let committee_length = ip_address.len();    
 
@@ -95,7 +95,7 @@ fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>, env: String) -> (Stri
 
     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
 
-    let state = set_state(ip_address, env) ;
+    let state = set_state(ip_address) ;
 
     (acc_value_zl, state)
 
@@ -655,7 +655,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String;
             
-    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
+    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
 
     let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
 
@@ -778,7 +778,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
                                         
-                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
+                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
                             
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
@@ -826,7 +826,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             ip_address = ip_addresses_comb.split(" ").collect();
                                     
-                            (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), args[5].clone());
+                            (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
                         
                             
                             let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());

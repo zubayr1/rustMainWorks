@@ -43,34 +43,6 @@ pub fn create_keys() // schnorr key generation
 }
 
 
-pub async fn _read_ports(file_name: String) -> Vec<u32>
-{
-    let file = File::open(file_name).await.unwrap();
-
-    // Create a BufReader to efficiently read the file
-    let reader = BufReader::new(file);
-
-    // Initialize an empty vector to store the u32 port values
-    let mut ports: Vec<u32> = Vec::new();
-
-    // Read each line from the file and parse it into a u32, then push it into the vector
-    let mut line_stream = reader.lines();
-    while let Some(line_result) = line_stream.next_line().await.unwrap() {
-        let line = line_result;
-
-        if let Ok(num) = line.parse::<u32>() {
-            ports.push(num);
-        } else {
-            println!("Invalid u32 string");
-        }
-        
-    }
-
-
-    return ports;
-}
-
-
 
 pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String>)
 {  
