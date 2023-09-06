@@ -727,6 +727,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut C1: Vec<(String, String)> = Vec::new();
     let mut C2: Vec<(String, String)> = Vec::new();
 
+    let mut BA_V: String = "bot".to_string();
+    let mut g: usize = 0;
+
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -861,6 +864,22 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         vote2_value = Vec::new();
 
                         println!(" {:?},  {:?}", C1, C2);
+
+
+                        if C1.len()>0 // output generation
+                        {
+                            let (_, v1_prime) =  C1[0].clone();
+
+                            let (_, v2_prime) =  C2[0].clone();
+
+
+                            if v1_prime==v2_prime
+                            {
+                                g =1;
+                                BA_V = v1_prime;
+                            }
+                        }
+                        println!("{:?}, {:?}", g, BA_V);
 
                         sleep(Duration::from_millis(10)).await;
 
