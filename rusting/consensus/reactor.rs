@@ -675,8 +675,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut forward_check_1 = false;
     let mut forward_check_2 = false;
-
-    let mut BA_check = 0;
+    
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -743,8 +742,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         println!(" {:?},   {}\n", forward_value, forward_value.len());
 
                         forward_value = Vec::new(); 
-
-                        BA_check = 1;
                     }
                     
                 }
@@ -906,8 +903,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // println!("received accum, {:?}", message.sender);
                     let value = format!("{} {:?}", accum.value, message.sender);
 
-                    BA_check = 0;
-
                     if state.get_level() == message.level
                     {
                         qual = Vec::new();
@@ -963,12 +958,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             // V2 = byzar::check_equal(V2);
                         }
 
-                        loop {
-                            if BA_check==1
-                            {
-                                break;
-                            }
-                        }
                         
 
                         if V1!="bot" && V1!=""
