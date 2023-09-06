@@ -680,7 +680,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Echo message
                     println!("received echo {:?}", message.sender);
 
-                    let value = format!("{} {}", echo.value, message.sender);
+                    let value = format!("{} {} {}", echo.value, echo.part, message.sender);
 
                     echo_value.push(value);
 
@@ -736,8 +736,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {     
                             flag = 1;
 
-                            total_length = 0;
-
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
 
@@ -756,9 +754,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
-
-                            total_length = 0;
-                            
+                           
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
@@ -899,9 +895,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address.clone().len()).await;
 
                         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                V1.clone(), ip_address.clone().len()).await;
+                                V1.clone(), ip_address.clone().len(), 1).await;
                         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                            V2.clone(), ip_address.clone().len()).await;
+                            V2.clone(), ip_address.clone().len(), 2).await;
 
                         
                         if level!=1
