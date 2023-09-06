@@ -13,6 +13,10 @@ use std::collections::HashMap;
 use tokio::time::sleep;
 use tokio::time::Duration;
 
+use std::sync::{Arc, Mutex, Condvar};
+
+
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -677,6 +681,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut forward_check_1 = false;
     let mut forward_check_2 = false;
+
+    // Create a shared variable and a condition variable
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+
+    // Clone them for the other thread
+    let pair2 = Arc::clone(&pair);
     
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
@@ -744,7 +754,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if forward_value.len()==ip_address.clone().len()
                     { 
                         println!(" {:?},   {:?}\n", forward_value, ip_address);
-
+                        // Set the shared variable to true and notify the other thread
+                        let (lock, cvar) = &*pair2;
+                        let mut check = lock.lock().unwrap();
+                        *check = true;
+                        cvar.notify_one();
                         forward_value = Vec::new(); 
                     }
                     
@@ -964,6 +978,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         // do here
+                        // Wait in a loop until the shared variable is true
+                            let (lock, cvar) = &*pair;
+                            let mut check = lock.lock().unwrap();
+                            while !*check {
+                                check = cvar.wait(check).unwrap();
+                            }
 
                         if V1!="bot" && V1!=""
                         {        
