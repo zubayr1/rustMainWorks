@@ -808,7 +808,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {   
                             flag = 0;
                            
-
+                            println!("check");
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
 
