@@ -42,10 +42,10 @@ pub async fn twoBA(ba_value: String) -> bool
 #[allow(non_snake_case)]
 pub async fn BA_setup( 
     tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, 
-    args: Vec<String>, V: String, committee_length: usize, part: usize) 
+    args: Vec<String>, V: String) 
 {
 
-    gba::gba_setup(tx_sender, ip_address, args, V, part).await;
+    gba::gba_setup(tx_sender, ip_address, args, V).await;
 }   
 
 #[allow(non_snake_case)]

@@ -666,8 +666,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
     let mut accum_value: Vec<String> = Vec::new();
-    let mut echo_value_1: Vec<String> = Vec::new();
-    let mut echo_value_2: Vec<String> = Vec::new();
+
+    let mut echo_value: Vec<String> = Vec::new();
+
     let mut updated_pvss: Vec<String> = Vec::new();
   
 
@@ -675,8 +676,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut flag = 0;
 
-    let mut forward_check_1 = false;
-    let mut forward_check_2 = false;
+    let mut forward_check = false;
     
     let mut one_check = false;
     let mut two_check = false;
@@ -693,43 +693,30 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Echo message
                     // println!("received echo {:?}", message.sender);
 
-                    let value = format!("{} {} {}", echo.value, echo.part, message.sender);
+                    let value = format!("{} {}", echo.value, message.sender);
 
-                    if echo.part==1
-                    {
-                        echo_value_1.push(value);
-                    }
-                    else 
-                    {
-                        echo_value_2.push(value);
-                    }
+                    
+                    echo_value.push(value);
+                    
 
                     
 
-                    let (count_1, pi_1): (usize, Vec<String>);
-                    let (count_2, pi_2): (usize, Vec<String>);
+                    let (count, pi): (usize, Vec<String>);
 
-                    if echo_value_1.len()==ip_address.clone().len()
+                    if echo_value.len()==ip_address.clone().len()
                     { 
-                        (count_1, pi_1) = gba::check_echo_major_v(echo_value_1.clone(), V1.clone());
+                        (count, pi) = gba::check_echo_major_v(echo_value.clone(), V1.clone());
 
-                        echo_value_1 = Vec::new(); 
+                        echo_value = Vec::new(); 
+
+                        println!("{},  {:?}", count, pi);
                         
-                        forward_check_1 = gba::forward_phase(tx_sender.clone(), count_1, pi_1, 
-                            ip_address.clone(), args.clone(), 1).await;
+                        // forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
+                        //     ip_address.clone(), args.clone(), 1).await;
                         
                     }
 
-                    if echo_value_2.len()==ip_address.clone().len()
-                    { 
-                        (count_2, pi_2) = gba::check_echo_major_v(echo_value_2.clone(), V2.clone());
-
-                        echo_value_2 = Vec::new(); 
-
-                        forward_check_2 = gba::forward_phase(tx_sender.clone(), count_2, pi_2, 
-                            ip_address.clone(), args.clone(), 2).await;
-                       
-                    }
+                    
 
 
                 }
@@ -969,12 +956,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                          (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
 
+                        let V = format!("{}-{}", V1, V2);
 
                         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                V1.clone(), ip_address.clone().len(), 1).await;
-                        byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                            V2.clone(), ip_address.clone().len(), 2).await;
-
+                            V.clone()).await;
+                        
                         
                         if level!=1
                         {

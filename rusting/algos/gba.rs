@@ -125,10 +125,10 @@ fn check_other_major(forward_output: Vec<String>, V: String) -> bool
 
 #[allow(non_snake_case)]
 pub async fn gba_setup(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, 
-    args: Vec<String>, V: String, part: usize) 
+    args: Vec<String>, V: String) 
     
 {    
-    let echo = Echo::create_echo("".to_string(), V.to_string(), part);
+    let echo = Echo::create_echo("".to_string(), V.to_string());
     
     let echo_consensus_message: ConsensusMessage = ConsensusMessage::EchoMessage(echo);
 

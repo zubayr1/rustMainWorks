@@ -53,16 +53,15 @@ pub struct Echo
 {
     pub sign: String,
     pub value: String,
-    pub part: usize,
     pub types: String
 }
 
 #[allow(unused)]
 impl Echo
 {
-    pub fn create_echo(sign: String, value: String, part: usize) -> Self
+    pub fn create_echo(sign: String, value: String) -> Self
     {
-        Echo{sign:sign, value: value, part: part, types: "echo".to_string()}
+        Echo{sign:sign, value: value, types: "echo".to_string()}
     }
 
     pub fn to_vec(self) -> Vec<String> {
