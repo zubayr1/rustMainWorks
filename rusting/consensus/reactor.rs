@@ -727,10 +727,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", forward.value,  message.sender);
 
                     sleep(Duration::from_millis(10)).await;
-                    // if state.get_level() == message.level
-                    // {
-                    //     forward_value.push(value);
-                    // }
+                    
 
                     forward_value.push(value);                    
 
@@ -999,17 +996,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                             V.clone()).await;
                         
-                        
-                        if level!=1
-                        {
-                            // V1 = byzar::check_equal(V1);
-                            // V2 = byzar::check_equal(V2);
-                        }
-
-                        // do here
-                        sleep(Duration::from_millis(50)).await;
-
-                        
+                                                                                                
                         
                         accum_value = Vec::new();
                     }
