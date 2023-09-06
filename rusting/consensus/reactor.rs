@@ -727,19 +727,19 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", forward.value,  message.sender);
 
                     
-                    if state.get_level() == message.level
-                    {
-                        forward_value.push(value);
-                    }
+                    // if state.get_level() == message.level
+                    // {
+                    //     forward_value.push(value);
+                    // }
 
                                         
 
-                    // if forward_value.len()==ip_address.clone().len() 
-                    // { 
-                    //     println!(" {:?},   {:?}\n", forward_value, ip_address);
+                    if forward_value.len()==ip_address.clone().len() 
+                    { 
+                        println!(" {:?},   {:?}\n", forward_value, ip_address);
 
-                    //     forward_value = Vec::new(); 
-                    // }
+                        forward_value = Vec::new(); 
+                    }
 
 
 
