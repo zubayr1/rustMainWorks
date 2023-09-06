@@ -13,6 +13,10 @@ use std::collections::HashMap;
 use tokio::time::sleep;
 use tokio::time::Duration;
 
+use tokio::sync::{Notify, Mutex};
+use std::sync::Arc;
+
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -678,13 +682,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut forward_check_1 = false;
     let mut forward_check_2 = false;
 
-    let mut forward_condition_met = false; 
+    let forward_condition_met = Arc::new(Mutex::new(false));
+    let forward_condition_notify = Arc::new(Notify::new());
+
     
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
     loop 
     {
+        let forward_condition_met_clone = forward_condition_met.clone();
+        let forward_condition_notify_clone = forward_condition_notify.clone();
+
         if let Some(message) = rx.recv().await {
             match message.message 
             {               
@@ -747,7 +756,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     { 
                         println!(" {:?},   {:?}\n", forward_value, ip_address);
 
-                        forward_condition_met = true;
+                        // Set the boolean flag to true
+                        *forward_condition_met_clone.lock().await = true;
+                        
+                        // Notify that the condition is met
+                        forward_condition_notify_clone.notify_one();
 
                         forward_value = Vec::new(); 
                     }
@@ -968,9 +981,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         // do here
-                        while !forward_condition_met {
-                            // Sleep or yield the task to avoid busy-waiting
-                            tokio::time::sleep(Duration::from_millis(100)).await; // Adjust sleep duration as needed
+                        let forward_condition_met_lock = forward_condition_met.lock().await;
+                        if !*forward_condition_met_lock {
+                            forward_condition_notify.notified().await;
                         }
 
                         if V1!="bot" && V1!=""
