@@ -10,6 +10,8 @@ use std::net::SocketAddr;
 
 use std::collections::HashMap;
 
+use tokio::time::sleep;
+use tokio::time::Duration;
 
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -957,7 +959,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             // V2 = byzar::check_equal(V2);
                         }
 
-                        
+                        // Sleep to make sure sender and receiver are ready.
+                        sleep(Duration::from_millis(50)).await;
 
                         if V1!="bot" && V1!=""
                         {        
