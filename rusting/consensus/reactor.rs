@@ -10,6 +10,8 @@ use std::net::SocketAddr;
 
 use std::collections::HashMap;
 
+use tokio::time::sleep;
+use tokio::time::Duration;
 
 #[path = "../networking/communication.rs"]
 mod communication;
@@ -842,7 +844,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
                             else 
-                            {
+                            {sleep(Duration::from_millis(50)).await;
                                return;
                             }
 
