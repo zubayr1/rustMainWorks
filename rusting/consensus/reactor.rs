@@ -680,17 +680,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Echo message
                     println!("received echo {:?}", message.sender);
 
-                    // let value = format!("{} {}", echo.value, message.sender);
+                    let value = format!("{} {}", echo.value, message.sender);
 
-                    // echo_value.push(value);
+                    echo_value.push(value);
 
 
-                    // if echo_value.len()==2*ip_address.clone().len()
-                    // {  
-                    //     gba::check_echo_major_v(echo_value.clone(), echo.value);
+                    if echo_value.len()==2*ip_address.clone().len()
+                    { 
+                        println!("{:?}", echo_value); 
+                        // gba::check_echo_major_v(echo_value.clone(), echo.value);
 
-                    //     echo_value = Vec::new(); 
-                    // }
+                        // echo_value = Vec::new(); 
+                    }
 
 
                 }
@@ -902,8 +903,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                             V2.clone(), ip_address.clone().len()).await;
 
-                        // let _ = tx_sender.send(v1_comm).await;
-                        // let _ = tx_sender.send(v2_comm).await;
+                        
                         if level!=1
                         {
                             // V1 = byzar::check_equal(V1);
