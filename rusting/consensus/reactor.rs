@@ -810,7 +810,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Vote message type
                 ConsensusMessage::VoteMessage(vote) => {
                     // Handle Vote message
-                    println!("received vote, {:?}", message.sender);
+                    // println!("received vote, {:?}", message.sender);
 
                     let value = format!("{} {}", vote.value,  message.sender);
                    
@@ -863,14 +863,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         vote2_value = Vec::new();
 
-                        println!(" {:?},  {:?}", C1, C2);
+                        println!(" C1: {:?},     C2:{:?}", C1, C2);
 
 
                         if C1.len()>0 // output generation
                         {
-                            let (_, v1_prime) =  C1[0].clone();
+                            let (v1_prime, _) =  C1[0].clone();
 
-                            let (_, v2_prime) =  C2[0].clone();
+                            let (v2_prime, _) =  C2[0].clone();
 
 
                             if v1_prime==v2_prime
