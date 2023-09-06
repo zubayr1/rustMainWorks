@@ -47,24 +47,24 @@ pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, 
 }
 
 #[allow(non_snake_case)]
-pub fn forward_phase(count: usize, pi: Vec<String>, V: String, committee_length: usize)
+pub fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: Vec<String>, ip_address: Vec<&str>) 
+    -> bool
 {
-    let mut W: Vec<(String, String)> = Vec::new();
 
-    let b = committee_length/2;
+    let b = ip_address.clone().len()/2;
 
     if count >= b // forward phase
     {
-        let tuples: Vec<(String, String)> = pi
-        .iter()
-        .map(|ip| (ip.clone(), V.clone()))
-        .collect();
-    
-        W = tuples;
-    }
+        let v = pi[0].clone();
 
-    println!("    {:?}", W);
+
+        println!("{:?}", pi);
+        return true;
+    }
+    return false;
+    
 }
+
 
 #[allow(non_snake_case)]
 fn check_other_major(forward_output: Vec<String>, V: String) -> bool
