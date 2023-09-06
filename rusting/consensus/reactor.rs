@@ -747,9 +747,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         println!("{:?}", forward_value_1);
                     }
 
-                    if forward_value_1.len()==ip_address.clone().len()
+                    if forward_value_2.len()==ip_address.clone().len()
                     { 
-                        println!("   {:?}", forward_value_1);
+                        println!("   {:?}", forward_value_2);
                     }
                 }
 
