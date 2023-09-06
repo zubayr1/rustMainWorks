@@ -803,12 +803,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    {   
+                    {   println!("check00");
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
                            
-                            println!("check");
+                            println!("check111");
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
 
