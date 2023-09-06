@@ -677,6 +677,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut forward_check_1 = false;
     let mut forward_check_2 = false;
+
+    let mut forward_condition_met = false; 
     
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
@@ -744,6 +746,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if forward_value.len()==ip_address.clone().len()
                     { 
                         println!(" {:?},   {:?}\n", forward_value, ip_address);
+
+                        forward_condition_met = true;
 
                         forward_value = Vec::new(); 
                     }
@@ -964,6 +968,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         // do here
+                        while !forward_condition_met {
+                            // Sleep or yield the task to avoid busy-waiting
+                            tokio::time::sleep(Duration::from_millis(100)).await; // Adjust sleep duration as needed
+                        }
 
                         if V1!="bot" && V1!=""
                         {        
