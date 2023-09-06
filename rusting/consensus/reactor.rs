@@ -717,6 +717,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut forward_value: Vec<String> = Vec::new();
 
+    let mut vote_value: Vec<String> = Vec::new();
+
     let mut flag = 0;
 
     let mut forward_check = false;
@@ -804,9 +806,21 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Vote message
                     println!("received vote, {:?}", message.sender);
 
+                    let value = format!("{} {}", vote.value,  message.sender);
+                   
                     sleep(Duration::from_millis(10)).await;
 
-                    if V1!="bot" && V1!=""
+                    vote_value.push(value);
+
+
+                    if vote_value.len()==ip_address.clone().len()/2 + 1
+                    { 
+
+                        vote_value = Vec::new();
+
+
+
+                        if V1!="bot" && V1!=""
                         {        
                             qual.push(1);
                         }
@@ -854,6 +868,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
                             }
                         }
+                    }
+
+                    
                 }
 
                 // Match the Committee message type
