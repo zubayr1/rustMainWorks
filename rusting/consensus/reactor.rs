@@ -852,7 +852,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                             else 
                             {
-                                return;
+                               // return;
                             }
 
                             
