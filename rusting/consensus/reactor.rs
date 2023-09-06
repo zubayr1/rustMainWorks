@@ -670,8 +670,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut flag = 0;
 
-    let mut forward_check = false;
-
+    let mut forward_check_1 = false;
+    let mut forward_check_2 = false;
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -707,8 +707,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         echo_value_1 = Vec::new(); 
                         
-                        forward_check = gba::forward_phase(tx_sender.clone(), count_1, pi_1, 
-                            ip_address.clone());
+                        forward_check_1 = gba::forward_phase(tx_sender.clone(), count_1, pi_1, 
+                            ip_address.clone(), args.clone(), 1).await;
                     }
 
                     if echo_value_2.len()==ip_address.clone().len()
@@ -717,11 +717,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         echo_value_2 = Vec::new(); 
 
-                        forward_check = gba::forward_phase(tx_sender.clone(), count_2, pi_2, 
-                            ip_address.clone());
+                        forward_check_2 = gba::forward_phase(tx_sender.clone(), count_2, pi_2, 
+                            ip_address.clone(), args.clone(), 2).await;
                     }
 
 
+                }
+
+                // Match the Forward message type
+                ConsensusMessage::ForwardMessage(forward) => {
+                    // Handle Forward message
+                    println!("received forward, {:?}", message.sender);
                 }
 
                 // Match the Vote message type

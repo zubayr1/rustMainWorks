@@ -47,19 +47,54 @@ pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, 
 }
 
 #[allow(non_snake_case)]
-pub fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: Vec<String>, ip_address: Vec<&str>) 
+pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: Vec<String>, ip_address: Vec<&str>, args: Vec<String>, part: usize) 
     -> bool
 {
-
     let b = ip_address.clone().len()/2;
 
     if count >= b // forward phase
     {
         let v = pi[0].clone();
 
+        let forward = Forward::create_forward("".to_string(), v.to_string(), part);
+    
+        let forward_consensus_message: ConsensusMessage = ConsensusMessage::ForwardMessage(forward);
 
-        println!("{:?}", pi);
-        return true;
+
+        let mut port = 7000;
+
+        let mut sockets: Vec<SocketAddr> = Vec::new();
+
+        for ip_str in ip_address.clone()
+        {
+            let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+
+            port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+            let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+            sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+            port = 7000;
+        }
+
+
+        let senderport = 7000 + args[2].parse::<u32>().unwrap();
+        let sender_str = format!("{}:{}", args[6], senderport.to_string());
+
+        let length = ip_address.len();
+
+        let level_f = (length as f64).sqrt();
+
+        let level = level_f.round() as usize;
+
+        let echo_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+            addresses: sockets, message: forward_consensus_message, level: level
+        };
+
+
+        let _ = tx_sender.send(echo_network_message).await;
+            return true;
     }
     return false;
     

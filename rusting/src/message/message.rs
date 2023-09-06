@@ -35,6 +35,7 @@ pub struct NetworkMessage {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ConsensusMessage {
     EchoMessage(Echo),
+    ForwardMessage(Forward),
     VoteMessage(Vote),
     CommitteeMessage(Committee),
     CodewordMessage(Codeword),
@@ -62,6 +63,30 @@ impl Echo
     pub fn create_echo(sign: String, value: String, part: usize) -> Self
     {
         Echo{sign:sign, value: value, part: part, types: "echo".to_string()}
+    }
+
+    pub fn to_vec(self) -> Vec<String> {
+        vec![self.sign, self.value, self.types]
+    }
+}
+
+
+#[allow(unused)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Forward
+{
+    pub sign: String,
+    pub value: String,
+    pub part: usize,
+    pub types: String
+}
+
+#[allow(unused)]
+impl Forward
+{
+    pub fn create_forward(sign: String, value: String, part: usize) -> Self
+    {
+        Forward{sign:sign, value: value, part: part, types: "forward".to_string()}
     }
 
     pub fn to_vec(self) -> Vec<String> {
