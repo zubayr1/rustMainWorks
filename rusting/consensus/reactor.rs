@@ -667,6 +667,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut echo_value_1: Vec<String> = Vec::new();
     let mut echo_value_2: Vec<String> = Vec::new();
     let mut updated_pvss: Vec<String> = Vec::new();
+    let mut forward_value_1: Vec<String> = Vec::new();
+    let mut forward_value_2: Vec<String> = Vec::new();
 
     let mut flag = 0;
 
@@ -683,7 +685,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Echo message type
                 ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message
-                    println!("received echo {:?}", message.sender);
+                    // println!("received echo {:?}", message.sender);
 
                     let value = format!("{} {} {}", echo.value, echo.part, message.sender);
 
@@ -728,6 +730,27 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::ForwardMessage(forward) => {
                     // Handle Forward message
                     println!("received forward, {:?}", message.sender);
+
+                    let value = format!("{} {} {}", forward.value, forward.part, message.sender);
+
+                    if forward.part==1
+                    {
+                        forward_value_1.push(value);
+                    }
+                    else 
+                    {
+                        forward_value_2.push(value);
+                    }
+
+                    if forward_value_1.len()==ip_address.clone().len()
+                    { 
+                        println!("{:?}", forward_value_1);
+                    }
+
+                    if forward_value_1.len()==ip_address.clone().len()
+                    { 
+                        println!("   {:?}", forward_value_1);
+                    }
                 }
 
                 // Match the Vote message type
