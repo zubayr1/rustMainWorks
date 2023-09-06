@@ -24,7 +24,7 @@ async fn gba_communication1(committee_id: u32, ip_address: Vec<&str>, level: u32
 #[allow(non_snake_case)]
 pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, Vec<String>)
 {
-    println!("{:?}",echo_phase_output );
+    println!("{:?}, {:?}",echo_phase_output, V );
     let mut count: usize = 0;
 
     let val: &str = V.as_str();
