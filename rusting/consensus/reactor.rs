@@ -751,7 +751,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if forward_value_2.len()==ip_address.clone().len()/2
                     { 
-                        println!("     {:?}'n", forward_value_2);
+                        println!("     {:?}\n", forward_value_2);
 
                         forward_value_2 = Vec::new(); 
                     }
