@@ -44,8 +44,26 @@ pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, 
 
     return (count, pi);
     
-    
+}
 
+#[allow(non_snake_case)]
+pub fn forward_phase(count: usize, pi: Vec<String>, V: String, committee_length: usize)
+{
+    let mut W: Vec<(String, String)> = Vec::new();
+
+    let b = committee_length/2;
+
+    if count > b // forward phase
+    {
+        let tuples: Vec<(String, String)> = pi
+        .iter()
+        .map(|ip| (ip.clone(), V.clone()))
+        .collect();
+    
+        W = tuples;
+    }
+
+    println!("{:?}", W);
 }
 
 #[allow(non_snake_case)]
