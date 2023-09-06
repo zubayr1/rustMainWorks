@@ -832,7 +832,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             vote_value = Vec::new();
 
-                                                        
+                            sleep(Duration::from_millis(10)).await;        
 
                             if C1.len() >0 //second vote phase
                             {
