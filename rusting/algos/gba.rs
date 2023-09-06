@@ -53,7 +53,7 @@ pub fn forward_phase(count: usize, pi: Vec<String>, V: String, committee_length:
 
     let b = committee_length/2;
 
-    if count > b // forward phase
+    if count >= b // forward phase
     {
         let tuples: Vec<(String, String)> = pi
         .iter()
@@ -63,7 +63,7 @@ pub fn forward_phase(count: usize, pi: Vec<String>, V: String, committee_length:
         W = tuples;
     }
 
-    println!("{:?}", W);
+    println!("    {:?}", W);
 }
 
 #[allow(non_snake_case)]
