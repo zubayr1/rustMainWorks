@@ -740,6 +740,57 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         forward_value = Vec::new(); 
                     }
+
+
+
+                    if V1!="bot" && V1!=""
+                        {        
+                            qual.push(1);
+                        }
+                        if V2!="bot" && V2!=""
+                        {
+                            qual.push(2);
+                        }
+
+                        for val in qual.clone()
+                        {   
+                            if val==1 && V1==acc_value_zl
+                            {   
+                               let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
+                                ip_address.clone().len());
+
+
+                                let network_vec = codeword_init( 
+                                    ip_address.clone(), level, args.clone(), 
+                                    V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+
+
+                                for network_msg in network_vec
+                                {   
+                                    let _  = tx_sender.send(network_msg).await;
+                                }
+
+                            }
+
+                            if val==2 && V2==acc_value_zl
+                            {                                  
+                               let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
+                                ip_address.clone().len());
+                                
+                                
+                                let network_vec = codeword_init( 
+                                    ip_address.clone(), level, args.clone(), 
+                                    V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
+
+                                
+                                for network_msg in network_vec
+                                {   
+                                    let _  = tx_sender.send(network_msg).await;
+                                }
+                            }
+                        }
                     
                 }
 
@@ -958,54 +1009,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         // do here
                         sleep(Duration::from_millis(50)).await;
 
-                        if V1!="bot" && V1!=""
-                        {        
-                            qual.push(1);
-                        }
-                        if V2!="bot" && V2!=""
-                        {
-                            qual.push(2);
-                        }
-
-                        for val in qual.clone()
-                        {   
-                            if val==1 && V1==acc_value_zl
-                            {   
-                               let (codeword_vec, witnesses_vec, merkle_len) = 
-                                    deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
-                                ip_address.clone().len());
-
-
-                                let network_vec = codeword_init( 
-                                    ip_address.clone(), level, args.clone(), 
-                                    V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
-
-
-                                for network_msg in network_vec
-                                {   
-                                    let _  = tx_sender.send(network_msg).await;
-                                }
-
-                            }
-
-                            if val==2 && V2==acc_value_zl
-                            {                                  
-                               let (codeword_vec, witnesses_vec, merkle_len) = 
-                                    deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
-                                ip_address.clone().len());
-                                
-                                
-                                let network_vec = codeword_init( 
-                                    ip_address.clone(), level, args.clone(), 
-                                    V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
-
-                                
-                                for network_msg in network_vec
-                                {   
-                                    let _  = tx_sender.send(network_msg).await;
-                                }
-                            }
-                        }
+                        
                         
                         accum_value = Vec::new();
                     }
