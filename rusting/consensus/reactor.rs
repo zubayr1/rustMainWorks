@@ -724,8 +724,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut forward_check = false;
 
     let mut C1: Vec<(String, String)> = Vec::new();
-    
+    let mut C2: Vec<(String, String)> = Vec::new();
 
+    let mut check_C1 = false;
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -815,20 +816,47 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     vote_value.push(value);
 
 
-                    if vote_value.len()==ip_address.clone().len()/2 + 1
+                    if vote_value.len()==ip_address.clone().len()/2 + 1 //vote phase
                     { 
-
-                        for output in vote_value
+                        if check_C1==false
                         {
-                            let split_output: Vec<&str> = output.split(" ").collect();
 
-                            C1.push((split_output[0].to_string(), split_output[1].to_string()));
+                            for output in vote_value
+                            {
+                                let split_output: Vec<&str> = output.split(" ").collect();
 
+                                C1.push((split_output[0].to_string(), split_output[1].to_string()));
+
+                            }
+
+                            vote_value = Vec::new();
+
+                            println!("{:?}", C1);
+
+                            check_C1= true;
+
+                            if C1.len() >0 //second vote phase
+                            {
+
+                            }
                         }
+                        else 
+                        {
+                            for output in vote_value
+                            {
+                                let split_output: Vec<&str> = output.split(" ").collect();
 
-                        vote_value = Vec::new();
+                                C2.push((split_output[0].to_string(), split_output[1].to_string()));
 
-                        println!("{:?}", C1);
+                            }
+
+                            vote_value = Vec::new();
+
+                            println!("{:?}", C2);
+
+                            check_C1= true;
+                        }
+                        
 
 
                         if V1!="bot" && V1!=""
@@ -1032,6 +1060,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Accum message type
                 ConsensusMessage::AccumMessage(accum) => 
                 {
+                    C1 = Vec::new();
+                    C2 = Vec::new();
                     // Handle Accum message
                     // println!("received accum, {:?}", message.sender);
                     let value = format!("{} {:?}", accum.value, message.sender);
