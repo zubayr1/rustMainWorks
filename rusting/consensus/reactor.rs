@@ -941,7 +941,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // println!("received committee, {:?}", message.sender);
                     // Handle Committee message
-
+                    sleep(Duration::from_millis(10)).await;
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), ip_address.clone(), committee.codewords, committee.witness, 
                     committee.value, committee.index, committee.leaves_len, committee.part, args.clone(), check_first_codeword_list.clone()).await;
                 }
@@ -967,7 +967,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         if total_length == 2*ip_address.clone().len()
-                        {     
+                        {     sleep(Duration::from_millis(10)).await;
                             flag = 1;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
@@ -985,7 +985,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    {   
+                    {   sleep(Duration::from_millis(10)).await;
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
@@ -1025,7 +1025,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                             else 
                             {
-                               sleep(Duration::from_millis(400)).await;
+                               sleep(Duration::from_millis(200)).await;
                                return;
                             }
 
