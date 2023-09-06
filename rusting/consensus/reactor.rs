@@ -897,10 +897,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let (mut V1, mut V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
 
-                        let v1_comm = byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                V1.clone(), ip_address.clone().len());
-                        let v2_comm = byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                            V2.clone(), ip_address.clone().len());
+                        byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                V1.clone(), ip_address.clone().len()).await;
+                        byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                            V2.clone(), ip_address.clone().len()).await;
 
                         // let _ = tx_sender.send(v1_comm).await;
                         // let _ = tx_sender.send(v2_comm).await;
