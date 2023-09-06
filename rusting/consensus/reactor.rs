@@ -678,8 +678,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut forward_check = false;
     
-    let mut one_check = false;
-    let mut two_check = false;
+
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -709,11 +708,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
                         echo_value = Vec::new(); 
-
-                        println!("{},  {:?}", count, pi);
-                        
-                        // forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
-                        //     ip_address.clone(), args.clone(), 1).await;
+                       
+                        forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
+                            ip_address.clone(), args.clone()).await;
                         
                     }
 
@@ -727,7 +724,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Forward message
                     println!("received forward, {:?}", message.sender);
 
-                    let value = format!("{} {} {}", forward.value, forward.part, message.sender);
+                    let value = format!("{} {}", forward.value,  message.sender);
 
                     
                     if state.get_level() == message.level
@@ -735,22 +732,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         forward_value.push(value);
                     }
 
-                    if forward.part==1
-                    {
-                        one_check = true;
-                    }
-                    if forward.part==2
-                    {
-                        two_check = true;
-                    }
-                    
+                                        
 
                     if forward_value.len()==ip_address.clone().len() 
                     { 
                         println!(" {:?},   {:?}\n", forward_value, ip_address);
-
-                        one_check = false;
-                        two_check = false;
 
                         forward_value = Vec::new(); 
                     }

@@ -76,16 +76,15 @@ pub struct Forward
 {
     pub sign: String,
     pub value: String,
-    pub part: usize,
     pub types: String
 }
 
 #[allow(unused)]
 impl Forward
 {
-    pub fn create_forward(sign: String, value: String, part: usize) -> Self
+    pub fn create_forward(sign: String, value: String) -> Self
     {
-        Forward{sign:sign, value: value, part: part, types: "forward".to_string()}
+        Forward{sign:sign, value: value, types: "forward".to_string()}
     }
 
     pub fn to_vec(self) -> Vec<String> {

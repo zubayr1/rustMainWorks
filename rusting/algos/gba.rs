@@ -47,7 +47,7 @@ pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, 
 }
 
 #[allow(non_snake_case)]
-pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: Vec<String>, ip_address: Vec<&str>, args: Vec<String>, part: usize) 
+pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: Vec<String>, ip_address: Vec<&str>, args: Vec<String>) 
     -> bool
 {
     let b = ip_address.clone().len()/2;
@@ -60,7 +60,7 @@ pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: 
             .map(|s| s.to_string())
             .collect();
 
-        let forward = Forward::create_forward("".to_string(), v_split[0].clone(), part);
+        let forward = Forward::create_forward("".to_string(), v_split[0].clone());
     
         let forward_consensus_message: ConsensusMessage = ConsensusMessage::ForwardMessage(forward);
 
