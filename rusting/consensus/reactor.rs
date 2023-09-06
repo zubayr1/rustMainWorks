@@ -1141,6 +1141,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         else 
                         {
+                            if V1!="bot" && V1!=""
+                            {        
+                                qual.push(1);
+                            }
+                            if V2!="bot" && V2!=""
+                            {
+                                qual.push(2);
+                            }
+
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
