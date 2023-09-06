@@ -835,7 +835,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             sleep(Duration::from_millis(10)).await;        
 
                             if C1.len() >0 //second vote phase
-                            {
+                            {   println!("{:?}", C1);
                                 let (v, _) = &C1[0];
                                 forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), v.to_string()).await;
 
@@ -845,11 +845,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {
                             check_C1= true;
 
-                            if vote_value.len() >= ip_address.clone().len()
-                            {
-
-                            }
-
+                            
                             for output in vote_value
                             {
                                 let split_output: Vec<&str> = output.split(" ").collect();
