@@ -838,8 +838,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        
-                        sleep(Duration::from_millis(10)).await; 
+                                                
 
                         vote1_value = Vec::new();       
 
@@ -860,6 +859,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             C2.push((split_output[0].to_string(), split_output[1].to_string()));
 
                         }
+
+                        sleep(Duration::from_millis(10)).await;
 
                         vote2_value = Vec::new();
 
