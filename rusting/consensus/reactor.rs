@@ -902,7 +902,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                             V2.clone(), ip_address.clone().len(), 2).await;
 
-                        
+                            println!("{},  {},   {:?}", V1, V2, ip_address);
                         if level!=1
                         {
                             // V1 = byzar::check_equal(V1);
