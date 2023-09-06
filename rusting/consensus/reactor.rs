@@ -863,8 +863,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         vote2_value = Vec::new();
 
-                        println!(" C1: {:?},     C2:{:?}", C1, C2);
-
 
                         if C1.len()>0 // output generation
                         {
