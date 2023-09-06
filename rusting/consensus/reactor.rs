@@ -692,7 +692,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         println!("{:?}", echo_value); 
                         // gba::check_echo_major_v(echo_value.clone(), echo.value);
 
-                        // echo_value = Vec::new(); 
+                        echo_value = Vec::new(); 
                     }
 
 
