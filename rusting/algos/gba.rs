@@ -54,9 +54,13 @@ pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: 
 
     if count >= b // forward phase
     {
-        let v = pi[0].clone();
+        let v_split: Vec<String> = pi[0]
+            .clone()
+            .split(" ")
+            .map(|s| s.to_string())
+            .collect();
 
-        let forward = Forward::create_forward("".to_string(), v.to_string(), part);
+        let forward = Forward::create_forward("".to_string(), v_split[0].clone(), part);
     
         let forward_consensus_message: ConsensusMessage = ConsensusMessage::ForwardMessage(forward);
 
