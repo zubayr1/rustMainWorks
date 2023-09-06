@@ -722,6 +722,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut flag = 0;
 
     let mut forward_check = false;
+
+    let mut W: Vec<(String, String)> = Vec::new();
     
 
 
@@ -815,7 +817,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if vote_value.len()==ip_address.clone().len()/2 + 1
                     { 
-
+                        println!("{:?}", vote_value);
                         vote_value = Vec::new();
 
 
