@@ -705,14 +705,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if echo_value.len()==ip_address.clone().len()
                     { 
-                        // (count, pi) = gba::check_echo_major_v(echo_value.clone(), V1.clone());
-
-                        println!("{:?}", echo_value);
-
+                        let V = format!("{}-{}", V1.clone(), V2.clone());
+                        (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
                         echo_value = Vec::new(); 
 
-                        // println!("{},  {:?}", count, pi);
+                        println!("{},  {:?}", count, pi);
                         
                         // forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
                         //     ip_address.clone(), args.clone(), 1).await;

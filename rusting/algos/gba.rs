@@ -38,7 +38,7 @@ pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, 
         {
             count+=1;
 
-            pi.push(format!("{} {}", split_output[0].to_string(), split_output[2].to_string()));
+            pi.push(split_output[0].to_string());
         }
     }
 
