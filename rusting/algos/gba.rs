@@ -93,7 +93,7 @@ pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: 
         };
 
         println!("{:?}", forward_network_message);
-        // let _ = tx_sender.send(echo_network_message).await;
+        let _ = tx_sender.send(forward_network_message).await;
             return true;
     }
     return false;
