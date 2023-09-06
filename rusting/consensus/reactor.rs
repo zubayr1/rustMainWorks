@@ -761,6 +761,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     { 
                         println!(" {:?},   {:?}\n", forward_value, ip_address);
 
+                        one_check = false;
+                        two_check = false;
+
                         forward_value = Vec::new(); 
                     }
                     
