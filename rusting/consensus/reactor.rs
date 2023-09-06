@@ -732,7 +732,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         if total_length == 2*ip_address.clone().len()
-                        {   println!("{:?}, {}", retrieved_hashmap,  total_length);   
+                        {     
                             flag = 1;
 
                             total_length = 0;
@@ -753,7 +753,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag == 1
                     {   
                         if total_length == 2*ip_address.clone().len() 
-                        {   println!("    {:?}, {}", retrieved_hashmap, total_length);
+                        {   
                             flag = 0;
 
                             total_length = 0;
