@@ -1139,6 +1139,48 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone()).await;
                         }
+                        else 
+                        {
+                            for val in qual.clone()
+                            {   
+                                if val==1 && V1==acc_value_zl
+                                {   
+                                let (codeword_vec, witnesses_vec, merkle_len) = 
+                                        deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
+                                    ip_address.clone().len());
+
+
+                                    let network_vec = codeword_init( 
+                                        ip_address.clone(), level, args.clone(), 
+                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+
+
+                                    for network_msg in network_vec
+                                    {   
+                                        let _  = tx_sender.send(network_msg).await;
+                                    }
+
+                                }
+
+                                if val==2 && V2==acc_value_zl
+                                {                                  
+                                let (codeword_vec, witnesses_vec, merkle_len) = 
+                                        deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
+                                    ip_address.clone().len());
+                                    
+                                    
+                                    let network_vec = codeword_init( 
+                                        ip_address.clone(), level, args.clone(), 
+                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
+
+                                    
+                                    for network_msg in network_vec
+                                    {   
+                                        let _  = tx_sender.send(network_msg).await;
+                                    }
+                                }
+                            }
+                        }
                                                                                        
                         
                         accum_value = Vec::new();
