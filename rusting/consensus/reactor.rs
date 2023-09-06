@@ -678,6 +678,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut forward_check_1 = false;
     let mut forward_check_2 = false;
     
+    let mut one_check = false;
+    let mut two_check = false;
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -739,14 +741,23 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {} {}", forward.value, forward.part, message.sender);
 
-
+                    
                     if state.get_level() == message.level
                     {
                         forward_value.push(value);
                     }
+
+                    if forward.part==1
+                    {
+                        one_check = true;
+                    }
+                    if forward.part==2
+                    {
+                        two_check = true;
+                    }
                     
 
-                    if forward_value.len()==ip_address.clone().len()
+                    if forward_value.len()==ip_address.clone().len() || (one_check && two_check)
                     { 
                         println!(" {:?},   {:?}\n", forward_value, ip_address);
 
