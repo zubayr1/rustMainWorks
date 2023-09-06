@@ -793,12 +793,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         forward_value = Vec::new(); 
 
                         if all_parts_match && forward_check{
-                            println!("The first parts of all strings match.");
-
                             forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string()).await;
                         }
                     }
 
+
+                    
+                }
+
+                // Match the Vote message type
+                ConsensusMessage::VoteMessage(vote) => {
+                    // Handle Vote message
+                    println!("received vote, {:?}", message.sender);
 
 
                     if V1!="bot" && V1!=""
@@ -849,13 +855,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
                             }
                         }
-                    
-                }
-
-                // Match the Vote message type
-                ConsensusMessage::VoteMessage(vote) => {
-                    // Handle Vote message
-                    println!("received vote, {:?}", message.sender);
                 }
 
                 // Match the Committee message type
