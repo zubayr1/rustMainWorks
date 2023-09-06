@@ -614,9 +614,9 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
 }
 
 
-async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String)
+async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String, no: usize)
 {
-    let vote = Vote::create_vote("".to_string(), v);
+    let vote = Vote::create_vote("".to_string(), no, v);
     
     let vote_consensus_message: ConsensusMessage = ConsensusMessage::VoteMessage(vote);
 
@@ -717,7 +717,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut forward_value: Vec<String> = Vec::new();
 
-    let mut vote_value: Vec<String> = Vec::new();
+    let mut vote1_value: Vec<String> = Vec::new();
+    let mut vote2_value: Vec<String> = Vec::new();
 
     let mut flag = 0;
 
@@ -726,7 +727,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut C1: Vec<(String, String)> = Vec::new();
     let mut C2: Vec<(String, String)> = Vec::new();
 
-    let mut check_C1 = false;
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -796,7 +796,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         forward_value = Vec::new(); 
 
                         if all_parts_match && forward_check{
-                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string()).await;
+                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string(), 1).await;
                         }
                     }
 
@@ -813,111 +813,108 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                    
                     sleep(Duration::from_millis(10)).await;
 
-                    vote_value.push(value);
-
-
-                    if vote_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    { 
-                        if check_C1==false
-                        {
-                            check_C1= true;
-
-                            for output in vote_value
-                            {
-                                let split_output: Vec<&str> = output.split(" ").collect();
-
-                                C1.push((split_output[0].to_string(), split_output[1].to_string()));
-
-                            }
-
-                            
-                            sleep(Duration::from_millis(10)).await; 
-
-                            vote_value = Vec::new();       
-
-                            if C1.len() >0 //second vote phase
-                            {   
-                                let (v, _) = &C1[0];
-                                forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), v.to_string()).await;
-
-                            }
-                        }
-                        else 
-                        {
-                            check_C1= true;
-
-                            
-                            for output in vote_value
-                            {
-                                let split_output: Vec<&str> = output.split(" ").collect();
-
-                                C2.push((split_output[0].to_string(), split_output[1].to_string()));
-
-                            }
-
-                            vote_value = Vec::new();
-
-                            println!(" {:?},  {:?}", C1, C2);
-
-
-
-                            if V1!="bot" && V1!=""
-                            {        
-                                qual.push(1);
-                            }
-                            if V2!="bot" && V2!=""
-                            {
-                                qual.push(2);
-                            }
-
-                            for val in qual.clone()
-                            {   
-                                if val==1 && V1==acc_value_zl
-                                {   
-                                let (codeword_vec, witnesses_vec, merkle_len) = 
-                                        deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
-                                    ip_address.clone().len());
-
-
-                                    let network_vec = codeword_init( 
-                                        ip_address.clone(), level, args.clone(), 
-                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
-
-
-                                    for network_msg in network_vec
-                                    {   
-                                        let _  = tx_sender.send(network_msg).await;
-                                    }
-
-                                }
-
-                                if val==2 && V2==acc_value_zl
-                                {                                  
-                                let (codeword_vec, witnesses_vec, merkle_len) = 
-                                        deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
-                                    ip_address.clone().len());
-                                    
-                                    
-                                    let network_vec = codeword_init( 
-                                        ip_address.clone(), level, args.clone(), 
-                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
-
-                                    
-                                    for network_msg in network_vec
-                                    {   
-                                        let _  = tx_sender.send(network_msg).await;
-                                    }
-                                }
-                            }
-                        }
-
-                            
+                    if vote.no==1
+                    {
+                        vote1_value.push(value);
                     }
+                    else
+                    {
+                        vote2_value.push(value);
+                    }                    
+
+
+                    if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
+                    { 
                         
 
+                        for output in vote1_value
+                        {
+                            let split_output: Vec<&str> = output.split(" ").collect();
+
+                            C1.push((split_output[0].to_string(), split_output[1].to_string()));
+
+                        }
 
                         
+                        sleep(Duration::from_millis(10)).await; 
 
+                        vote1_value = Vec::new();       
+
+                        if C1.len() >0 //second vote phase
+                        {   
+                            let (v, _) = &C1[0];
+                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), v.to_string(), 2).await;
+
+                        }
+                    }
+
+                    if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
+                    {
+                        for output in vote2_value
+                        {
+                            let split_output: Vec<&str> = output.split(" ").collect();
+
+                            C2.push((split_output[0].to_string(), split_output[1].to_string()));
+
+                        }
+
+                        vote2_value = Vec::new();
+
+                        println!(" {:?},  {:?}", C1, C2);
+
+
+
+                        if V1!="bot" && V1!=""
+                        {        
+                            qual.push(1);
+                        }
+                        if V2!="bot" && V2!=""
+                        {
+                            qual.push(2);
+                        }
+
+                        for val in qual.clone()
+                        {   
+                            if val==1 && V1==acc_value_zl
+                            {   
+                            let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
+                                ip_address.clone().len());
+
+
+                                let network_vec = codeword_init( 
+                                    ip_address.clone(), level, args.clone(), 
+                                    V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+
+
+                                for network_msg in network_vec
+                                {   
+                                    let _  = tx_sender.send(network_msg).await;
+                                }
+
+                            }
+
+                            if val==2 && V2==acc_value_zl
+                            {                                  
+                            let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
+                                ip_address.clone().len());
+                                
+                                
+                                let network_vec = codeword_init( 
+                                    ip_address.clone(), level, args.clone(), 
+                                    V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
+
+                                
+                                for network_msg in network_vec
+                                {   
+                                    let _  = tx_sender.send(network_msg).await;
+                                }
+                            }
+                        }
+                    }   
+                        
+                       
                     
                 }
 

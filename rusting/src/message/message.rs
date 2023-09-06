@@ -98,15 +98,16 @@ pub struct Vote
 {
     pub sign: String,
     pub value: String,
+    pub no: usize,
     pub types: String
 }
 
 #[allow(unused)]
 impl Vote
 {
-    pub fn create_vote(sign: String, value: String) -> Self
+    pub fn create_vote(sign: String, no: usize, value: String) -> Self
     {
-        Vote{sign:sign, value: value, types: "vote".to_string()}
+        Vote{sign:sign, value: value, no: no, types: "vote".to_string()}
     }
 
     pub fn to_vec(self) -> Vec<String> {
