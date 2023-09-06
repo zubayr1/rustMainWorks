@@ -832,9 +832,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             vote_value = Vec::new();
 
-                            println!("{:?}", C1);
-
-                            
+                                                        
 
                             if C1.len() >0 //second vote phase
                             {
@@ -857,7 +855,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             vote_value = Vec::new();
 
-                            println!("   {:?}", C2);
+                            println!(" {:?},  {:?}", C1, C2);
 
 
 
