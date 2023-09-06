@@ -805,12 +805,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    {   println!("check00");
+                    {   
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
                            
-                            println!("check111");
+                            
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
 
@@ -844,7 +844,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
                             else 
-                            {sleep(Duration::from_millis(200)).await;
+                            {
+                               sleep(Duration::from_millis(200)).await;
                                return;
                             }
 
@@ -950,10 +951,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address.clone().len()).await;
 
 
-                        // byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                        //         V1.clone(), ip_address.clone().len(), 1).await;
-                        // byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                        //     V2.clone(), ip_address.clone().len(), 2).await;
+                        byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                V1.clone(), ip_address.clone().len(), 1).await;
+                        byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                            V2.clone(), ip_address.clone().len(), 2).await;
 
                         
                         if level!=1
