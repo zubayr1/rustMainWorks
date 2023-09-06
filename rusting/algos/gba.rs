@@ -5,11 +5,11 @@ use crate::nodes::reactor::communication;
 mod generic; 
 
 use crate::message::{NetworkMessage, ConsensusMessage, *};
-
+use tokio::sync::mpsc::Sender;
 use std::net::SocketAddr;
 
 
-async fn gba_communication(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u32, 
+async fn gba_communication1(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u32, 
     args: Vec<String>, value: Vec<String>, mode: String) -> Vec<String>
 {    
     
@@ -68,11 +68,10 @@ fn check_other_major(forward_output: Vec<String>, V: String) -> bool
 
 
 #[allow(non_snake_case)]
-pub fn gba_setup(ip_address: Vec<&str>, 
+pub async fn gba_setup(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, 
     args: Vec<String>, V: String) 
-    -> NetworkMessage
-{
     
+{    
     let echo = Echo::create_echo("".to_string(), V.to_string());
     
     let echo_consensus_message: ConsensusMessage = ConsensusMessage::EchoMessage(echo);
@@ -110,7 +109,7 @@ pub fn gba_setup(ip_address: Vec<&str>,
     };
 
 
-    echo_network_message
+    let _ = tx_sender.send(echo_network_message).await;
 
 }
 
@@ -139,7 +138,7 @@ pub async fn gba1(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u
     let echo = generic::Echo::create_echo("".to_string(), V.to_string());
     let echo_vec = echo.to_vec();
 
-    let echo_phase_output = gba_communication(committee_id, ip_address.clone(), level, _index, 
+    let echo_phase_output = gba_communication1(committee_id, ip_address.clone(), level, _index, 
     args.clone(), echo_vec, mode.clone()).await;
 
     
@@ -165,7 +164,7 @@ pub async fn gba1(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u
 
         W_vec.push([pi_val, v].join(" "));
 
-        forward_output = gba_communication(committee_id, ip_address.clone(), level, _index, 
+        forward_output = gba_communication1(committee_id, ip_address.clone(), level, _index, 
             args.clone(), W_vec, mode.clone()).await;
         
         sent = true;
@@ -182,7 +181,7 @@ pub async fn gba1(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u
             let vote1 = generic::Vote::create_vote("".to_string(), V.to_string());
             let vote1_vec = vote1.to_vec();
 
-            first_vote_output = gba_communication(committee_id, ip_address.clone(), level, _index, 
+            first_vote_output = gba_communication1(committee_id, ip_address.clone(), level, _index, 
                 args.clone(), vote1_vec.clone(), mode.clone()).await;
         }
     }
@@ -212,7 +211,7 @@ pub async fn gba1(committee_id: u32, ip_address: Vec<&str>, level: u32, _index:u
         let vote2_vec = vote2.to_vec();
 
 
-        second_vote_output = gba_communication(committee_id, ip_address.clone(), level, _index, 
+        second_vote_output = gba_communication1(committee_id, ip_address.clone(), level, _index, 
             args.clone(), vote2_vec.clone(), mode.clone()).await;
 
     }

@@ -637,7 +637,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut storage: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
     let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
-    let mut retrieved_count: usize = 0;
 
     if ip_address.len()==1
     {
@@ -681,17 +680,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Echo message
                     println!("received echo {:?}", message.sender);
 
-                    let value = format!("{} {}", echo.value, message.sender);
+                    // let value = format!("{} {}", echo.value, message.sender);
 
-                    echo_value.push(value);
+                    // echo_value.push(value);
 
 
-                    if echo_value.len()==2*ip_address.clone().len()
-                    {  
-                        gba::check_echo_major_v(echo_value.clone(), echo.value);
+                    // if echo_value.len()==2*ip_address.clone().len()
+                    // {  
+                    //     gba::check_echo_major_v(echo_value.clone(), echo.value);
 
-                        echo_value = Vec::new(); 
-                    }
+                    //     echo_value = Vec::new(); 
+                    // }
 
 
                 }
@@ -721,15 +720,22 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     .or_insert_with(HashMap::new)
                     .insert(message.sender, retrieve.codewords);
 
-                    retrieved_count+=1;
+                    let mut total_length = 0;
+
+                    for (_, inner_map) in &retrieved_hashmap {
+                        for _ in inner_map.values() {
+                            total_length += 1
+                        }
+                    }
+
 
                     if flag==0
                     {
-                        if retrieved_count == 2*ip_address.clone().len()
-                        {   
+                        if total_length == 2*ip_address.clone().len()
+                        {   println!("{:?}, {}", retrieved_hashmap,  total_length);   
                             flag = 1;
 
-                            retrieved_count = 0;
+                            total_length = 0;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
@@ -746,11 +752,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     if flag == 1
                     {   
-                        if retrieved_count == 2*ip_address.clone().len() 
-                        {   
+                        if total_length == 2*ip_address.clone().len() 
+                        {   println!("    {:?}, {}", retrieved_hashmap, total_length);
                             flag = 0;
 
-                            retrieved_count = 0;
+                            total_length = 0;
                             
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
@@ -888,12 +894,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if accum_value.len()==ip_address.clone().len()
                     {    
-                        let (mut V1, mut V2) = accum_helper(accum_value.clone(), level.clone(), ip_address.clone().len()).await;
+                        let (mut V1, mut V2) = accum_helper(accum_value.clone(), level.clone(), 
+                            ip_address.clone().len()).await;
 
-                        // let v1_comm = byzar::BA_setup(ip_address.clone(), level,  args.clone(),
-                        //         V1.clone(), ip_address.clone().len());
-                        // let v2_comm = byzar::BA_setup(ip_address.clone(), level,  args.clone(),
-                        //     V2.clone(), ip_address.clone().len());
+                        let v1_comm = byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                V1.clone(), ip_address.clone().len());
+                        let v2_comm = byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                            V2.clone(), ip_address.clone().len());
 
                         // let _ = tx_sender.send(v1_comm).await;
                         // let _ = tx_sender.send(v2_comm).await;

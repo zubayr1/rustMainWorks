@@ -7,6 +7,7 @@ mod generic;
 
 use async_recursion::async_recursion;
 
+use tokio::sync::mpsc::Sender;
 use std::collections::HashMap;
 use crate::nodes::reactor::NetworkMessage;
 
@@ -39,12 +40,12 @@ pub async fn twoBA(ba_value: String) -> bool
 
 
 #[allow(non_snake_case)]
-pub fn BA_setup( 
-    ip_address: Vec<&str>, level: usize,  
-    args: Vec<String>, V: String, committee_length: usize) -> NetworkMessage
+pub async fn BA_setup( 
+    tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, 
+    args: Vec<String>, V: String, committee_length: usize) 
 {
 
-    return gba::gba_setup(ip_address, args, V);
+    gba::gba_setup(tx_sender, ip_address, args, V).await;
 }   
 
 #[allow(non_snake_case)]
