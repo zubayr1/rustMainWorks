@@ -660,6 +660,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let _ = tx_sender.send(accum_network_message).await;
 
+    let (mut V1, mut V2): (String, String);
+
 
     let mut accum_value: Vec<String> = Vec::new();
     let mut echo_value: Vec<String> = Vec::new();
@@ -892,7 +894,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if accum_value.len()==ip_address.clone().len()
                     {    
-                        let (mut V1, mut V2) = accum_helper(accum_value.clone(), level.clone(), 
+                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
 
                         println!("{},  {},   {:?}", V1, V2, ip_address);
@@ -902,7 +904,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                             V2.clone(), ip_address.clone().len(), 2).await;
 
-                            println!("{},  {},   {:?}", V1, V2, ip_address);
+                        
                         if level!=1
                         {
                             // V1 = byzar::check_equal(V1);
