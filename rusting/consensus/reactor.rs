@@ -613,6 +613,49 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
 
 }
 
+
+async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String)
+{
+    let vote = Vote::create_vote("".to_string(), v);
+    
+    let vote_consensus_message: ConsensusMessage = ConsensusMessage::VoteMessage(vote);
+
+
+    let mut port = 7000;
+
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+
+    for ip_str in ip_address.clone()
+    {
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        port = 7000;
+    }
+
+
+    let senderport = 7000 + args[2].parse::<u32>().unwrap();
+    let sender_str = format!("{}:{}", args[6], senderport.to_string());
+
+    let length = ip_address.len();
+
+    let level_f = (length as f64).sqrt();
+
+    let level = level_f.round() as usize;
+
+    let vote_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+        addresses: sockets, message: vote_consensus_message, level: level
+    };
+
+
+    let _ = tx_sender.send(vote_network_message).await;
+}
+
 fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
 {
     updated_pvss.sort();
@@ -722,7 +765,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Forward message type
                 ConsensusMessage::ForwardMessage(forward) => {
                     // Handle Forward message
-                    println!("received forward, {:?}", message.sender);
+                    // println!("received forward, {:?}", message.sender);
 
                     let value = format!("{} {}", forward.value,  message.sender);
 
@@ -735,7 +778,25 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     { 
                         println!(" {:?},   {:?}\n", forward_value, ip_address);
 
+                        let forward_value_copy = forward_value.clone();
+
+                        let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
+                        let first_part_to_compare = first_string_parts[0];
+
+                        // Check if the first part of all strings matches the first part of the first string
+                        let all_parts_match = forward_value.iter().all(|string| {
+                            let parts: Vec<&str> = string.split(' ').collect();
+                            let first_part = parts[0];
+                            first_part == first_part_to_compare
+                        });
+
                         forward_value = Vec::new(); 
+
+                        if all_parts_match && forward_check{
+                            println!("The first parts of all strings match.");
+
+                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string()).await;
+                        }
                     }
 
 
@@ -794,7 +855,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Vote message type
                 ConsensusMessage::VoteMessage(vote) => {
                     // Handle Vote message
-                    // println!("received vote, {:?}", message.sender);
+                    println!("received vote, {:?}", message.sender);
                 }
 
                 // Match the Committee message type
