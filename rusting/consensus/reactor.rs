@@ -670,10 +670,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut forward_value_1: Vec<String> = Vec::new();
     let mut forward_value_2: Vec<String> = Vec::new();
 
+    let mut forward_value: Vec<String> = Vec::new();
+
     let mut flag = 0;
 
     let mut forward_check_1 = false;
     let mut forward_check_2 = false;
+
+    let mut forward_check = false;
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -733,28 +737,37 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {} {}", forward.value, forward.part, message.sender);
 
-                    if forward.part==1
-                    {
-                        forward_value_1.push(value);
-                    }
-                    else 
-                    {
-                        forward_value_2.push(value);
-                    }
+                    forward_value.push(value);
 
-                    if forward_value_1.len()==ip_address.clone().len()
+                    if forward_value.len()==ip_address.clone().len()
                     { 
-                        println!(" {:?}\n", forward_value_1);
+                        println!(" {:?}\n", forward_value);
 
-                        forward_value_1 = Vec::new(); 
+                        forward_value = Vec::new(); 
                     }
 
-                    if forward_value_2.len()==ip_address.clone().len()
-                    { 
-                        println!("     {:?}\n", forward_value_2);
+                    // if forward.part==1
+                    // {
+                    //     forward_value_1.push(value);
+                    // }
+                    // else 
+                    // {
+                    //     forward_value_2.push(value);
+                    // }
 
-                        forward_value_2 = Vec::new(); 
-                    }
+                    // if forward_value_1.len()==ip_address.clone().len()
+                    // { 
+                    //     println!(" {:?}\n", forward_value_1);
+
+                    //     forward_value_1 = Vec::new(); 
+                    // }
+
+                    // if forward_value_2.len()==ip_address.clone().len()
+                    // { 
+                    //     println!("     {:?}\n", forward_value_2);
+
+                    //     forward_value_2 = Vec::new(); 
+                    // }
                 }
 
                 // Match the Vote message type
