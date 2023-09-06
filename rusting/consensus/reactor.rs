@@ -725,8 +725,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     println!("received forward, {:?}", message.sender);
 
                     let value = format!("{} {}", forward.value,  message.sender);
-                    println!("{:?}", value);
-                    
+
+                    sleep(Duration::from_millis(10)).await;
                     // if state.get_level() == message.level
                     // {
                     //     forward_value.push(value);
