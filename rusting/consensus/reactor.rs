@@ -732,7 +732,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     //     forward_value.push(value);
                     // }
 
-                                        
+                    forward_value.push(value);                    
 
                     if forward_value.len()==ip_address.clone().len() 
                     { 
