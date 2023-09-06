@@ -739,6 +739,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
 
+                            total_length=0;
                             
                             check_first_codeword_list = Vec::new();
                             
