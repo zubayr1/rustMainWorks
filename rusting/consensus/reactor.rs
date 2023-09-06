@@ -837,6 +837,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             if C1.len() >0 //second vote phase
                             {
+                                let (v, _) = &C1[0];
+                                forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), v.to_string()).await;
 
                             }
                         }
@@ -852,7 +854,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             vote_value = Vec::new();
 
-                            println!("{:?}", C2);
+                            println!("   {:?}", C2);
 
                             check_C1= true;
                         }
