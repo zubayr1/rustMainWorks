@@ -847,16 +847,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             if vote_value.len() >= ip_address.clone().len()
                             {
-                                for output in vote_value
-                                {
-                                    let split_output: Vec<&str> = output.split(" ").collect();
-    
-                                    C2.push((split_output[0].to_string(), split_output[1].to_string()));
-    
-                                }
+
                             }
 
-                            
+                            for output in vote_value
+                            {
+                                let split_output: Vec<&str> = output.split(" ").collect();
+
+                                C2.push((split_output[0].to_string(), split_output[1].to_string()));
+
+                            }
 
                             vote_value = Vec::new();
 
