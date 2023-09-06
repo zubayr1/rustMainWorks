@@ -806,7 +806,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Vote message
                     println!("received vote, {:?}", message.sender);
 
-
+                    sleep(Duration::from_millis(10)).await;
                     if V1!="bot" && V1!=""
                         {        
                             qual.push(1);
