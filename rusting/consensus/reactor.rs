@@ -1134,10 +1134,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
-                        byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                            V.clone()).await;
-                        
-                                                                                                
+                        if level!=1
+                        {
+                            byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                V.clone()).await;
+                        }
+                                                                                       
                         
                         accum_value = Vec::new();
                     }
