@@ -96,7 +96,6 @@ pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: 
             addresses: sockets, message: forward_consensus_message, level: level
         };
 
-        println!("{:?}\n", forward_network_message);
         let _ = tx_sender.send(forward_network_message).await;
             return true;
     }
