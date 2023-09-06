@@ -745,11 +745,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if forward_value_1.len()==ip_address.clone().len()
                     { 
                         println!("{:?}", forward_value_1);
+
+                        forward_value_1 = Vec::new(); 
                     }
 
                     if forward_value_2.len()==ip_address.clone().len()
                     { 
                         println!("   {:?}", forward_value_2);
+
+                        forward_value_2 = Vec::new(); 
                     }
                 }
 
