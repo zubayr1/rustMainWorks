@@ -87,6 +87,23 @@ fn set_state(ip_address: Vec<&str>) -> InternalState
 }
 
 
+fn split_vec_recursive(input: Vec<&str>) -> (Vec<&str>, Vec<&str>) {
+    let length = input.len();
+
+    if length == 2 {
+        return (vec![input[0].clone()], vec![input[1].clone()]);
+    }
+
+    let middle = length / 2;
+
+    let left_half = input[0..middle].to_vec();
+    let right_half = input[middle..].to_vec();
+
+    let (left_sub_vec, right_sub_vec) = split_vec_recursive(left_half);
+
+    return (left_sub_vec, right_sub_vec.into_iter().chain(right_half).collect());
+}
+
 fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalState)
 {
     let committee_length = ip_address.len();    
@@ -892,11 +909,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         if ip_address.len()>2
                         {
-                            let midpoint = ip_address.len() / 2;
-                            ip_address_left = ip_address[0..midpoint].to_vec();
-                            ip_address_right= ip_address[midpoint..].to_vec();
-
-                            println!("{:?}, {:?}", ip_address_left, ip_address_right);
+                            
                         }
                         // else 
                         // {
@@ -1107,6 +1120,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Accum message type
                 ConsensusMessage::AccumMessage(accum) => 
                 {
+                    (ip_address_left, ip_address_right) = split_vec_recursive(ip_address.clone());
+
+                    
+                    println!("{:?}, {:?}", ip_address_left, ip_address_right);
+
                     C1 = Vec::new();
                     C2 = Vec::new();
                     // Handle Accum message
