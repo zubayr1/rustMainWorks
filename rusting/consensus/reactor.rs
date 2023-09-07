@@ -801,7 +801,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", forward.value,  message.sender);
 
-                    // sleep(Duration::from_millis(20)).await;                    
+                    // sleep(Duration::from_millis(60)).await;                    
 
                     forward_value.push(value);                    
 
@@ -838,7 +838,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", vote.value,  message.sender);
                    
-                    sleep(Duration::from_millis(20)).await;
+                    sleep(Duration::from_millis(60)).await;
 
                     if vote.no==1
                     {
@@ -862,7 +862,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        sleep(Duration::from_millis(20)).await;                 
+                        sleep(Duration::from_millis(60)).await;                 
 
                         vote1_value = Vec::new();       
 
@@ -884,7 +884,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        sleep(Duration::from_millis(20)).await;
+                        sleep(Duration::from_millis(60)).await;
 
                         vote2_value = Vec::new();
 
@@ -903,7 +903,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         println!("{:?}, {:?}", g, BA_V);
 
-                        sleep(Duration::from_millis(20)).await;
+                        sleep(Duration::from_millis(60)).await;
 
                         //run BA
                         if ip_address_left.len()>0
@@ -989,7 +989,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // println!("received committee, {:?}", message.sender);
                     // Handle Committee message
-                    sleep(Duration::from_millis(20)).await;
+                    sleep(Duration::from_millis(60)).await;
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), ip_address.clone(), committee.codewords, committee.witness, 
                     committee.value, committee.index, committee.leaves_len, committee.part, args.clone(), check_first_codeword_list.clone()).await;
                 }
@@ -1015,7 +1015,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         if total_length == 2*ip_address.clone().len()
-                        {     sleep(Duration::from_millis(20)).await;
+                        {     sleep(Duration::from_millis(60)).await;
                             flag = 1;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
@@ -1033,7 +1033,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    {   sleep(Duration::from_millis(20)).await;
+                    {   sleep(Duration::from_millis(60)).await;
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
