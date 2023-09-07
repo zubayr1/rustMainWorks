@@ -752,6 +752,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut ip_address_left: Vec<Vec<&str>>  = Vec::new();
     let mut ip_address_right: Vec<Vec<&str>>  = Vec::new();
 
+    let mut ip_address_backup: Vec<&str> = Vec::new();
+
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
 
@@ -904,14 +906,20 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         sleep(Duration::from_millis(20)).await;
 
                         //run BA
-                        
-
-                        if ip_address.len()>2
+                        if ip_address_left.len()>0
                         {
-                            
+                            ip_address = ip_address_left[0].clone();
+
+                            ip_address_left.remove(0);
                         }
-                        // else 
-                        // {
+                        else if ip_address_right.len()>0
+                        {
+                            ip_address = ip_address_right[0].clone();
+
+                            ip_address_right.remove(0);
+                        }                        
+                        else 
+                        {
                             if V1!="bot" && V1!=""
                             {        
                                 qual.push(1);
@@ -960,14 +968,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     }
                                 }
                             }
-                        // }
-
-                        
+                        }
 
                         
                     }   
                         
-                       
                     
                 }
 
@@ -1165,7 +1170,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
                     
-                        println!("{:?}, {:?}", ip_address_left, ip_address_right);
+                        ip_address_backup = ip_address.clone();
 
                         C1 = Vec::new();
                         C2 = Vec::new();
