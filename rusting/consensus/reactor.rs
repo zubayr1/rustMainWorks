@@ -87,21 +87,23 @@ fn set_state(ip_address: Vec<&str>) -> InternalState
 }
 
 
-fn split_vec_recursive(input: Vec<&str>) -> (Vec<&str>, Vec<&str>) {
+fn split_vec_recursively<'a>(input: &[&'a str], left_half: &mut Vec<Vec<&'a str>>, right_half: &mut Vec<Vec<&'a str>>)
+{
     let length = input.len();
 
     if length == 2 {
-        return (vec![input[0].clone()], vec![input[1].clone()]);
+        return;
     }
 
-    let middle = length / 2;
+    let mid = input.len() / 2;
+    let left_slice = &input[..mid];
+    let right_slice = &input[mid..];
 
-    let left_half = input[0..middle].to_vec();
-    let right_half = input[middle..].to_vec();
+    left_half.push(left_slice.to_vec());
+    right_half.push(right_slice.to_vec());
 
-    let (left_sub_vec, right_sub_vec) = split_vec_recursive(left_half);
-
-    return (left_sub_vec, right_sub_vec.into_iter().chain(right_half).collect());
+    split_vec_recursively(left_slice, left_half, right_half);
+    split_vec_recursively(right_slice, left_half, right_half);
 }
 
 fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalState)
@@ -747,11 +749,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut BA_V: String = "bot".to_string();
     let mut g: usize = 0;
 
-
-    let mut ip_address_backup: Vec<&str> = Vec::new();
-
-    let mut ip_address_left: Vec<&str> = Vec::new();
-    let mut ip_address_right: Vec<&str> = Vec::new();
+    let mut ip_address_left: Vec<Vec<&str>>  = Vec::new();
+    let mut ip_address_right: Vec<Vec<&str>>  = Vec::new();
 
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
@@ -1164,14 +1163,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if accum_value.len()==ip_address.clone().len()
                     {
-                        (ip_address_left, ip_address_right) = split_vec_recursive(ip_address.clone());
+                        split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
                     
                         println!("{:?}, {:?}", ip_address_left, ip_address_right);
 
                         C1 = Vec::new();
                         C2 = Vec::new();
 
-                        
+
 
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
