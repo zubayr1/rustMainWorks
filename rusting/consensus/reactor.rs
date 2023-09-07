@@ -911,12 +911,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address = ip_address_left[0].clone();
 
                             ip_address_left.remove(0);
+
+                            byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                BA_V.clone()).await;
                         }
                         else if ip_address_right.len()>0
                         {
                             ip_address = ip_address_right[0].clone();
 
                             ip_address_right.remove(0);
+
+                            byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                BA_V.clone()).await;
                         }                        
                         else 
                         {
