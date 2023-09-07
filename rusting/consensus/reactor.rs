@@ -920,6 +920,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }                        
                         else 
                         {
+                            ip_address = ip_address_backup.clone();
+
                             if V1!="bot" && V1!=""
                             {        
                                 qual.push(1);
