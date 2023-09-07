@@ -1183,7 +1183,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         C1 = Vec::new();
                         C2 = Vec::new();
 
-
+                        println!("{:?}, {:?}", ip_address_left, ip_address_right);
 
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
