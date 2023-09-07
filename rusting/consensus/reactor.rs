@@ -1177,6 +1177,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if accum_value.len()==ip_address.clone().len()
                     {
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
+
+                        let own_ip = args[6].clone();
+
+                        ip_address_left.retain(|inner_vec| inner_vec.contains(&&own_ip.as_str()));
+                        ip_address_right.retain(|inner_vec| inner_vec.contains(&&own_ip.as_str()));
                     
                         ip_address_backup = ip_address.clone();
 
