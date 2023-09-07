@@ -1120,13 +1120,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Accum message type
                 ConsensusMessage::AccumMessage(accum) => 
                 {
-                    (ip_address_left, ip_address_right) = split_vec_recursive(ip_address.clone());
-
                     
-                    println!("{:?}, {:?}", ip_address_left, ip_address_right);
-
-                    C1 = Vec::new();
-                    C2 = Vec::new();
                     // Handle Accum message
                     // println!("received accum, {:?}", message.sender);
                     let value = format!("{} {:?}", accum.value, message.sender);
@@ -1169,8 +1163,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
 
                     if accum_value.len()==ip_address.clone().len()
-                    {    
-                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
+                    {
+                        (ip_address_left, ip_address_right) = split_vec_recursive(ip_address.clone());
+                    
+                        println!("{:?}, {:?}", ip_address_left, ip_address_right);
+
+                        C1 = Vec::new();
+                        C2 = Vec::new();
+
+                        
+
+                        (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
 
                         let V = format!("{}-{}", V1, V2);
