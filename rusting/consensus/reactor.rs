@@ -675,6 +675,49 @@ async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>
     let _ = tx_sender.send(vote_network_message).await;
 }
 
+
+async fn propose_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String)
+{
+    let propose = Propose::create_propose("".to_string(), v);
+    
+    let propose_consensus_message: ConsensusMessage = ConsensusMessage::ProposeMessage(propose);
+
+
+    let mut port = 7000;
+
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+
+    for ip_str in ip_address.clone()
+    {
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        port = 7000;
+    }
+
+
+    let senderport = 7000 + args[2].parse::<u32>().unwrap();
+    let sender_str = format!("{}:{}", args[6], senderport.to_string());
+
+    let length = ip_address.len();
+
+    let level_f = (length as f64).sqrt();
+
+    let level = level_f.round() as usize;
+
+    let propose_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+        addresses: sockets, message: propose_consensus_message, level: level
+    };
+
+
+    let _ = tx_sender.send(propose_network_message).await;
+}
+
 fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
 {
     updated_pvss.sort();
@@ -738,6 +781,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut vote1_value: Vec<String> = Vec::new();
     let mut vote2_value: Vec<String> = Vec::new();
+
+    let mut propose_value: Vec<String> = Vec::new();
 
     let mut flag = 0;
 
@@ -901,83 +946,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 BA_V = v1_prime;
                             }
                         }
-                        println!("{:?}, {:?}", g, BA_V);
+                        
 
                         sleep(Duration::from_millis(30)).await;
 
-                        //run BA
-                        if ip_address_left.len()>0
-                        {
-                            ip_address = ip_address_left[0].clone();
+                        let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone()).await;
 
-                            ip_address_left.remove(0);
-                            println!("{:?}", ip_address);
-                            byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                BA_V.clone()).await;
-                        }
-                        else if ip_address_right.len()>0
-                        {
-                            ip_address = ip_address_right[0].clone();
-
-                            ip_address_right.remove(0);
-                            println!("{:?}", ip_address);
-                            byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                BA_V.clone()).await;
-                        }                        
-                        else 
-                        {
-                            ip_address = ip_address_backup.clone();
-
-                            if V1!="bot" && V1!=""
-                            {        
-                                qual.push(1);
-                            }
-                            if V2!="bot" && V2!=""
-                            {
-                                qual.push(2);
-                            }
-
-                            for val in qual.clone()
-                            {   
-                                if val==1 && V1==acc_value_zl
-                                {   
-                                let (codeword_vec, witnesses_vec, merkle_len) = 
-                                        deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
-                                    ip_address.clone().len());
-
-
-                                    let network_vec = codeword_init( 
-                                        ip_address.clone(), level, args.clone(), 
-                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
-
-
-                                    for network_msg in network_vec
-                                    {   
-                                        let _  = tx_sender.send(network_msg).await;
-                                    }
-
-                                }
-
-                                if val==2 && V2==acc_value_zl
-                                {                                  
-                                let (codeword_vec, witnesses_vec, merkle_len) = 
-                                        deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
-                                    ip_address.clone().len());
-                                    
-                                    
-                                    let network_vec = codeword_init( 
-                                        ip_address.clone(), level, args.clone(), 
-                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
-
-                                    
-                                    for network_msg in network_vec
-                                    {   
-                                        let _  = tx_sender.send(network_msg).await;
-                                    }
-                                }
-                            }
-                        }
-
+                        
                         
                     }   
                         
@@ -1262,6 +1237,94 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::ProposeMessage(propose) => {
                     // Handle Propose message
                     // println!("received propose, {:?}", message.sender);
+
+                    let value = format!("{} {}", propose.value,  message.sender);
+                   
+                    sleep(Duration::from_millis(30)).await;
+
+                    propose_value.push(value); 
+
+
+                    if propose_value.len() == ip_address.clone().len()/2 + 1
+                    {
+                        propose_value = Vec::new();
+                        println!("{:?}, {:?}", g, BA_V);
+                        //run BA
+                        if ip_address_left.len()>0
+                        {
+                            ip_address = ip_address_left[0].clone();
+
+                            ip_address_left.remove(0);
+                            println!("{:?}", ip_address);
+                            byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                BA_V.clone()).await;
+                        }
+                        else if ip_address_right.len()>0
+                        {
+                            ip_address = ip_address_right[0].clone();
+
+                            ip_address_right.remove(0);
+                            println!("{:?}", ip_address);
+                            byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+                                BA_V.clone()).await;
+                        }                        
+                        else 
+                        {
+                            ip_address = ip_address_backup.clone();
+
+                            if V1!="bot" && V1!=""
+                            {        
+                                qual.push(1);
+                            }
+                            if V2!="bot" && V2!=""
+                            {
+                                qual.push(2);
+                            }
+
+                            for val in qual.clone()
+                            {   
+                                if val==1 && V1==acc_value_zl
+                                {   
+                                let (codeword_vec, witnesses_vec, merkle_len) = 
+                                        deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
+                                    ip_address.clone().len());
+
+
+                                    let network_vec = codeword_init( 
+                                        ip_address.clone(), level, args.clone(), 
+                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+
+
+                                    for network_msg in network_vec
+                                    {   
+                                        let _  = tx_sender.send(network_msg).await;
+                                    }
+
+                                }
+
+                                if val==2 && V2==acc_value_zl
+                                {                                  
+                                let (codeword_vec, witnesses_vec, merkle_len) = 
+                                        deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
+                                    ip_address.clone().len());
+                                    
+                                    
+                                    let network_vec = codeword_init( 
+                                        ip_address.clone(), level, args.clone(), 
+                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
+
+                                    
+                                    for network_msg in network_vec
+                                    {   
+                                        let _  = tx_sender.send(network_msg).await;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+
                 }
             
                 
