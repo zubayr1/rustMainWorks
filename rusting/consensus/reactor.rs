@@ -718,6 +718,32 @@ async fn propose_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>
     let _ = tx_sender.send(propose_network_message).await;
 }
 
+
+fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
+    let mut counts: HashMap<String, usize> = HashMap::new();
+
+    for string in &strings {
+        let first_part = string.split(' ').next().unwrap_or("").to_string();
+        *counts.entry(first_part.clone()).or_insert(0) += 1;
+    }
+
+    let total_count = strings.len();
+    let mut most_frequent_first_part: String = String::new();
+    let mut max_count = 0;
+
+    for (first_part, count) in counts.iter() {
+        if *count > max_count {
+            max_count = *count;
+            most_frequent_first_part = first_part.clone();
+        }
+    }
+
+    let is_majority = max_count >= total_count / 2;
+
+    (most_frequent_first_part, is_majority)
+}
+
+
 fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
 {
     updated_pvss.sort();
@@ -1245,12 +1271,22 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     propose_value.push(value); 
 
 
-                    if propose_value.len() == ip_address.clone().len()/2 + 1
+                    if propose_value.len() == ip_address.clone().len()/2
                     {                        
-                        println!("{:?}, {:?}, {:?}", g, BA_V, propose_value);
-
                         propose_value = Vec::new();
-                        
+
+                        if g==0
+                        {
+                            let (most_frequent, is_majority) = find_most_frequent_propose_value(
+                                propose_value.clone());
+
+                            if is_majority
+                            {
+                                BA_V = most_frequent;
+                            }
+
+                        }
+
                         //run BA
                         if ip_address_left.len()>0
                         {
