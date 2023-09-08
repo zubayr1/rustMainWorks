@@ -1246,9 +1246,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                     if propose_value.len() == ip_address.clone().len()/2 + 1
-                    {
+                    {                        
+                        println!("{:?}, {:?}, {:?}", g, BA_V, propose_value);
+
                         propose_value = Vec::new();
-                        println!("{:?}, {:?}", g, BA_V);
+                        
                         //run BA
                         if ip_address_left.len()>0
                         {
