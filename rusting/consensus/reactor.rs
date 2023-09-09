@@ -552,7 +552,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     let mut v1 = "bot".to_string();
     let mut v2 = "bot".to_string();
 
-    println!("committee, {}, {:?}", two_BA_check, ip_address);
+    println!("committee, {}, {:?}, {}", two_BA_check, ip_address, args[3]);
 
     if ip_address.len() == args[3].parse::<usize>().unwrap()
     {   println!("sdfgsfd");
