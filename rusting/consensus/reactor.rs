@@ -539,7 +539,7 @@ fn committee_init(
 
 #[allow(non_snake_case)]
 async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u32>, 
-    pvss_data: HashMap<usize, Vec<u8>>, ip_address: Vec<&str>, args: Vec<String>, mut two_BA_check: bool)
+    pvss_data: HashMap<usize, Vec<u8>>, ip_address: Vec<&str>, args: Vec<String>, mut two_BA_check: bool, level: usize)
 {   
     let mut b: Vec<u32> = Vec::new();
 
@@ -552,7 +552,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     let mut v1 = "bot".to_string();
     let mut v2 = "bot".to_string();
 
-    println!("committee, {}, {:?}, {}", two_BA_check, ip_address, args[3]);
+    println!("committee, {}, {:?}, {}", two_BA_check, ip_address, level);
 
     if ip_address.len() == args[3].parse::<usize>().unwrap()
     {   println!("sdfgsfd");
@@ -1060,7 +1060,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             retrieved_hashmap = HashMap::new();
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
-                                ip_address.clone(), args.clone(), two_BA_check.clone()).await;
+                                ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
 
                             two_BA_check =true;
                             
