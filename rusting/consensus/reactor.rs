@@ -589,12 +589,13 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
 
     let V = format!("{}-{}", v1, v2);
 
+    qual.retain(|&x| b.contains(&x));
+
     if two_BA_check==false
     {
         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
         V.clone()).await;
-
-        qual.retain(|&x| b.contains(&x));
+        
     }
 
     else 
