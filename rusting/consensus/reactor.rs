@@ -532,14 +532,10 @@ fn committee_init(
 
 
 #[allow(non_snake_case)]
-async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u32>, 
+async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>, 
     pvss_data: HashMap<usize, Vec<u8>>, ip_address: Vec<&str>, args: Vec<String>, mut two_BA_check: bool, level: usize)
 {   
-    let mut b: Vec<u32> = Vec::new();
-
-    b.push(1);
-    b.push(2);
-
+    
     let W1 = pvss_data.get(&1).unwrap();
     let W2 = pvss_data.get(&2).unwrap();
 
@@ -556,33 +552,17 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     {
         // //2BA for W1
         v1 = String::from_utf8(pvss_data.get(&1).unwrap().to_vec()).unwrap();
-
-        // let v1 = byzar::BA(committee_id, ip_address, level, _index, args.clone(),
-        //     W1.clone(), mode.clone(), committee_length.clone()).await;
-        // // update b
-        // if byzar::twoBA(v1).await
-        // {
-        //     b.push(1);
-        // }
-
+        
     }
     if qual.contains(&2)
     {
         // //2BA for W2
         v2 = String::from_utf8(pvss_data.get(&2).unwrap().to_vec()).unwrap();
-
-        // let v2 = byzar::BA( committee_id, ip_address, level, _index, args.clone(), 
-        // W2.clone(), mode.clone(), committee_length.clone()).await;
-        // // update b
-        // if byzar::twoBA(v2).await
-        // {
-        //     b.push(2);
-        // }
+        
     }
 
     let V = format!("{}-{}", v1, v2);
 
-    qual.retain(|&x| b.contains(&x));
 
     if two_BA_check==false
     {
