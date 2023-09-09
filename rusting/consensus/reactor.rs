@@ -552,7 +552,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     let mut v1 = "bot".to_string();
     let mut v2 = "bot".to_string();
 
-    println!("committee");
+    println!("committee, {}", two_BA_check);
     if qual.contains(&1)
     {
         // //2BA for W1
