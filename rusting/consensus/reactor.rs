@@ -555,7 +555,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     println!("committee, {}, {:?}", two_BA_check, ip_address);
 
     if ip_address.len() == args[3].parse::<usize>().unwrap()
-    {
+    {   println!("sdfgsfd");
         two_BA_check = true;
     }
 
