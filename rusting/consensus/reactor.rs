@@ -978,7 +978,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
 
-                        sleep(Duration::from_millis(10)).await;
+                        sleep(Duration::from_millis(20)).await;
 
                         let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone()).await;
 
@@ -1020,7 +1020,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         if total_length == 2*ip_address.clone().len()
-                        {     sleep(Duration::from_millis(10)).await;
+                        {     sleep(Duration::from_millis(20)).await;
                             flag = 1;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
@@ -1041,7 +1041,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    {   sleep(Duration::from_millis(10)).await;
+                    {   sleep(Duration::from_millis(20)).await;
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
@@ -1281,7 +1281,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", propose.value,  message.sender);
                    
-                    // sleep(Duration::from_millis(20)).await;
+                    sleep(Duration::from_millis(20)).await;
 
                     propose_value.push(value); 
 
