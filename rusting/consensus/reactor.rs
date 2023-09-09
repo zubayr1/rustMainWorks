@@ -552,7 +552,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     let mut v1 = "bot".to_string();
     let mut v2 = "bot".to_string();
 
-    println!("committee, {}", two_BA_check);
+    println!("committee, {}, {:?}", two_BA_check, ip_address);
     if qual.contains(&1)
     {
         // //2BA for W1
@@ -1056,7 +1056,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 ip_address.clone(), args.clone(), two_BA_check.clone()).await;
 
                             two_BA_check =true;
-                        
+                            
                             
                         }
                     }
