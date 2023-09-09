@@ -7,7 +7,6 @@ use std::env::{self};
 use chrono::prelude::*;
 use std::collections::HashMap;
 
-mod socketing;
 
 mod message;
 mod network;
@@ -20,7 +19,6 @@ async fn run_nodes(args: Vec<String>)
 
     let _file = File::create("output.log"); // to create output log file where all logs will be stored
 
-    let mut ids: Vec<String> = Vec::new();
     let mut ip_address: Vec<String> = Vec::new();
 
     let mut committee: HashMap<u32, String> = HashMap::new();
