@@ -913,7 +913,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", vote.value,  message.sender);
                    
-                    sleep(Duration::from_millis(20)).await;
+                    // sleep(Duration::from_millis(20)).await;
 
                     if vote.no==1
                     {
@@ -937,7 +937,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        sleep(Duration::from_millis(20)).await;                 
+                        // sleep(Duration::from_millis(20)).await;                 
 
                         vote1_value = Vec::new();       
 
@@ -959,7 +959,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        sleep(Duration::from_millis(20)).await;
+                        // sleep(Duration::from_millis(20)).await;
 
                         vote2_value = Vec::new();
 
@@ -994,7 +994,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // println!("received committee, {:?}", message.sender);
                     // Handle Committee message
-                    sleep(Duration::from_millis(20)).await;
+                    // sleep(Duration::from_millis(20)).await;
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), ip_address.clone(), committee.codewords, committee.witness, 
                     committee.value, committee.index, committee.leaves_len, committee.part, args.clone(), check_first_codeword_list.clone()).await;
                 }

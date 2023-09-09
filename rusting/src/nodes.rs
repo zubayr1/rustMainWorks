@@ -125,7 +125,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     let end_time = Utc::now().time();
     let diff = end_time - start_time;
     
-    println!("Setup End by {}. time taken {} seconds", args[6], diff.num_seconds());
+    println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
     
     
     
