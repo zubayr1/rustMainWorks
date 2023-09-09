@@ -539,7 +539,7 @@ fn committee_init(
 
 #[allow(non_snake_case)]
 async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u32>, 
-    pvss_data: HashMap<usize, Vec<u8>>, ip_address: Vec<&str>, args: Vec<String>)
+    pvss_data: HashMap<usize, Vec<u8>>, ip_address: Vec<&str>, args: Vec<String>, mut two_BA_check: bool)
 {   
     let mut b: Vec<u32> = Vec::new();
 
@@ -548,10 +548,16 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
 
     let W1 = pvss_data.get(&1).unwrap();
     let W2 = pvss_data.get(&2).unwrap();
+
+    let mut v1 = "bot".to_string();
+    let mut v2 = "bot".to_string();
+
     
     if qual.contains(&1)
     {
         // //2BA for W1
+        v1 = String::from_utf8(pvss_data.get(&1).unwrap().to_vec()).unwrap();
+
         // let v1 = byzar::BA(committee_id, ip_address, level, _index, args.clone(),
         //     W1.clone(), mode.clone(), committee_length.clone()).await;
         // // update b
@@ -564,6 +570,8 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     if qual.contains(&2)
     {
         // //2BA for W2
+        v2 = String::from_utf8(pvss_data.get(&2).unwrap().to_vec()).unwrap();
+
         // let v2 = byzar::BA( committee_id, ip_address, level, _index, args.clone(), 
         // W2.clone(), mode.clone(), committee_length.clone()).await;
         // // update b
@@ -572,62 +580,76 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
         //     b.push(2);
         // }
     }
-    qual.retain(|&x| b.contains(&x));
 
+    let V = format!("{}-{}", v1, v2);
 
+    if two_BA_check==false
+    {
+        byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
+        V.clone()).await;
 
-    for val in qual.clone()
-    {   
-        if val==1 && W1.len()!=0
+        qual.retain(|&x| b.contains(&x));
+    }
+
+    else 
+    {
+        for val in qual.clone()
         {   
-            let (codeword_vec, witnesses_vec, merkle_len) = 
-                deliver::deliver_encode(W1.clone(), "_".to_string(), 
-            ip_address.clone().len());          
+            if val==1 && W1.len()!=0
+            {   
+                let (codeword_vec, witnesses_vec, merkle_len) = 
+                    deliver::deliver_encode(W1.clone(), "_".to_string(), 
+                ip_address.clone().len());          
 
-            let leaves = pvss_agreement::encoder(W1.clone(), ip_address.clone().len());
-            // create accum value
-            let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
+                let leaves = pvss_agreement::encoder(W1.clone(), ip_address.clone().len());
+                // create accum value
+                let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
-            let acc_value_zl_W1 = merkle_tree::get_root(merkle_tree.clone());
+                let acc_value_zl_W1 = merkle_tree::get_root(merkle_tree.clone());
 
-            
-            let network_vec = committee_init( 
-                ip_address.clone(), args.clone(), 
-                acc_value_zl_W1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+                
+                let network_vec = committee_init( 
+                    ip_address.clone(), args.clone(), 
+                    acc_value_zl_W1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
 
+
+                    for network_msg in network_vec
+                    {   
+                        let _  = tx_sender.send(network_msg).await;
+                    }
+
+            }
+
+            if val==2 && W2.len()!=0
+            {                                  
+                let (codeword_vec, witnesses_vec, merkle_len) = 
+                    deliver::deliver_encode(W2.clone(), "_".to_string(), 
+                ip_address.clone().len());
+                
+                
+                let leaves = pvss_agreement::encoder(W2.clone(), ip_address.clone().len());
+                // create accum value
+                let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
+
+                let acc_value_zl_W2 = merkle_tree::get_root(merkle_tree.clone());
+
+
+                let network_vec = committee_init( 
+                    ip_address.clone(), args.clone(), 
+                    acc_value_zl_W2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
 
                 for network_msg in network_vec
                 {   
                     let _  = tx_sender.send(network_msg).await;
                 }
 
-        }
-
-        if val==2 && W2.len()!=0
-        {                                  
-            let (codeword_vec, witnesses_vec, merkle_len) = 
-                deliver::deliver_encode(W2.clone(), "_".to_string(), 
-            ip_address.clone().len());
-            
-            
-            let leaves = pvss_agreement::encoder(W2.clone(), ip_address.clone().len());
-            // create accum value
-            let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
-
-            let acc_value_zl_W2 = merkle_tree::get_root(merkle_tree.clone());
-
-
-            let network_vec = committee_init( 
-                ip_address.clone(), args.clone(), 
-                acc_value_zl_W2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
-
-            for network_msg in network_vec
-            {   
-                let _  = tx_sender.send(network_msg).await;
             }
-
         }
     }
+
+
+
+    
 
 
 }
@@ -827,6 +849,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
+
+    let mut two_BA_check = false;
 
     loop 
     {
@@ -1028,7 +1052,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             
                             retrieved_hashmap = HashMap::new();
 
-                            committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), ip_address.clone(), args.clone()).await;
+                            committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
+                                ip_address.clone(), args.clone(), two_BA_check.clone()).await;
+
+                            two_BA_check =true;
                         
                             
                         }
@@ -1142,6 +1169,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         qual = Vec::new();
                         accum_value.push(value);
+                        
 
                         if storage.contains_key(&state.get_level())
                         {                            
@@ -1189,7 +1217,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             inner_vec.iter().any(|&s| s == &own_ip as &str)
                         });
 
-
+                        two_BA_check = false;
                                         
                         ip_address_backup = ip_address.clone();
 
