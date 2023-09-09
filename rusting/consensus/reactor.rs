@@ -13,6 +13,8 @@ use std::collections::HashMap;
 use tokio::time::sleep;
 use tokio::time::Duration;
 
+
+
 #[path = "../networking/communication.rs"]
 mod communication;
 
@@ -554,7 +556,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
 
     println!("committee, {}, {:?}, {}", two_BA_check, ip_address, level);
 
-    if ip_address.len() == args[3].parse::<usize>().unwrap()
+    if ip_address.len() == 2_usize.pow(level as u32)
     {   println!("sdfgsfd");
         two_BA_check = true;
     }
