@@ -592,7 +592,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     }
 
     else 
-    {
+    {   println!("aaaaaaaa");
         for val in qual.clone()
         {   
             if val==1 && W1.len()!=0
