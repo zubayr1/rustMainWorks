@@ -554,10 +554,9 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     let mut v1 = "bot".to_string();
     let mut v2 = "bot".to_string();
 
-    println!("committee, {}, {:?}, {}", two_BA_check, ip_address, level);
 
     if ip_address.len() == 2_usize.pow(level as u32)
-    {   println!("sdfgsfd");
+    {   
         two_BA_check = true;
     }
 
@@ -601,7 +600,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     }
 
     else 
-    {   println!("aaaaaaaa");
+    {   
         for val in qual.clone()
         {   
             if val==1 && W1.len()!=0
@@ -1330,7 +1329,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
 
                         }
-                        println!("   {:?}, {:?}, {:?}", ip_address_left, ip_address_right, ip_address);
                         //run BA
                         if ip_address_left.len()>0
                         {   println!("left");
