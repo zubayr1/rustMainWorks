@@ -23,11 +23,6 @@ mod schnorrkel;
 // #[path = "../probability/create_adv_prob.rs"]
 // mod create_adv_prob;
 
-#[path ="../networking/newserver.rs"]
-mod newserver;
-
-#[path ="../networking/newclient.rs"]
-mod newclient;
 
 #[path = "../consensus/reactor.rs"]
 mod reactor;

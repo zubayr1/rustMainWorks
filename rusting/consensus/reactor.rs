@@ -15,9 +15,6 @@ use tokio::time::Duration;
 
 
 
-#[path = "../networking/communication.rs"]
-mod communication;
-
 #[path = "../types/generic.rs"]
 mod generic; 
 
@@ -46,11 +43,6 @@ mod pvss_agreement;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
-#[path = "../networking/newclient.rs"]
-mod newclient;
-
-#[path ="../networking/newserver.rs"]
-mod newserver;
 
 
 fn set_state(ip_address: Vec<&str>) -> InternalState
