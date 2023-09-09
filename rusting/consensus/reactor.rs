@@ -1296,7 +1296,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         println!("   {:?}, {:?}, {:?}", ip_address_left, ip_address_right, ip_address);
                         //run BA
                         if ip_address_left.len()>0
-                        {
+                        {   println!("left");
                             ip_address = ip_address_left[0].clone();
 
                             ip_address_left.remove(0);
@@ -1305,7 +1305,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 BA_V.clone()).await;
                         }
                         else if ip_address_right.len()>0
-                        {
+                        {   println!("right");
                             ip_address = ip_address_right[0].clone();
 
                             ip_address_right.remove(0);
