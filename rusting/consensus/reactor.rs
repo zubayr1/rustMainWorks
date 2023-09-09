@@ -1286,7 +1286,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
 
                         }
-
+                        println!("{:?}, {:?}", ip_address_left, ip_address_right);
                         //run BA
                         if ip_address_left.len()>0
                         {
