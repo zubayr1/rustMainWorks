@@ -539,7 +539,7 @@ fn committee_init(
 
 #[allow(non_snake_case)]
 async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u32>, 
-    pvss_data: HashMap<usize, Vec<u8>>, ip_address: Vec<&str>, args: Vec<String>, mut two_BA_check: bool)
+    pvss_data: HashMap<usize, Vec<u8>>, ip_address: Vec<&str>, args: Vec<String>, two_BA_check: bool)
 {   
     let mut b: Vec<u32> = Vec::new();
 
@@ -552,7 +552,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, mut qual: Vec<u3
     let mut v1 = "bot".to_string();
     let mut v2 = "bot".to_string();
 
-    
+    println!("committee");
     if qual.contains(&1)
     {
         // //2BA for W1
