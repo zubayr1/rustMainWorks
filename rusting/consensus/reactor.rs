@@ -1180,7 +1180,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
 
                         let own_ip = args[6].clone();
-
+                        println!("{:?}, {:?}, {}", ip_address_left, ip_address_right, own_ip);
                         ip_address_left.retain(|inner_vec| inner_vec.contains(&&own_ip.as_str()));
                         ip_address_right.retain(|inner_vec| inner_vec.contains(&&own_ip.as_str()));
                     
@@ -1286,7 +1286,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
 
                         }
-                        println!("{:?}, {:?}", ip_address_left, ip_address_right);
+                        println!("   {:?}, {:?}", ip_address_left, ip_address_right);
                         //run BA
                         if ip_address_left.len()>0
                         {
