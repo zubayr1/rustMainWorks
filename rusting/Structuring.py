@@ -56,6 +56,9 @@ def committee():
     total_len = total_len - read_count
 
     for f in open("tempnodeinfo.txt", "r").readlines():
+
+        if read_count <= 0:
+            break  # Exit the loop when read_count reaches 0
         
         if total_len<=0:
             filew.write(f)
