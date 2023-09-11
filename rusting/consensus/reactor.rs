@@ -1285,44 +1285,44 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", propose.value,  message.sender);
                    
-                    sleep(Duration::from_millis(20)).await;
-                    propose_value.push(value);
+                    // sleep(Duration::from_millis(20)).await;
+                    // propose_value.push(value);
 
-                    // if state.get_level() == message.level
-                    // {
-                    //     propose_value.push(value);
+                    if state.get_level() == message.level
+                    {
+                        propose_value.push(value);
                         
 
-                    //     if storage_propose.contains_key(&state.get_level())
-                    //     {                            
-                    //         let stored_pair = storage_propose.remove(&state.get_level());
+                        if storage_propose.contains_key(&state.get_level())
+                        {                            
+                            let stored_pair = storage_propose.remove(&state.get_level());
 
-                    //         match stored_pair {
-                    //             Some(inner_map) => {
-                    //                 // Inner HashMap was removed, you can access its values
-                    //                 let values: Vec<String> = inner_map.values().cloned().collect();
+                            match stored_pair {
+                                Some(inner_map) => {
+                                    // Inner HashMap was removed, you can access its values
+                                    let values: Vec<String> = inner_map.values().cloned().collect();
 
-                    //                 for value in values
-                    //                 {
-                    //                     propose_value.push(value);
-                    //                 }
-                    //             }
-                    //             None => {
-                    //                 println!("Key 'key1' not found in the original HashMap.");
-                    //             }
-                    //         }
+                                    for value in values
+                                    {
+                                        propose_value.push(value);
+                                    }
+                                }
+                                None => {
+                                    println!("Key 'key1' not found in the original HashMap.");
+                                }
+                            }
 
                             
-                    //     }
-                    // }
-                    // else 
-                    // {
-                    //     let value = format!("{} {:?}", propose.value, message.sender);
+                        }
+                    }
+                    else 
+                    {
+                        let value = format!("{} {:?}", propose.value, message.sender);
 
-                    //     storage_propose.entry(message.level).or_insert_with(HashMap::new)
-                    //         .insert(message.sender, value);
+                        storage_propose.entry(message.level).or_insert_with(HashMap::new)
+                            .insert(message.sender, value);
                         
-                    // }
+                    }
 
 
                     if propose_value.len() == ip_address.clone().len()/2
