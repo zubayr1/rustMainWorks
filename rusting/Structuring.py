@@ -1,75 +1,58 @@
 import math
 
-def committee():
-    read_count = 32 # number of nodes
 
+def committee():
+    read_count = 64 # number of nodes
 
     file = open("nodes_information.txt", "r")
 
     filew = open("updatednodeinfo.txt", "w")
 
-    filew = open("tempnodeinfo.txt", "w")
-
     print("Creating Committees: Start")
 
-    MINGROUPCOUNT = 1
+    height = math.log(read_count,2)
 
-    count_groupid = 1
-    count_entries = MINGROUPCOUNT
-    
-    height = math.log(read_count,2) + 1
+    level = 1
 
-    
-    while(height >0):
-        for f in file:
-            s = f.rstrip() + " " + str(count_groupid) + "\n"
-            #print(s)
-            filew.write(s)
+    tcount = 1
 
-            count_entries-=1
+    lis = []
 
-            if count_entries ==0:
-                count_entries = MINGROUPCOUNT
-                count_groupid +=1
+    # Open the file and read it in each iteration
+    with open("nodes_information.txt", "r") as file:
+        
+        while height >= 0:
+            file.seek(0)
+            count = 0
+            for f in file:
+                id = f.rstrip().split("-")[0]
+                                               
+                lis.append(tcount)
+                if int(id) % level == 0:                    
+                    tcount+=1
+                
+                count+=1
             
-        height -=1
-        
-        MINGROUPCOUNT*=2
-        count_entries = MINGROUPCOUNT
-        
-        file.close()
-        filew.close()
-        
-        file = open("tempnodeinfo.txt", "r")
-        filew = open("tempnodeinfo.txt", "a")
+            height -= 1
+            level = level*2
+            tcount+=1
+                       
 
-        #print("------------------------")
-              
-
-    filew = open("updatednodeinfo.txt", "a")
-
-
-    total_len=0
-    with open("tempnodeinfo.txt", "r") as fp:
-        total_len = len(fp.readlines())
-
-    total_len = total_len - read_count
-
-    for f in open("tempnodeinfo.txt", "r").readlines():
-
-        if read_count <= 0:
-            break  # Exit the loop when read_count reaches 0
-        
-        if total_len<=0:
-            filew.write(f)
-            read_count-=1
-            
-            if read_count==0:
-                break
-        total_len-=1
-
-    filew.close()
     
+    with open("nodes_information.txt", "r") as file:
+        with open("updatednodeinfo.txt", "w") as filew:
+            file.seek(0)
+            start=0
+            for f in file:
+                val = f.rstrip()
+                for i in range(start, len(lis), read_count): 
+                    val = val+ " "+ str(lis[i])
+                filew.write(val)
+                filew.write("\n")
+                start+=1
+
+    
+
     with open("updatednodeinfo.txt", 'r') as file:
         input_string = file.read()
 
