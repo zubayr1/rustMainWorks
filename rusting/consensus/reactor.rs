@@ -881,7 +881,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", forward.value,  message.sender);
 
-                    // sleep(Duration::from_millis(40)).await;                    
+                    sleep(Duration::from_millis(40)).await;                    
 
                     forward_value.push(value);                    
 
