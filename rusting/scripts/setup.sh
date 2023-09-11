@@ -43,5 +43,5 @@ cd "rusting"
 python3 Structuring.py
 
 
-/home/ubuntu/.cargo/bin/cargo run -- keys "$ID" 64 03282129 prod "$IP" 10 1
+/home/ubuntu/.cargo/bin/cargo run -- keys "$ID" 4 03282129 prod "$IP" 10 1
 exit 0
