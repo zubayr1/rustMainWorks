@@ -773,6 +773,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
+    let mut storage_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+
+
     let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
     if ip_address.len()==1
@@ -1005,6 +1008,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // println!("received cordwordretrieve, {:?}", message.sender);
                     // Handle Retrieve message
+                    sleep(Duration::from_millis(40)).await;
+
                     retrieved_hashmap
                     .entry(retrieve.part)
                     .or_insert_with(HashMap::new)
@@ -1023,7 +1028,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         if total_length == 2*ip_address.clone().len()
                         {     
-                            sleep(Duration::from_millis(20)).await;
+                            
                             flag = 1;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
@@ -1045,7 +1050,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     if flag == 1
                     {   
-                        sleep(Duration::from_millis(20)).await;
+                        
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
