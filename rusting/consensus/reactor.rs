@@ -1008,7 +1008,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // println!("received cordwordretrieve, {:?}", message.sender);
                     // Handle Retrieve message
-                    sleep(Duration::from_millis(20)).await;
 
                     retrieved_hashmap
                     .entry(retrieve.part)
@@ -1026,6 +1025,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if flag==0
                     {
+                        sleep(Duration::from_millis(20)).await;
+
                         if total_length == 2*ip_address.clone().len()
                         {     
                             println!("{}", total_length);
@@ -1050,7 +1051,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     if flag == 1
                     {   
-                        
+                        sleep(Duration::from_millis(20)).await;
+
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
