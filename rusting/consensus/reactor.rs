@@ -769,7 +769,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut state: InternalState;
 
-    let mut storage: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+    let mut storage_accum: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+
+    let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
     let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
@@ -1153,9 +1155,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         accum_value.push(value);
                         
 
-                        if storage.contains_key(&state.get_level())
+                        if storage_accum.contains_key(&state.get_level())
                         {                            
-                            let stored_pair = storage.remove(&state.get_level());
+                            let stored_pair = storage_accum.remove(&state.get_level());
 
                             match stored_pair {
                                 Some(inner_map) => {
@@ -1179,7 +1181,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         let value = format!("{} {:?}", accum.value, message.sender);
 
-                        storage.entry(message.level).or_insert_with(HashMap::new)
+                        storage_accum.entry(message.level).or_insert_with(HashMap::new)
                             .insert(message.sender, value);
                         
                     }
@@ -1283,9 +1285,46 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", propose.value,  message.sender);
                    
-                    sleep(Duration::from_millis(10)).await;
+                    // sleep(Duration::from_millis(10)).await;
 
-                    propose_value.push(value); 
+
+                    if state.get_level() == message.level
+                    {
+                        propose_value.push(value);
+                        
+
+                        if storage_propose.contains_key(&state.get_level())
+                        {                            
+                            let stored_pair = storage_propose.remove(&state.get_level());
+
+                            match stored_pair {
+                                Some(inner_map) => {
+                                    // Inner HashMap was removed, you can access its values
+                                    let values: Vec<String> = inner_map.values().cloned().collect();
+
+                                    for value in values
+                                    {
+                                        propose_value.push(value);
+                                    }
+                                }
+                                None => {
+                                    println!("Key 'key1' not found in the original HashMap.");
+                                }
+                            }
+
+                            
+                        }
+                    }
+                    else 
+                    {
+                        let value = format!("{} {:?}", propose.value, message.sender);
+
+                        storage_propose.entry(message.level).or_insert_with(HashMap::new)
+                            .insert(message.sender, value);
+                        
+                    }
+
+                    // propose_value.push(value); 
 
 
                     if propose_value.len() == ip_address.clone().len()/2
