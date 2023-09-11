@@ -773,7 +773,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-    let mut storage_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+    // let mut storage_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
 
     let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
@@ -881,7 +881,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", forward.value,  message.sender);
 
-                    // sleep(Duration::from_millis(0)).await;                    
+                    sleep(Duration::from_millis(20)).await;                    
 
                     forward_value.push(value);                    
 
