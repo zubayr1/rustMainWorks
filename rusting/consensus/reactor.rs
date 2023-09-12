@@ -316,7 +316,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     -> (String, Vec<String>)
 {
     let mut data: String = "pvss".to_string();
-   
+    println!("communication_type: {}",communication_type);
 
     if ip_address.len()==2
     {
@@ -1066,7 +1066,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             check_first_codeword_list = Vec::new();
                             
-                            sleep(Duration::from_millis(20)).await;
+                            // sleep(Duration::from_millis(20)).await;
                            
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
