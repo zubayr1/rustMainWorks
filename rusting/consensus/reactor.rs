@@ -1060,7 +1060,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-
+                        println!("{}", total_length);
                         retrieved_hashmap = retrieved_hashmap_codeword.clone();
                     }
                     else 
