@@ -761,6 +761,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 {  
     let mut level = 0;
 
+    let mut total_length;
+
     let (_, mut ip_addresses_comb) = sorted[level];
     let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
 
@@ -1050,7 +1052,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    let mut total_length;
+                    
 
                     if communication_type == "codewords".to_string()
                     {
