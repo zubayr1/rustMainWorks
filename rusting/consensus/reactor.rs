@@ -761,7 +761,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 {  
     let mut level = 0;
 
-    let mut total_length = 0;
+    
 
     let (_, mut ip_addresses_comb) = sorted[level];
     let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
@@ -1017,6 +1017,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                     // Handle Retrieve message
+
+                    let mut total_length = 0;
                     
                     if retrieve.communication_type == "codewords".to_string()
                     {
