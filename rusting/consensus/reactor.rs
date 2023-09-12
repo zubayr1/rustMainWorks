@@ -1043,24 +1043,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if communication_type == "codewords".to_string()
                     {
-
-                        for (_, inner_map) in &retrieved_hashmap_codeword {
-                            for _ in inner_map.values() {
-                                total_length += 1
-                            }
-                        }
-                        
                         retrieved_hashmap = retrieved_hashmap_codeword.clone();
                     }
                     else 
-                    {
-                        
-                        for (_, inner_map) in &retrieved_hashmap_committee {
-                            for _ in inner_map.values() {
-                                total_length += 1
-                            }
-                        }
-
+                    {  
                         retrieved_hashmap = retrieved_hashmap_committee.clone();
                     }
                     
@@ -1069,6 +1055,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         // sleep(Duration::from_millis(20)).await;
+
+                        for (_, inner_map) in &retrieved_hashmap_codeword {
+                            for _ in inner_map.values() {
+                                total_length += 1
+                            }
+                        }
 
                         if total_length == 2*ip_address.clone().len()
                         {                                 
@@ -1104,7 +1096,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    {   
+                    { 
+                        for (_, inner_map) in &retrieved_hashmap_committee {
+                            for _ in inner_map.values() {
+                                total_length += 1
+                            }
+                        }
+
                         // sleep(Duration::from_millis(20)).await;
                         println!("    {}, {},   {:?}", 2*ip_address.clone().len(),total_length, retrieved_hashmap_committee);
                         if total_length == 2*ip_address.clone().len() 
