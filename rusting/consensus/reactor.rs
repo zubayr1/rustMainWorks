@@ -774,11 +774,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
+    let mut storage_codeword_retrieve: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-    let mut retrieved_hashmap_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-    let mut retrieved_hashmap_committee: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
-
+    let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
     if ip_address.len()==1
     {
@@ -1014,52 +1013,23 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                     // Handle Retrieve message
 
+
+                    
+
+                    retrieved_hashmap
+                    .entry(retrieve.part)
+                    .or_insert_with(HashMap::new)
+                    .insert(message.sender, retrieve.codewords);
+
                     let mut total_length = 0;
 
-                    let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>>;
+                    for (_, inner_map) in &retrieved_hashmap {
+                        for _ in inner_map.values() {
+                            total_length += 1
+                        }
+                    }
 
-                    if retrieve.communication_type=="codeword".to_string()
-                    {
-                        retrieved_hashmap_codeword
-                        .entry(retrieve.part)
-                        .or_insert_with(HashMap::new)
-                        .insert(message.sender, retrieve.codewords);
-    
-                        
-    
-                        for (_, inner_map) in &retrieved_hashmap_codeword {
-                            for _ in inner_map.values() {
-                                total_length += 1
-                            }
-                        }
-                        
-                    }
-                    else 
-                    {
-                        retrieved_hashmap_committee
-                        .entry(retrieve.part)
-                        .or_insert_with(HashMap::new)
-                        .insert(message.sender, retrieve.codewords);
-    
-                        
-    
-                        for (_, inner_map) in &retrieved_hashmap_committee {
-                            for _ in inner_map.values() {
-                                total_length += 1
-                            }
-                        }
-                        
-                    }
-                    retrieved_hashmap = retrieved_hashmap_codeword.clone();
-                    // if flag==0
-                    // {
-                    //     retrieved_hashmap = retrieved_hashmap_codeword.clone();
-                    // }
-                    // else 
-                    // {
-                    //     retrieved_hashmap = retrieved_hashmap_committee.clone();
-                    // }
-                    
+
                     if flag==0
                     {
                         // sleep(Duration::from_millis(20)).await;
@@ -1068,7 +1038,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {     
                             println!("{}", total_length);
                             flag = 1;
-
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
@@ -1099,6 +1068,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
                                 ip_address.clone().len());
 
+                            retrieved_hashmap = HashMap::new();
 
                             let mut temp: Vec<String> = Vec::new();
 
