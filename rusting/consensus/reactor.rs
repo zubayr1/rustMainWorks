@@ -1030,7 +1030,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
                     else 
-                    {
+                    {println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1054,7 +1054,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {
-                        println!("{:?}",retrieved_hashmap_committee);
+                        
                         for (_, inner_map) in &retrieved_hashmap_committee {
                             for _ in inner_map.values() {
                                 total_length += 1
