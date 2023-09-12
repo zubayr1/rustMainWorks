@@ -1050,15 +1050,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
                     }
-
-                    if flag==0
-                    {
-                        retrieved_hashmap = retrieved_hashmap_codeword.clone();
-                    }
-                    else 
-                    {
-                        retrieved_hashmap = retrieved_hashmap_committee.clone();
-                    }
+                    retrieved_hashmap = retrieved_hashmap_codeword.clone();
+                    // if flag==0
+                    // {
+                    //     retrieved_hashmap = retrieved_hashmap_codeword.clone();
+                    // }
+                    // else 
+                    // {
+                    //     retrieved_hashmap = retrieved_hashmap_committee.clone();
+                    // }
                     
                     if flag==0
                     {
