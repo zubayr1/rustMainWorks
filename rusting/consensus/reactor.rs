@@ -776,12 +776,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-    let mut communication_type = "codewords".to_string();
 
     let mut retrieved_hashmap_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
     let mut retrieved_hashmap_committee: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-    let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
 
     if ip_address.len()==1
@@ -1039,18 +1037,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
 
-                    
-
-                    if communication_type == "codewords".to_string()
-                    {
-                        retrieved_hashmap = retrieved_hashmap_codeword.clone();
-                    }
-                    else 
-                    {  
-                        retrieved_hashmap = retrieved_hashmap_committee.clone();
-                    }
-                    
-
 
                     if flag==0
                     {
@@ -1067,27 +1053,19 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             flag = 1;
 
                             println!("codeword done!!!!!!!!!!");
-
-                            if communication_type=="codewords".to_string()
-                            {
-                                retrieved_hashmap_codeword =  HashMap::new();
-                                communication_type = "committee".to_string();
-                            }
-                            else 
-                            {
-                                retrieved_hashmap_committee =  HashMap::new();
-                                communication_type = "codewords".to_string();
-                            }
-
-                            let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
+                            
+                            
+                            let pvss_vec = codeword_retrieve(retrieved_hashmap_codeword.clone(), 
                                 ip_address.clone().len());
+
+
+                            retrieved_hashmap_codeword =  HashMap::new();
 
                             total_length=0;
 
                             check_first_codeword_list = Vec::new();
                             
-                            retrieved_hashmap = HashMap::new();
-                            
+                           
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
                                 ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
@@ -1111,23 +1089,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {   
                             flag = 0;
                             
-                            if communication_type=="codewords".to_string()
-                            {
-                                retrieved_hashmap_codeword =  HashMap::new();
-                                communication_type = "committee".to_string();
-                            }
-                            else 
-                            {
-                                retrieved_hashmap_committee =  HashMap::new();
-                                communication_type = "codewords".to_string();
-                            }
-                            
-                            let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
+                                                        
+                            let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
                                 ip_address.clone().len());
 
-                            retrieved_hashmap = HashMap::new();
+                            retrieved_hashmap_committee =  HashMap::new();
 
-                            
+
 
                             let mut temp: Vec<String> = Vec::new();
 
