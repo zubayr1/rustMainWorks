@@ -1106,7 +1106,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag == 1
                     {   
                         // sleep(Duration::from_millis(20)).await;
-                        println!("    {}, {}", 2*ip_address.clone().len(),total_length);
+                        println!("    {}, {},   {:?}", 2*ip_address.clone().len(),total_length, retrieved_hashmap_committee);
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
