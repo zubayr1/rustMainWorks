@@ -1063,7 +1063,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     else 
                     {
                         total_length = total_length_committee;
-
+                        println!("                       {}", total_length_committee);
                         retrieved_hashmap = retrieved_hashmap_committee.clone();
                     }
                     
