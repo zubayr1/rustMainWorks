@@ -1042,8 +1042,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if flag==0
                     {
-                        // sleep(Duration::from_millis(20)).await;
-
+                        
                         for (_, inner_map) in &retrieved_hashmap_codeword {
                             for _ in inner_map.values() {
                                 total_length += 1
@@ -1067,6 +1066,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             check_first_codeword_list = Vec::new();
                             
+                            sleep(Duration::from_millis(20)).await;
                            
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
