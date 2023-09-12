@@ -774,13 +774,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
+    let mut storage_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+
 
     let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
-
-
-    let mut codeword_ip_len: usize = 0;
-
-    let mut codeword_ip: Vec<&str> = Vec::new();
 
     if ip_address.len()==1
     {
@@ -1016,9 +1013,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                     // Handle Retrieve message
 
-
-                    
-
                     retrieved_hashmap
                     .entry(retrieve.part)
                     .or_insert_with(HashMap::new)
@@ -1037,14 +1031,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         // sleep(Duration::from_millis(20)).await;
 
-                        if total_length == 2*codeword_ip_len
+                        if total_length == 2*ip_address.clone().len()
                         {     
                             println!("{}", total_length);
                             flag = 1;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
-                            codeword_ip_len);
-                            println!("ssss");
+                                ip_address.clone().len());
+
                             total_length=0;
 
                             check_first_codeword_list = Vec::new();
@@ -1063,14 +1057,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {   
                         // sleep(Duration::from_millis(20)).await;
 
-                        if total_length == 2*codeword_ip_len
+                        if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
                             println!("    {}", total_length);
                             
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
-                            codeword_ip_len);
-                            println!("   ssss");
+                                ip_address.clone().len());
+
                             retrieved_hashmap = HashMap::new();
 
                             let mut temp: Vec<String> = Vec::new();
@@ -1260,10 +1254,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
 
-                                    println!("{:?}, {}", ip_address, V1);
-                                    codeword_ip_len = ip_address.len();
-
-                                    codeword_ip = ip_address.clone();
 
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
@@ -1283,11 +1273,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
-                                    println!("    {:?}, {}", ip_address, V2);
-                                    codeword_ip_len = ip_address.len();
-
-                                    codeword_ip = ip_address.clone();
-
+                                    
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
@@ -1315,7 +1301,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", propose.value,  message.sender);
                    
-                    // sleep(Duration::from_millis(20)).await;
+                    sleep(Duration::from_millis(20)).await;
                     // propose_value.push(value);
 
                     if state.get_level() == message.level
@@ -1410,7 +1396,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
 
-                                    println!("    ccc");
+
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
@@ -1429,7 +1415,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
-                                    println!("       ddd");
+                                    
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
