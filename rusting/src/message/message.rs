@@ -179,16 +179,17 @@ pub struct CodewordRetrieve
 {
     pub sign: String,
     pub codewords: String,  
-    pub part: usize,  
+    pub part: usize, 
+    pub communication_type: String, 
     pub types: String
 }
 
 #[allow(unused)]
 impl CodewordRetrieve
 {
-    pub fn create_codeword_retrieve(sign: String, codewords: String, part: usize) -> Self
+    pub fn create_codeword_retrieve(sign: String, codewords: String, part: usize, communication_type: String) -> Self
     {
-        CodewordRetrieve{sign:sign, codewords: codewords, part, types: "codewordretrieve".to_string()}
+        CodewordRetrieve{sign:sign, codewords: codewords, part: part, communication_type: communication_type, types: "codewordretrieve".to_string()}
     }
 
 }
