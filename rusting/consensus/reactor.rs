@@ -884,7 +884,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", forward.value,  message.sender);
 
-                    sleep(Duration::from_millis(20)).await;                    
+                    // sleep(Duration::from_millis(20)).await;                    
 
                     forward_value.push(value);                    
 
@@ -986,7 +986,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
 
-                        sleep(Duration::from_millis(20)).await;
+                        // sleep(Duration::from_millis(20)).await;
 
                         let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone()).await;
 
@@ -1028,7 +1028,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if flag==0
                     {
-                        sleep(Duration::from_millis(20)).await;
+                        // sleep(Duration::from_millis(20)).await;
 
                         if total_length == 2*ip_address.clone().len()
                         {     
@@ -1054,7 +1054,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     if flag == 1
                     {   
-                        sleep(Duration::from_millis(20)).await;
+                        // sleep(Duration::from_millis(20)).await;
 
                         if total_length == 2*ip_address.clone().len() 
                         {   
@@ -1095,7 +1095,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                             else 
                             {
-                               sleep(Duration::from_millis(50)).await;
                             //    return;
 
                                 let end_time = Utc::now().time();
