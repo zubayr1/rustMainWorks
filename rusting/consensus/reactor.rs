@@ -1063,7 +1063,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     else 
                     {
                         total_length = total_length_committee;
-                        println!("                       {}", total_length_committee);
+
                         retrieved_hashmap = retrieved_hashmap_committee.clone();
                     }
                     
@@ -1072,7 +1072,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         // sleep(Duration::from_millis(20)).await;
-                        println!("{}, {}", 2*ip_address.clone().len(),total_length);
+
                         if total_length == 2*ip_address.clone().len()
                         {                                 
                             flag = 1;
@@ -1109,7 +1109,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag == 1
                     {   
                         // sleep(Duration::from_millis(20)).await;
-                        println!("    {}, {}", 2*ip_address.clone().len(),total_length);
+
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
