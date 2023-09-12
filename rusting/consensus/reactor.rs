@@ -774,10 +774,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-    let mut storage_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+    let mut communication_type = "codeword".to_string();
 
+    let mut retrieved_hashmap_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+    let mut retrieved_hashmap_committee: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
     let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
+
 
     if ip_address.len()==1
     {
@@ -1013,18 +1016,55 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                     // Handle Retrieve message
 
-                    retrieved_hashmap
-                    .entry(retrieve.part)
-                    .or_insert_with(HashMap::new)
-                    .insert(message.sender, retrieve.codewords);
+                    let mut total_length_codeword = 0;
+                    let mut total_length_committee = 0;
 
-                    let mut total_length = 0;
-
-                    for (_, inner_map) in &retrieved_hashmap {
-                        for _ in inner_map.values() {
-                            total_length += 1
+                    if retrieve.communication_type == "codewords".to_string()
+                    {
+                        retrieved_hashmap_codeword
+                        .entry(retrieve.part)
+                        .or_insert_with(HashMap::new)
+                        .insert(message.sender, retrieve.codewords);
+    
+                        
+    
+                        for (_, inner_map) in &retrieved_hashmap_codeword {
+                            for _ in inner_map.values() {
+                                total_length_codeword += 1
+                            }
                         }
                     }
+                    else 
+                    {
+                        retrieved_hashmap_committee
+                        .entry(retrieve.part)
+                        .or_insert_with(HashMap::new)
+                        .insert(message.sender, retrieve.codewords);
+    
+                        
+    
+                        for (_, inner_map) in &retrieved_hashmap_committee {
+                            for _ in inner_map.values() {
+                                total_length_committee += 1
+                            }
+                        }
+                    }
+
+                    let mut total_length;
+
+                    if communication_type == "codewords".to_string()
+                    {
+                        total_length = total_length_codeword;
+
+                        retrieved_hashmap = retrieved_hashmap_codeword.clone();
+                    }
+                    else 
+                    {
+                        total_length = total_length_committee;
+
+                        retrieved_hashmap = retrieved_hashmap_committee.clone();
+                    }
+                    
 
 
                     if flag==0
@@ -1044,6 +1084,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             check_first_codeword_list = Vec::new();
                             
                             retrieved_hashmap = HashMap::new();
+
+                            if communication_type=="codewords".to_string()
+                            {
+                                retrieved_hashmap_codeword =  HashMap::new();
+                                communication_type = "committee".to_string();
+                            }
+                            else 
+                            {
+                                retrieved_hashmap_committee =  HashMap::new();
+                                communication_type = "codewords".to_string();
+                            }
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
                                 ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
@@ -1066,6 +1117,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 ip_address.clone().len());
 
                             retrieved_hashmap = HashMap::new();
+
+                            if communication_type=="codewords".to_string()
+                            {
+                                retrieved_hashmap_codeword =  HashMap::new();
+                                communication_type = "committee".to_string();
+                            }
+                            else 
+                            {
+                                retrieved_hashmap_committee =  HashMap::new();
+                                communication_type = "codewords".to_string();
+                            }
 
                             let mut temp: Vec<String> = Vec::new();
 
@@ -1269,7 +1331,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 if val==2 && V2==acc_value_zl
                                 {                                  
-                                let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
