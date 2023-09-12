@@ -777,6 +777,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
+
+    let mut codeword_ip_len: usize = 0;
+
     if ip_address.len()==1
     {
         //GET PVSS DATA FROM DIMITRIS
@@ -1032,7 +1035,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         // sleep(Duration::from_millis(20)).await;
 
-                        if total_length == 2*ip_address.clone().len()
+                        if total_length == 2*codeword_ip_len
                         {     
                             println!("{}", total_length);
                             flag = 1;
@@ -1256,6 +1259,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     ip_address.clone().len());
 
                                     println!("{:?}, {}", ip_address, V1);
+                                    codeword_ip_len = ip_address.len();
+
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
@@ -1275,6 +1280,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     ip_address.clone().len());
                                     
                                     println!("    {:?}, {}", ip_address, V2);
+                                    codeword_ip_len = ip_address.len();
+
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
