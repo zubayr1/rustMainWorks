@@ -1063,7 +1063,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     else 
                     {
                         total_length = total_length_committee;
-                        println!("yes");
+                        println!("{}", total_length);
                         retrieved_hashmap = retrieved_hashmap_committee.clone();
                     }
                     
@@ -1185,7 +1185,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // println!("received codeword, {:?}", message.sender);
                     let data: String;
 
-                    (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codeword".to_string(),
+                    (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                      ip_address.clone(), codeword.codewords, codeword.witness, 
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), check_first_codeword_list.clone()).await;
 
