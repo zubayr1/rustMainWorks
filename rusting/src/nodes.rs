@@ -15,7 +15,6 @@ use tokio::sync::mpsc::channel;
 use tokio::time::sleep;
 use tokio::time::Duration;
 
-use chrono::Utc;
 
 #[path = "../crypto/schnorrkel.rs"]
 mod schnorrkel; 
@@ -116,16 +115,10 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // Sleep to make sure sender and receiver are ready.
     sleep(Duration::from_millis(50)).await;
 
-
-    let start_time = Utc::now().time(); 
     
     reactor::reactor(tx_sender, rx_receiver, sorted, args.clone()).await;
-   
+       
     
-    let end_time = Utc::now().time();
-    let diff = end_time - start_time;
-    
-    println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
     
     
     

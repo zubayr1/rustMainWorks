@@ -12,6 +12,7 @@ use std::collections::HashMap;
 
 use tokio::time::sleep;
 use tokio::time::Duration;
+use chrono::Utc;
 
 
 
@@ -837,6 +838,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut two_BA_check = false;
 
+    let start_time = Utc::now().time();
+
     loop 
     {
         if let Some(message) = rx.recv().await {
@@ -1094,6 +1097,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                sleep(Duration::from_millis(50)).await;
                             //    return;
+
+                                let end_time = Utc::now().time();
+                                let diff = end_time - start_time;
+                                
+                                println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
                             }
 
                             
