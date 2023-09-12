@@ -1009,7 +1009,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 ConsensusMessage::CodewordRetrieveMessage(retrieve) =>
                 {   
-                    // println!("received cordwordretrieve, {:?}", message.sender);
+                    println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                     // Handle Retrieve message
 
                     retrieved_hashmap
