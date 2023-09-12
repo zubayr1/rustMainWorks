@@ -780,6 +780,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut codeword_ip_len: usize = 0;
 
+    let mut codeword_ip: Vec<&str> = Vec::new();
+
     if ip_address.len()==1
     {
         //GET PVSS DATA FROM DIMITRIS
@@ -1041,7 +1043,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             flag = 1;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
-                                ip_address.clone().len());
+                            codeword_ip_len);
 
                             total_length=0;
 
@@ -1261,6 +1263,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     println!("{:?}, {}", ip_address, V1);
                                     codeword_ip_len = ip_address.len();
 
+                                    codeword_ip = ip_address.clone();
+
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
@@ -1281,6 +1285,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     
                                     println!("    {:?}, {}", ip_address, V2);
                                     codeword_ip_len = ip_address.len();
+
+                                    codeword_ip = ip_address.clone();
 
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
