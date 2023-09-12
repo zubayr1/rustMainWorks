@@ -1028,12 +1028,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         .insert(message.sender, retrieve.codewords);
     
                         
-    
-                        // for (_, inner_map) in &retrieved_hashmap_codeword {
-                        //     for _ in inner_map.values() {
-                        //         total_length_codeword += 1
-                        //     }
-                        // }
                     }
                     else 
                     {
@@ -1043,12 +1037,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         .insert(message.sender, retrieve.codewords);
     
                         
-    
-                        // for (_, inner_map) in &retrieved_hashmap_committee {
-                        //     for _ in inner_map.values() {
-                        //         total_length_committee += 1
-                        //     }
-                        // }
                     }
 
                     
@@ -1066,6 +1054,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {
+                        println!("{:?}",retrieved_hashmap_committee);
                         for (_, inner_map) in &retrieved_hashmap_committee {
                             for _ in inner_map.values() {
                                 total_length += 1
