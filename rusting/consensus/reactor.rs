@@ -1063,13 +1063,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {   
                         // sleep(Duration::from_millis(20)).await;
 
-                        if total_length == 2*ip_address.clone().len() 
+                        if total_length == 2*codeword_ip_len
                         {   
                             flag = 0;
                             println!("    {}", total_length);
                             
                             let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
-                                ip_address.clone().len());
+                            codeword_ip_len);
 
                             retrieved_hashmap = HashMap::new();
 
