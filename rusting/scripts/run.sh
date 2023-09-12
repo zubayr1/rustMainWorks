@@ -1,4 +1,7 @@
 
+process_name="rusting"
+killall "$process_name"
+
 IP=$(curl checkip.amazonaws.com)
 
 ID="null"
