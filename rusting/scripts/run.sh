@@ -1,3 +1,10 @@
+process_names=$(ps -e -o comm=)
+
+# Iterate through the list of process names and print them
+for process_name in $process_names; do
+    echo "$process_name"
+done
+
 IP=$(curl checkip.amazonaws.com)
 
 ID="null"
