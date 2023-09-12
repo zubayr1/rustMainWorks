@@ -1021,7 +1021,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let mut total_length = 0;
                     
                     if retrieve.communication_type == "codewords".to_string()
-                    {
+                    {   println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                         retrieved_hashmap_codeword
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1030,7 +1030,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
                     else 
-                    {println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
+                    {   println!("   received cordwordretrieve, {:?}, {}", message.sender, message.level);
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
