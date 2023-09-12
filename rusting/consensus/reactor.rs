@@ -1015,7 +1015,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 ConsensusMessage::CodewordRetrieveMessage(retrieve) =>
                 {   
-                    println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
+                    // println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                     // Handle Retrieve message
 
                     let mut total_length = 0;
@@ -1062,7 +1062,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        println!("{}", total_length);
                         retrieved_hashmap = retrieved_hashmap_codeword.clone();
                     }
                     else 
@@ -1073,7 +1072,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
 
-                        println!("                       {}", total_length);
                         retrieved_hashmap = retrieved_hashmap_committee.clone();
                     }
                     
