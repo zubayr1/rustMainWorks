@@ -1255,7 +1255,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
 
-                                    println!("aaa");
+                                    println!("{:?}, {}", ip_address, V1);
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
@@ -1274,7 +1274,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
-                                    println!(" bbb");
+                                    println!("    {:?}, {}", ip_address, V2);
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
