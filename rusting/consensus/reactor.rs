@@ -761,7 +761,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 {  
     let mut level = 0;
 
-    let mut total_length;
+    let mut total_length = 0;
 
     let (_, mut ip_addresses_comb) = sorted[level];
     let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
@@ -1017,10 +1017,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     println!("received cordwordretrieve, {:?}, {}", message.sender, message.level);
                     // Handle Retrieve message
-
-                    let mut total_length_codeword = 0;
-                    let mut total_length_committee = 0;
-
+                    
                     if retrieve.communication_type == "codewords".to_string()
                     {
                         retrieved_hashmap_codeword
@@ -1030,11 +1027,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                         
     
-                        for (_, inner_map) in &retrieved_hashmap_codeword {
-                            for _ in inner_map.values() {
-                                total_length_codeword += 1
-                            }
-                        }
+                        // for (_, inner_map) in &retrieved_hashmap_codeword {
+                        //     for _ in inner_map.values() {
+                        //         total_length_codeword += 1
+                        //     }
+                        // }
                     }
                     else 
                     {
@@ -1045,25 +1042,36 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                         
     
-                        for (_, inner_map) in &retrieved_hashmap_committee {
-                            for _ in inner_map.values() {
-                                total_length_committee += 1
-                            }
-                        }
+                        // for (_, inner_map) in &retrieved_hashmap_committee {
+                        //     for _ in inner_map.values() {
+                        //         total_length_committee += 1
+                        //     }
+                        // }
                     }
 
                     
 
                     if communication_type == "codewords".to_string()
                     {
-                        total_length = total_length_codeword;
+
+                        for (_, inner_map) in &retrieved_hashmap_codeword {
+                            for _ in inner_map.values() {
+                                total_length += 1
+                            }
+                        }
+                        
 
                         retrieved_hashmap = retrieved_hashmap_codeword.clone();
                     }
                     else 
                     {
-                        total_length = total_length_committee;
-                        println!("                       {}", total_length_committee);
+                        for (_, inner_map) in &retrieved_hashmap_committee {
+                            for _ in inner_map.values() {
+                                total_length += 1
+                            }
+                        }
+
+                        println!("                       {}", total_length);
                         retrieved_hashmap = retrieved_hashmap_committee.clone();
                     }
                     
