@@ -1066,6 +1066,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {                                 
                             flag = 1;
 
+                            println!("codeword done!!!!!!!!!!");
+
                             if communication_type=="codewords".to_string()
                             {
                                 retrieved_hashmap_codeword =  HashMap::new();
