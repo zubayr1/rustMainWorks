@@ -1076,15 +1076,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             println!("{}", total_length);
                             flag = 1;
 
-                            let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
-                                ip_address.clone().len());
-
-                            total_length=0;
-
-                            check_first_codeword_list = Vec::new();
-                            
-                            retrieved_hashmap = HashMap::new();
-
                             if communication_type=="codewords".to_string()
                             {
                                 retrieved_hashmap_codeword =  HashMap::new();
@@ -1095,6 +1086,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 retrieved_hashmap_committee =  HashMap::new();
                                 communication_type = "codewords".to_string();
                             }
+
+                            let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
+                                ip_address.clone().len());
+
+                            total_length=0;
+
+                            check_first_codeword_list = Vec::new();
+                            
+                            retrieved_hashmap = HashMap::new();
+                            
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
                                 ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
@@ -1112,11 +1113,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {   
                             flag = 0;
                             println!("    {}", total_length);
-                            
-                            let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
-                                ip_address.clone().len());
-
-                            retrieved_hashmap = HashMap::new();
 
                             if communication_type=="codewords".to_string()
                             {
@@ -1128,6 +1124,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 retrieved_hashmap_committee =  HashMap::new();
                                 communication_type = "codewords".to_string();
                             }
+                            
+                            let pvss_vec = codeword_retrieve(retrieved_hashmap.clone(), 
+                                ip_address.clone().len());
+
+                            retrieved_hashmap = HashMap::new();
+
+                            
 
                             let mut temp: Vec<String> = Vec::new();
 
