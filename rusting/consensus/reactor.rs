@@ -340,6 +340,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
     }
     
+    println!("{:?}", check_first_codeword_list);
 
     if !check_first_codeword_list.contains(&value)
     {
