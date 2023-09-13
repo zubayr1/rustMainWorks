@@ -582,9 +582,9 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
             {   
                 let (codeword_vec, witnesses_vec, merkle_len) = 
                     deliver::deliver_encode(W1.clone(), "_".to_string(), 
-                ip_address.clone().len());          
+                2_usize.pow(level as u32));          
 
-                let leaves = pvss_agreement::encoder(W1.clone(), ip_address.clone().len());
+                let leaves = pvss_agreement::encoder(W1.clone(), 2_usize.pow(level as u32));
                 // create accum value
                 let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -607,10 +607,10 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
             {                                  
                 let (codeword_vec, witnesses_vec, merkle_len) = 
                     deliver::deliver_encode(W2.clone(), "_".to_string(), 
-                ip_address.clone().len());
+                2_usize.pow(level as u32));
                 
                 
-                let leaves = pvss_agreement::encoder(W2.clone(), ip_address.clone().len());
+                let leaves = pvss_agreement::encoder(W2.clone(), 2_usize.pow(level as u32));
                 // create accum value
                 let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -864,7 +864,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let (count, pi): (usize, Vec<String>);
 
-                    if echo_value.len()==ip_address.clone().len()
+                    if echo_value.len()==2_usize.pow(level as u32)
                     {   
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -890,7 +890,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     forward_value.push(value);                    
 
-                    if forward_value.len()==ip_address.clone().len() 
+                    if forward_value.len()==2_usize.pow(level as u32) 
                     { 
 
                         let forward_value_copy = forward_value.clone();
@@ -933,7 +933,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }                    
 
 
-                    if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
+                    if vote1_value.len()==2_usize.pow(level as u32)/2 + 1 //vote phase
                     { 
                         
 
@@ -955,7 +955,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
+                    if vote2_value.len()==2_usize.pow(level as u32)/2 + 1 //second vote phase    
                     {
                         for output in vote2_value
                         {
@@ -1073,12 +1073,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         
-                        if total_length == 2*ip_address.clone().len() 
+                        if total_length == 2*2_usize.pow(level as u32) 
                         {   
                             flag = 0;
                                                         
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
-                                ip_address.clone().len());
+                                2_usize.pow(level as u32));
 
                             retrieved_hashmap_committee =  HashMap::new();
 
@@ -1138,11 +1138,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
                         check_first_codeword_list.clone(),  message.level).await;
 
-                    if ip_address.clone().len()==2
+                    if 2_usize.pow(level as u32)==2
                     {
                         updated_pvss.push(data);
 
-                        if updated_pvss.len()==ip_address.clone().len()
+                        if updated_pvss.len()==2_usize.pow(level as u32)
                         {                      
                             pvss_data = aggregate(updated_pvss.clone());
 
@@ -1218,7 +1218,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     
 
-                    if accum_value.len()==ip_address.clone().len()
+                    if accum_value.len()==2_usize.pow(level as u32)
                     {
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
 
@@ -1241,7 +1241,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
-                            ip_address.clone().len()).await;
+                            2_usize.pow(level as u32)).await;
 
                         let V = format!("{}-{}", V1, V2);
 
@@ -1267,7 +1267,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {   
                                 let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
-                                    ip_address.clone().len());
+                                    2_usize.pow(level as u32));
 
 
                                     let network_vec = codeword_init( 
@@ -1286,7 +1286,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {                                  
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
-                                    ip_address.clone().len());
+                                    2_usize.pow(level as u32));
                                     
                                     
                                     let network_vec = codeword_init( 
@@ -1354,7 +1354,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
 
-                    if propose_value.len() == ip_address.clone().len()/2
+                    if propose_value.len() == 2_usize.pow(level as u32)/2
                     {                        
                         propose_value = Vec::new();
 
@@ -1407,7 +1407,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {   
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
-                                    ip_address.clone().len());
+                                    2_usize.pow(level as u32));
 
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
@@ -1424,7 +1424,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {                                  
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
-                                    ip_address.clone().len());
+                                    2_usize.pow(level as u32));
                                     
                                     
                                     let network_vec = codeword_init( 
