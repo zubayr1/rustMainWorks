@@ -317,6 +317,11 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 {
     let mut data: String = "pvss".to_string();
 
+    if communication_type == "committee".to_string()
+    {
+        println!("communication_type committee");
+    }
+
     if ip_address.len()==2
     {
         let bytes = codewords.trim_matches('[').trim_matches(']').split("; ");
@@ -1002,7 +1007,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
-                    println!("received committee, {:?}, {}", message.sender, message.level);
+                    // println!("received committee, {:?}, {}", message.sender, message.level);
                     // Handle Committee message
                     // sleep(Duration::from_millis(20)).await;
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
