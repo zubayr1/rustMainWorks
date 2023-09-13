@@ -945,8 +945,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        // sleep(Duration::from_millis(0)).await;                 
-
                         vote1_value = Vec::new();       
 
                         if C1.len() >0 //second vote phase
@@ -967,8 +965,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        // sleep(Duration::from_millis(0)).await;
-
                         vote2_value = Vec::new();
 
                         if C1.len()>0 // output generation
@@ -985,13 +981,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-
-                        // sleep(Duration::from_millis(20)).await;
-
                         let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone()).await;
 
-                        
-                        
+                                                
                     }   
                         
                     
@@ -1048,9 +1040,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         
-                        
-    
-                        
                     }
                     else 
                     {   
@@ -1061,7 +1050,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                         
                     }
-
+                    println!("{}", communication_type );
 
                     if flag==0
                     {
@@ -1073,7 +1062,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
                         if total_length == 2*ip_address.clone().len()
-                        {                                
+                        {            println!("{:?}", retrieved_hashmap_codeword);                     
                             flag = 1;
 
                             
@@ -1087,8 +1076,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             check_first_codeword_list = Vec::new();
                             
-                            // sleep(Duration::from_millis(20)).await;
-                           
+                          
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
                                 ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
@@ -1099,7 +1087,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    { 
+                    {   
                         for (_, inner_map) in &retrieved_hashmap_committee {
                             for _ in inner_map.values() {
                                 total_length += 1
@@ -1109,7 +1097,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         // sleep(Duration::from_millis(20)).await;
                         
                         if total_length == 2*ip_address.clone().len() 
-                        {   
+                        {   println!("{:?}", retrieved_hashmap_committee); 
                             flag = 0;
                             retrieved_hashmap_codeword_count = HashMap::new();
                                                         
