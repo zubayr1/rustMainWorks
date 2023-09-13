@@ -349,8 +349,6 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             check_first_codeword_list.push(value.clone());
 
             // send witness to nodes if have received the first valid code word
-
-            println!("{}, {}", check_first_codeword_list.len(), communication_type);
                        
 
             let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
@@ -392,11 +390,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                 addresses: sockets, message: codeword_retrieve_message, level: level
             };
 
-            if communication_type == "committee".to_string()
-            {
-                println!("{:?}", codewordretrieve_network_message);
-            }
-    
+                
             let _ = tx_sender.send(codewordretrieve_network_message).await;
 
         
@@ -1024,8 +1018,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         
                     if communication_type == "codewords".to_string()
                     {   
-                        println!("received cordwordretrieve, {:?}, {}, {}", message.sender, message.level, communication_type);
-
                         if retrieved_hashmap_codeword_count.contains_key(&message.sender)
                         {
                             if retrieved_hashmap_codeword_count.get(&message.sender).unwrap() == &1
@@ -1062,7 +1054,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {   
-                        println!("received cordwordretrieve, {:?}, {}, {}", message.sender, message.level, communication_type);
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
