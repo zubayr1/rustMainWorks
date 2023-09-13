@@ -316,7 +316,6 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     -> (String, Vec<String>)
 {
     let mut data: String = "pvss".to_string();
-    println!("communication_type: {}",communication_type);
 
     if ip_address.len()==2
     {
