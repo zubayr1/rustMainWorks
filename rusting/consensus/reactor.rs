@@ -1024,7 +1024,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let mut total_length = 0;
 
-                    let communication_type = retrieve.communication_type;
+                    let mut communication_type = retrieve.communication_type;
+
+                    if flag==1
+                    {
+                        communication_type = "committee".to_string();
+                    }
                     
                     if communication_type == "codewords".to_string()
                     {   println!("received cordwordretrieve, {:?}, {}, {}", message.sender, message.level, communication_type);
