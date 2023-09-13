@@ -1349,7 +1349,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", propose.value,  message.sender);
                    
-                    sleep(Duration::from_millis(20)).await;
+                    // sleep(Duration::from_millis(20)).await;
                     // propose_value.push(value);
 
                     if state.get_level() == message.level
@@ -1440,16 +1440,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {   
                                 if val==1 && V1==acc_value_zl
                                 {   
-                                let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
 
-
+                                    println!("CODEWORD PROPOSEEEEEEEEE");
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_propose".to_string());
 
-                                    println!("    {:?}", network_vec);
+                                    println!("        {:?}", network_vec);
                                     for network_msg in network_vec
                                     {   
                                         let _  = tx_sender.send(network_msg).await;
@@ -1459,7 +1459,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 if val==2 && V2==acc_value_zl
                                 {                                  
-                                let (codeword_vec, witnesses_vec, merkle_len) = 
+                                    let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
