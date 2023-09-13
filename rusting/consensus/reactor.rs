@@ -340,12 +340,10 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
     }
     
-    println!("{:?}", check_first_codeword_list);
-
     if !check_first_codeword_list.contains(&value)
     {
         let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
-        println!("{}", proof);
+
         if proof==true
         {
             check_first_codeword_list.push(value.clone());
@@ -393,7 +391,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
             if communication_type == "committee".to_string()
             {
-                println!("communication_type committee");
+                println!("{:?}", codewordretrieve_network_message);
             }
     
             let _ = tx_sender.send(codewordretrieve_network_message).await;
