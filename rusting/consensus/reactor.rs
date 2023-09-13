@@ -260,7 +260,7 @@ fn codeword_init(
         leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
 
         let codeword = Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
-        value.to_string(), indices_to_prove.clone(), merkle_len, part, types);
+        value.to_string(), indices_to_prove.clone(), merkle_len, part, types.clone());
         index+=1;
 
         
