@@ -1042,10 +1042,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         // }
 
 
-                        // retrieved_hashmap_codeword
-                        // .entry(retrieve.part)
-                        // .or_insert_with(HashMap::new)
-                        // .insert(message.sender, retrieve.codewords);
+                        retrieved_hashmap_codeword
+                        .entry(retrieve.part)
+                        .or_insert_with(HashMap::new)
+                        .insert(message.sender, retrieve.codewords);
 
                         
                     }
