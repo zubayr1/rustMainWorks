@@ -1448,7 +1448,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_propose".to_string());
 
-                                    println!("        {:?}", network_vec);
                                     for network_msg in network_vec
                                     {   
                                         let _  = tx_sender.send(network_msg).await;
