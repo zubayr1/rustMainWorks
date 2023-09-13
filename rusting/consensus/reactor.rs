@@ -311,7 +311,7 @@ fn codeword_init(
 }
 
 #[allow(non_snake_case)]
-async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
+async fn codeword_helper(tx_sender: Sender<NetworkMessage>, mut communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>)
     -> (String, Vec<String>)
 {
@@ -351,6 +351,11 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             // send witness to nodes if have received the first valid code word
 
             println!("{}, {}", check_first_codeword_list.len(), communication_type);
+
+            if check_first_codeword_list.len()==1 || check_first_codeword_list.len()==2
+            {
+                communication_type = "committee".to_string();
+            }
 
             let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
                 codeword, part, communication_type.clone()); 
@@ -1024,13 +1029,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let mut total_length = 0;
 
-                    let mut communication_type = retrieve.communication_type;
+                    let communication_type = retrieve.communication_type;
 
-                    // if flag==1
-                    // {
-                    //     communication_type = "committee".to_string();
-                    // }
-                    
+                                        
                     if communication_type == "codewords".to_string()
                     {   println!("received cordwordretrieve, {:?}, {}, {}", message.sender, message.level, communication_type);
                         retrieved_hashmap_codeword
