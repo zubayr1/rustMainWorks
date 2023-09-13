@@ -994,7 +994,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
-                    // println!("received committee, {:?}, {}", message.sender, message.level);
+                    println!("       received committee, {:?}, {}", message.sender, message.level);
                     // Handle Committee message
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
                      ip_address.clone(), committee.codewords, committee.witness, 
@@ -1166,7 +1166,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {
                     // Handle Codeword message
                     let data: String;
-
+                    println!("                received codeword, {:?}, {}", message.sender, message.level);
                     (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                      ip_address.clone(), codeword.codewords, codeword.witness, 
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
