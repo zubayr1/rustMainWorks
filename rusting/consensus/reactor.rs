@@ -350,7 +350,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
             // send witness to nodes if have received the first valid code word
 
-            println!("{}", check_first_codeword_list.len());
+            println!("{}, {}", check_first_codeword_list.len(), communication_type);
 
             let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
                 codeword, part, communication_type.clone()); 
