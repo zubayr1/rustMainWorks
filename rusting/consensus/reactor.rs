@@ -1013,45 +1013,45 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         
                     if communication_type == "codewords".to_string()
                     {   
-                        // if retrieved_hashmap_codeword_count.contains_key(&message.sender)
-                        // {
-                        //     if retrieved_hashmap_codeword_count.get(&message.sender).unwrap() == &1
-                        //     {
-                        //         retrieved_hashmap_codeword
-                        //         .entry(retrieve.part)
-                        //         .or_insert_with(HashMap::new)
-                        //         .insert(message.sender, retrieve.codewords);
+                        if retrieved_hashmap_codeword_count.contains_key(&message.sender)
+                        {
+                            if retrieved_hashmap_codeword_count.get(&message.sender).unwrap() == &1
+                            {
+                                retrieved_hashmap_codeword
+                                .entry(retrieve.part)
+                                .or_insert_with(HashMap::new)
+                                .insert(message.sender, retrieve.codewords);
 
-                        //         retrieved_hashmap_codeword_count.insert(message.sender, 2);
-                        //     }
-                        //     else 
-                        //     {
-                        //         retrieved_hashmap_committee
-                        //         .entry(retrieve.part)
-                        //         .or_insert_with(HashMap::new)
-                        //         .insert(message.sender, retrieve.codewords);
-                        //     }
-                        // }
-                        // else 
-                        // {
-                        //     retrieved_hashmap_codeword
-                        //     .entry(retrieve.part)
-                        //     .or_insert_with(HashMap::new)
-                        //     .insert(message.sender, retrieve.codewords);
+                                retrieved_hashmap_codeword_count.insert(message.sender, 2);
+                            }
+                            else 
+                            {   sleep(Duration::from_millis(20)).await;
+                                retrieved_hashmap_committee
+                                .entry(retrieve.part)
+                                .or_insert_with(HashMap::new)
+                                .insert(message.sender, retrieve.codewords);
+                            }
+                        }
+                        else 
+                        {   
+                            retrieved_hashmap_codeword
+                            .entry(retrieve.part)
+                            .or_insert_with(HashMap::new)
+                            .insert(message.sender, retrieve.codewords);
 
-                        //     retrieved_hashmap_codeword_count.insert(message.sender, 1);
-                        // }
+                            retrieved_hashmap_codeword_count.insert(message.sender, 1);
+                        }
 
 
-                        retrieved_hashmap_codeword
-                        .entry(retrieve.part)
-                        .or_insert_with(HashMap::new)
-                        .insert(message.sender, retrieve.codewords);
+                        // retrieved_hashmap_codeword
+                        // .entry(retrieve.part)
+                        // .or_insert_with(HashMap::new)
+                        // .insert(message.sender, retrieve.codewords);
 
                         
                     }
                     else 
-                    {   
+                    {   sleep(Duration::from_millis(20)).await;
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
