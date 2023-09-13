@@ -390,7 +390,6 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
                 addresses: sockets, message: codeword_retrieve_message, level: level
             };
-            println!("     {:?}",codewordretrieve_network_message);
                 
             let _ = tx_sender.send(codewordretrieve_network_message).await;
 
