@@ -315,12 +315,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>)
     -> (String, Vec<String>)
 {
-    let mut data: String = "pvss".to_string();
-
-    if communication_type == "committee".to_string()
-    {
-        println!("communication_type committee");
-    }
+    let mut data: String = "pvss".to_string();   
 
     if ip_address.len()==2
     {
@@ -356,7 +351,8 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
             // send witness to nodes if have received the first valid code word
 
-            let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), codeword, part, communication_type); 
+            let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
+                codeword, part, communication_type.clone()); 
 
             let codeword_retrieve_message: ConsensusMessage = ConsensusMessage::CodewordRetrieveMessage(codeword_retrieve);
 
@@ -393,6 +389,11 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
                 addresses: sockets, message: codeword_retrieve_message, level: level
             };
+
+            if communication_type == "committee".to_string()
+            {
+                println!("communication_type committee");
+            }
     
             let _ = tx_sender.send(codewordretrieve_network_message).await;
 
