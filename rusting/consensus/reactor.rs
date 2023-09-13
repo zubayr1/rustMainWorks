@@ -352,10 +352,15 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, mut communication_ty
 
             println!("{}, {}", check_first_codeword_list.len(), communication_type);
 
-            if check_first_codeword_list.len()==1 || check_first_codeword_list.len()==2
+
+            if ip_address.len()>2
             {
-                communication_type = "committee".to_string();
+                if check_first_codeword_list.len()==1 || check_first_codeword_list.len()==2
+                {
+                    communication_type = "committee".to_string();
+                }
             }
+            
 
             let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
                 codeword, part, communication_type.clone()); 
