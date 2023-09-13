@@ -1012,7 +1012,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                         
                     if communication_type == "codewords".to_string()
-                    {   
+                    {   println!("   {}, {}", communication_type, message.level) ;
                         // if retrieved_hashmap_codeword_count.contains_key(&message.sender)
                         // {
                         //     if retrieved_hashmap_codeword_count.get(&message.sender).unwrap() == &1
