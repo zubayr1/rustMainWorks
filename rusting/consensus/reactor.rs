@@ -317,7 +317,6 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 {
     let mut data: String = "pvss".to_string();   
 
-    println!("{}, {}", communication_type, level);
 
     if ip_address.len()==2
     {
@@ -994,7 +993,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
-                    println!("       received committee, {:?}, {}", message.sender, message.level);
                     // Handle Committee message
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
                      ip_address.clone(), committee.codewords, committee.witness, 
@@ -1009,7 +1007,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let mut total_length = 0;
 
                     let communication_type = retrieve.communication_type;
-                    println!("  aaa {}, {}", communication_type, message.level) ;
                                         
                     if communication_type == "codewords".to_string()
                     {   
@@ -1166,7 +1163,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {
                     // Handle Codeword message
                     let data: String;
-                    println!("                received codeword, {:?}, {}, {}, {}", message.sender, message.level, codeword.part, codeword.types);
                     (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                      ip_address.clone(), codeword.codewords, codeword.witness, 
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
@@ -1327,7 +1323,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_accum".to_string());
 
-                                    println!("{:?}", network_vec);
                                     for network_msg in network_vec
                                     {   
                                         let _  = tx_sender.send(network_msg).await;
