@@ -311,11 +311,13 @@ fn codeword_init(
 }
 
 #[allow(non_snake_case)]
-async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
+async fn codeword_helper(tx_sender: Sender<NetworkMessage>,  ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>)
     -> (String, Vec<String>)
 {
-    let mut data: String = "pvss".to_string();   
+    let mut data: String = "pvss".to_string();  
+
+    let communication_type: String = "codewords".to_string(); 
 
     if ip_address.len()==2
     {
@@ -408,11 +410,13 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
 
 #[allow(non_snake_case)]
-async fn committee_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
+async fn committee_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>)
     -> (String, Vec<String>)
 {
     let mut data: String = "pvss".to_string();   
+
+    let communication_type: String = "committee".to_string();
 
     if ip_address.len()==2
     {
@@ -1109,7 +1113,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // println!("received committee, {:?}, {}", message.sender, message.level);
                     // Handle Committee message
                     // sleep(Duration::from_millis(20)).await;
-                    (_, check_first_codeword_list) = committee_helper(tx_sender.clone(), "committee".to_string(),
+                    (_, check_first_codeword_list) = committee_helper(tx_sender.clone(), 
                      ip_address.clone(), committee.codewords, committee.witness, 
                     committee.value, committee.index, committee.leaves_len, committee.part, args.clone(), check_first_codeword_list.clone()).await;
                 }
@@ -1253,7 +1257,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // println!("received codeword, {:?}", message.sender);
                     let data: String;
 
-                    (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
+                    (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), 
                      ip_address.clone(), codeword.codewords, codeword.witness, 
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), check_first_codeword_list.clone()).await;
 
