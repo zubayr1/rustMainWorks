@@ -1007,6 +1007,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let mut total_length = 0;
 
                     let communication_type = retrieve.communication_type;
+
+                    println!("{}, {}", communication_type, message.level);
                                         
                     if communication_type == "codewords".to_string()
                     {   
