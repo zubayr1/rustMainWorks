@@ -1166,7 +1166,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {
                     // Handle Codeword message
                     let data: String;
-                    println!("                received codeword, {:?}, {}", message.sender, message.level);
+                    println!("                received codeword, {:?}, {}, {}", message.sender, message.level, codeword.part);
                     (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                      ip_address.clone(), codeword.codewords, codeword.witness, 
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
