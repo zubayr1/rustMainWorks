@@ -344,7 +344,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     if !check_first_codeword_list.contains(&value)
     {
         let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
-
+        println!("{}", proof);
         if proof==true
         {
             check_first_codeword_list.push(value.clone());
