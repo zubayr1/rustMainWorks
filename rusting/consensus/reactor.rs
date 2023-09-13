@@ -311,7 +311,7 @@ fn codeword_init(
 }
 
 #[allow(non_snake_case)]
-async fn codeword_helper(tx_sender: Sender<NetworkMessage>, mut communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
+async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>)
     -> (String, Vec<String>)
 {
@@ -1051,7 +1051,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 total_length += 1
                             }
                         }
-
+                        println!("{:?}", retrieved_hashmap_codeword);
                         if total_length == 2*ip_address.clone().len()
                         {                                 
                             flag = 1;
