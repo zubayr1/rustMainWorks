@@ -1032,37 +1032,44 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if flag==0
                     {
-                        
-                        for (_, inner_map) in &retrieved_hashmap_codeword {
-                            for _ in inner_map.values() {
-                                total_length += 1
+                        let left = retrieved_hashmap_codeword.get(&1).unwrap();
+                        let right = retrieved_hashmap_codeword.get(&2).unwrap();
+
+                        if left.len() == right.len()
+                        {
+                            for (_, inner_map) in &retrieved_hashmap_codeword {
+                                for _ in inner_map.values() {
+                                    total_length += 1
+                                }
+                            }
+                            
+                            if total_length == 2*level
+                            {                               
+                                flag = 1;
+                                println!("{:?},   {},  {:?}", ip_address, level, retrieved_hashmap_codeword);
+                                
+                                let pvss_vec = codeword_retrieve(retrieved_hashmap_codeword.clone(), 
+                                level);
+    
+    
+                                retrieved_hashmap_codeword =  HashMap::new();
+    
+                                total_length=0;
+    
+                                check_first_codeword_list = Vec::new();
+                                
+                              
+    
+                                committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
+                                    ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
+    
+                                two_BA_check =true;
+                                
+                                
                             }
                         }
                         
-                        if total_length == 2*level
-                        {                              
-                            flag = 1;
-                            println!("{:?},   {},  {:?}", ip_address, level, retrieved_hashmap_codeword);
-                            
-                            let pvss_vec = codeword_retrieve(retrieved_hashmap_codeword.clone(), 
-                            level);
-
-
-                            retrieved_hashmap_codeword =  HashMap::new();
-
-                            total_length=0;
-
-                            check_first_codeword_list = Vec::new();
-                            
-                          
-
-                            committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
-                                ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
-
-                            two_BA_check =true;
-                            
-                            
-                        }
+                        
                     }
                     if flag == 1
                     {   
