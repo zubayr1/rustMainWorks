@@ -351,16 +351,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, mut communication_ty
             // send witness to nodes if have received the first valid code word
 
             println!("{}, {}", check_first_codeword_list.len(), communication_type);
-
-
-            if ip_address.len()>2
-            {
-                if check_first_codeword_list.len()==1 || check_first_codeword_list.len()==2
-                {
-                    communication_type = "committee".to_string();
-                }
-            }
-            
+                       
 
             let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
                 codeword, part, communication_type.clone()); 
@@ -1019,7 +1010,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
-                    // println!("received committee, {:?}, {}", message.sender, message.level);
+                    println!("received committee, {:?}, {}", message.sender, message.level);
                     // Handle Committee message
                     // sleep(Duration::from_millis(20)).await;
                     (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
@@ -1047,7 +1038,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
                     else 
-                    {   println!("   received cordwordretrieve, {:?}, {}, {}", message.sender, message.level, communication_type);
+                    {   
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1103,7 +1094,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         // sleep(Duration::from_millis(20)).await;
-                        println!("    {}, {}", 2*ip_address.clone().len(),total_length);
+                        
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
