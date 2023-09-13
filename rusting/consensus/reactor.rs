@@ -232,7 +232,7 @@ async fn accum_helper(accum_value: Vec<String>, level: usize, committee_length: 
 
 fn codeword_init( 
     ip_address: Vec<&str>, _level: usize, args: Vec<String>, 
-    value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, part: usize) -> Vec<NetworkMessage>
+    value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, part: usize, types: String) -> Vec<NetworkMessage>
 {
 
     let mut index = 0;
@@ -260,7 +260,7 @@ fn codeword_init(
         leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
 
         let codeword = Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
-        value.to_string(), indices_to_prove.clone(), merkle_len, part);
+        value.to_string(), indices_to_prove.clone(), merkle_len, part, types);
         index+=1;
 
         
@@ -305,7 +305,7 @@ fn codeword_init(
 
            
     }
-
+    
     network_vec
     
 }
@@ -1166,7 +1166,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {
                     // Handle Codeword message
                     let data: String;
-                    println!("                received codeword, {:?}, {}, {}", message.sender, message.level, codeword.part);
+                    println!("                received codeword, {:?}, {}, {}, {}", message.sender, message.level, codeword.part, codeword.types);
                     (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                      ip_address.clone(), codeword.codewords, codeword.witness, 
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
@@ -1306,7 +1306,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
-                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_accum".to_string());
 
 
                                     for network_msg in network_vec
@@ -1325,7 +1325,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
-                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
+                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_accum".to_string());
 
                                     
                                     for network_msg in network_vec
@@ -1447,7 +1447,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
-                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+                                        V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_propose".to_string());
 
 
                                     for network_msg in network_vec
@@ -1466,7 +1466,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
-                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
+                                        V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_propose".to_string());
 
                                     
                                     for network_msg in network_vec

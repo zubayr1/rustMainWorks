@@ -156,10 +156,11 @@ pub struct Codeword
 #[allow(unused)]
 impl Codeword
 {
-    pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, value: String, index: String, leaves_len: usize, part: usize) -> Self
+    pub fn create_codeword(sign: String, codewords: String, witness: Vec<u8>, value: String, 
+        index: String, leaves_len: usize, part: usize, types: String) -> Self
     {
         Codeword{sign:sign, codewords: codewords, witness: witness, value: value, 
-            index: index, leaves_len: leaves_len, part, types: "codeword".to_string()}
+            index: index, leaves_len: leaves_len, part, types: types}
     }
 
     pub fn to_vec(self) -> Vec<String> {
