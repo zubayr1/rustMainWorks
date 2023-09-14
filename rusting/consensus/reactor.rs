@@ -922,8 +922,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     forward_value.push(value);                    
 
                     if forward_value.len()==ip_address.clone().len() 
-                    { 
-                        println!("forward level {}", message.level);
+                    {                         
                         let forward_value_copy = forward_value.clone();
 
                         let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
@@ -1400,7 +1399,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if state.get_level() == message.level
                     {
                         propose_value.push(value);
-                        
+                        println!("propose level {}", message.level);
 
                         if storage_propose.contains_key(&state.get_level())
                         {                            
