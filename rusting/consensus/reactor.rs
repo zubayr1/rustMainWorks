@@ -1009,7 +1009,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                                             
                     if communication_type == "codewords".to_string()
                     {                          
-                        println!("{}, {}", communication_type, message.level);
+                        println!("{}, {},  {}", communication_type, message.sender, message.level);
                         retrieved_hashmap_codeword
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1018,7 +1018,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
                     else 
-                    {   println!("   {}, {}", communication_type, message.level);
+                    {   println!("   {}, {},  {}", communication_type, message.sender, message.level);
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1312,7 +1312,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", propose.value,  message.sender);
                    
-                    sleep(Duration::from_millis(20)).await;
+                    sleep(Duration::from_millis(5)).await;
                     // propose_value.push(value);
 
                     if state.get_level() == message.level
