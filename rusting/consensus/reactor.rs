@@ -313,7 +313,7 @@ fn codeword_init(
 #[allow(non_snake_case)]
 async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, 
-    args: Vec<String>, mut check_first_codeword_list: Vec<String>, mut check_first_committee_list: Vec<String>, _level: usize)
+    args: Vec<String>, mut check_first_codeword_list: Vec<String>, mut check_first_committee_list: Vec<String>, level: usize)
     -> (String, Vec<String>, Vec<String>)
 {
     let mut data: String = "pvss".to_string();   
@@ -381,12 +381,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                 let senderport = 7000 + args[2].parse::<u32>().unwrap();
                 let sender_str = format!("{}:{}", args[6], senderport.to_string());
             
-            
-                let length = ip_address.len();
-            
-                let level_f = (length as f64).sqrt();
-            
-                let level = level_f.round() as usize;
+                           
         
         
                 let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
@@ -439,13 +434,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                 let senderport = 7000 + args[2].parse::<u32>().unwrap();
                 let sender_str = format!("{}:{}", args[6], senderport.to_string());
             
-            
-                let length = ip_address.len();
-            
-                let level_f = (length as f64).sqrt();
-            
-                let level = level_f.round() as usize;
-        
+                                    
         
                 let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
                     addresses: sockets, message: codeword_retrieve_message, level: level
