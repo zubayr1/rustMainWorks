@@ -883,7 +883,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Echo message type
                 ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message
-                    println!("echo level {}", message.level);
+                    
 
                     let value = format!("{} {}", echo.value, message.sender);
 
@@ -896,7 +896,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let (count, pi): (usize, Vec<String>);
 
                     if echo_value.len()==ip_address.clone().len()
-                    {   
+                    {   println!("echo level {}", message.level);
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
