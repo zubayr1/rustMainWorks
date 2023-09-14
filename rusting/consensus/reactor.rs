@@ -1155,7 +1155,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             
 
                             check_first_codeword_list = Vec::new();
-                            check_first_committee_list = Vec::new();
+                            
                           
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
@@ -1183,7 +1183,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             retrieved_hashmap_committee =  HashMap::new();
 
-
+                            check_first_committee_list = Vec::new();
 
                             let mut temp: Vec<String> = Vec::new();
 
