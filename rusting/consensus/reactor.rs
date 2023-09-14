@@ -1263,7 +1263,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         qual = Vec::new();
                         accum_value.push(value);
-                        println!("ACCUM LEVEL{}", message.level);
+                        
 
                         if storage_accum.contains_key(&state.get_level())
                         {                            
@@ -1339,7 +1339,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-
+                            println!("ACCUM LEVEL{}", message.level);
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
