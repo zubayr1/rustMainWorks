@@ -1107,7 +1107,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if total_length == 2*ip_address.clone().len()
                         {                              
                             flag = 1;
-                            println!("{:?}, {}, {:?}", ip_address, level, retrieved_hashmap_codeword);
                             
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_codeword.clone(), 
                                 ip_address.clone().len());
@@ -1140,7 +1139,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
-                            println!("    {:?}, {}, {:?}", ip_address, level, retrieved_hashmap_committee);
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
                                 ip_address.clone().len());
