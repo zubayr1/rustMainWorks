@@ -1039,16 +1039,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let mut total_length = 0;
 
                     let communication_type = retrieve.communication_type;
-
+                    
                     (_, ip_addresses_comb) = sorted[level];
 
                     ip_address = ip_addresses_comb.split(" ").collect();
 
-                                                            
+                    println!("{}, {},  {}, {}, {:?}", communication_type, message.sender, message.level, level, retrieve.codewords );
+                                   
                     if communication_type == "codewords".to_string()
-                    {                          
-                        // println!("{}, {},  {}, {}, f{}", communication_type, message.sender, message.level, level, flag);
-
+                    { 
                         let part = retrieve.part.clone();
 
                         let mut check = 0;
@@ -1075,8 +1074,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     { 
-                        // println!("   {}, {},  {}, {}, f{}", communication_type, message.sender, message.level, level, flag);
-
                         let part = retrieve.part.clone();
 
                         let mut check = 0;
