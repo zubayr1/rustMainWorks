@@ -1067,7 +1067,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length == 2*2_usize.pow(level as u32)
+                        if total_length == 2_usize.pow(level as u32)
                         {                              
                             flag = 1;
 
@@ -1102,7 +1102,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         // sleep(Duration::from_millis(20)).await;
                         
-                        if total_length == 2*2_usize.pow(level as u32) 
+                        if total_length == 2_usize.pow(level as u32) 
                         {   
                             flag = 0;
                             retrieved_hashmap_codeword_count = HashMap::new();
