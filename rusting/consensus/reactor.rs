@@ -1075,13 +1075,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag == 1
                     {   
                         for (i, inner_map) in &retrieved_hashmap_committee {
-                            if i==&1
-                            {
-                                left_length+=1;
-                            }
-                            else 
-                            {
-                                right_length+=1;
+                            for _ in inner_map.values() {
+                                if i==&1
+                                {
+                                    left_length+=1;
+                                }
+                                else 
+                                {
+                                    right_length+=1;
+                                }
                             }
                         }
 
