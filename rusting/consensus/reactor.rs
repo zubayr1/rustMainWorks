@@ -1055,13 +1055,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
                     // Handle Committee message
-                    // if message.level == level
-                    // {
+                    if message.level == level
+                    {
                         (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
                         ip_address.clone(), committee.codewords, committee.witness, 
                        committee.value, committee.index, committee.leaves_len, committee.part, 
                        args.clone(), check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
-                    //}
+                    }
                     
                 }
 
@@ -1237,8 +1237,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {
                     // Handle Codeword message
                     let data: String;
-                    // if message.level == level
-                    // {
+                    if message.level == level
+                    {
                         (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                         ip_address.clone(), codeword.codewords, codeword.witness, 
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
@@ -1276,7 +1276,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         
                             }
                         }
-                   // }
+                    }
                     
                     
                 }
