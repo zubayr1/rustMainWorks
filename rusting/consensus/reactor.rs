@@ -1329,7 +1329,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", propose.value,  message.sender);
                    
-                    // sleep(Duration::from_millis(20)).await;
+                    sleep(Duration::from_millis(20)).await;
                     // propose_value.push(value);
 
                     if state.get_level() == message.level
