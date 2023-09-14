@@ -1002,7 +1002,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // Handle Retrieve message
 
-                    let mut total_length = 0;
+                    let mut left_length = 0;
+                    let mut right_length = 0;
 
                     let communication_type = retrieve.communication_type;
 
@@ -1032,13 +1033,20 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         
-                        for (_, inner_map) in &retrieved_hashmap_codeword {
+                        for (i, inner_map) in &retrieved_hashmap_codeword {
                             for _ in inner_map.values() {
-                                total_length += 1
+                                if i==&1
+                                {
+                                    left_length+=1;
+                                }
+                                else 
+                                {
+                                    right_length+=1;
+                                }
                             }
                         }
                         
-                        if total_length == 2*level
+                        if (left_length+right_length) == 2*2_usize.pow(level as u32)  && (left_length == right_length)
                         {                               
                             flag = 1;
                             println!("{:?},   {},  {:?}", ip_address, level, retrieved_hashmap_codeword);
@@ -1049,7 +1057,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             retrieved_hashmap_codeword =  HashMap::new();
 
-                            total_length=0;
+                            left_length=0;
+                            right_length=0;
 
                             check_first_codeword_list = Vec::new();
                             
@@ -1065,14 +1074,19 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     if flag == 1
                     {   
-                        for (_, inner_map) in &retrieved_hashmap_committee {
-                            for _ in inner_map.values() {
-                                total_length += 1
+                        for (i, inner_map) in &retrieved_hashmap_committee {
+                            if i==&1
+                            {
+                                left_length+=1;
+                            }
+                            else 
+                            {
+                                right_length+=1;
                             }
                         }
 
                         
-                        if total_length == 2*2_usize.pow(level as u32) 
+                        if (left_length+right_length) == 2*2_usize.pow(level as u32)  && (left_length == right_length) 
                         {   
                             flag = 0;
                                                         
