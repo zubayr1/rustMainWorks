@@ -896,7 +896,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
                         echo_value = Vec::new(); 
-                        println!("echo V {}", V);
+                                                
                         forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
                             ip_address.clone(), args.clone()).await;
                         
@@ -913,7 +913,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", forward.value,  message.sender);
 
-
+                    println!("forward value  {:?}", forward.value);
                     forward_value.push(value);                    
 
                     if forward_value.len()==ip_address.clone().len() 
