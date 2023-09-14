@@ -782,8 +782,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut retrieved_hashmap_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
     let mut retrieved_hashmap_committee: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-    let mut retrieved_hashmap_codeword_count: HashMap<SocketAddr, usize> = HashMap::new();
-
 
     if ip_address.len()==1
     {
@@ -1009,36 +1007,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let communication_type = retrieve.communication_type;
                                         
                     if communication_type == "codewords".to_string()
-                    {   
-                        // if retrieved_hashmap_codeword_count.contains_key(&message.sender)
-                        // {
-                        //     if retrieved_hashmap_codeword_count.get(&message.sender).unwrap() == &1
-                        //     {
-                        //         retrieved_hashmap_codeword
-                        //         .entry(retrieve.part)
-                        //         .or_insert_with(HashMap::new)
-                        //         .insert(message.sender, retrieve.codewords);
-
-                        //         retrieved_hashmap_codeword_count.insert(message.sender, 2);
-                        //     }
-                        //     else 
-                        //     {   sleep(Duration::from_millis(20)).await;
-                        //         retrieved_hashmap_committee
-                        //         .entry(retrieve.part)
-                        //         .or_insert_with(HashMap::new)
-                        //         .insert(message.sender, retrieve.codewords);
-                        //     }
-                        // }
-                        // else 
-                        // {   
-                        //     retrieved_hashmap_codeword
-                        //     .entry(retrieve.part)
-                        //     .or_insert_with(HashMap::new)
-                        //     .insert(message.sender, retrieve.codewords);
-
-                        //     retrieved_hashmap_codeword_count.insert(message.sender, 1);
-                        // }
-
+                    {                          
 
                         retrieved_hashmap_codeword
                         .entry(retrieve.part)
@@ -1048,7 +1017,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
                     else 
-                    {   sleep(Duration::from_millis(20)).await;
+                    {   
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1070,7 +1039,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if total_length == 2*ip_address.clone().len()
                         {                              
                             flag = 1;
-
+                            println!("{:?}, {}, {:?}", ip_address, level, retrieved_hashmap_codeword);
                             
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_codeword.clone(), 
                                 ip_address.clone().len());
@@ -1105,7 +1074,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
-                            retrieved_hashmap_codeword_count = HashMap::new();
+                            println!("    {:?}, {}, {:?}", ip_address, level, retrieved_hashmap_codeword);
                                                         
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
                                 ip_address.clone().len());
