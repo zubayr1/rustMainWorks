@@ -119,7 +119,7 @@ fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalS
 
 
 
-fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>) -> NetworkMessage
+fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>, level: usize) -> NetworkMessage
 {
     let accum: Accum = Accum::create_accum("sign".to_string(), acc_value_zl.clone());
 
@@ -146,12 +146,6 @@ fn accum_init(acc_value_zl: String, ip_address: Vec<&str>, args: Vec<String>) ->
     let senderport = 7000 + args[2].parse::<u32>().unwrap();
     let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
-
-    let length = ip_address.len();
-
-    let level_f = (length as f64).sqrt();
-
-    let level = level_f.round() as usize;
 
     let accum_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
         addresses: sockets, message: accum_consensus_message, level: level
@@ -231,7 +225,7 @@ async fn accum_helper(accum_value: Vec<String>, level: usize, committee_length: 
 
 
 fn codeword_init( 
-    ip_address: Vec<&str>, _level: usize, args: Vec<String>, 
+    ip_address: Vec<&str>, level: usize, args: Vec<String>, 
     value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, part: usize, types: String) -> Vec<NetworkMessage>
 {
 
@@ -289,14 +283,7 @@ fn codeword_init(
         let senderport = 7000 + args[2].parse::<u32>().unwrap();
         let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
-
-        let length = ip_address.len();
-
-        let level_f = (length as f64).sqrt();
-
-        let level = level_f.round() as usize;
-
-
+        
         let codeword_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
             addresses: sockets, message: codeword_consensus_message, level: level
         };
@@ -844,7 +831,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
             
     (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
 
-    let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
+    let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
 
     let _ = tx_sender.send(accum_network_message).await;
 
@@ -1192,7 +1179,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
                             
                                 
-                                let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
+                                let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
+                                    args.clone(), level.clone());
                             
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
@@ -1249,7 +1237,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
                             
                                 
-                                let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
+                                let accum_network_message = accum_init(acc_value_zl.clone(), 
+                                    ip_address.clone(), args.clone(), level.clone());
                             
                                 let _ = tx_sender.send(accum_network_message).await;
                             
