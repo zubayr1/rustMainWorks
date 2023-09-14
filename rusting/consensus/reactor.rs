@@ -884,14 +884,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message
                     
-
                     let value = format!("{} {}", echo.value, message.sender);
-
-                    print!("echo value {}", echo.value);
-                    echo_value.push(value);
                     
-
-                    
+                    echo_value.push(value);   
 
                     let (count, pi): (usize, Vec<String>);
 
@@ -901,7 +896,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
                         echo_value = Vec::new(); 
-                       
+                        println!("echo V {}", V);
                         forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
                             ip_address.clone(), args.clone()).await;
                         
