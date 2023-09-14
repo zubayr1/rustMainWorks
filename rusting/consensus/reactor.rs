@@ -816,7 +816,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     if ip_address.len()==1
     {
         //GET PVSS DATA FROM DIMITRIS
-        pvss_data = ["pvss".to_string(), args[2].to_string()].join(" ").into_bytes();
+        pvss_data = "pvss".to_string().into_bytes();
         level+=1;
         
     }
