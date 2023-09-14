@@ -913,7 +913,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", forward.value,  message.sender);
 
-                    println!("forward value  {:?}", forward.value);
 
                     if message.level == level
                     {
@@ -934,7 +933,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let first_part = parts[0];
                             first_part == first_part_to_compare
                         });
-                        println!("forward {}, {},   {:?}", message.level, all_parts_match, forward_value);
+
                         forward_value = Vec::new(); 
 
                         if all_parts_match && forward_check{
@@ -1010,7 +1009,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 BA_V = v1_prime;
                             }
                         }
-                        println!("Vote {}", message.level);
+
                         let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone()).await;
 
                                                 
@@ -1021,7 +1020,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
-                {   println!("COMMITTEE LEVEL: {}", message.level );
+                {   
                     // Handle Committee message
                     if message.level == level
                     {
@@ -1203,7 +1202,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 // Match the Codeword message type
                 ConsensusMessage::CodewordMessage(codeword) => 
-                {   println!("CODEWORD LEVEL: {}", message.level );
+                {   
                     // Handle Codeword message
                     let data: String;
                     if message.level == level
@@ -1395,7 +1394,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                    
                     // sleep(Duration::from_millis(5)).await;
                     // propose_value.push(value);
-                    println!("propose level {}", message.level);
+                    
                     if state.get_level() == message.level
                     {
                         propose_value.push(value);
@@ -1431,10 +1430,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
 
-                    if message.level==4
-                    {
-                        println!("{}", propose_value.len());
-                    }
+                    
                     if propose_value.len() == ip_address.clone().len()/2
                     {    
                         if g==0
