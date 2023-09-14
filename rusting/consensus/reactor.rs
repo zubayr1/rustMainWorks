@@ -312,8 +312,9 @@ fn codeword_init(
 
 #[allow(non_snake_case)]
 async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
-    value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>, _level: usize)
-    -> (String, Vec<String>)
+    value: String, index: String, leaves_len: usize, part: usize, 
+    args: Vec<String>, mut check_first_codeword_list: Vec<String>, mut check_first_committee_list: Vec<String>, _level: usize)
+    -> (String, Vec<String>, Vec<String>)
 {
     let mut data: String = "pvss".to_string();   
 
@@ -330,74 +331,137 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             Ok(s) => s,
             Err(_) => {
                 // Handle invalid UTF-8 error
-                return (data, check_first_codeword_list);
+                return (data, check_first_codeword_list, check_first_committee_list);
             }
         };
 
         data  = output.to_string();
 
 
-        return (data, check_first_codeword_list);
+        return (data, check_first_codeword_list, check_first_committee_list);
 
     }
     
-    if !check_first_codeword_list.contains(&value)
+    if communication_type== "codewords".to_string()
     {
-        let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
-
-        if proof==true
+        if !check_first_codeword_list.contains(&value)
         {
-            check_first_codeword_list.push(value.clone());
-
-            // send witness to nodes if have received the first valid code word
-                       
-
-            let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
-                codeword, part, communication_type.clone()); 
-
-            let codeword_retrieve_message: ConsensusMessage = ConsensusMessage::CodewordRetrieveMessage(codeword_retrieve);
-
-
-            let mut port = 7000;
-
-            let mut sockets: Vec<SocketAddr> = Vec::new();
-        
-            for ip_str in ip_address.clone()
+            let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
+    
+            if proof==true
             {
-                let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+                check_first_codeword_list.push(value.clone());
+    
+                // send witness to nodes if have received the first valid code word
+                           
+    
+                let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
+                    codeword, part, communication_type.clone()); 
+    
+                let codeword_retrieve_message: ConsensusMessage = ConsensusMessage::CodewordRetrieveMessage(codeword_retrieve);
+    
+    
+                let mut port = 7000;
+    
+                let mut sockets: Vec<SocketAddr> = Vec::new();
+            
+                for ip_str in ip_address.clone()
+                {
+                    let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+            
+                    port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+            
+                    let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+            
+                    sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+            
+                    port = 7000;
+                }
+            
+            
+                let senderport = 7000 + args[2].parse::<u32>().unwrap();
+                let sender_str = format!("{}:{}", args[6], senderport.to_string());
+            
+            
+                let length = ip_address.len();
+            
+                let level_f = (length as f64).sqrt();
+            
+                let level = level_f.round() as usize;
         
-                port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
         
-                let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
-        
-                sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
-        
-                port = 7000;
+                let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+                    addresses: sockets, message: codeword_retrieve_message, level: level
+                };
+    
+                println!("{:?}", codewordretrieve_network_message)   ;
+                let _ = tx_sender.send(codewordretrieve_network_message).await;
+    
+            
             }
-        
-        
-            let senderport = 7000 + args[2].parse::<u32>().unwrap();
-            let sender_str = format!("{}:{}", args[6], senderport.to_string());
-        
-        
-            let length = ip_address.len();
-        
-            let level_f = (length as f64).sqrt();
-        
-            let level = level_f.round() as usize;
-    
-    
-            let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
-                addresses: sockets, message: codeword_retrieve_message, level: level
-            };
-
-            println!("{:?}", codewordretrieve_network_message)   ;
-            let _ = tx_sender.send(codewordretrieve_network_message).await;
-
-        
         }
     }
-    (data, check_first_codeword_list)
+    else 
+    {
+        if !check_first_committee_list.contains(&value)
+        {
+            let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
+
+            if proof==true
+            {
+                check_first_committee_list.push(value.clone());
+
+                // send witness to nodes if have received the first valid code word
+                        
+
+                let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
+                    codeword, part, communication_type.clone()); 
+
+                let codeword_retrieve_message: ConsensusMessage = ConsensusMessage::CodewordRetrieveMessage(codeword_retrieve);
+
+
+                let mut port = 7000;
+
+                let mut sockets: Vec<SocketAddr> = Vec::new();
+            
+                for ip_str in ip_address.clone()
+                {
+                    let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+            
+                    port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+            
+                    let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+            
+                    sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+            
+                    port = 7000;
+                }
+            
+            
+                let senderport = 7000 + args[2].parse::<u32>().unwrap();
+                let sender_str = format!("{}:{}", args[6], senderport.to_string());
+            
+            
+                let length = ip_address.len();
+            
+                let level_f = (length as f64).sqrt();
+            
+                let level = level_f.round() as usize;
+        
+        
+                let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+                    addresses: sockets, message: codeword_retrieve_message, level: level
+                };
+
+                println!("{:?}", codewordretrieve_network_message)   ;
+                let _ = tx_sender.send(codewordretrieve_network_message).await;
+
+            
+            }
+        }
+    }
+    
+    (data, check_first_codeword_list, check_first_committee_list)
 
 }
 
@@ -839,6 +903,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
     let mut check_first_codeword_list: Vec<String> = Vec::new();
+    let mut check_first_committee_list: Vec<String> = Vec::new();
 
     let mut two_BA_check = false;
 
@@ -992,10 +1057,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
                     // Handle Committee message
-                    (_, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
+                    (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
                      ip_address.clone(), committee.codewords, committee.witness, 
                     committee.value, committee.index, committee.leaves_len, committee.part, 
-                    args.clone(), check_first_codeword_list.clone(), message.level).await;
+                    args.clone(), check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
                 }
 
                 ConsensusMessage::CodewordRetrieveMessage(retrieve) =>
@@ -1055,7 +1120,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             total_length=0;
 
                             check_first_codeword_list = Vec::new();
-                            
+                            check_first_committee_list = Vec::new();
                           
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
@@ -1135,10 +1200,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {
                     // Handle Codeword message
                     let data: String;
-                    (data, check_first_codeword_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
+                    (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                      ip_address.clone(), codeword.codewords, codeword.witness, 
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
-                        check_first_codeword_list.clone(),  message.level).await;
+                        check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
 
                     if ip_address.clone().len()==2
                     {
