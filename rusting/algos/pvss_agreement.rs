@@ -95,7 +95,7 @@ pub fn decode(shards: Vec<Vec<u8>>, mut committee_size: usize) -> String
     let num_faults = committee_size/2;
 
     let mut received: Vec<_> = shards.iter().cloned().map(Some).collect();
-
+    println!("received     {:?},  {}", received, received.len());
     let reconstructed = from_shards(received, num_nodes, num_faults);
 
     let string: String = String::from_utf8_lossy(&reconstructed).into();
