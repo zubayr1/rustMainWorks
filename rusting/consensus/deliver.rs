@@ -30,7 +30,7 @@ pub fn deliver_encode(pvss_data: Vec<u8>, _accum_value: String, committee_length
         index+=1;
     }
    
-
+    println!("deliver_encode   {:?}, {}", code_words, committee_length);
     return (code_words, witnesses_vec, merkle_tree.leaves_len());    
     
     
