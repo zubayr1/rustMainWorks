@@ -1092,7 +1092,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         } 
 
-                        if check == 0
+                        if check == 0 && message.level==level
                         {
                             retrieved_hashmap_codeword
                             .entry(retrieve.part)
@@ -1122,7 +1122,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         } 
 
-                        if check == 0
+                        if check == 0 && message.level==level
                         {
                             retrieved_hashmap_committee
                             .entry(retrieve.part)
