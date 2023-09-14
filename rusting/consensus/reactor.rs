@@ -1324,7 +1324,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
-                        if level!=1
+                        if level!=1 && message.level == level
                         {
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone()).await;
@@ -1450,7 +1450,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         propose_value = Vec::new();
                         //run BA
-                        if ip_address_left.len()>0
+                        if ip_address_left.len()>0 && message.level == level
                         {   
                             ip_address = ip_address_left[0].clone();
 
@@ -1459,7 +1459,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 BA_V.clone()).await;
                         }
-                        else if ip_address_right.len()>0
+                        else if ip_address_right.len()>0 && message.level == level
                         {   
                             ip_address = ip_address_right[0].clone();
 
