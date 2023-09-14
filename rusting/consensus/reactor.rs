@@ -1311,7 +1311,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         ip_address_right.retain(|inner_vec| {
                             inner_vec.iter().any(|&s| s == &own_ip as &str)
                         });
-
+                        print!("ip_address {:?},    {:?}", ip_address_left, ip_address_right);
                         two_BA_check = false;
                                         
                         ip_address_backup = ip_address.clone();
