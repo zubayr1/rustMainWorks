@@ -1006,6 +1006,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let communication_type = retrieve.communication_type;
 
+                    (_, ip_addresses_comb) = sorted[level];
+
+                    ip_address = ip_addresses_comb.split(" ").collect();
+                    println!("{:?}", ip_address);
+
                                                             
                     if communication_type == "codewords".to_string()
                     {                          
@@ -1154,7 +1159,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             (_, ip_addresses_comb) = sorted[level];
 
                             ip_address = ip_addresses_comb.split(" ").collect();
-                                    println!("{:?}", ip_address);
+
                             (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
                         
                             
