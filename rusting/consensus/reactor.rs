@@ -1091,7 +1091,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if (left_length+right_length) == 2_usize.pow(level as u32)  && (left_length == right_length) 
                         {   
                             flag = 0;
-                                                        
+                            println!("{:?},   {},  {:?}", ip_address, level, retrieved_hashmap_committee);
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
                                 2_usize.pow(level as u32));
 
