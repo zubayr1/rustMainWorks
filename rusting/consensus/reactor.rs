@@ -390,6 +390,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
                 addresses: sockets, message: codeword_retrieve_message, level: level
             };
+
                 
             let _ = tx_sender.send(codewordretrieve_network_message).await;
 
@@ -581,9 +582,9 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
             {   
                 let (codeword_vec, witnesses_vec, merkle_len) = 
                     deliver::deliver_encode(W1.clone(), "_".to_string(), 
-                2_usize.pow(level as u32));          
+                ip_address.clone().len());          
 
-                let leaves = pvss_agreement::encoder(W1.clone(), 2_usize.pow(level as u32));
+                let leaves = pvss_agreement::encoder(W1.clone(), ip_address.clone().len());
                 // create accum value
                 let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -606,10 +607,10 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
             {                                  
                 let (codeword_vec, witnesses_vec, merkle_len) = 
                     deliver::deliver_encode(W2.clone(), "_".to_string(), 
-                2_usize.pow(level as u32));
+                ip_address.clone().len());
                 
                 
-                let leaves = pvss_agreement::encoder(W2.clone(), 2_usize.pow(level as u32));
+                let leaves = pvss_agreement::encoder(W2.clone(), ip_address.clone().len());
                 // create accum value
                 let merkle_tree = merkle_tree::create_tree(leaves.clone()); 
 
@@ -781,6 +782,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut retrieved_hashmap_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
     let mut retrieved_hashmap_committee: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
+    let mut retrieved_hashmap_codeword_count: HashMap<SocketAddr, usize> = HashMap::new();
 
 
     if ip_address.len()==1
@@ -863,7 +865,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let (count, pi): (usize, Vec<String>);
 
-                    if echo_value.len()==2_usize.pow(level as u32)
+                    if echo_value.len()==ip_address.clone().len()
                     {   
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -889,7 +891,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     forward_value.push(value);                    
 
-                    if forward_value.len()==2_usize.pow(level as u32) 
+                    if forward_value.len()==ip_address.clone().len() 
                     { 
 
                         let forward_value_copy = forward_value.clone();
@@ -932,7 +934,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }                    
 
 
-                    if vote1_value.len()==2_usize.pow(level as u32)/2 + 1 //vote phase
+                    if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
                     { 
                         
 
@@ -954,7 +956,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==2_usize.pow(level as u32)/2 + 1 //second vote phase    
+                    if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
                     {
                         for output in vote2_value
                         {
@@ -1002,25 +1004,51 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // Handle Retrieve message
 
-                    let mut left_length = 0;
-                    let mut right_length = 0;
+                    let mut total_length = 0;
 
                     let communication_type = retrieve.communication_type;
-
-                    println!("{}, {}", communication_type, message.level);
                                         
                     if communication_type == "codewords".to_string()
-                    {                          
+                    {   
+                        if retrieved_hashmap_codeword_count.contains_key(&message.sender)
+                        {
+                            if retrieved_hashmap_codeword_count.get(&message.sender).unwrap() == &1
+                            {
+                                retrieved_hashmap_codeword
+                                .entry(retrieve.part)
+                                .or_insert_with(HashMap::new)
+                                .insert(message.sender, retrieve.codewords);
 
-                        retrieved_hashmap_codeword
-                        .entry(retrieve.part)
-                        .or_insert_with(HashMap::new)
-                        .insert(message.sender, retrieve.codewords);
+                                retrieved_hashmap_codeword_count.insert(message.sender, 2);
+                            }
+                            else 
+                            {   sleep(Duration::from_millis(20)).await;
+                                retrieved_hashmap_committee
+                                .entry(retrieve.part)
+                                .or_insert_with(HashMap::new)
+                                .insert(message.sender, retrieve.codewords);
+                            }
+                        }
+                        else 
+                        {   
+                            retrieved_hashmap_codeword
+                            .entry(retrieve.part)
+                            .or_insert_with(HashMap::new)
+                            .insert(message.sender, retrieve.codewords);
+
+                            retrieved_hashmap_codeword_count.insert(message.sender, 1);
+                        }
+
+
+                        // retrieved_hashmap_codeword
+                        // .entry(retrieve.part)
+                        // .or_insert_with(HashMap::new)
+                        // .insert(message.sender, retrieve.codewords);
 
                         
                     }
                     else 
-                    {   
+                    {   sleep(Duration::from_millis(20)).await;
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1033,32 +1061,24 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if flag==0
                     {
                         
-                        for (i, inner_map) in &retrieved_hashmap_codeword {
+                        for (_, inner_map) in &retrieved_hashmap_codeword {
                             for _ in inner_map.values() {
-                                if i==&1
-                                {
-                                    left_length+=1;
-                                }
-                                else 
-                                {
-                                    right_length+=1;
-                                }
+                                total_length += 1
                             }
                         }
                         
-                        if (left_length+right_length) == 2_usize.pow(level as u32)  && (left_length == right_length)
-                        {                               
+                        if total_length == 2*ip_address.clone().len()
+                        {                              
                             flag = 1;
-                            println!("{:?},   {},  {:?}", ip_address, level, retrieved_hashmap_codeword);
+
                             
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_codeword.clone(), 
-                            level);
+                                ip_address.clone().len());
 
 
                             retrieved_hashmap_codeword =  HashMap::new();
 
-                            left_length=0;
-                            right_length=0;
+                            total_length=0;
 
                             check_first_codeword_list = Vec::new();
                             
@@ -1074,26 +1094,21 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     if flag == 1
                     {   
-                        for (i, inner_map) in &retrieved_hashmap_committee {
+                        for (_, inner_map) in &retrieved_hashmap_committee {
                             for _ in inner_map.values() {
-                                if i==&1
-                                {
-                                    left_length+=1;
-                                }
-                                else 
-                                {
-                                    right_length+=1;
-                                }
+                                total_length += 1
                             }
                         }
 
+                        // sleep(Duration::from_millis(20)).await;
                         
-                        if (left_length+right_length) == 2_usize.pow(level as u32)  && (left_length == right_length) 
+                        if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
-                            println!("{:?},   {},  {:?}", ip_address, level, retrieved_hashmap_committee);
+                            retrieved_hashmap_codeword_count = HashMap::new();
+                                                        
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
-                                2_usize.pow(level as u32));
+                                ip_address.clone().len());
 
                             retrieved_hashmap_committee =  HashMap::new();
 
@@ -1153,11 +1168,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
                         check_first_codeword_list.clone(),  message.level).await;
 
-                    if 2_usize.pow(level as u32)==2
+                    if ip_address.clone().len()==2
                     {
                         updated_pvss.push(data);
 
-                        if updated_pvss.len()==2_usize.pow(level as u32)
+                        if updated_pvss.len()==ip_address.clone().len()
                         {                      
                             pvss_data = aggregate(updated_pvss.clone());
 
@@ -1233,7 +1248,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     
 
-                    if accum_value.len()==2_usize.pow(level as u32)
+                    if accum_value.len()==ip_address.clone().len()
                     {
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
 
@@ -1256,7 +1271,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
-                            2_usize.pow(level as u32)).await;
+                            ip_address.clone().len()).await;
 
                         let V = format!("{}-{}", V1, V2);
 
@@ -1282,7 +1297,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {   
                                 let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
-                                    2_usize.pow(level as u32));
+                                    ip_address.clone().len());
 
 
                                     let network_vec = codeword_init( 
@@ -1301,7 +1316,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {                                  
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
-                                    2_usize.pow(level as u32));
+                                    ip_address.clone().len());
                                     
                                     
                                     let network_vec = codeword_init( 
@@ -1369,7 +1384,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
 
-                    if propose_value.len() == 2_usize.pow(level as u32)/2
+                    if propose_value.len() == ip_address.clone().len()/2
                     {                        
                         propose_value = Vec::new();
 
@@ -1422,7 +1437,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {   
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
-                                    2_usize.pow(level as u32));
+                                    ip_address.clone().len());
 
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
@@ -1439,7 +1454,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {                                  
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
-                                    2_usize.pow(level as u32));
+                                    ip_address.clone().len());
                                     
                                     
                                     let network_vec = codeword_init( 
