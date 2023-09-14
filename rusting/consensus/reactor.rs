@@ -1055,10 +1055,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
                     // Handle Committee message
-                    (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
-                     ip_address.clone(), committee.codewords, committee.witness, 
-                    committee.value, committee.index, committee.leaves_len, committee.part, 
-                    args.clone(), check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
+                    if message.level == level
+                    {
+                        (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
+                        ip_address.clone(), committee.codewords, committee.witness, 
+                       committee.value, committee.index, committee.leaves_len, committee.part, 
+                       args.clone(), check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
+                    }
+                    
                 }
 
                 ConsensusMessage::CodewordRetrieveMessage(retrieve) =>
@@ -1233,42 +1237,46 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {
                     // Handle Codeword message
                     let data: String;
-                    (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
-                     ip_address.clone(), codeword.codewords, codeword.witness, 
-                        codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
-                        check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
-
-                    if level==1
+                    if message.level == level
                     {
-                        updated_pvss.push(data);
+                        (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
+                        ip_address.clone(), codeword.codewords, codeword.witness, 
+                           codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
+                           check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
+                    
+                    
 
-                        if updated_pvss.len()==ip_address.clone().len()
-                        {                      
-                            pvss_data = aggregate(updated_pvss.clone());
+                        if level==1
+                        {
+                            updated_pvss.push(data);
 
-                            updated_pvss = Vec::new();
-                        
-                            println!("{:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
-    
+                            if updated_pvss.len()==ip_address.clone().len()
+                            {                      
+                                pvss_data = aggregate(updated_pvss.clone());
+
+                                updated_pvss = Vec::new();
                             
-                            level+=1;
-
-                            (_, ip_addresses_comb) = sorted[level];
-
-                            ip_address = ip_addresses_comb.split(" ").collect();
-
-                            (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
-                        
-                            
-                            let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
-                        
-                            let _ = tx_sender.send(accum_network_message).await;
-                        
+                                println!("{:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
+        
                                 
-    
+                                level+=1;
+
+                                (_, ip_addresses_comb) = sorted[level];
+
+                                ip_address = ip_addresses_comb.split(" ").collect();
+
+                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
+                            
+                                
+                                let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone());
+                            
+                                let _ = tx_sender.send(accum_network_message).await;
+                            
+                                    
+        
+                            }
                         }
                     }
-
                     
                     
                 }
