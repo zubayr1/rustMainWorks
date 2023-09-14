@@ -378,7 +378,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                 
                 let _ = tx_sender.send(codewordretrieve_network_message.clone()).await;
 
-                check_first_codeword_list.push(value.clone());
+                // check_first_codeword_list.push(value.clone());
             }
         }
     }
@@ -429,7 +429,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
                 let _ = tx_sender.send(codewordretrieve_network_message.clone()).await;
 
-                check_first_committee_list.push(value.clone());
+                // check_first_committee_list.push(value.clone());
             }
         }
     }
@@ -1021,7 +1021,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 // Match the Committee message type
                 ConsensusMessage::CommitteeMessage(committee) => 
-                {   
+                {   println!("COMMITTEE LEVEL: {}", message.level );
                     // Handle Committee message
                     if message.level == level
                     {
@@ -1203,7 +1203,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 // Match the Codeword message type
                 ConsensusMessage::CodewordMessage(codeword) => 
-                {
+                {   println!("CODEWORD LEVEL: {}", message.level );
                     // Handle Codeword message
                     let data: String;
                     if message.level == level
