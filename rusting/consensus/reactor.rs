@@ -1040,9 +1040,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if codewords_cost_len == 0
                     {
-                        codewords_cost_len = retrieve.codewords.len();
+                        let common_split: Vec<&str> = retrieve.codewords.split(",").collect();
+                        codewords_cost_len = common_split.len();
                     }
-                    println!("{}", retrieve.codewords.len());
+
                     let communication_type = retrieve.communication_type;
                     
                     (_, ip_addresses_comb) = sorted[level];
