@@ -896,7 +896,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let (count, pi): (usize, Vec<String>);
 
                     if echo_value.len()==ip_address.clone().len()
-                    {   println!("echo level {}", message.level);
+                    {   
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
@@ -923,7 +923,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if forward_value.len()==ip_address.clone().len() 
                     { 
-
+                        println!("forward level {}", message.level);
                         let forward_value_copy = forward_value.clone();
 
                         let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
