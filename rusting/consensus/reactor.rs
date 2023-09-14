@@ -1295,7 +1295,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .insert(message.sender, value);
                         
                     }
-                    
+                    if level==4
+                    {
+                        println!("{}, {}", accum_value.len(), ip_address.clone().len());
+                    }
 
                     if accum_value.len()==ip_address.clone().len()
                     {
