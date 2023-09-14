@@ -387,8 +387,8 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                 let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
                     addresses: sockets, message: codeword_retrieve_message, level: level
                 };
-                println!("{:?}", codewordretrieve_network_message);
-    
+
+                
                 let _ = tx_sender.send(codewordretrieve_network_message.clone()).await;
 
                 // check_first_codeword_list.push(value.clone());
@@ -437,11 +437,11 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                                     
         
                 let codewordretrieve_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
-                    addresses: sockets, message: codeword_retrieve_message, level: level
+                    addresses: sockets, message: codeword_retrieve_message, level: level + 1
                 };
 
                 let _ = tx_sender.send(codewordretrieve_network_message.clone()).await;
-                println!("{:?}", codewordretrieve_network_message);
+
                 // check_first_committee_list.push(value.clone());
             }
         }
