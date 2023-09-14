@@ -883,6 +883,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the Echo message type
                 ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message
+                    println!("echo level {}", message.level);
 
                     let value = format!("{} {}", echo.value, message.sender);
 
@@ -1295,10 +1296,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .insert(message.sender, value);
                         
                     }
-                    if level==4
-                    {
-                        println!("{}, {}", accum_value.len(), ip_address.clone().len());
-                    }
+                    
 
                     if accum_value.len()==ip_address.clone().len()
                     {
@@ -1342,7 +1340,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            println!("ACCUM LEVEL{}", message.level);
+                                                        
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
