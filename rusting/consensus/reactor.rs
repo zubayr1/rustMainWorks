@@ -395,8 +395,8 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                 };
     
                 let _ = tx_sender.send(codewordretrieve_network_message.clone()).await;
-                let _ = tx_sender.send(codewordretrieve_network_message).await;
-            
+
+                
             }
         }
     }
@@ -1105,7 +1105,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
                             }
 
-                            println!("{}", total_length);
+                            println!("{}, {:?}", total_length, retrieved_hashmap_codeword);
                             total_length = 0;
                         }
                         
