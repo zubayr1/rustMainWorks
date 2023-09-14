@@ -350,7 +350,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     
             if proof==true
             {
-               check_first_codeword_list.push(value.clone());
+               // check_first_codeword_list.push(value.clone());
     
                 // send witness to nodes if have received the first valid code word
                            
@@ -408,7 +408,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
             if proof==true
             {
-                check_first_committee_list.push(value.clone());
+                //check_first_committee_list.push(value.clone());
 
                 // send witness to nodes if have received the first valid code word
                         
