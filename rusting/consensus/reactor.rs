@@ -1142,7 +1142,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
                         if total_length == 2*ip_address.clone().len()
-                        {                              
+                        {           println!("{:?}", retrieved_hashmap_codeword)   ;                 
                             flag = 1;
                             total_length=0;
 
