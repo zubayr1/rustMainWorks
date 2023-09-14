@@ -441,7 +441,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>>, committee_length: usize) -> HashMap<usize, Vec<u8>>
 {  
     let mut pvss_hashmap: HashMap<usize, Vec<u8>> = HashMap::new();
-    
+    println!("{:?}", retrieved_hashmap);
     
     for (i, map) in retrieved_hashmap
     {        
