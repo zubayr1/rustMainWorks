@@ -440,8 +440,8 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                     addresses: sockets, message: codeword_retrieve_message, level: level
                 };
 
-                let _ = tx_sender.send(codewordretrieve_network_message).await;
-
+                let _ = tx_sender.send(codewordretrieve_network_message.clone()).await;
+                println!("{:?}", codewordretrieve_network_message);
                 // check_first_committee_list.push(value.clone());
             }
         }
