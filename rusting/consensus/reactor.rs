@@ -1257,14 +1257,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     // Handle Accum message
                     let value = format!("{} {:?}", accum.value, message.sender);
-
-                    println!("ACCUM LEVEL{}", message.level);
+                    
 
                     if state.get_level() == message.level
                     {
                         qual = Vec::new();
                         accum_value.push(value);
-                        
+                        println!("ACCUM LEVEL{}", message.level);
 
                         if storage_accum.contains_key(&state.get_level())
                         {                            
