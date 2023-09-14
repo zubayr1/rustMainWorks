@@ -1194,7 +1194,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(temp.clone());
     
-                            println!("{:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
+                            println!("retrieve   {:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
 
 
                             if sorted.clone().len()>level+1
