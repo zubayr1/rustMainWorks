@@ -1431,7 +1431,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     
-                    if propose_value.len() == ip_address.clone().len()/2
+                    if propose_value.len() == ip_address.clone().len()/2 && message.level == level
                     {    println!("propose_value len {}", ip_address.clone().len());
                         if g==0
                         {
