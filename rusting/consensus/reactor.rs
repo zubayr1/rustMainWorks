@@ -1165,13 +1165,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(temp.clone());
     
-                            println!("retrieve   {:?}, {:?},    {}", pvss_data, String::from_utf8(pvss_data.clone()), sorted.clone().len());
+                            println!("retrieve   {:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
 
                             
                             if sorted.clone().len()>level+1
                             {   
                                 level+=1;
-
+                                println!("NEW LEVEL : {}", level);
                                 (_, ip_addresses_comb) = sorted[level];
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
