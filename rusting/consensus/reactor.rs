@@ -394,7 +394,6 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                     addresses: sockets, message: codeword_retrieve_message, level: level
                 };
     
-                println!("{:?}", codewordretrieve_network_message)   ;
                 let _ = tx_sender.send(codewordretrieve_network_message).await;
     
             
@@ -453,7 +452,6 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                     addresses: sockets, message: codeword_retrieve_message, level: level
                 };
 
-                println!("{:?}", codewordretrieve_network_message)   ;
                 let _ = tx_sender.send(codewordretrieve_network_message).await;
 
             
