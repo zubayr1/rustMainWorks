@@ -867,7 +867,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut ip_address_backup: Vec<&str> = Vec::new();
 
-
+    let mut codewords_cost_len = 0;
     let mut check_first_codeword_list: Vec<String> = Vec::new();
     let mut check_first_committee_list: Vec<String> = Vec::new();
 
@@ -1038,6 +1038,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let mut total_length = 0;
 
+                    if codewords_cost_len == 0
+                    {
+                        codewords_cost_len = retrieve.codewords.len();
+                    }
+
                     let communication_type = retrieve.communication_type;
                     
                     (_, ip_addresses_comb) = sorted[level];
@@ -1089,7 +1094,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         } 
 
-                        if check == 0 && message.level==level
+                        if check == 0 && message.level==level && retrieve.codewords.len() == codewords_cost_len
                         {
                             retrieved_hashmap_committee
                             .entry(retrieve.part)
@@ -1316,6 +1321,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         C1 = Vec::new();
                         C2 = Vec::new();
 
+                        codewords_cost_len = 0;
 
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
