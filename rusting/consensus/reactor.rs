@@ -1395,7 +1395,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                    
                     // sleep(Duration::from_millis(5)).await;
                     // propose_value.push(value);
-
+                    println!("propose level {}", message.level);
                     if state.get_level() == message.level
                     {
                         propose_value.push(value);
@@ -1436,9 +1436,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         println!("{}", propose_value.len());
                     }
                     if propose_value.len() == ip_address.clone().len()/2
-                    {                        
-                        
-                        println!("propose level {}", message.level);
+                    {    
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
