@@ -914,7 +914,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", forward.value,  message.sender);
 
                     println!("forward value  {:?}", forward.value);
-                    forward_value.push(value);                    
+
+                    if message.level == level
+                    {
+                        forward_value.push(value);
+                    }
+                                        
 
                     if forward_value.len()==ip_address.clone().len() 
                     {                         
