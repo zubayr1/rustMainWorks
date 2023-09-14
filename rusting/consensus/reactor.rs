@@ -1005,10 +1005,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let mut total_length = 0;
 
                     let communication_type = retrieve.communication_type;
-                                        
+
+                                                            
                     if communication_type == "codewords".to_string()
                     {                          
-
+                        println!("{}, {}", communication_type, message.level);
                         retrieved_hashmap_codeword
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1017,7 +1018,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
                     else 
-                    {   
+                    {   println!("   {}, {}", communication_type, message.level);
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1062,19 +1063,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     if flag == 1
-                    {   
+                    {      
                         for (_, inner_map) in &retrieved_hashmap_committee {
                             for _ in inner_map.values() {
                                 total_length += 1
                             }
                         }
-
-                        // sleep(Duration::from_millis(20)).await;
                         
                         if total_length == 2*ip_address.clone().len() 
                         {   
                             flag = 0;
-                            println!("    {:?}, {}, {:?}", ip_address, level, retrieved_hashmap_codeword);
+                            println!("    {:?}, {}, {:?}", ip_address, level, retrieved_hashmap_committee);
                                                         
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
                                 ip_address.clone().len());
