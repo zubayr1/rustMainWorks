@@ -1010,7 +1010,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 BA_V = v1_prime;
                             }
                         }
-                        
+                        println!("Vote {}", message.level);
                         let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone()).await;
 
                                                 
