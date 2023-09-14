@@ -312,7 +312,7 @@ fn codeword_init(
 
 #[allow(non_snake_case)]
 async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
-    value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>, level: usize)
+    value: String, index: String, leaves_len: usize, part: usize, args: Vec<String>, mut check_first_codeword_list: Vec<String>, _level: usize)
     -> (String, Vec<String>)
 {
     let mut data: String = "pvss".to_string();   
@@ -391,7 +391,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
                 addresses: sockets, message: codeword_retrieve_message, level: level
             };
 
-                
+            println!("{:?}", codewordretrieve_network_message)   ;
             let _ = tx_sender.send(codewordretrieve_network_message).await;
 
         
