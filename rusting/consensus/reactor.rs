@@ -1239,7 +1239,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
                         check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
 
-                    if ip_address.clone().len()==2
+                    if level==1
                     {
                         updated_pvss.push(data);
 
