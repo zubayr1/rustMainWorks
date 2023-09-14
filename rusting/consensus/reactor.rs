@@ -1009,7 +1009,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     (_, ip_addresses_comb) = sorted[level];
 
                     ip_address = ip_addresses_comb.split(" ").collect();
-                    println!("{:?}", ip_address);
 
                                                             
                     if communication_type == "codewords".to_string()
