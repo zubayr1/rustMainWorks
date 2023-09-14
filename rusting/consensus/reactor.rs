@@ -480,7 +480,7 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
 
             codeword_vec.push(codeword);
         }
-                    
+        println!("codeword_vec, committee_length   {:?},   {}", codeword_vec, committee_length)   ;         
         let pvss = pvss_agreement::decode(codeword_vec, committee_length);
 
         pvss_hashmap.insert(i, pvss.into_bytes());    
