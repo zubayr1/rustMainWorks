@@ -1098,9 +1098,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .entry(retrieve.part)
                             .or_insert_with(HashMap::new)
                             .insert(message.sender, retrieve.codewords);
-                        }
-                        
 
+                            for (_, inner_map) in &retrieved_hashmap_codeword {
+                                for _ in inner_map.values() {
+                                    total_length += 1
+                                }
+                            }
+
+                            println!("{}", total_length);
+                            total_length = 0;
+                        }
                         
                     }
                     else 
