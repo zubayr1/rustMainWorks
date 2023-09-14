@@ -349,8 +349,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
     
             if proof==true
-            {
-               check_first_codeword_list.push(value.clone());
+            {              
     
                 // send witness to nodes if have received the first valid code word
                            
@@ -396,7 +395,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     
                 let _ = tx_sender.send(codewordretrieve_network_message.clone()).await;
 
-                
+                check_first_codeword_list.push(value.clone());
             }
         }
     }
@@ -407,8 +406,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
 
             if proof==true
-            {
-                check_first_committee_list.push(value.clone());
+            {               
 
                 // send witness to nodes if have received the first valid code word
                         
@@ -454,7 +452,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
                 let _ = tx_sender.send(codewordretrieve_network_message).await;
 
-            
+                check_first_committee_list.push(value.clone());
             }
         }
     }
