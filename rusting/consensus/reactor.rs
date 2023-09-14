@@ -1018,7 +1018,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
                     else 
-                    {   println!("   {}, {},  {}", communication_type, message.sender, message.level);
+                    { 
+                        println!("   {}, {},  {}", communication_type, message.sender, message.level);
                         retrieved_hashmap_committee
                         .entry(retrieve.part)
                         .or_insert_with(HashMap::new)
@@ -1029,8 +1030,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
 
                     if flag==0
-                    {
-                        
+                    {                        
                         for (_, inner_map) in &retrieved_hashmap_codeword {
                             for _ in inner_map.values() {
                                 total_length += 1
@@ -1074,7 +1074,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         {   
                             flag = 0;
                             println!("    {:?}, {}, {:?}", ip_address, level, retrieved_hashmap_committee);
-                                                        
+
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
                                 ip_address.clone().len());
 
@@ -1154,7 +1154,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             (_, ip_addresses_comb) = sorted[level];
 
                             ip_address = ip_addresses_comb.split(" ").collect();
-                                    
+                                    println!("{:?}", ip_address);
                             (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
                         
                             
