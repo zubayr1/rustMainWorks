@@ -1042,7 +1042,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         codewords_cost_len = retrieve.codewords.len();
                     }
-
+                    println!("{}", retrieve.codewords.len());
                     let communication_type = retrieve.communication_type;
                     
                     (_, ip_addresses_comb) = sorted[level];
