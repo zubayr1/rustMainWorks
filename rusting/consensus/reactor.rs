@@ -1434,7 +1434,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     
                     if propose_value.len() == ip_address.clone().len()/2 && message.level == level
-                    {    println!("propose_value len {}", ip_address.clone().len());
+                    {    
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
@@ -1451,7 +1451,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if ip_address_left.len()>0 && message.level == level
                         {   
                             ip_address = ip_address_left[0].clone();
-
+                            println!("ip left:  {:?}", ip_address_left);
                             ip_address_left.remove(0);
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
@@ -1460,7 +1460,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         else if ip_address_right.len()>0 && message.level == level
                         {   
                             ip_address = ip_address_right[0].clone();
-
+                            println!("ip right:  {:?}", ip_address_right);
                             ip_address_right.remove(0);
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
