@@ -1077,22 +1077,59 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if communication_type == "codewords".to_string()
                     {                          
                         println!("{}, {},  {}", communication_type, message.sender, message.level);
-                        retrieved_hashmap_codeword
-                        .entry(retrieve.part)
-                        .or_insert_with(HashMap::new)
-                        .insert(message.sender, retrieve.codewords);
+
+                        let part = retrieve.part.clone();
+
+                        let mut check = 0;
+
+                        for (p, inner_map) in &retrieved_hashmap_codeword {
+                            for (addr, _) in inner_map {
+                                
+                                if p == &part && addr == &message.sender
+                                {
+                                    check = 1;
+                                }
+                            }
+                        } 
+
+                        if check == 0
+                        {
+                            retrieved_hashmap_codeword
+                            .entry(retrieve.part)
+                            .or_insert_with(HashMap::new)
+                            .insert(message.sender, retrieve.codewords);
+                        }
+                        
 
                         
                     }
                     else 
                     { 
                         println!("   {}, {},  {}", communication_type, message.sender, message.level);
-                        retrieved_hashmap_committee
-                        .entry(retrieve.part)
-                        .or_insert_with(HashMap::new)
-                        .insert(message.sender, retrieve.codewords);
-    
-                        
+
+                        let part = retrieve.part.clone();
+
+                        let mut check = 0;
+
+                        for (p, inner_map) in &retrieved_hashmap_committee 
+                        {
+                            for (addr, _) in inner_map {
+                                
+                                if p == &part && addr == &message.sender
+                                {
+                                    check = 1;
+                                }
+                            }
+                        } 
+
+                        if check == 0
+                        {
+                            retrieved_hashmap_committee
+                            .entry(retrieve.part)
+                            .or_insert_with(HashMap::new)
+                            .insert(message.sender, retrieve.codewords);
+                        }
+
                     }
                     
 
