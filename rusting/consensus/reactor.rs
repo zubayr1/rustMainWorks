@@ -1399,8 +1399,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if state.get_level() == message.level
                     {
                         propose_value.push(value);
-                        println!("propose level {}", message.level);
-
+                        
                         if storage_propose.contains_key(&state.get_level())
                         {                            
                             let stored_pair = storage_propose.remove(&state.get_level());
@@ -1436,7 +1435,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if propose_value.len() == ip_address.clone().len()/2
                     {                        
                         propose_value = Vec::new();
-
+                        println!("propose level {}", message.level);
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
