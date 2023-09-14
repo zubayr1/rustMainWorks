@@ -1080,6 +1080,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                                             
                     if communication_type == "codewords".to_string()
                     {                          
+                        println!("{}, {},  {}, {}, f{}", communication_type, message.sender, message.level, level, flag);
 
                         let part = retrieve.part.clone();
 
@@ -1107,6 +1108,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     { 
+                        println!("   {}, {},  {}, {}, f{}", communication_type, message.sender, message.level, level, flag);
 
                         let part = retrieve.part.clone();
 
@@ -1143,7 +1145,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
                         if total_length == 2*ip_address.clone().len()
-                        {                         
+                        {           println!("{:?}", retrieved_hashmap_codeword)   ;                 
                             flag = 1;
                             total_length=0;
                             // sleep(Duration::from_millis(20)).await;
@@ -1176,7 +1178,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
                         if total_length == 2*ip_address.clone().len() 
-                        {   
+                        {   println!("    {:?}", retrieved_hashmap_committee)   ; 
                             flag = 0;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
