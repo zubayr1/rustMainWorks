@@ -441,7 +441,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, String>>, committee_length: usize) -> HashMap<usize, Vec<u8>>
 {  
     let mut pvss_hashmap: HashMap<usize, Vec<u8>> = HashMap::new();
-    println!("{:?}", retrieved_hashmap);
+    
     
     for (i, map) in retrieved_hashmap
     {        
@@ -1113,7 +1113,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                         if total_length == 2*ip_address.clone().len() 
                         {           
-                            // println!("{:?}", retrieved_hashmap_codeword)   ;                 
+                            println!("{:?}", retrieved_hashmap_codeword)   ;                 
                             flag = 1;
                             total_length=0;
                             // sleep(Duration::from_millis(20)).await;
@@ -1147,7 +1147,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                         if total_length == 2*ip_address.clone().len() 
                         {   
-                            // println!("    {:?}", retrieved_hashmap_committee)   ; 
+                            println!("    {:?}", retrieved_hashmap_committee)   ; 
                             flag = 0;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
