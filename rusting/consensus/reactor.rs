@@ -1175,7 +1175,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
                         if total_length == 2*ip_address.clone().len() 
-                        {   
+                        {   println!("    {:?}", retrieved_hashmap_committee)   ; 
                             flag = 0;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
