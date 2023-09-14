@@ -1107,14 +1107,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if total_length == 2*ip_address.clone().len()
                         {                              
                             flag = 1;
-                            
+                            total_length=0;
+
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_codeword.clone(), 
                                 ip_address.clone().len());
 
 
                             retrieved_hashmap_codeword =  HashMap::new();
 
-                            total_length=0;
+                            
 
                             check_first_codeword_list = Vec::new();
                             check_first_committee_list = Vec::new();
