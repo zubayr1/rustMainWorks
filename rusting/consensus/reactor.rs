@@ -1431,10 +1431,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
 
-
+                    if message.level==4
+                    {
+                        println!("{}", propose_value.len());
+                    }
                     if propose_value.len() == ip_address.clone().len()/2
                     {                        
-                        propose_value = Vec::new();
+                        
                         println!("propose level {}", message.level);
                         if g==0
                         {
@@ -1447,6 +1450,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
 
                         }
+                        propose_value = Vec::new();
                         //run BA
                         if ip_address_left.len()>0
                         {   
