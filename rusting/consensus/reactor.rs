@@ -1482,7 +1482,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
-                                {   
+                                {   println!("V1 {}", V1);
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
@@ -1500,7 +1500,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
 
                                 if val==2 && V2==acc_value_zl
-                                {                                  
+                                {           println!("V2 {}", V2);                       
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
