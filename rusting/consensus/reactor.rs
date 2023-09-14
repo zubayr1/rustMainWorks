@@ -1076,7 +1076,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                                             
                     if communication_type == "codewords".to_string()
                     {                          
-                        println!("{}, {},  {}, f{}", communication_type, message.sender, message.level, flag);
+                        println!("{}, {},  {}, {}, f{}", communication_type, message.sender, message.level, level, flag);
 
                         let part = retrieve.part.clone();
 
@@ -1105,7 +1105,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     { 
-                        println!("   {}, {},  {}, f{}", communication_type, message.sender, message.level, flag);
+                        println!("   {}, {},  {}, {}, f{}", communication_type, message.sender, message.level, level, flag);
 
                         let part = retrieve.part.clone();
 
