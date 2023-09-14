@@ -505,7 +505,7 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
 
 fn committee_init( 
     ip_address: Vec<&str>, args: Vec<String>, 
-    value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, part: usize) -> Vec<NetworkMessage>
+    value: String, merkle_len: usize, codeword_vec: Vec<String>, witnesses_vec: Vec<Vec<u8>>, part: usize, level: usize) -> Vec<NetworkMessage>
 {
 
     let mut index = 0;
@@ -560,14 +560,7 @@ fn committee_init(
 
         let senderport = 7000 + args[2].parse::<u32>().unwrap();
         let sender_str = format!("{}:{}", args[6], senderport.to_string());
-
-
-        let length = ip_address.len();
-
-        let level_f = (length as f64).sqrt();
-
-        let level = level_f.round() as usize;
-
+       
 
         let codeword_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
             addresses: sockets, message: committee_consensus_message, level: level
@@ -643,7 +636,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
                 
                 let network_vec = committee_init( 
                     ip_address.clone(), args.clone(), 
-                    acc_value_zl_W1.clone(), merkle_len, codeword_vec, witnesses_vec, 1);
+                    acc_value_zl_W1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, level);
 
 
                     for network_msg in network_vec
@@ -669,7 +662,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
 
                 let network_vec = committee_init( 
                     ip_address.clone(), args.clone(), 
-                    acc_value_zl_W2.clone(), merkle_len, codeword_vec, witnesses_vec, 2);
+                    acc_value_zl_W2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, level);
 
                 for network_msg in network_vec
                 {   
