@@ -1046,7 +1046,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if (left_length+right_length) == 2*2_usize.pow(level as u32)  && (left_length == right_length)
+                        if (left_length+right_length) == 2_usize.pow(level as u32)  && (left_length == right_length)
                         {                               
                             flag = 1;
                             println!("{:?},   {},  {:?}", ip_address, level, retrieved_hashmap_codeword);
@@ -1088,7 +1088,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         
-                        if (left_length+right_length) == 2*2_usize.pow(level as u32)  && (left_length == right_length) 
+                        if (left_length+right_length) == 2_usize.pow(level as u32)  && (left_length == right_length) 
                         {   
                             flag = 0;
                                                         
