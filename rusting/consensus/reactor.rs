@@ -934,7 +934,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let first_part = parts[0];
                             first_part == first_part_to_compare
                         });
-
+                        println!("forward {}", message.level);
                         forward_value = Vec::new(); 
 
                         if all_parts_match && forward_check{
