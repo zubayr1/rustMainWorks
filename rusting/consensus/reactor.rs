@@ -1049,7 +1049,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     ip_address = ip_addresses_comb.split(" ").collect();
 
-                    println!("{}, {},  {}, {}, {:?}", communication_type, message.sender, message.level, level, retrieve.codewords );
+                    println!("{}, {},  {}, {}, {}, {:?}", communication_type, message.sender, message.level, level, codewords_cost_len, retrieve.codewords );
                                    
                     if communication_type == "codewords".to_string()
                     { 
