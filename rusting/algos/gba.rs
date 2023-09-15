@@ -32,7 +32,7 @@ pub fn check_echo_major_v(echo_phase_output: Vec<String>, V: String) -> (usize, 
 
 #[allow(unused)]
 #[allow(non_snake_case)]
-pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: Vec<String>, ip_address: Vec<&str>, args: Vec<String>) 
+pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: Vec<String>, ip_address: Vec<&str>, args: Vec<String>, level: usize) 
     -> bool
 {
     let b = ip_address.clone().len()/2;
@@ -71,12 +71,7 @@ pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: 
         let senderport = 7000 + args[2].parse::<u32>().unwrap();
         let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
-        let length = ip_address.len();
-
-        let level_f = (length as f64).sqrt();
-
-        let level = level_f.round() as usize;
-
+        
         let forward_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
             addresses: sockets, message: forward_consensus_message, level: level
         };
