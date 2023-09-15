@@ -10,8 +10,8 @@ use std::net::SocketAddr;
 
 use std::collections::HashMap;
 
-use tokio::time::sleep;
-use tokio::time::Duration;
+// use tokio::time::sleep;
+// use tokio::time::Duration;
 use chrono::Utc;
 
 
@@ -300,7 +300,7 @@ fn codeword_init(
 #[allow(non_snake_case)]
 async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, 
-    args: Vec<String>, mut check_first_codeword_list: Vec<String>, mut check_first_committee_list: Vec<String>, level: usize)
+    args: Vec<String>, check_first_codeword_list: Vec<String>, check_first_committee_list: Vec<String>, level: usize)
     -> (String, Vec<String>, Vec<String>)
 {
     let mut data: String = "pvss".to_string();   
