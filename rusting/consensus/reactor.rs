@@ -1292,7 +1292,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .insert(message.sender, value);
                         
                     }
-                    println!("   ACCUM          {}, {}, {}, {}", accum.value, message.level, level, accum_value.len());
+                    println!("   ACCUM        {},  {}, {}, {}, {}", accum.value, state.get_level(), message.level, level, accum_value.len());
 
                     if accum_value.len()==ip_address.clone().len()
                     {   
