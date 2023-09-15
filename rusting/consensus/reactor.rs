@@ -880,6 +880,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     let value = format!("{} {}", echo.value, message.sender);
                     
+
                     echo_value.push(value);   
 
                     let (count, pi): (usize, Vec<String>);
@@ -896,7 +897,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
 
-                    
+                    println!("   Echo        {},  {}, {}, {}, {}", echo.value, state.get_level(), message.level, level, echo_value.len());
 
 
                 }
@@ -1286,7 +1287,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .insert(message.sender, value);
                         
                     }
-                    println!("   ACCUM        {},  {}, {}, {}, {}", accum.value, state.get_level(), message.level, level, accum_value.len());
 
                     if accum_value.len()==ip_address.clone().len()
                     {   
