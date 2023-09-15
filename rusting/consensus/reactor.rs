@@ -1254,7 +1254,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     // Handle Accum message
                     let value = format!("{} {:?}", accum.value, message.sender);
-                    println!("   ACCUM          {}, {}, {}, {}", accum.value, message.level, level, accum_value.len());
+                    
 
                     if state.get_level() == message.level
                     {
@@ -1292,7 +1292,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .insert(message.sender, value);
                         
                     }
-                    
+                    println!("   ACCUM          {}, {}, {}, {}", accum.value, message.level, level, accum_value.len());
 
                     if accum_value.len()==ip_address.clone().len()
                     {   
