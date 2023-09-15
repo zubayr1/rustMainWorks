@@ -46,7 +46,7 @@ mod codeword;
 
 
 
-fn set_state(ip_address: Vec<&str>) -> InternalState
+fn set_state(ip_address: Vec<&str>, level: usize) -> InternalState
 {
     let mut sockets: Vec<SocketAddr> = Vec::new();
 
@@ -65,13 +65,7 @@ fn set_state(ip_address: Vec<&str>) -> InternalState
         port = 7000;
     }
     
-
-    let length = ip_address.len();
-
-    let level_f = (length as f64).sqrt();
-
-    let level = level_f.round() as usize;
-
+    
     let state = InternalState
     {
         level: level, 
@@ -101,7 +95,7 @@ fn split_vec_recursively<'a>(input: &[&'a str], left_half: &mut Vec<Vec<&'a str>
     split_vec_recursively(right_slice, left_half, right_half);
 }
 
-fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalState)
+fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>, level: usize) -> (String, InternalState)
 {
     let committee_length = ip_address.len();    
 
@@ -111,7 +105,7 @@ fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>) -> (String, InternalS
 
     let acc_value_zl = merkle_tree::get_root(merkle_tree.clone());
 
-    let state = set_state(ip_address) ;
+    let state = set_state(ip_address, level) ;
 
     (acc_value_zl, state)
 
@@ -829,7 +823,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String;
             
-    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
+    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
 
     let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
 
@@ -1173,7 +1167,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
                                         
-                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
+                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
                                 
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
@@ -1231,7 +1225,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
 
-                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
+                                (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
                             
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), 
