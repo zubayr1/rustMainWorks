@@ -1174,7 +1174,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 ip_address = ip_addresses_comb.split(" ").collect();
                                         
                                 (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone());
-                                
+                                if level==5
+                                {
+                                    println!("{},     {:?}", acc_value_zl, ip_address);
+                                }
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
                                     args.clone(), level.clone());
