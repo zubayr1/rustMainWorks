@@ -700,7 +700,7 @@ async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>
 }
 
 
-async fn propose_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String)
+async fn propose_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String, level: usize)
 {
     let propose = Propose::create_propose("".to_string(), v);
     
@@ -727,13 +727,7 @@ async fn propose_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>
 
     let senderport = 7000 + args[2].parse::<u32>().unwrap();
     let sender_str = format!("{}:{}", args[6], senderport.to_string());
-
-    let length = ip_address.len();
-
-    let level_f = (length as f64).sqrt();
-
-    let level = level_f.round() as usize;
-
+   
     let propose_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
         addresses: sockets, message: propose_consensus_message, level: level
     };
@@ -952,9 +946,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    { 
-                        println!("vote, {:?}", vote1_value);
-
+                    {                         
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -999,7 +991,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
 
-                        let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone()).await;
+                        let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone(), level.clone()).await;
 
                                                 
                     }   
