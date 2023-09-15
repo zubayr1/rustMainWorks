@@ -883,7 +883,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let (count, pi): (usize, Vec<String>);
 
                     if echo_value.len()==2_usize.pow(level as u32)    
-                    {   println!("uessss {}", message.level);
+                    {   
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
@@ -922,7 +922,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let first_part = parts[0];
                             first_part == first_part_to_compare
                         });
-                        println!("forward  {:?}, {}", forward_value, all_parts_match);
+
                         forward_value = Vec::new(); 
 
                         if all_parts_match && forward_check{
@@ -953,7 +953,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
                     { 
-                        
+                        println!("vote, {:?}", vote1_value);
 
                         for output in vote1_value
                         {
