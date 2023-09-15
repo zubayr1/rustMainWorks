@@ -594,7 +594,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
     if two_BA_check==false
     {
         byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-        V.clone()).await;
+        V.clone(), level).await;
         
     }
 
@@ -880,7 +880,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     let value = format!("{} {}", echo.value, message.sender);
                     
-                    if message.level == state.get_level()
+                    if message.level == level
                     {
                         echo_value.push(value);
                     }   
@@ -909,7 +909,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", forward.value,  message.sender);
 
 
-                    if message.level == state.get_level()
+                    if message.level == level
                     {
                         forward_value.push(value);
                     }
@@ -1318,7 +1318,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if level!=1 && message.level == level
                         {
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                V.clone()).await;
+                                V.clone(), level.clone()).await;
                         }
                         else 
                         {
@@ -1445,7 +1445,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address_left.remove(0);
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                BA_V.clone()).await;
+                                BA_V.clone(), level.clone()).await;
                         }
                         else if ip_address_right.len()>0 && message.level == level
                         {   
@@ -1454,7 +1454,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address_right.remove(0);
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
-                                BA_V.clone()).await;
+                                BA_V.clone(), level.clone()).await;
                         }                        
                         else 
                         {

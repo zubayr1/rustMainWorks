@@ -94,7 +94,7 @@ pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: 
 #[allow(unused)]
 #[allow(non_snake_case)]
 pub async fn gba_setup(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, 
-    args: Vec<String>, V: String) 
+    args: Vec<String>, V: String, level: usize) 
     
 {    
     let echo = Echo::create_echo("".to_string(), V.to_string());
@@ -123,12 +123,7 @@ pub async fn gba_setup(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>,
     let senderport = 7000 + args[2].parse::<u32>().unwrap();
     let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
-    let length = ip_address.len();
-
-    let level_f = (length as f64).sqrt();
-
-    let level = level_f.round() as usize;
-
+   
     let echo_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
         addresses: sockets, message: echo_consensus_message, level: level
     };
