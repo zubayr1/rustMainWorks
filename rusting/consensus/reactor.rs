@@ -480,7 +480,7 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
 
             codeword_vec.push(codeword);
         }
-        println!("codeword_vec, committee_length   {:?},   {}", codeword_vec, committee_length)   ;         
+
         let pvss = pvss_agreement::decode(codeword_vec, committee_length);
 
         pvss_hashmap.insert(i, pvss.into_bytes());    
@@ -1045,7 +1045,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     ip_address = ip_addresses_comb.split(" ").collect();
 
-                    println!("{}, {},  {}, {}, {:?}", communication_type, message.sender, message.level, level, retrieve.codewords );
+                    // println!("{}, {},  {}, {}, {:?}", communication_type, message.sender, message.level, level, retrieve.codewords );
                                    
                     if communication_type == "codewords".to_string()
                     { 
@@ -1111,7 +1111,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                         if total_length == 2*ip_address.clone().len() 
                         {           
-                            println!("{:?}", retrieved_hashmap_codeword)   ;                 
                             flag = 1;
                             total_length=0;
                             // sleep(Duration::from_millis(20)).await;
@@ -1145,7 +1144,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                         if total_length == 2*ip_address.clone().len() 
                         {   
-                            println!("    {:?}", retrieved_hashmap_committee)   ; 
                             flag = 0;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
@@ -1309,7 +1307,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         ip_address_right.retain(|inner_vec| {
                             inner_vec.iter().any(|&s| s == &own_ip as &str)
                         });
-                        println!("ip_address {:?},    {:?},    {:?}", ip_address_left, ip_address_right, ip_address);
+
                         two_BA_check = false;
                                         
                         ip_address_backup = ip_address.clone();
@@ -1449,7 +1447,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if ip_address_left.len()>0 && message.level == level
                         {   
                             ip_address = ip_address_left[0].clone();
-                            println!("ip left:  {:?}", ip_address_left);
+
                             ip_address_left.remove(0);
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
@@ -1458,7 +1456,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         else if ip_address_right.len()>0 && message.level == level
                         {   
                             ip_address = ip_address_right[0].clone();
-                            println!("ip right:  {:?}", ip_address_right);
+
                             ip_address_right.remove(0);
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
@@ -1476,11 +1474,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            println!("Vs QUAL   {}, {}, {:?}", V1, V2, qual);
+
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
-                                {   println!("V1 {}", V1);
+                                {   
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
@@ -1498,7 +1496,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
 
                                 if val==2 && V2==acc_value_zl
-                                {           println!("V2 {}", V2);                       
+                                {                                 
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
