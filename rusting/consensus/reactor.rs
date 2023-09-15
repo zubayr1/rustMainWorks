@@ -886,7 +886,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let (count, pi): (usize, Vec<String>);
 
                     if echo_value.len()==2_usize.pow(level as u32)    
-                    {   
+                    {   println!("YESSSS");
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
@@ -911,7 +911,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         forward_value.push(value);
                     }
-                                        
+                    println!("FORWARD {}, {}, {}, {}", forward.value, message.level, level, forward_value.len());                    
 
                     if forward_value.len()==2_usize.pow(level as u32) 
                     {                         
