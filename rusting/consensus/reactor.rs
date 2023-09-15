@@ -662,7 +662,7 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
 }
 
 
-async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String, no: usize)
+async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, v: String, no: usize, level: usize)
 {
     let vote = Vote::create_vote("".to_string(), no, v);
     
@@ -690,12 +690,7 @@ async fn forward_helper(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>
     let senderport = 7000 + args[2].parse::<u32>().unwrap();
     let sender_str = format!("{}:{}", args[6], senderport.to_string());
 
-    let length = ip_address.len();
-
-    let level_f = (length as f64).sqrt();
-
-    let level = level_f.round() as usize;
-
+    
     let vote_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
         addresses: sockets, message: vote_consensus_message, level: level
     };
@@ -913,7 +908,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         forward_value.push(value);
                     }
-                    println!("FORWARD {}, {}, {}, {}", forward.value, message.level, level, forward_value.len());                    
 
                     if forward_value.len()==2_usize.pow(level as u32)/2
                     {                         
@@ -932,7 +926,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         forward_value = Vec::new(); 
 
                         if all_parts_match && forward_check{
-                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string(), 1).await;
+                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string(), 1, level.clone()).await;
                         }
                     }
 
@@ -974,7 +968,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if C1.len() >0 //second vote phase
                         {   
                             let (v, _) = &C1[0];
-                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), v.to_string(), 2).await;
+                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), v.to_string(), 2, level.clone()).await;
 
                         }
                     }
