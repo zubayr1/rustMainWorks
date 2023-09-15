@@ -880,8 +880,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     let value = format!("{} {}", echo.value, message.sender);
                     
-
-                    echo_value.push(value);   
+                    if message.level == state.get_level()
+                    {
+                        echo_value.push(value);
+                    }   
 
                     let (count, pi): (usize, Vec<String>);
 
@@ -907,7 +909,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", forward.value,  message.sender);
 
 
-                    if message.level == level
+                    if message.level == state.get_level()
                     {
                         forward_value.push(value);
                     }
@@ -1287,7 +1289,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if accum_value.len()==ip_address.clone().len()
-                    {   println!("ACCUM, {}, {}, {}", message.level, state.get_level(), level);
+                    {   
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
 
                         let own_ip = format!("{}-{}", args[2].clone(), args[6].clone());
