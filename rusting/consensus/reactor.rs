@@ -1153,12 +1153,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 (_, ip_addresses_comb) = sorted[level];
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
+                                
                                         
                                 (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
                                 
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
                                     args.clone(), level.clone());
+
+                                if level==6
+                                {
+                                    println!("ip_address:  {:?},    {:?}", ip_address, accum_network_message);
+                                }
                             
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
