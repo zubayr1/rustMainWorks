@@ -1161,11 +1161,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
                                     args.clone(), level.clone());
 
-                                if level==6
-                                {
-                                    println!("ip_address:  {:?},    {:?}", ip_address, accum_network_message);
-                                }
-                            
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
                             else 
@@ -1242,7 +1237,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Accum message
                     let value = format!("{} {:?}", accum.value, message.sender);
                     
-
+                    println!("         {}, {}", message.sender,  accum.value);
                     if state.get_level() == message.level
                     {
                         qual = Vec::new();
