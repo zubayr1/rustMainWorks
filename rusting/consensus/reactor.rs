@@ -1301,6 +1301,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
+                        if level==6
+                        {
+                            println!("ACCUM V {}", V);
+                        }
+
                         if level!=1 && message.level == level
                         {
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
