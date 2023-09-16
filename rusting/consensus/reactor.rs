@@ -1236,8 +1236,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     // Handle Accum message
                     let value = format!("{} {:?}", accum.value, message.sender);
+
+                    if args[6] == "35.153.80.223".to_string() 
+                    {
+                        println!("         {}, {}", message.sender,  accum.value);
+                    }
                     
-                    println!("         {}, {}", message.sender,  accum.value);
+                    
                     if state.get_level() == message.level
                     {
                         qual = Vec::new();
