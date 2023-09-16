@@ -1143,7 +1143,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(temp.clone());
     
-                            println!("retrieve   {:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
+                            // println!("retrieve   {:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
 
                             
                             if sorted.clone().len()>level+1
@@ -1155,22 +1155,23 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 ip_address = ip_addresses_comb.split(" ").collect();
 
 
-                                if args[6] == "35.153.80.223".to_string() && level==6
-                                {
-                                    println!("{:?}", ip_address);
-                                }
-
-                                if args[6] == "54.210.29.30".to_string() && level==6
-                                {
-                                    println!("         {:?}", ip_address);
-                                }
-                                
                                         
                                 (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
                                 
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
                                     args.clone(), level.clone());
+
+
+                                if args[6] == "35.153.80.223".to_string() && level==6
+                                {
+                                    println!("{:?}", accum_network_message);
+                                }
+
+                                if args[6] == "54.210.29.30".to_string() && level==6
+                                {
+                                    println!("         {:?}", accum_network_message);
+                                }
 
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
@@ -1215,7 +1216,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 updated_pvss = Vec::new();
                             
-                                println!("{:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
+                                // println!("{:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
         
                                 
                                 level+=1;
