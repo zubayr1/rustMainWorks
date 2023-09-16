@@ -1300,7 +1300,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address.clone().len()).await;
 
                         let V = format!("{}-{}", V1, V2);
-                        println!("V value{}, {}, {}", V, level, message.level);
+
                         if level!=1 && message.level == level
                         {
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
