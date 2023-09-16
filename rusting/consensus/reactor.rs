@@ -1239,6 +1239,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if args[6] == "35.153.80.223".to_string() && message.level==6
                     {
+                        println!("{}, {}", message.sender,  accum.value);
+                    }
+
+                    if args[6] == "54.210.29.30".to_string() && message.level==6
+                    {
                         println!("         {}, {}", message.sender,  accum.value);
                     }
                     
