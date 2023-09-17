@@ -1026,7 +1026,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     ip_address = ip_addresses_comb.split(" ").collect();
 
-                    // println!("{}, {},  {}, {}, {:?}", communication_type, message.sender, message.level, level, retrieve.codewords );
                                    
                     if communication_type == "codewords".to_string()
                     { 
@@ -1163,9 +1162,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     args.clone(), level.clone());
 
 
-                                println!("{:?}", accum_network_message);
-
-                                
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
                             else 
@@ -1280,7 +1276,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .insert(message.sender, value);
                         
                     }
-                    // println!("ACCUM {}, {}, {}, {},    {}", message.level, level, state.get_level(), ip_address.clone().len(),  accum_value.len());
+
                     if accum_value.len()==ip_address.clone().len()
                     {   
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
