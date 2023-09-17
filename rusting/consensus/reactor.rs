@@ -1280,7 +1280,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             .insert(message.sender, value);
                         
                     }
-                    println!("ACCUM {}, {}, {}, {},    {}", message.level, level, state.get_level(), ip_address.clone().len(),  accum_value.len());
+                    // println!("ACCUM {}, {}, {}, {},    {}", message.level, level, state.get_level(), ip_address.clone().len(),  accum_value.len());
                     if accum_value.len()==ip_address.clone().len()
                     {   
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
@@ -1308,10 +1308,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
-                        if level==6
-                        {
-                            println!("ACCUM V {}", V);
-                        }
+                        
 
                         if level!=1 && message.level == level
                         {
