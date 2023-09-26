@@ -251,6 +251,11 @@ fn codeword_init(
         value.to_string(), indices_to_prove.clone(), merkle_len, part, types.clone());
         index+=1;
 
+        if args[8]=="1"
+        {
+            println!("{:?},     {:?},     {}", witness, leaf_values_to_prove, value.to_string());
+        }
+
         
         let codeword_consensus_message: ConsensusMessage = ConsensusMessage::CodewordMessage(codeword);
 
