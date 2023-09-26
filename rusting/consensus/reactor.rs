@@ -19,10 +19,8 @@ use chrono::Utc;
 #[path = "../types/generic.rs"]
 mod generic; 
 
-
 #[path = "../types/accum.rs"]
 mod accum;
-
 
 #[path = "../algos/byzar.rs"]
 mod byzar;
@@ -44,6 +42,8 @@ mod pvss_agreement;
 #[path = "../types/codeword.rs"]
 mod codeword;
 
+#[path = "../probability/create_adv_prob.rs"]
+mod create_adv_prob;
 
 
 fn set_state(ip_address: Vec<&str>, level: usize) -> InternalState
@@ -775,12 +775,13 @@ fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
 pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
 {  
     let mut level = 0;
-    
+
 
     let (_, mut ip_addresses_comb) = sorted[level];
     let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
 
     let mut pvss_data: Vec<u8> = "".to_string().into_bytes();
+
 
     let mut qual: Vec<u32> = Vec::new();
 
@@ -1303,7 +1304,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
+                        //ADVERSARIAL WORK...
                         
+                        if args[8]=="1"
+                        {
+                            println!("{:?}", V);
+                        }
+
 
                         if level!=1 && message.level == level
                         {

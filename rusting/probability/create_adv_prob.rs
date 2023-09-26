@@ -15,6 +15,7 @@ pub fn create_prob(num_nodes: usize) -> bool
     return false;
 }
 
+#[allow(unused)]
 fn modify_accum(input: String) -> String
 {
     let mut rng = thread_rng();
