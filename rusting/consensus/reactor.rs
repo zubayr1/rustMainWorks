@@ -1309,6 +1309,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if args[8]=="1"
                         {
                             V = create_adv_prob::modify_accum(V);
+
+                            println!("adversarial accum values: {}", V);
                         }
 
 
