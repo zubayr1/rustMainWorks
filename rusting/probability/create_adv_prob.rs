@@ -16,12 +16,26 @@ pub fn create_prob(num_nodes: usize) -> bool
 }
 
 #[allow(unused)]
-fn modify_accum(input: String) -> String
+fn generate_random_string(input: String) -> String {
+    let length = input.len();
+    let mut rng = rand::thread_rng();
+    let random_string: String = (0..length).map(|_| rng.sample(rand::distributions::Alphanumeric) as char).collect();
+    random_string
+}
+
+pub fn modify_accum(input: String) -> String
 {
-    let mut rng = thread_rng();
-    let mut chars: Vec<char> = input.chars().collect();
-    chars.shuffle(&mut rng);
-    chars.iter().collect()
+    let parts: Vec<&str> = input.split("-").collect();
+
+    let p1 = generate_random_string(parts[0].to_string());
+
+    let p2 = generate_random_string(parts[1].to_string());
+
+    let p = format!("{}-{}", p1, p2);
+
+    p
+
+
 }
 
 pub fn modify_string(mut input_str: Vec<String>) -> Vec<String>

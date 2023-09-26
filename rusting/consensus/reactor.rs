@@ -1302,13 +1302,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
 
-                        let V = format!("{}-{}", V1, V2);
+                        let mut V = format!("{}-{}", V1, V2);
 
                         //ADVERSARIAL WORK...
                         
                         if args[8]=="1"
                         {
-                            println!("{:?}", V);
+                            V = create_adv_prob::modify_accum(V);
                         }
 
 
