@@ -246,15 +246,23 @@ fn codeword_init(
         
         let indices_to_prove = index.clone().to_string();
         leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
+       
+
+        if args[8]=="1"
+        {            
+            if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
+            {
+                let original_leaf_value = leaf_values_to_prove.clone();
+                leaf_values_to_prove = create_adv_prob::shuffle_codewords(leaf_values_to_prove);
+
+                println!("Codeword init: {:?}, {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
+            }
+        }
+
 
         let codeword = Codeword::create_codeword("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
         value.to_string(), indices_to_prove.clone(), merkle_len, part, types.clone());
         index+=1;
-
-        if args[8]=="1"
-        {
-            println!("{:?},     {:?},     {}", witness, leaf_values_to_prove, value.to_string());
-        }
 
         
         let codeword_consensus_message: ConsensusMessage = ConsensusMessage::CodewordMessage(codeword);
@@ -517,6 +525,18 @@ fn committee_init(
         
         let indices_to_prove = index.clone().to_string();
         leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
+
+
+        if args[8]=="1"
+        {            
+            if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
+            {
+                let original_leaf_value = leaf_values_to_prove.clone();
+                leaf_values_to_prove = create_adv_prob::shuffle_codewords(leaf_values_to_prove);
+
+                println!("Committee init: {:?}, {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
+            }
+        }
 
         let committee = Committee::create_committee("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
         value.to_string(), indices_to_prove.clone(), merkle_len, part);

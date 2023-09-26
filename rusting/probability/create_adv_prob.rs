@@ -23,3 +23,22 @@ pub fn modify_accum(input: String) -> String {
     random_string
 }
 
+
+
+pub fn shuffle_codewords(input: String) -> String {
+    // Extract the values from the input string
+    let values: Vec<&str> = input
+        .trim_matches(|c| c == '[' || c == ']')
+        .split(';')
+        .map(|s| s.trim())
+        .collect();
+
+    // Shuffle the values
+    let mut rng = thread_rng();
+    let mut shuffled_values = values.clone();
+    shuffled_values.shuffle(&mut rng);
+
+    // Join the shuffled values into a string
+    let result = format!("[{}]", shuffled_values.join("; "));
+    result
+}
