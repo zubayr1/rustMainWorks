@@ -250,13 +250,13 @@ fn codeword_init(
 
         if args[8]=="1"
         {            
-            if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
-            {
-                let original_leaf_value = leaf_values_to_prove.clone();
-                leaf_values_to_prove = create_adv_prob::shuffle_codewords(leaf_values_to_prove);
+            // if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
+            // {
+            //     let original_leaf_value = leaf_values_to_prove.clone();
+            //     leaf_values_to_prove = create_adv_prob::shuffle_codewords(leaf_values_to_prove);
 
-                println!("Codeword init: {:?}, {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
-            }
+            //     println!("Codeword init: {:?}, {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
+            // }
         }
 
 
@@ -529,13 +529,13 @@ fn committee_init(
 
         if args[8]=="1"
         {            
-            if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
-            {
-                let original_leaf_value = leaf_values_to_prove.clone();
-                leaf_values_to_prove = create_adv_prob::shuffle_codewords(leaf_values_to_prove);
+            // if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
+            // {
+            //     let original_leaf_value = leaf_values_to_prove.clone();
+            //     leaf_values_to_prove = create_adv_prob::shuffle_codewords(leaf_values_to_prove);
 
-                println!("Committee init: {:?}, {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
-            }
+            //     println!("Committee init: {:?}, {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
+            // }
         }
 
         let committee = Committee::create_committee("".to_string(), leaf_values_to_prove.clone(), witness.clone(), 
@@ -1354,12 +1354,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 {   
 
                                     //ADVERSARIAL WORK...                        
-                                    if args[8]=="1"
-                                    {
-                                        V1 = create_adv_prob::modify_accum(V1);
+                                    // if args[8]=="1"
+                                    // {
+                                    //     V1 = create_adv_prob::modify_accum(V1);
 
-                                        println!("adversarial accum values: {}", V1);
-                                    }
+                                    //     println!("adversarial accum values: {}", V1);
+                                    // }
 
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
@@ -1381,12 +1381,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 if val==2 && V2==acc_value_zl
                                 {
                                     //ADVERSARIAL WORK...                        
-                                    if args[8]=="1"
-                                    {
-                                        V2 = create_adv_prob::modify_accum(V2);
+                                    // if args[8]=="1"
+                                    // {
+                                    //     V2 = create_adv_prob::modify_accum(V2);
 
-                                        println!("adversarial accum values: {}", V2);
-                                    }
+                                    //     println!("adversarial accum values: {}", V2);
+                                    // }
 
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
