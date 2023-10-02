@@ -935,7 +935,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let start_time = Utc::now().time();
 
     let (participant_data, config, schnorr_sig
-        , dealer, rng) = 
+        , dealer, mut rng) = 
             pvss_generation::pvss_gen(args.clone());
 
     if ip_address.len()==1
