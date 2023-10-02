@@ -947,8 +947,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::PVSSGenMessage(pvssgen) =>
                 {
                     // Handle PVSSGen message
-                    let port = message.sender.port();
-                    println!("PVSS   {:?}, {:?}", port, pvssgen.value);
+                    let port = message.sender.port() as usize;
+                    pvss_value_hashmap.insert(port, pvssgen.value);
+
+                    if pvss_value_hashmap.len() == ip_address.len()
+                    {
+                        println!("{:?}", pvss_value_hashmap);
+                    }
                     
                 }           
                 // Match the Echo message type
