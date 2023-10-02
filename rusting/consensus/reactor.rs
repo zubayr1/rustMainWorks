@@ -969,7 +969,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if pvss_value_hashmap.len() == ip_address.len()
                     {
-
+                        let dealer_clone = dealer.clone();
                         let mut participants: Vec<Participant<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>, 
                             SchnorrSignature<ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>>>> = Vec::new();
 
@@ -1002,7 +1002,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         // create the node instance
                         let mut node = Node {
                             aggregator,
-                            dealer,
+                            dealer: dealer_clone,
                         };
                         let share = node.share(&mut rng).unwrap();
 
