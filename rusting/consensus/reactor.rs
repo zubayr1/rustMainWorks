@@ -1356,7 +1356,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
                            check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level, pvss_data.clone()).await;
                     
-                    
+                        println!("{:?},   {:?}", message.sender, data);
 
                         if level==1
                         {
@@ -1365,8 +1365,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             if updated_pvss.len()==ip_address.clone().len()
                             {                      
                                 pvss_data = aggregate(updated_pvss.clone());
-
-                                println!("AT LEVEL 1  {:?}", updated_pvss); 
 
                                 updated_pvss = Vec::new();
                             
