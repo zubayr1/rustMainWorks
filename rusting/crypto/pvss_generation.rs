@@ -9,13 +9,14 @@ use optrand_pvss::modified_scrape::dealer::Dealer;
 use optrand_pvss::modified_scrape::participant::Participant;
 use optrand_pvss::modified_scrape::config::Config;
 
-
+use ark_ec::bls12::Bls12;
 use std::marker::PhantomData;
 
 use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 
 
-pub fn pvss_gen(args: Vec<String>) -> Vec<u8>
+pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>, 
+        Config<Bls12<ark_bls12_381::Parameters>>)
 {
     let node_len = args[3].parse::<usize>().unwrap();
 
@@ -67,7 +68,7 @@ pub fn pvss_gen(args: Vec<String>) -> Vec<u8>
     let num_participants = participants.len();
     let degree = config.degree;
 
-    return serialized_data;
+    return (serialized_data, config);
 
 
 }

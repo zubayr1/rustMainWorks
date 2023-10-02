@@ -13,6 +13,12 @@ use std::collections::HashMap;
 
 use chrono::Utc;
 
+use optrand_pvss::signature::schnorr::SchnorrSignature;
+use optrand_pvss::modified_scrape::participant::Participant;
+use ark_bls12_381::Bls12_381;
+use ark_ec::PairingEngine;
+use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
+
 
 #[path = "../crypto/pvss_generation.rs"]
 mod pvss_generation; 
@@ -928,7 +934,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     if ip_address.len()==1
     {
-        let participant_data = pvss_generation::pvss_gen(args.clone());
+        let (participant_data, config) = pvss_generation::pvss_gen(args.clone());
 
         pvss_data = "pvss".to_string().into_bytes();
         level+=1;
@@ -960,12 +966,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if pvss_value_hashmap.len() == ip_address.len()
                     {
 
-                        for port_end in 1..ip_address.len()
+                        for port_end in 1..ip_address.len()+1
                         {
                             let port = 7000 + port_end;
-                            let pvss_value = pvss_value_hashmap.remove(&port).unwrap();
+                            let pvss_value = pvss_value_hashmap.remove(&port).unwrap();                           
 
-                            println!("{:?}, {:?}", port, pvss_value);
+                            let deserialized_data: Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = 
+                                Participant::deserialize(&pvss_value[..]).unwrap();
+
+
+                            println!("{:?}, {:?}, {:?}", port, pvss_value, deserialized_data.public_key_ed);
+
                         }
 
 
