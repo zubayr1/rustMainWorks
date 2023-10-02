@@ -64,15 +64,12 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
 
     
     let mut serialized_data = Vec::new();
-    dealer.participant.serialize(&mut serialized_data).unwrap();
+    dealer.clone().participant.serialize(&mut serialized_data).unwrap();
 
 
     let deserialized_data: Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = Participant::deserialize(&serialized_data[..]).unwrap();
 
-    let participants = vec![dealer.participant.clone()];
-    let num_participants = participants.len();
-    let degree = config.degree;
-    
+        
 
     return (serialized_data, config, schnorr_sig, dealer, *rng);
 
