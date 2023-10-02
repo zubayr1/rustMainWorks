@@ -12,6 +12,8 @@ use optrand_pvss::modified_scrape::config::Config;
 
 use std::marker::PhantomData;
 
+use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
+
 
 pub fn pvss_gen(args: Vec<String>) -> Vec<u8>
 {
