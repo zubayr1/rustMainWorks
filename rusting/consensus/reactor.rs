@@ -358,9 +358,9 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     args: Vec<String>, check_first_codeword_list: Vec<String>, check_first_committee_list: Vec<String>, level: usize, pvss_data: Vec<u8>)
     -> (String, Vec<String>, Vec<String>)
 {
-    // let mut data = String::from_utf8_lossy(&pvss_data).to_string();
+    let mut data = String::from_utf8_lossy(&pvss_data).to_string();
 
-    let mut data = "pvss".to_string();
+    // let mut data: String = "pvss".to_string();
     if ip_address.len()==2
     {
         let bytes = codewords.trim_matches('[').trim_matches(']').split("; ");
@@ -942,7 +942,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     {   
         level+=1;
 
-        pvss_data = "pvss".to_string().into_bytes();
+        // pvss_data = "pvss".to_string().into_bytes();
 
         (_, ip_addresses_comb) = sorted[sorted.len() - 1];
 
@@ -1305,7 +1305,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(temp.clone());
     
-                            println!("retrieve   {:?}", pvss_data);
+                            println!("\nretrieve   {:?}", pvss_data);
 
                             
                             if sorted.clone().len()>level+1
