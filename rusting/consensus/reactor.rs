@@ -853,8 +853,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut state: InternalState;
 
+    let default_address = "0.0.0.0:8000";
+    let mut default_addresses: Vec<&str> = Vec::new();
+    default_addresses.push(default_address);
+
     let mut addresses = Vec::new();
-    for address_str in ip_address.clone(){
+    for address_str in default_addresses.clone(){
         if let Ok(address) = address_str.parse::<SocketAddr>() {
             addresses.push(address);
         } else {
@@ -956,14 +960,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if pvss_value_hashmap.len() == ip_address.len()
                     {
 
-                        let mut sorted_entries: Vec<_> = pvss_value_hashmap.clone().into_iter().collect();
-                        sorted_entries.sort_by_key(|(key, _)| *key);
+                        for port in 1..ip_address.len()
+                        {
+                            let pvss_value = pvss_value_hashmap.remove(&port).unwrap();
 
-                        // Create a new HashMap from the sorted vector
-                        let sorted_pvss_value_hashmap: HashMap<usize, Vec<u8>> = sorted_entries.into_iter().collect();
-
-                        for (key, value) in &sorted_pvss_value_hashmap {
-                            println!("Key: {}, Value: {:?}", key, value);
+                            println!("{:?}, {:?}", port, pvss_value);
                         }
 
 
