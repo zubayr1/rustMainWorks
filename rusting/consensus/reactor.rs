@@ -295,7 +295,7 @@ fn codeword_init(
         let indices_to_prove = index.clone().to_string();
         leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
        
-        println!("CODEWORDS  {:?}\n", leaf_values_to_prove);
+       
         if args[8]=="1"
         {            
             // if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
@@ -1351,7 +1351,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Codeword message
                     let data: String;
                     if message.level == level
-                    {
+                    {   println!("codewords {:?}\n", codeword.codewords);
                         (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                         ip_address.clone(), codeword.codewords, codeword.witness, 
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
