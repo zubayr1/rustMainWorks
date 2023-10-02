@@ -1311,7 +1311,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             if sorted.clone().len()>level+1
                             {   
                                 level+=1;
-                                println!("NEW LEVEL : {}", level);
+                                // println!("NEW LEVEL : {}", level);
                                 (_, ip_addresses_comb) = sorted[level];
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
@@ -1466,7 +1466,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let V = format!("{}-{}", V1, V2);
 
                         
-
+                        println!("ACCUM");
 
                         if level!=1 && message.level == level
                         {
@@ -1483,7 +1483,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                                                        
+                            println!("level 1");                      
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
