@@ -447,7 +447,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             {               
 
                 // send witness to nodes if have received the first valid code word
-                        
+               println!("{}", proof);         
 
                 let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
                     codeword, part, communication_type.clone()); 
@@ -1593,7 +1593,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     
                     if propose_value.len() == ip_address.clone().len()/2 && message.level == level
-                    {    println!("propose");
+                    {    
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
