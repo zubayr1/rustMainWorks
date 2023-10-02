@@ -955,9 +955,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if pvss_value_hashmap.len() == ip_address.len()
                     {
-                        println!("{:?}", pvss_value_hashmap);
 
+                        let mut sorted_entries: Vec<_> = pvss_value_hashmap.clone().into_iter().collect();
+                        sorted_entries.sort_by_key(|(key, _)| *key);
 
+                        // Create a new HashMap from the sorted vector
+                        let sorted_pvss_value_hashmap: HashMap<usize, Vec<u8>> = sorted_entries.into_iter().collect();
+
+                        for (key, value) in &sorted_pvss_value_hashmap {
+                            println!("Key: {}, Value: {:?}", key, value);
+                        }
 
 
                         (_, ip_addresses_comb) = sorted[level];
