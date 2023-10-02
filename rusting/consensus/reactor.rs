@@ -1043,7 +1043,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {   
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
-
+                        println!("ECHO {}, {}", V1, V2);
                         echo_value = Vec::new(); 
                                                 
                         forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
@@ -1482,7 +1482,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-
+                            println!("ACCUM {}, {}", V1, V2);
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
@@ -1637,7 +1637,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            println!("{},  {}", V1, V2);
+                            println!("PROPOSE {}, {}", V1, V2);
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
