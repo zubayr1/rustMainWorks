@@ -295,7 +295,7 @@ fn codeword_init(
         let indices_to_prove = index.clone().to_string();
         leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
        
-
+        println!("{:?}\n", leaf_values_to_prove);
         if args[8]=="1"
         {            
             // if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
@@ -1500,7 +1500,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
 
-                                    println!("{},    {:?}", V1, codeword_vec);
+                                    
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_accum".to_string());
@@ -1527,7 +1527,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
-                                    println!("   {},    {:?}", V2, codeword_vec);
+                                    
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_accum".to_string());
