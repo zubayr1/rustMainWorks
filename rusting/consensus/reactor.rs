@@ -358,7 +358,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     args: Vec<String>, check_first_codeword_list: Vec<String>, check_first_committee_list: Vec<String>, level: usize, pvss_data: Vec<u8>)
     -> (String, Vec<String>, Vec<String>)
 {
-    let mut data: String = String::from_utf8(pvss_data).unwrap();
+    let mut data = String::from_utf8_lossy(&pvss_data).to_string();
 
 
     if ip_address.len()==2
