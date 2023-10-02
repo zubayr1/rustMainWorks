@@ -1366,9 +1366,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {                      
                                 pvss_data = aggregate(updated_pvss.clone());
 
+                                println!("AT LEVEL 1  {:?}", updated_pvss); 
+
                                 updated_pvss = Vec::new();
                             
-                                println!("AT LEVEL 1  {:?}", pvss_data);        
+                                // println!("AT LEVEL 1  {:?}", pvss_data);        
                                 
                                 level+=1;
 
