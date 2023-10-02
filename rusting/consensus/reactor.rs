@@ -1012,6 +1012,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         pvss_data = serialized_data;
 
+                        println!("{:?}", pvss_data);
+
                         (_, ip_addresses_comb) = sorted[level];
 
                         ip_address = ip_addresses_comb.split(" ").collect();                       
