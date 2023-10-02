@@ -1040,7 +1040,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let (count, pi): (usize, Vec<String>);
 
                     if echo_value.len()==2_usize.pow(level as u32)    
-                    {   println!("echo");
+                    {   
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
@@ -1081,8 +1081,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         });
 
                         forward_value = Vec::new(); 
-
-                        if all_parts_match && forward_check{
+                        println!("forward");
+                        if all_parts_match && forward_check{ println!("done");
                             forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string(), 1, level.clone()).await;
                         }
                     }
