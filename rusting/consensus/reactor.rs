@@ -251,7 +251,7 @@ async fn accum_helper(accum_value: Vec<String>, level: usize, committee_length: 
         }
 
     }
-    println!("{:?}, {:?}", V1_vec, V2_vec);
+    
 
     // Get majority accum value
     let V1 = accum::accum_check(V1_vec.clone(), committee_length.clone());
@@ -434,7 +434,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
         }
     }
     else 
-    {   println!("{}", communication_type);
+    {   
         if !check_first_committee_list.contains(&value)
         {
             let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
@@ -443,7 +443,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
             {               
 
                 // send witness to nodes if have received the first valid code word
-               println!("{}", proof);         
+                        
 
                 let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
                     codeword, part, communication_type.clone()); 
@@ -1039,7 +1039,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {   
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
-                        println!("ECHO {}, {}", V1, V2);
+                        
+                        
                         echo_value = Vec::new(); 
                                                 
                         forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
@@ -1163,7 +1164,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // Handle Committee message
                     if message.level == level
-                    {   println!("committee");
+                    {   
                         (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
                         ip_address.clone(), committee.codewords, committee.witness, 
                        committee.value, committee.index, committee.leaves_len, committee.part, 
