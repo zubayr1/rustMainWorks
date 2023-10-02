@@ -18,6 +18,13 @@ impl InternalState {
     pub fn _get_addresses(&self) -> &Vec<SocketAddr> {
         &self.addresses
     }
+
+    pub fn new_state(addresses: Vec<SocketAddr>) -> Self {
+        InternalState {
+            level: 0,
+            addresses,
+        }
+    }
 }
 
 

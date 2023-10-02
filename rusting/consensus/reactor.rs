@@ -853,6 +853,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut state: InternalState;
 
+    let mut addresses = Vec::new();
+    for address_str in ip_address.clone(){
+        if let Ok(address) = address_str.parse::<SocketAddr>() {
+            addresses.push(address);
+        } else {
+            eprintln!("Invalid address: {}", address_str);
+        }
+    }
+
+    state = InternalState::new_state(addresses);
+    
+
     let mut storage_accum: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
@@ -903,9 +915,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut two_BA_check = false;
 
-    let mut acc_value_zl: String;
+    let mut acc_value_zl: String = "bot".to_string();
 
-    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
+    
 
     let start_time = Utc::now().time();
 
