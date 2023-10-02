@@ -1637,7 +1637,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-
+                            println!("{},  {}", V1, V2);
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
