@@ -947,7 +947,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::PVSSGenMessage(pvssgen) =>
                 {
                     // Handle PVSSGen message
-                    println!("PVSS   {:?}, {:?}", message.sender, pvssgen.value);
+                    let port = message.sender.port();
+                    println!("PVSS   {:?}, {:?}", port, pvssgen.value);
                     
                 }           
                 // Match the Echo message type
