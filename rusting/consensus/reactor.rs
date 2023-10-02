@@ -438,7 +438,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
         }
     }
     else 
-    {
+    {   println!("{}", communication_type);
         if !check_first_committee_list.contains(&value)
         {
             let (proof, codeword) = codeword::verify_codeword(codewords.clone(), witness, value.clone(), index, leaves_len);
