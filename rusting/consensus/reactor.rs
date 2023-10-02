@@ -1081,8 +1081,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         });
 
                         forward_value = Vec::new(); 
-                        println!("forward");
-                        if all_parts_match && forward_check{ println!("done");
+                        
+                        if all_parts_match && forward_check{ 
                             forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string(), 1, level.clone()).await;
                         }
                     }
@@ -1109,7 +1109,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    {                         
+                    {                         println!("vote1");
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1129,7 +1129,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
-                    {
+                    {   println!("vote2");
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
