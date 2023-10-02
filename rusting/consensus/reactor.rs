@@ -1527,7 +1527,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
-
+                                    println!("   {},    {:?}", V2, codeword_vec);
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_accum".to_string());
