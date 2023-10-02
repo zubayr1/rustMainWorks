@@ -903,6 +903,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut two_BA_check = false;
 
+    let mut acc_value_zl: String;
+
+    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
+
     let start_time = Utc::now().time();
 
 
@@ -918,23 +922,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         ip_address = ip_addresses_comb.split(" ").collect();
 
         
-        pvss_gen_init(tx_sender.clone(), ip_address, participant_data, args.clone()).await;
+        pvss_gen_init(tx_sender.clone(), ip_address.clone(), participant_data, args.clone()).await;
         
     }
 
-
-
-    (_, ip_addresses_comb) = sorted[level];
-
-    ip_address = ip_addresses_comb.split(" ").collect();
-
-    let mut acc_value_zl: String;
-            
-    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
-
-    let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
-
-    let _ = tx_sender.send(accum_network_message).await;
 
     
 
@@ -953,6 +944,19 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if pvss_value_hashmap.len() == ip_address.len()
                     {
                         println!("{:?}", pvss_value_hashmap);
+
+
+
+
+                        (_, ip_addresses_comb) = sorted[level];
+
+                        ip_address = ip_addresses_comb.split(" ").collect();                       
+                                
+                        (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
+
+                        let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
+
+                        let _ = tx_sender.send(accum_network_message).await;
                     }
                     
                 }           
