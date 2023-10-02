@@ -1040,7 +1040,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let (count, pi): (usize, Vec<String>);
 
                     if echo_value.len()==2_usize.pow(level as u32)    
-                    {   
+                    {   println!("echo");
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
 
@@ -1465,7 +1465,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
-                        println!("ACCUM {}", level);
 
 
                         if level!=1 && message.level == level
@@ -1483,7 +1482,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                                    println!("{}, {}", V1, V2);                    
+
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
