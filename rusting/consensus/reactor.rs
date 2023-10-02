@@ -367,12 +367,13 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
         // Parse each substring as u8 and collect into a vector
         let bytes: Vec<u8> = bytes.map(|s| s.parse().unwrap()).collect();
-
+        println!("{:?}", bytes);
         // Decode the vector as UTF-8 and handle errors
         let output = match std::str::from_utf8(&bytes) {
             Ok(s) => s,
             Err(_) => {
                 // Handle invalid UTF-8 error
+                println!("INVALID UTF-8");
                 return (data, check_first_codeword_list, check_first_committee_list);
             }
         };
@@ -1526,7 +1527,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
-                                    println!("   {},    {:?}", V2, codeword_vec);
+
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_accum".to_string());
