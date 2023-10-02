@@ -1167,7 +1167,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 {   
                     // Handle Committee message
                     if message.level == level
-                    {
+                    {   println!("committee");
                         (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
                         ip_address.clone(), committee.codewords, committee.witness, 
                        committee.value, committee.index, committee.leaves_len, committee.part, 
