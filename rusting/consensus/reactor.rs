@@ -295,7 +295,7 @@ fn codeword_init(
         let indices_to_prove = index.clone().to_string();
         leaf_values_to_prove = leaf_values_to_prove.replace(",", ";");
        
-        println!("{:?}\n", leaf_values_to_prove);
+        println!("CODEWORDS  {:?}\n", leaf_values_to_prove);
         if args[8]=="1"
         {            
             // if create_adv_prob::create_prob(args[3].parse::<usize>().unwrap())
