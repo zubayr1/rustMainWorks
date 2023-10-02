@@ -11,16 +11,21 @@ use optrand_pvss::modified_scrape::config::Config;
 
 use ark_ec::bls12::Bls12;
 use std::marker::PhantomData;
-
+use ark_ec::short_weierstrass_jacobian::GroupAffine;
+use ark_bls12_381::g1::Parameters;
 use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 
 
 pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>, 
-        Config<Bls12<ark_bls12_381::Parameters>>)
+        Config<Bls12<ark_bls12_381::Parameters>>
+        , SchnorrSignature<GroupAffine<Parameters>>
+        ,Dealer<Bls12_381,  
+        SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>
+        , rand::rngs::ThreadRng)
 {
     let node_len = args[3].parse::<usize>().unwrap();
 
-    let rng = &mut thread_rng();
+    let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
     let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(rng).unwrap();
 
@@ -38,7 +43,7 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
     let id = args[2].parse::<usize>().unwrap();
 
     // create the dealer instance
-    let dealer: Dealer<Bls12_381,   //Bls12<ark_bls12_381::Parameters>,
+    let dealer: Dealer<Bls12_381,  
             SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = Dealer {
             private_key_sig: dealer_keypair_sig.0,
             private_key_ed: eddsa_keypair.1,
@@ -67,8 +72,9 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
     let participants = vec![dealer.participant.clone()];
     let num_participants = participants.len();
     let degree = config.degree;
+    
 
-    return (serialized_data, config);
+    return (serialized_data, config, schnorr_sig, dealer, *rng);
 
 
 }

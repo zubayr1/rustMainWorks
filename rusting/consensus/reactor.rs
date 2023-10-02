@@ -15,6 +15,9 @@ use chrono::Utc;
 
 use optrand_pvss::signature::schnorr::SchnorrSignature;
 use optrand_pvss::modified_scrape::participant::Participant;
+use optrand_pvss::modified_scrape::aggregator::PVSSAggregator;
+use optrand_pvss::modified_scrape::share::PVSSAggregatedShare;
+use optrand_pvss::modified_scrape::node::Node;
 use ark_bls12_381::Bls12_381;
 use ark_ec::PairingEngine;
 use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
@@ -931,11 +934,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let start_time = Utc::now().time();
 
+    let (participant_data, config, schnorr_sig
+        , dealer, rng) = 
+            pvss_generation::pvss_gen(args.clone());
 
     if ip_address.len()==1
-    {
-        let (participant_data, config) = pvss_generation::pvss_gen(args.clone());
-
+    {       
         pvss_data = "pvss".to_string().into_bytes();
         level+=1;
 
@@ -966,6 +970,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if pvss_value_hashmap.len() == ip_address.len()
                     {
 
+                        let mut participants: Vec<Participant<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>, 
+                            SchnorrSignature<ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>>>> = Vec::new();
+
                         for port_end in 1..ip_address.len()+1
                         {
                             let port = 7000 + port_end;
@@ -975,10 +982,34 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 Participant::deserialize(&pvss_value[..]).unwrap();
 
 
-                            println!("{:?}, {:?}, {:?}", port, pvss_value, deserialized_data.public_key_ed);
+                            participants.push(deserialized_data);                            
 
                         }
 
+                        let num_participants = ip_address.len();
+                        let degree = config.degree;
+
+
+                        // create the aggregator instance
+                            let aggregator: PVSSAggregator<Bls12_381,
+                            SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
+                            config: config.clone(),
+                            scheme_sig: schnorr_sig.clone(),
+                            participants: participants.clone().into_iter().enumerate().collect(),
+                            aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
+                        };
+
+                        // create the node instance
+                        let mut node = Node {
+                            aggregator,
+                            dealer,
+                        };
+                        let share = node.share(&mut rng).unwrap();
+
+                        let mut serialized_data = Vec::new();
+                        share.serialize(&mut serialized_data).unwrap();
+
+                        println!("{:?}, {}", serialized_data, serialized_data.len());
 
                         (_, ip_addresses_comb) = sorted[level];
 
