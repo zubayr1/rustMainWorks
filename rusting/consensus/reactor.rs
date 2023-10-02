@@ -1355,11 +1355,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         ip_address.clone(), codeword.codewords, codeword.witness, 
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
                            check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level, pvss_data.clone()).await;
-                    
-                        println!("{:?},   {:?}", message.sender, data);
+                                            
 
                         if level==1
-                        {
+                        {   println!("{:?},   {:?}", message.sender, data);
                             updated_pvss.push(data);
 
                             if updated_pvss.len()==ip_address.clone().len()
