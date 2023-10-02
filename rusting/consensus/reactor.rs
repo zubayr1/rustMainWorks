@@ -942,6 +942,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     {   
         level+=1;
 
+        pvss_data = "pvss".to_string().into_bytes();
+
         (_, ip_addresses_comb) = sorted[sorted.len() - 1];
 
         ip_address = ip_addresses_comb.split(" ").collect();
