@@ -1303,7 +1303,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(temp.clone());
     
-                            println!("retrieve   {:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
+                            println!("retrieve   {:?}", pvss_data);
 
                             
                             if sorted.clone().len()>level+1
@@ -1366,8 +1366,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 updated_pvss = Vec::new();
                             
-                                println!("{:?}, {:?}", pvss_data, String::from_utf8(pvss_data.clone()));
-        
+                                println!("{:?}", pvss_data);        
                                 
                                 level+=1;
 
@@ -1383,7 +1382,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             
                                 let _ = tx_sender.send(accum_network_message).await;
                             
-                                    
         
                             }
                         }
