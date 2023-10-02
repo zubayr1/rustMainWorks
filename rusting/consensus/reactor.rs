@@ -1009,7 +1009,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let mut serialized_data = Vec::new();
                         share.serialize(&mut serialized_data).unwrap();
 
-                        println!("{:?}, {}, {}", serialized_data, serialized_data.len(), String::from_utf8(serialized_data.clone()).unwrap());
+
+                        pvss_data = serialized_data;
 
                         (_, ip_addresses_comb) = sorted[level];
 
