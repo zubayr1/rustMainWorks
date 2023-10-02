@@ -843,7 +843,7 @@ fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
 
     let pvss = updated_pvss.join("");
 
-    return pvss.into_bytes();
+    return pvss.as_bytes().to_vec();
 }
 
 #[allow(non_snake_case)]
@@ -1367,7 +1367,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 updated_pvss = Vec::new();
                             
-                                // println!("AT LEVEL 1  {:?}", pvss_data);        
+                                println!("AT LEVEL 1  {:?}", pvss_data);        
                                 
                                 level+=1;
 
@@ -1481,7 +1481,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            println!("ACCUM {}, {}, {}", V1, V2, level);
+
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
@@ -1499,7 +1499,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
 
-
+                                    println!("{},    {:?}", V1, codeword_vec);
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_accum".to_string());
@@ -1526,7 +1526,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
                                     
-                                    
+                                    println!("   {},    {:?}", V2, codeword_vec);
                                     let network_vec = codeword_init( 
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_accum".to_string());
