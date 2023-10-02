@@ -1,19 +1,16 @@
 extern crate optrand_pvss;
-use ark_bls12_381::{Bls12_381, G1Affine, G2Affine};
-use ark_ec::{AffineCurve, PairingEngine};
-use ark_ff::FftField;
+use ark_bls12_381::Bls12_381;
+use ark_ec::PairingEngine;
 
 use rand::thread_rng;
 use optrand_pvss::signature::schnorr::SchnorrSignature;
 use optrand_pvss::signature::scheme::SignatureScheme;
 use optrand_pvss::modified_scrape::dealer::Dealer;
-use optrand_pvss::modified_scrape::participant::{Participant, ParticipantState};
+use optrand_pvss::modified_scrape::participant::Participant;
 use optrand_pvss::modified_scrape::config::Config;
 
 
 use std::marker::PhantomData;
-
-use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 
 
 pub fn pvss_gen(args: Vec<String>) -> Vec<u8>
