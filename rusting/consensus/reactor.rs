@@ -369,14 +369,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
         let bytes: Vec<u8> = bytes.map(|s| s.parse().unwrap()).collect();
         println!("Bytes {:?}", bytes);
         // Decode the vector as UTF-8 and handle errors
-        let output = match std::str::from_utf8(&bytes) {
-            Ok(s) => s,
-            Err(_) => {
-                // Handle invalid UTF-8 error
-                println!("INVALID UTF-8");
-                return (data, check_first_codeword_list, check_first_committee_list);
-            }
-        };
+        let output = String::from_utf8_lossy(&bytes).to_string();
 
         data  = output.to_string();
 
