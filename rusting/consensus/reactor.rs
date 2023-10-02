@@ -251,7 +251,7 @@ async fn accum_helper(accum_value: Vec<String>, level: usize, committee_length: 
         }
 
     }
-
+    println!("{:?}, {:?}", V1_vec, V2_vec);
 
     // Get majority accum value
     let V1 = accum::accum_check(V1_vec.clone(), committee_length.clone());

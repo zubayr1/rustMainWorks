@@ -41,9 +41,5 @@ pub fn accum_check(received_texts: Vec<String>, committee_length: usize) -> Stri
 
     return BOT;
 
-    
-    
-
-    
 }
 
