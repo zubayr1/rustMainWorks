@@ -960,8 +960,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if pvss_value_hashmap.len() == ip_address.len()
                     {
 
-                        for port in 1..ip_address.len()
+                        for port_end in 1..ip_address.len()
                         {
+                            let port = 7000 + port_end;
                             let pvss_value = pvss_value_hashmap.remove(&port).unwrap();
 
                             println!("{:?}, {:?}", port, pvss_value);
