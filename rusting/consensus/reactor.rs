@@ -355,10 +355,10 @@ fn codeword_init(
 #[allow(non_snake_case)]
 async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, 
-    args: Vec<String>, check_first_codeword_list: Vec<String>, check_first_committee_list: Vec<String>, level: usize)
+    args: Vec<String>, check_first_codeword_list: Vec<String>, check_first_committee_list: Vec<String>, level: usize, pvss_data: Vec<u8>)
     -> (String, Vec<String>, Vec<String>)
 {
-    let mut data: String = "pvss".to_string();   
+    let mut data: String = String::from_utf8(pvss_data).unwrap();
 
 
     if ip_address.len()==2
@@ -1169,7 +1169,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
                         ip_address.clone(), committee.codewords, committee.witness, 
                        committee.value, committee.index, committee.leaves_len, committee.part, 
-                       args.clone(), check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
+                       args.clone(), check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level, pvss_data.clone()).await;
                     }
                     
                 }
@@ -1352,7 +1352,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                         ip_address.clone(), codeword.codewords, codeword.witness, 
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
-                           check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level).await;
+                           check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level, pvss_data.clone()).await;
                     
                     
 
