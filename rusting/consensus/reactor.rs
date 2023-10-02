@@ -939,8 +939,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
             pvss_generation::pvss_gen(args.clone());
 
     if ip_address.len()==1
-    {       
-        pvss_data = "pvss".to_string().into_bytes();
+    {   
         level+=1;
 
         (_, ip_addresses_comb) = sorted[sorted.len() - 1];
