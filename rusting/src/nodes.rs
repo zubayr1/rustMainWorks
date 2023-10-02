@@ -16,8 +16,8 @@ use tokio::time::sleep;
 use tokio::time::Duration;
 
 
-#[path = "../crypto/schnorrkel.rs"]
-mod schnorrkel; 
+#[path = "../crypto/pvss_generation.rs"]
+mod pvss_generation; 
 
 // #[path = "../probability/create_adv_prob.rs"]
 // mod create_adv_prob;
@@ -30,9 +30,9 @@ mod reactor;
 #[path = "../algos/GRand.rs"]
 mod GRand;
 
-pub fn create_keys() // schnorr key generation
+pub fn create_keys(args: Vec<String>) // pvss gen prelim
 {
-    schnorrkel::_create_keys_schnorrkel();
+    pvss_generation::pvss_gen(args);
 
 }
 
@@ -115,8 +115,7 @@ pub async fn initiate(filtered_committee: HashMap<u32, String>, args: Vec<String
     // Sleep to make sure sender and receiver are ready.
     sleep(Duration::from_millis(50)).await;
 
-    // GET PVSS FROM DIMITRIS...
-    
+   
     reactor::reactor(tx_sender, rx_receiver, sorted, args.clone()).await;
        
     

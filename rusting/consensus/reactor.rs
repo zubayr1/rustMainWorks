@@ -6,15 +6,16 @@ use tokio::sync::mpsc::{Receiver, Sender};
 
 use crate::message::{NetworkMessage, ConsensusMessage, *};
 
+// use std::env::args;
 use std::net::SocketAddr;
 
 use std::collections::HashMap;
 
-// use tokio::time::sleep;
-// use tokio::time::Duration;
 use chrono::Utc;
 
 
+#[path = "../crypto/pvss_generation.rs"]
+mod pvss_generation; 
 
 #[path = "../types/generic.rs"]
 mod generic; 
@@ -44,6 +45,7 @@ mod codeword;
 
 #[path = "../probability/create_adv_prob.rs"]
 mod create_adv_prob;
+
 
 
 fn set_state(ip_address: Vec<&str>, level: usize) -> InternalState
@@ -93,6 +95,43 @@ fn split_vec_recursively<'a>(input: &[&'a str], left_half: &mut Vec<Vec<&'a str>
 
     split_vec_recursively(left_slice, left_half, right_half);
     split_vec_recursively(right_slice, left_half, right_half);
+}
+
+
+async fn pvss_gen_init(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, participant_data: Vec<u8>, args: Vec<String>)
+{
+    let pvssgen: PVSSGen = PVSSGen::create_pvssgen("sign".to_string(), participant_data.clone());
+
+    let pvss_consensus_message: ConsensusMessage = ConsensusMessage::PVSSGenMessage(pvssgen);
+
+    let mut port = 7000;
+
+    let mut sockets: Vec<SocketAddr> = Vec::new();
+    
+    for ip_str in ip_address.clone()
+    {
+        let splitted_ip: Vec<&str> = ip_str.split("-").collect();
+        port+=splitted_ip.clone()[0].parse::<u32>().unwrap();
+
+        let ip_with_port = format!("{}:{}", splitted_ip[1], port.to_string()); 
+
+        sockets.push(ip_with_port.parse::<SocketAddr>().unwrap());
+
+        port = 7000;
+    }
+
+
+    let senderport = 7000 + args[2].parse::<u32>().unwrap();
+    let sender_str = format!("{}:{}", args[6], senderport.to_string());
+    
+    let vote_network_message = NetworkMessage{sender: sender_str.parse::<SocketAddr>().unwrap(),
+        addresses: sockets, message: pvss_consensus_message, level: 0
+    };
+
+
+    let _ = tx_sender.send(vote_network_message).await;
+
+
 }
 
 fn reactor_init(pvss_data: Vec<u8>, ip_address: Vec<&str>, level: usize) -> (String, InternalState)
@@ -787,6 +826,8 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 }
 
 
+
+
 fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
 {
     updated_pvss.sort();
@@ -817,31 +858,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut storage_propose: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
 
+    let mut pvss_value_hashmap: HashMap<usize, Vec<u8>> = HashMap::new();
+
+
     let mut retrieved_hashmap_codeword: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
     let mut retrieved_hashmap_committee: HashMap<usize, HashMap<SocketAddr, String>> = HashMap::new();
 
-
-    if ip_address.len()==1
-    {
-        //GET PVSS DATA FROM DIMITRIS
-        pvss_data = "pvss".to_string().into_bytes();
-        level+=1;
-        
-    }
-
-
-    (_, ip_addresses_comb) = sorted[level];
-
-
-    ip_address = ip_addresses_comb.split(" ").collect();
-
-    let mut acc_value_zl: String;
-            
-    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
-
-    let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
-
-    let _ = tx_sender.send(accum_network_message).await;
 
     let (mut V1, mut V2): (String, String) = ("".to_string(), "".to_string());
 
@@ -883,11 +905,51 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let start_time = Utc::now().time();
 
+
+    if ip_address.len()==1
+    {
+        let participant_data = pvss_generation::pvss_gen(args.clone());
+
+        pvss_data = "pvss".to_string().into_bytes();
+        level+=1;
+
+        (_, ip_addresses_comb) = sorted[sorted.len() - 1];
+
+        ip_address = ip_addresses_comb.split(" ").collect();
+
+        
+        pvss_gen_init(tx_sender.clone(), ip_address, participant_data, args.clone()).await;
+        
+    }
+
+
+
+    (_, ip_addresses_comb) = sorted[level];
+
+    ip_address = ip_addresses_comb.split(" ").collect();
+
+    let mut acc_value_zl: String;
+            
+    (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
+
+    let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
+
+    let _ = tx_sender.send(accum_network_message).await;
+
+    
+
     loop 
     {
         if let Some(message) = rx.recv().await {
             match message.message 
-            {               
+            {
+                // Match the PVSSGen message type
+                ConsensusMessage::PVSSGenMessage(pvssgen) =>
+                {
+                    // Handle PVSSGen message
+                    println!("{:?}, {:?}", message.sender, pvssgen.value);
+                    
+                }           
                 // Match the Echo message type
                 ConsensusMessage::EchoMessage(echo) => {
                     // Handle Echo message

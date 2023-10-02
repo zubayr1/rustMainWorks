@@ -34,6 +34,7 @@ pub struct NetworkMessage {
 // Enum to represent the different message types
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ConsensusMessage {
+    PVSSGenMessage(PVSSGen),
     EchoMessage(Echo),
     ForwardMessage(Forward),
     VoteMessage(Vote),
@@ -44,7 +45,23 @@ pub enum ConsensusMessage {
     ProposeMessage(Propose),
 }
 
+#[allow(unused)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct PVSSGen
+{
+    pub sign: String,
+    pub value: Vec<u8>,
+    pub types: String
+}
 
+#[allow(unused)]
+impl PVSSGen
+{
+    pub fn create_pvssgen(sign: String, value: Vec<u8>) -> Self
+    {
+        PVSSGen{sign:sign, value: value, types: "pvss_gen".to_string()}
+    }    
+}
 
 
 #[allow(unused)]

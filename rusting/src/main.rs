@@ -104,9 +104,9 @@ async fn run_nodes(args: Vec<String>)
 }
 
 
-fn create_keys()
+fn create_keys(args: Vec<String>)
 {
-    nodes::create_keys();
+    nodes::create_keys(args);
     
 }
 
@@ -168,7 +168,7 @@ fn main()
     
     if args[1].trim() == keys
     {
-        create_keys(); // to create schnorr keys
+        create_keys(args.clone()); // to create schnorr keys
     }
     else 
     {
