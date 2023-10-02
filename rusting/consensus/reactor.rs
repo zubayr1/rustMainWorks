@@ -359,7 +359,8 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     -> (String, Vec<String>, Vec<String>)
 {
     let mut data = String::from_utf8_lossy(&pvss_data).to_string();
-    println!("pvssdata {:?}", pvss_data);
+    
+    
     // let mut data: String = "pvss".to_string();
     if ip_address.len()==2
     {
@@ -367,7 +368,8 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
         // Parse each substring as u8 and collect into a vector
         let bytes: Vec<u8> = bytes.map(|s| s.parse().unwrap()).collect();
-        println!("Bytes {:?}", bytes);
+        
+        
         // Decode the vector as UTF-8 and handle errors
         let output = String::from_utf8_lossy(&bytes).to_string();
 
@@ -1352,7 +1354,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                             
 
                         if level==1
-                        {   println!("{:?},   {:?}", message.sender, data);
+                        {   
                             updated_pvss.push(data);
 
                             if updated_pvss.len()==ip_address.clone().len()
@@ -1461,7 +1463,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                         if level!=1 && message.level == level
-                        {   println!("ACCUM {}, {}, {}", V1, V2, level);
+                        {   
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone(), level.clone()).await;
                         }
@@ -1630,7 +1632,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            println!("PROPOSE {}, {}", V1, V2);
+                            
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
