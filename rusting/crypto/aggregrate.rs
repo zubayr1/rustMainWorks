@@ -5,6 +5,7 @@ use ark_ec::PairingEngine;
 use optrand_pvss::signature::schnorr::SchnorrSignature;
 
 use optrand_pvss::modified_scrape::participant::Participant;
+use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 
 
 
