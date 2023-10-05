@@ -26,6 +26,9 @@ use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 #[path = "../crypto/pvss_generation.rs"]
 mod pvss_generation; 
 
+#[path = "../crypto/aggregrate.rs"]
+mod aggregrate; 
+
 #[path = "../types/generic.rs"]
 mod generic; 
 
@@ -833,9 +836,16 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 
 
 
-fn aggregate(mut updated_pvss: Vec<String>) -> Vec<u8>
+fn aggregate(mut updated_pvss: Vec<String>, args: Vec<String>) -> Vec<u8>
 {
-    println!("{:?}", updated_pvss.len());
+
+    let share1 = updated_pvss[0].as_bytes().to_vec();
+    let share2 = updated_pvss[1].as_bytes().to_vec();
+
+    let num_participants = args[3].parse::<usize>().unwrap();
+
+    aggregrate::aggregrate_intermediate(share1, share2, num_participants);
+
     updated_pvss.sort();
 
     let pvss = updated_pvss.join("");
@@ -1301,7 +1311,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 temp.push(String::from_utf8(map).unwrap());
                             }
     
-                            pvss_data = aggregate(temp.clone());
+                            pvss_data = aggregate(temp.clone(), args.clone());
     
                             println!("\nretrieve   {:?}", pvss_data.len());
 
@@ -1361,7 +1371,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             if updated_pvss.len()==ip_address.clone().len()
                             {                      
-                                pvss_data = aggregate(updated_pvss.clone());
+                                pvss_data = aggregate(updated_pvss.clone(), args.clone());
 
                                 updated_pvss = Vec::new();
                             
