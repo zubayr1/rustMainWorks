@@ -89,16 +89,14 @@ pub fn encoder(pvss_data: Vec<u8>, mut committee_size: usize) -> Vec<String>
 
 
 #[allow(unused)]
-pub fn decode(shards: Vec<Vec<u8>>, mut committee_size: usize) -> String
+pub fn decode(shards: Vec<Vec<u8>>, mut committee_size: usize) -> Vec<u8>
 {
     let num_nodes = committee_size;      // Total number of shards
     let num_faults = committee_size/2;
 
     let mut received: Vec<_> = shards.iter().cloned().map(Some).collect();
 
-    let reconstructed = from_shards(received, num_nodes, num_faults);
+    let reconstructed: Vec<u8> = from_shards(received, num_nodes, num_faults);
 
-    let string: String = String::from_utf8_lossy(&reconstructed).into();
-
-    return string;
+    return reconstructed;
 }
