@@ -371,7 +371,6 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
         // Parse each substring as u8 and collect into a vector
         let bytes: Vec<u8> = bytes.map(|s| s.parse().unwrap()).collect();
-        println!("BYTES:  {:?}", bytes.len());
         
         
         data  = bytes;
@@ -535,7 +534,6 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
 
         let pvss = pvss_agreement::decode(codeword_vec, committee_length);
         
-        println!("PVSS BYTES: {}", pvss.len());
         pvss_hashmap.insert(i, pvss);    
     }
 
