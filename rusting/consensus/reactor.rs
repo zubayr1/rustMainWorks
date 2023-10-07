@@ -854,7 +854,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>) -> Vec<u8>
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = updated_pvss.into_iter().flatten().collect();
 
-    
+    println!("{:?}", flattened_vec);
 
     return flattened_vec;
 }
