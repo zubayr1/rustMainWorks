@@ -371,7 +371,7 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
 
         // Parse each substring as u8 and collect into a vector
         let bytes: Vec<u8> = bytes.map(|s| s.parse().unwrap()).collect();
-        
+        println!("BYTES:  {:?}", bytes.len());
         
         // Decode the vector as UTF-8 and handle errors
         let output = String::from_utf8_lossy(&bytes).to_string();
