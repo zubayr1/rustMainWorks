@@ -6,11 +6,11 @@ use optrand_pvss::modified_scrape::share::*;
 
 pub fn aggregrate_intermediate(share1: Vec<u8>, share2: Vec<u8>, num_participants: usize)
 {
-    let deserialized_share1: optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-        PVSSAggregatedShare::deserialize(&share1[..]).unwrap();
+    let deserialized_share1: optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+        PVSSShare::deserialize(&share1[..]).unwrap();
 
-    let deserialized_share2: optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-    PVSSAggregatedShare::deserialize(&share2[..]).unwrap();
+    let deserialized_share2: optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+        PVSSShare::deserialize(&share2[..]).unwrap();
 
     let degree =  num_participants/2 - 1;
 

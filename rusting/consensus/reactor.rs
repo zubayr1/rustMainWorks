@@ -26,8 +26,8 @@ use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 #[path = "../crypto/pvss_generation.rs"]
 mod pvss_generation; 
 
-#[path = "../crypto/aggregrate.rs"]
-mod aggregrate; 
+// #[path = "../crypto/aggregrate.rs"]
+// mod aggregrate; 
 
 #[path = "../types/generic.rs"]
 mod generic; 
@@ -839,12 +839,12 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 fn aggregate(mut updated_pvss: Vec<String>, args: Vec<String>) -> Vec<u8>
 {
 
-    let share1 = updated_pvss[0].as_bytes().to_vec();
-    let share2 = updated_pvss[1].as_bytes().to_vec();
+    // let share1 = updated_pvss[0].as_bytes().to_vec();
+    // let share2 = updated_pvss[1].as_bytes().to_vec();
 
-    let num_participants = args[3].parse::<usize>().unwrap();
+    // let num_participants = args[3].parse::<usize>().unwrap();
 
-    aggregrate::aggregrate_intermediate(share1, share2, num_participants);
+    // aggregrate::aggregrate_intermediate(share1, share2, num_participants);
 
     updated_pvss.sort();
 
