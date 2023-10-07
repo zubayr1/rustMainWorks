@@ -25,18 +25,19 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
 {
     let node_len = args[3].parse::<usize>().unwrap();
 
-    let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
-    println!("{:?}", rng);
-    let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(rng).unwrap();
+    let rng1: &mut rand::rngs::ThreadRng = &mut thread_rng();
+    let rng2: &mut rand::rngs::ThreadRng = &mut thread_rng();
+    
+    let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(rng1).unwrap(); //seedable
 
     let schnorr_srs = 
-        optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(rng).unwrap();
+        optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(rng1).unwrap(); //seedable
 
     let schnorr_sig = optrand_pvss::signature::schnorr::SchnorrSignature { srs: schnorr_srs };
 
     
     // generate key pairs
-    let dealer_keypair_sig  = schnorr_sig.generate_keypair(rng).unwrap();
+    let dealer_keypair_sig  = schnorr_sig.generate_keypair(rng2).unwrap(); //osrng/threadrng/cryp secure rand
 
     let eddsa_keypair = optrand_pvss::generate_production_keypair(); 
 
@@ -71,7 +72,7 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
 
         
 
-    return (serialized_data, config, schnorr_sig, dealer, *rng);
+    return (serialized_data, config, schnorr_sig, dealer, *rng1);
 
 
 }
