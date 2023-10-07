@@ -359,9 +359,9 @@ fn codeword_init(
 async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: String, ip_address: Vec<&str>, codewords: String, witness: Vec<u8>, 
     value: String, index: String, leaves_len: usize, part: usize, 
     args: Vec<String>, check_first_codeword_list: Vec<String>, check_first_committee_list: Vec<String>, level: usize, pvss_data: Vec<u8>)
-    -> (String, Vec<String>, Vec<String>)
+    -> (Vec<u8>, Vec<String>, Vec<String>)
 {
-    let mut data = String::from_utf8_lossy(&pvss_data).to_string();
+    let mut data: Vec<u8> = Vec::new();
     
     
     // let mut data: String = "pvss".to_string();
@@ -373,10 +373,8 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
         let bytes: Vec<u8> = bytes.map(|s| s.parse().unwrap()).collect();
         println!("BYTES:  {:?}", bytes.len());
         
-        // Decode the vector as UTF-8 and handle errors
-        let output = String::from_utf8_lossy(&bytes).to_string();
-
-        data  = output.to_string();
+        
+        data  = bytes;
 
 
         return (data, check_first_codeword_list, check_first_committee_list);
@@ -836,11 +834,11 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 
 
 
-fn aggregate(mut updated_pvss: Vec<String>, args: Vec<String>) -> Vec<u8>
+fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>) -> Vec<u8>
 {
 
-    let share1 = updated_pvss[0].as_bytes().to_vec();
-    let share2 = updated_pvss[1].as_bytes().to_vec();
+    let share1 = updated_pvss[0].clone();
+    let share2 = updated_pvss[1].clone();
 
     println!("    {}, {}", share1.len(), share2.len());
 
@@ -848,11 +846,17 @@ fn aggregate(mut updated_pvss: Vec<String>, args: Vec<String>) -> Vec<u8>
 
     // aggregrate::aggregrate_intermediate(share1, share2, num_participants);
 
-    updated_pvss.sort();
+    // Sort the inner vectors
+    for inner_vec in &mut updated_pvss {
+        inner_vec.sort();
+    }
 
-    let pvss = updated_pvss.join("");
+    // Flatten the sorted inner vectors into a single Vec<u8>
+    let mut flattened_vec: Vec<u8> = updated_pvss.into_iter().flatten().collect();
 
-    return pvss.as_bytes().to_vec();
+    
+
+    return flattened_vec;
 }
 
 #[allow(non_snake_case)]
@@ -906,7 +910,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut echo_value: Vec<String> = Vec::new();
 
-    let mut updated_pvss: Vec<String> = Vec::new();
+    let mut updated_pvss: Vec<Vec<u8>> = Vec::new();
   
 
     let mut forward_value: Vec<String> = Vec::new();
@@ -1305,11 +1309,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             check_first_committee_list = Vec::new();
 
-                            let mut temp: Vec<String> = Vec::new();
+                            let mut temp: Vec<Vec<u8>> = Vec::new();
 
                             for (_, map) in pvss_vec
                             {   println!("COMMITTEE: {:?}", map.len());
-                                temp.push(String::from_utf8(map).unwrap());
+                                temp.push(map);
                             }
     
                             pvss_data = aggregate(temp.clone(), args.clone());
@@ -1357,7 +1361,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::CodewordMessage(codeword) => 
                 {   
                     // Handle Codeword message
-                    let data: String;
+                    let mut data: Vec<u8> = Vec::new();
                     if message.level == level
                     {   println!("CODEWORD: {:?}", pvss_data.len());
                         (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
