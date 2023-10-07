@@ -15,6 +15,8 @@ use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use ark_bls12_381::g1::Parameters;
 use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 
+use rand::{SeedableRng, RngCore};
+
 
 pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>, 
         Config<Bls12<ark_bls12_381::Parameters>>

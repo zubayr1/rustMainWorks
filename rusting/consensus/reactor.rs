@@ -361,10 +361,10 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     args: Vec<String>, check_first_codeword_list: Vec<String>, check_first_committee_list: Vec<String>, level: usize, pvss_data: Vec<u8>)
     -> (String, Vec<String>, Vec<String>)
 {
-    // let mut data = String::from_utf8_lossy(&pvss_data).to_string();
+    let mut data = String::from_utf8_lossy(&pvss_data).to_string();
     
     
-    let mut data: String = "pvss".to_string();
+    // let mut data: String = "pvss".to_string();
     if ip_address.len()==2
     {
         let bytes = codewords.trim_matches('[').trim_matches(']').split("; ");
@@ -862,7 +862,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let (_, mut ip_addresses_comb) = sorted[level];
     let mut ip_address: Vec<&str> = ip_addresses_comb.split(" ").collect(); 
 
-    let mut pvss_data: Vec<u8> = "pvss".to_string().into_bytes();
+    let mut pvss_data: Vec<u8> = "".to_string().into_bytes();
 
 
     let mut qual: Vec<u32> = Vec::new();
@@ -1018,7 +1018,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         share.serialize(&mut serialized_data).unwrap();
 
 
-                        // pvss_data = serialized_data;
+                        pvss_data = serialized_data;
                         
 
                         (_, ip_addresses_comb) = sorted[level];
