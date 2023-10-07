@@ -1020,6 +1020,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         pvss_data = serialized_data;
                         
+                        println!("AT LEVEL 0: {:?}", pvss_data.len());
 
                         (_, ip_addresses_comb) = sorted[level];
 
