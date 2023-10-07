@@ -1365,7 +1365,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
                            check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level, pvss_data.clone()).await;
                                             
-                        println!("  DATA: {:?}", data);
+                        println!("  DATA: {:?}", data.len());
                         if level==1
                         {   
                             updated_pvss.push(data);
