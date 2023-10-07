@@ -658,9 +658,9 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
         v2 = pvss_data.get(&2).unwrap().to_vec();
         
     }
-    let v1_str = String::from_utf8(v1).unwrap();
-    let v2_str = String::from_utf8(v2).unwrap();
-
+    let v1_str = String::from_utf8_lossy(&v1).to_string();
+    let v2_str = String::from_utf8_lossy(&v2).to_string();
+    
     let V = format!("{}-{}", v1_str, v2_str);
 
 
