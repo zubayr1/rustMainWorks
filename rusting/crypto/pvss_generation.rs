@@ -30,10 +30,12 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
     let seed: [u8; 32] = [42; 32];
 
     let mut rng1 = rand::rngs::StdRng::from_seed(seed);
-
+    println!("{:?}", rng1);
     let rng2: &mut rand::rngs::ThreadRng = &mut thread_rng();
     
+    
     let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(&mut rng1).unwrap(); //seedable
+
 
     let schnorr_srs = 
         optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(&mut rng1).unwrap(); //seedable
