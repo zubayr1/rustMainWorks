@@ -44,7 +44,7 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
 
     
     // generate key pairs
-    let dealer_keypair_sig  = schnorr_sig.generate_keypair(&mut rng1).unwrap(); //osrng/threadrng/cryp secure rand
+    let dealer_keypair_sig  = schnorr_sig.generate_keypair(rng2).unwrap(); //osrng/threadrng/cryp secure rand
 
     let eddsa_keypair = optrand_pvss::generate_production_keypair(); 
 
