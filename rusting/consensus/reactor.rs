@@ -951,8 +951,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     {   
         level+=1;
 
-        // pvss_data = "pvss".to_string().into_bytes();
-
         (_, ip_addresses_comb) = sorted[sorted.len() - 1];
 
         ip_address = ip_addresses_comb.split(" ").collect();
@@ -1310,7 +1308,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let mut temp: Vec<String> = Vec::new();
 
                             for (_, map) in pvss_vec
-                            {
+                            {   println!("COMMITTEE: {:?}", map.len());
                                 temp.push(String::from_utf8(map).unwrap());
                             }
     
@@ -1361,7 +1359,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Codeword message
                     let data: String;
                     if message.level == level
-                    {   
+                    {   println!("CODEWORD: {:?}", pvss_data.len());
                         (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                         ip_address.clone(), codeword.codewords, codeword.witness, 
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
@@ -1505,7 +1503,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                         println!("adversarial accum values: {}", V1);
                                     }
-
+                                    println!("ACCUM: {:?}", pvss_data.len());
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
@@ -1532,7 +1530,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                         println!("adversarial accum values: {}", V2);
                                     }
-
+                                    println!("ACCUM: {:?}", pvss_data.len());
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
@@ -1651,7 +1649,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
-                                {   
+                                {   println!("PROPOSE: {:?}", pvss_data.len());
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
@@ -1669,7 +1667,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
 
                                 if val==2 && V2==acc_value_zl
-                                {                                 
+                                {                               println!("PROPOSE: {:?}", pvss_data.len());     
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
