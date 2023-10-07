@@ -534,8 +534,9 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
         }
 
         let pvss = pvss_agreement::decode(codeword_vec, committee_length);
-
-        pvss_hashmap.insert(i, pvss.into_bytes());    
+        let pvss_bytes = pvss.into_bytes();
+        println!("PVSS BYTES: {}", pvss_bytes.len());
+        pvss_hashmap.insert(i, pvss_bytes);    
     }
 
     pvss_hashmap
