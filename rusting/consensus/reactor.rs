@@ -1313,7 +1313,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(temp.clone(), args.clone());
     
-                            println!("\nretrieve   {:?}", pvss_data.len());
+                            println!("retrieve   {:?}", pvss_data.len());
 
                             
                             if sorted.clone().len()>level+1
@@ -1475,7 +1475,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                         if level!=1 && message.level == level
-                        {   
+                        {   println!("NEW LEVEL : {}", level);
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone(), level.clone()).await;
                         }

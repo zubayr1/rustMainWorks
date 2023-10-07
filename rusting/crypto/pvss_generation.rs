@@ -26,7 +26,7 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
     let node_len = args[3].parse::<usize>().unwrap();
 
     let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
-
+    println!("{:?}", rng);
     let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(rng).unwrap();
 
     let schnorr_srs = 
