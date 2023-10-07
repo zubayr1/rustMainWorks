@@ -842,19 +842,43 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>) -> Vec<u8>
 
     println!("    {}, {}", share1.len(), share2.len());
 
-    // let num_participants = args[3].parse::<usize>().unwrap();
-
-    // aggregrate::aggregrate_intermediate(share1, share2, num_participants);
-
-    // Sort the inner vectors
-    for inner_vec in &mut updated_pvss {
-        inner_vec.sort();
-    }
+    
 
     // Flatten the sorted inner vectors into a single Vec<u8>
-    let mut flattened_vec: Vec<u8> = updated_pvss.into_iter().flatten().collect();
+    let mut flattened_vec: Vec<u8> = Vec::new();
 
-    println!("{:?}", flattened_vec);
+    let mut pvss_vec: Vec<Vec<u8>> = Vec::new();
+
+    let mut min = 0;
+
+    for i in 0..share1.len()
+    {
+        if share1[i]<share2[i]
+        {
+            min = 0;
+            break;
+        }
+        else if share1[i]>share2[i]
+        {
+            min = 1;
+            break;
+        } {
+            
+        }
+    }
+
+    if min==0
+    {
+        pvss_vec.push(share1);
+        pvss_vec.push(share2);
+    }
+    else 
+    {
+        pvss_vec.push(share2);
+        pvss_vec.push(share1);
+    }
+
+    flattened_vec = pvss_vec.into_iter().flatten().collect();
 
     return flattened_vec;
 }
