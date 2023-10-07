@@ -1477,7 +1477,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
-
+                        println!("V Value: {}", V);
 
                         if level!=1 && message.level == level
                         {   println!("NEW LEVEL : {}", level);
