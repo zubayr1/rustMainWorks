@@ -50,7 +50,7 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
             
             participant: Participant {
                 pairing_type: PhantomData,
-                id: 2000 + id - 1,
+                id: id - 1,
                 public_key_sig: dealer_keypair_sig.1,
                 public_key_ed: eddsa_keypair.0,
             },
