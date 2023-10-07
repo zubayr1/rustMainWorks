@@ -843,9 +843,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>) -> Vec<u8>
     let share1 = updated_pvss[0].clone();
     let share2 = updated_pvss[1].clone();
 
-    println!("    {}, {}", share1.len(), share2.len());
-
-    
+   
 
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = Vec::new();
@@ -1339,7 +1337,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let mut temp: Vec<Vec<u8>> = Vec::new();
 
                             for (_, map) in pvss_vec
-                            {   println!("COMMITTEE: {:?}", map.len());
+                            {   
                                 temp.push(map);
                             }
     
@@ -1390,13 +1388,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Codeword message
                     let mut data: Vec<u8> = Vec::new();
                     if message.level == level
-                    {   println!("CODEWORD: {:?}", pvss_data.len());
+                    {   
                         (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                         ip_address.clone(), codeword.codewords, codeword.witness, 
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
                            check_first_codeword_list.clone(), check_first_committee_list.clone(), message.level, pvss_data.clone()).await;
                                             
-                        println!("  DATA: {:?}", data.len());
+                        
                         if level==1
                         {   
                             updated_pvss.push(data);
@@ -1504,10 +1502,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
-                        println!("V Value: {}", V);
+                        
 
                         if level!=1 && message.level == level
-                        {   println!("NEW LEVEL : {}", level);
+                        {   
+                            println!("NEW LEVEL : {}", level);
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone(), level.clone()).await;
                         }
@@ -1534,7 +1533,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                         println!("adversarial accum values: {}", V1);
                                     }
-                                    println!("ACCUM: {:?}", pvss_data.len());
+                                    
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
@@ -1561,7 +1560,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                         println!("adversarial accum values: {}", V2);
                                     }
-                                    println!("ACCUM: {:?}", pvss_data.len());
+                                    
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
@@ -1680,7 +1679,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
-                                {   println!("PROPOSE: {:?}", pvss_data.len());
+                                {   
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V1.clone(), 
                                     ip_address.clone().len());
@@ -1698,7 +1697,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
 
                                 if val==2 && V2==acc_value_zl
-                                {                               println!("PROPOSE: {:?}", pvss_data.len());     
+                                {                                 
                                     let (codeword_vec, witnesses_vec, merkle_len) = 
                                         deliver::deliver_encode(pvss_data.clone(), V2.clone(), 
                                     ip_address.clone().len());
