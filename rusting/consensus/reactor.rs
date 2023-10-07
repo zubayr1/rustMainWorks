@@ -637,8 +637,8 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
     let W1 = pvss_data.get(&1).unwrap();
     let W2 = pvss_data.get(&2).unwrap();
 
-    let mut v1 = "bot".to_string();
-    let mut v2 = "bot".to_string();
+    let mut v1 = "bot".to_string().as_bytes().to_vec();
+    let mut v2 = "bot".to_string().as_bytes().to_vec();
 
 
     if ip_address.len() == 2_usize.pow(level as u32)
@@ -649,17 +649,19 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
     if qual.contains(&1)
     {
         // //2BA for W1
-        v1 = String::from_utf8(pvss_data.get(&1).unwrap().to_vec()).unwrap();
+        v1 = pvss_data.get(&1).unwrap().to_vec();
         
     }
     if qual.contains(&2)
     {
         // //2BA for W2
-        v2 = String::from_utf8(pvss_data.get(&2).unwrap().to_vec()).unwrap();
+        v2 = pvss_data.get(&2).unwrap().to_vec();
         
     }
+    let v1_str = String::from_utf8(v1).unwrap();
+    let v2_str = String::from_utf8(v2).unwrap();
 
-    let V = format!("{}-{}", v1, v2);
+    let V = format!("{}-{}", v1_str, v2_str);
 
 
     if two_BA_check==false
