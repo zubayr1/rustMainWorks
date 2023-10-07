@@ -839,8 +839,10 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 fn aggregate(mut updated_pvss: Vec<String>, args: Vec<String>) -> Vec<u8>
 {
 
-    // let share1 = updated_pvss[0].as_bytes().to_vec();
-    // let share2 = updated_pvss[1].as_bytes().to_vec();
+    let share1 = updated_pvss[0].as_bytes().to_vec();
+    let share2 = updated_pvss[1].as_bytes().to_vec();
+
+    println!("    {}, {}", share1.len(), share2.len());
 
     // let num_participants = args[3].parse::<usize>().unwrap();
 
