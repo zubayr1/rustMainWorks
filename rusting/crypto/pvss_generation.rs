@@ -23,17 +23,20 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
         , SchnorrSignature<GroupAffine<Parameters>>
         ,Dealer<Bls12_381,  
         SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>
-        , rand::rngs::ThreadRng)
+        , rand::rngs::StdRng)
 {
     let node_len = args[3].parse::<usize>().unwrap();
 
-    let rng1: &mut rand::rngs::ThreadRng = &mut thread_rng();
+    let seed: [u8; 32] = [42; 32];
+
+    let mut rng1 = rand::rngs::StdRng::from_seed(seed);
+
     let rng2: &mut rand::rngs::ThreadRng = &mut thread_rng();
     
-    let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(rng1).unwrap(); //seedable
+    let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(&mut rng1).unwrap(); //seedable
 
     let schnorr_srs = 
-        optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(rng1).unwrap(); //seedable
+        optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(&mut rng1).unwrap(); //seedable
 
     let schnorr_sig = optrand_pvss::signature::schnorr::SchnorrSignature { srs: schnorr_srs };
 
@@ -74,7 +77,7 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
 
         
 
-    return (serialized_data, config, schnorr_sig, dealer, *rng1);
+    return (serialized_data, config, schnorr_sig, dealer, rng1);
 
 
 }
