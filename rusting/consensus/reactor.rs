@@ -1052,7 +1052,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
                         };
 
-                        init_aggregator = aggregator;
+                        init_aggregator = PVSSAggregator {
+                            config: config.clone(),
+                            scheme_sig: schnorr_sig.clone(),
+                            participants: participants.clone().into_iter().enumerate().collect(),
+                            aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
+                        };
 
                         // create the node instance
                         let mut node = Node {
