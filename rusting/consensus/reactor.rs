@@ -1564,7 +1564,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
 
                         if level!=1 && message.level == level
-                        {   
+                        {   println!("V: {}", V);
                             println!("NEW LEVEL : {}", level);
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone(), level.clone()).await;
@@ -1579,7 +1579,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-
+                            println!("V: {}", V);
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
