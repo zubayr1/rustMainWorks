@@ -836,7 +836,9 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 
 
 
-fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>) -> Vec<u8>
+fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
+    aggregator: PVSSAggregator<Bls12_381,
+    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>) -> Vec<u8>
 {
 
     let share1 = updated_pvss[0].clone();
@@ -1364,7 +1366,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 temp.push(map);
                             }
     
-                            pvss_data = aggregate(temp.clone(), args.clone());
+                            pvss_data = aggregate(temp.clone(), args.clone(), init_aggregator);
     
                             println!("retrieve   {:?}", pvss_data.len());
 
@@ -1424,7 +1426,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             if updated_pvss.len()==ip_address.clone().len()
                             {                      
-                                pvss_data = aggregate(updated_pvss.clone(), args.clone());
+                                pvss_data = aggregate(updated_pvss.clone(), args.clone(), init_aggregator);
 
                                 updated_pvss = Vec::new();
                             
