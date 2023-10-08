@@ -13,6 +13,8 @@ use std::collections::HashMap;
 
 use chrono::Utc;
 
+use rand::rngs::StdRng;
+
 use optrand_pvss::signature::schnorr::SchnorrSignature;
 use optrand_pvss::modified_scrape::participant::Participant;
 use optrand_pvss::modified_scrape::aggregator::PVSSAggregator;
@@ -842,7 +844,8 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     aggregator: PVSSAggregator<Bls12_381,
     SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>, 
     dealer: Dealer<Bls12_381,  
-    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>, level: usize) -> Vec<u8>
+    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>, level: usize, mut rng: StdRng) -> 
+    (Vec<u8>, PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>>)
 {
     let share1 = updated_pvss[0].clone();
     let share2 = updated_pvss[1].clone();
@@ -852,38 +855,38 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = Vec::new();
 
-    let mut pvss_vec: Vec<Vec<u8>> = Vec::new();
+    // let mut pvss_vec: Vec<Vec<u8>> = Vec::new();
 
-    let mut min = 0;
+    // let mut min = 0;
 
-    for i in 0..share1.len()
-    {
-        if share1[i]<share2[i]
-        {
-            min = 0;
-            break;
-        }
-        else if share1[i]>share2[i]
-        {
-            min = 1;
-            break;
-        } {
+    // for i in 0..share1.len()
+    // {
+    //     if share1[i]<share2[i]
+    //     {
+    //         min = 0;
+    //         break;
+    //     }
+    //     else if share1[i]>share2[i]
+    //     {
+    //         min = 1;
+    //         break;
+    //     } {
             
-        }
-    }
+    //     }
+    // }
 
-    if min==0
-    {
-        pvss_vec.push(share1);
-        pvss_vec.push(share2);
-    }
-    else 
-    {
-        pvss_vec.push(share2);
-        pvss_vec.push(share1);
-    }
+    // if min==0
+    // {
+    //     pvss_vec.push(share1);
+    //     pvss_vec.push(share2);
+    // }
+    // else 
+    // {
+    //     pvss_vec.push(share2);
+    //     pvss_vec.push(share1);
+    // }
 
-    flattened_vec = pvss_vec.into_iter().flatten().collect();
+    // flattened_vec = pvss_vec.into_iter().flatten().collect();
 
     if level==1
     {
@@ -905,6 +908,12 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
             aggregator,
             dealer: dealer,
         };
+
+        let share = node.share(&mut rng).unwrap();
+
+        share.serialize(&mut flattened_vec).unwrap();
+        
+        return (flattened_vec, aggregated_tx);
     }
     else 
     {
@@ -927,13 +936,14 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
             aggregator,
             dealer: dealer,
         };
+
+        let share = node.share(&mut rng).unwrap();
+
+        share.serialize(&mut flattened_vec).unwrap();
+
+        return (flattened_vec, aggregated_tx);
     }
 
-
-    
-
-
-    return flattened_vec;
 }
 
 #[allow(non_snake_case)]
@@ -1413,7 +1423,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 aggregated_tx: init_aggregated_tx.clone(),
                             };
     
-                            pvss_data = aggregate(temp.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone());
+                            (pvss_data, init_aggregated_tx) = aggregate(temp.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone(), rng.clone());
     
                             println!("retrieve   {:?}", pvss_data.len());
 
@@ -1481,7 +1491,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     aggregated_tx: init_aggregated_tx.clone(),
                                 };
 
-                                pvss_data = aggregate(updated_pvss.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone());
+                                (pvss_data, init_aggregated_tx) = aggregate(updated_pvss.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone(), rng.clone());
 
                                 updated_pvss = Vec::new();
                             
