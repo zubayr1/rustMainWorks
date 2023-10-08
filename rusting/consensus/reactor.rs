@@ -1464,7 +1464,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 updated_pvss = Vec::new();
                             
-                                println!("AT LEVEL 1  {:?}", pvss_data.len());        
+                                println!("AT LEVEL 1  {:?}", pvss_data);        
                                 
                                 level+=1;
 
@@ -1554,7 +1554,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         C1 = Vec::new();
                         C2 = Vec::new();
-
+                        println!("ACCUM VALUE: {:?}", accum_value);
 
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
