@@ -855,38 +855,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = Vec::new();
 
-    // let mut pvss_vec: Vec<Vec<u8>> = Vec::new();
-
-    // let mut min = 0;
-
-    // for i in 0..share1.len()
-    // {
-    //     if share1[i]<share2[i]
-    //     {
-    //         min = 0;
-    //         break;
-    //     }
-    //     else if share1[i]>share2[i]
-    //     {
-    //         min = 1;
-    //         break;
-    //     } {
-            
-    //     }
-    // }
-
-    // if min==0
-    // {
-    //     pvss_vec.push(share1);
-    //     pvss_vec.push(share2);
-    // }
-    // else 
-    // {
-    //     pvss_vec.push(share2);
-    //     pvss_vec.push(share1);
-    // }
-
-    // flattened_vec = pvss_vec.into_iter().flatten().collect();
+    
 
     if level==1
     {
