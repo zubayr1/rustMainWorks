@@ -1,5 +1,4 @@
 
-use optrand_pvss::modified_scrape::config::Config;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::fs::OpenOptions;
 
@@ -19,7 +18,10 @@ use optrand_pvss::modified_scrape::participant::Participant;
 use optrand_pvss::modified_scrape::aggregator::PVSSAggregator;
 use optrand_pvss::modified_scrape::share::PVSSAggregatedShare;
 use optrand_pvss::modified_scrape::node::Node;
+use optrand_pvss::modified_scrape::share::PVSSShare;
+use optrand_pvss::modified_scrape::dealer::Dealer;
 use ark_bls12_381::Bls12_381;
+
 use ark_ec::PairingEngine;
 use ark_serialize::{CanonicalSerialize, CanonicalDeserialize};
 
@@ -838,14 +840,15 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 
 fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     aggregator: PVSSAggregator<Bls12_381,
-    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>) -> Vec<u8>
+    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>, 
+    dealer: Dealer<Bls12_381,  
+    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>, level: usize) -> Vec<u8>
 {
-
     let share1 = updated_pvss[0].clone();
     let share2 = updated_pvss[1].clone();
 
+    let other_share2 = updated_pvss[1].clone();
    
-
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = Vec::new();
 
@@ -881,6 +884,54 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     }
 
     flattened_vec = pvss_vec.into_iter().flatten().collect();
+
+    if level==1
+    {
+        let other_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSShare::deserialize(&other_share2[..]).unwrap();
+
+        let aggregated_tx = aggregator.aggregated_tx.aggregate_pvss_share(&other_share.clone()).unwrap();
+
+        let aggregator: PVSSAggregator<Bls12_381,
+            SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
+            config: aggregator.config,
+            scheme_sig: aggregator.scheme_sig,
+            participants: aggregator.participants,
+            aggregated_tx: aggregated_tx,
+        };
+
+        // create the node instance
+        let mut node = Node {
+            aggregator,
+            dealer: dealer,
+        };
+    }
+    else 
+    {
+        let other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSAggregatedShare::deserialize(&other_share2[..]).unwrap();
+
+        let aggregated_tx = aggregator.aggregated_tx.aggregate(&other_share.clone()).unwrap();
+
+        let aggregator: PVSSAggregator<Bls12_381,
+            SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
+            config: aggregator.config,
+            scheme_sig: aggregator.scheme_sig,
+            participants: aggregator.participants,
+            aggregated_tx: aggregated_tx,
+        };
+
+
+        // create the node instance
+        let mut node = Node {
+            aggregator,
+            dealer: dealer,
+        };
+    }
+
+
+    
+
 
     return flattened_vec;
 }
@@ -1362,7 +1413,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 aggregated_tx: init_aggregated_tx.clone(),
                             };
     
-                            pvss_data = aggregate(temp.clone(), args.clone(), init_aggregator);
+                            pvss_data = aggregate(temp.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone());
     
                             println!("retrieve   {:?}", pvss_data.len());
 
@@ -1430,7 +1481,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     aggregated_tx: init_aggregated_tx.clone(),
                                 };
 
-                                pvss_data = aggregate(updated_pvss.clone(), args.clone(), init_aggregator);
+                                pvss_data = aggregate(updated_pvss.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone());
 
                                 updated_pvss = Vec::new();
                             
