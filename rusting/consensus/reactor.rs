@@ -900,7 +900,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
             config: aggregator.config,
             scheme_sig: aggregator.scheme_sig,
             participants: aggregator.participants,
-            aggregated_tx: aggregated_tx,
+            aggregated_tx: aggregated_tx.clone(),
         };
 
         // create the node instance
@@ -913,7 +913,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
 
         share.serialize(&mut flattened_vec).unwrap();
         
-        return (flattened_vec, aggregated_tx);
+        return (flattened_vec, aggregated_tx.clone());
     }
     else 
     {
@@ -927,7 +927,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
             config: aggregator.config,
             scheme_sig: aggregator.scheme_sig,
             participants: aggregator.participants,
-            aggregated_tx: aggregated_tx,
+            aggregated_tx: aggregated_tx.clone(),
         };
 
 
@@ -941,7 +941,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
 
         share.serialize(&mut flattened_vec).unwrap();
 
-        return (flattened_vec, aggregated_tx);
+        return (flattened_vec, aggregated_tx.clone());
     }
 
 }
