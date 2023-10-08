@@ -1,4 +1,5 @@
 
+use optrand_pvss::modified_scrape::config::Config;
 use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::fs::OpenOptions;
 
@@ -966,14 +967,31 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String = "bot".to_string();
 
-    
 
     let start_time = Utc::now().time();
+
+
 
     let (participant_data, config, schnorr_sig
         , dealer, mut rng) = 
             pvss_generation::pvss_gen(args.clone());
 
+    let mut participants: Vec<Participant<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>, 
+        SchnorrSignature<ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>>>> = Vec::new();
+
+    let num_participants = participants.len();
+    let degree = config.degree;
+
+    let mut init_aggregator: PVSSAggregator<Bls12_381,
+    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
+        config: config.clone(),
+        scheme_sig: schnorr_sig.clone(),
+        participants: participants.clone().into_iter().enumerate().collect(),
+        aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
+    };
+
+
+    
     if ip_address.len()==1
     {   
         level+=1;
@@ -1033,6 +1051,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             participants: participants.clone().into_iter().enumerate().collect(),
                             aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
                         };
+
+                        init_aggregator = aggregator;
 
                         // create the node instance
                         let mut node = Node {
