@@ -855,6 +855,36 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = Vec::new();
 
+    let mut share: Vec<Vec<u8>> = Vec::new();
+
+    let mut min=0;
+
+    for i in 0..share1.len()
+    {
+        if share1[i]<share2[i]
+        {
+            break;
+        }
+        else 
+        {
+            min=1;
+            break;
+        }
+    }
+
+    if min==0
+    {
+        share.push(share1);
+    }
+    else 
+    {
+        share.push(share2);
+    }
+
+    for inner_vec in &share {
+        flattened_vec.extend_from_slice(inner_vec);
+    }
+
     
 
     if level==1
@@ -882,7 +912,7 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
 
         share.serialize(&mut flattened_vec).unwrap();
         
-        return (flattened_vec, aggregated_tx.clone());
+        // return (flattened_vec, aggregated_tx.clone());
     }
     else 
     {
@@ -910,8 +940,10 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
 
         share.serialize(&mut flattened_vec).unwrap();
 
-        return (flattened_vec, aggregated_tx.clone());
+        // return (flattened_vec, aggregated_tx.clone());
     }
+    let aggregated_tx= PVSSAggregatedShare::empty(2, 4);
+    return (flattened_vec, aggregated_tx.clone());
 
 }
 
