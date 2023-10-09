@@ -1130,7 +1130,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         pvss_data = serialized_data;
                         
-                        println!("AT LEVEL 0: {:?}", pvss_data);
+                        println!("AT LEVEL 0: {:?}", pvss_data.len());
 
                         (_, ip_addresses_comb) = sorted[level];
 
@@ -1501,7 +1501,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 updated_pvss = Vec::new();
                             
-                                println!("AT LEVEL 1  {:?}", pvss_data);        
+                                println!("AT LEVEL 1  {:?}", pvss_data.len());        
                                 
                                 level+=1;
 
@@ -1591,7 +1591,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         C1 = Vec::new();
                         C2 = Vec::new();
-                        println!("ACCUM VALUE: {:?}", accum_value);
 
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
@@ -1601,7 +1600,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
 
                         if level!=1 && message.level == level
-                        {   println!("V: {}", V);
+                        {                               
                             println!("NEW LEVEL : {}", level);
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone(), level.clone()).await;
@@ -1616,7 +1615,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            println!("V: {}", V);
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
