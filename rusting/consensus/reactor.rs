@@ -875,10 +875,12 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     if min==0
     {
         share.push(share1);
+        share.push(share2);
     }
     else 
     {
         share.push(share2);
+        share.push(share1);
     }
 
     for inner_vec in &share {
