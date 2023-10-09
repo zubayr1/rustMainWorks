@@ -1078,6 +1078,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the PVSSGen message type
                 ConsensusMessage::PVSSGenMessage(pvssgen) =>
                 {
+                    let end_time = Utc::now().time();
+                    let diff = end_time - start_time;
+                    
+                    println!("Delta calculation:  End by {}. time taken {} miliseconds", message.sender, diff.num_milliseconds());
+
                     // Handle PVSSGen message
                     let port = message.sender.port() as usize;
                     pvss_value_hashmap.insert(port, pvssgen.value);
