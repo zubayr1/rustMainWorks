@@ -883,67 +883,70 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
         share.push(share1);
     }
 
-    for inner_vec in &share {
-        flattened_vec.extend_from_slice(inner_vec);
+    for i in share
+    {
+        for j in i{
+            flattened_vec.push(j);
+        }
     }
 
     
 
-    if level==1
-    {
-        let other_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-            PVSSShare::deserialize(&other_share2[..]).unwrap();
+    // if level==1
+    // {
+    //     let other_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+    //         PVSSShare::deserialize(&other_share2[..]).unwrap();
 
-        let aggregated_tx = aggregator.aggregated_tx.aggregate_pvss_share(&other_share.clone()).unwrap();
+    //     let aggregated_tx = aggregator.aggregated_tx.aggregate_pvss_share(&other_share.clone()).unwrap();
 
-        let aggregator: PVSSAggregator<Bls12_381,
-            SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
-            config: aggregator.config,
-            scheme_sig: aggregator.scheme_sig,
-            participants: aggregator.participants,
-            aggregated_tx: aggregated_tx.clone(),
-        };
+    //     let aggregator: PVSSAggregator<Bls12_381,
+    //         SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
+    //         config: aggregator.config,
+    //         scheme_sig: aggregator.scheme_sig,
+    //         participants: aggregator.participants,
+    //         aggregated_tx: aggregated_tx.clone(),
+    //     };
 
-        // create the node instance
-        let mut node = Node {
-            aggregator,
-            dealer: dealer,
-        };
+    //     // create the node instance
+    //     let mut node = Node {
+    //         aggregator,
+    //         dealer: dealer,
+    //     };
 
-        let share = node.share(&mut rng).unwrap();
+    //     let share = node.share(&mut rng).unwrap();
 
-        share.serialize(&mut flattened_vec).unwrap();
+    //     share.serialize(&mut flattened_vec).unwrap();
         
-        // return (flattened_vec, aggregated_tx.clone());
-    }
-    else 
-    {
-        let other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-            PVSSAggregatedShare::deserialize(&other_share2[..]).unwrap();
+    //     // return (flattened_vec, aggregated_tx.clone());
+    // }
+    // else 
+    // {
+    //     let other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+    //         PVSSAggregatedShare::deserialize(&other_share2[..]).unwrap();
 
-        let aggregated_tx = aggregator.aggregated_tx.aggregate(&other_share.clone()).unwrap();
+    //     let aggregated_tx = aggregator.aggregated_tx.aggregate(&other_share.clone()).unwrap();
 
-        let aggregator: PVSSAggregator<Bls12_381,
-            SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
-            config: aggregator.config,
-            scheme_sig: aggregator.scheme_sig,
-            participants: aggregator.participants,
-            aggregated_tx: aggregated_tx.clone(),
-        };
+    //     let aggregator: PVSSAggregator<Bls12_381,
+    //         SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
+    //         config: aggregator.config,
+    //         scheme_sig: aggregator.scheme_sig,
+    //         participants: aggregator.participants,
+    //         aggregated_tx: aggregated_tx.clone(),
+    //     };
 
 
-        // create the node instance
-        let mut node = Node {
-            aggregator,
-            dealer: dealer,
-        };
+    //     // create the node instance
+    //     let mut node = Node {
+    //         aggregator,
+    //         dealer: dealer,
+    //     };
 
-        let share = node.share(&mut rng).unwrap();
+    //     let share = node.share(&mut rng).unwrap();
 
-        share.serialize(&mut flattened_vec).unwrap();
+    //     share.serialize(&mut flattened_vec).unwrap();
 
-        // return (flattened_vec, aggregated_tx.clone());
-    }
+    //     // return (flattened_vec, aggregated_tx.clone());
+    // }
     let aggregated_tx= PVSSAggregatedShare::empty(2, 4);
     return (flattened_vec, aggregated_tx.clone());
 
