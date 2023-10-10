@@ -841,11 +841,8 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 
 
 fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
-    aggregator: PVSSAggregator<Bls12_381,
-    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>, 
-    dealer: Dealer<Bls12_381,  
-    SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>, level: usize, mut rng: StdRng) -> 
-    (Vec<u8>, PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>>)
+    aggregator_tx: PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> , level: usize
+    ) -> Vec<u8>
 {
     let share1 = updated_pvss[0].clone();
     let share2 = updated_pvss[1].clone();
@@ -855,100 +852,85 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = Vec::new();
 
-    let mut share: Vec<Vec<u8>> = Vec::new();
+    // let mut share: Vec<Vec<u8>> = Vec::new();
 
-    let mut min=0;
+    // let mut min=0;
 
-    for i in 0..share1.len()
-    {
-        if share1[i]<share2[i]
-        {
-            break;
-        }
-        else 
-        {
-            min=1;
-            break;
-        }
-    }
-
-    if min==0
-    {
-        share.push(share1);
-        share.push(share2);
-    }
-    else 
-    {
-        share.push(share2);
-        share.push(share1);
-    }
-
-    for i in share
-    {
-        for j in i{
-            flattened_vec.push(j);
-        }
-    }
-
-    
-
-    // if level==1
+    // for i in 0..share1.len()
     // {
-    //     let other_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-    //         PVSSShare::deserialize(&other_share2[..]).unwrap();
+    //     if share1[i]<share2[i]
+    //     {
+    //         break;
+    //     }
+    //     else 
+    //     {
+    //         min=1;
+    //         break;
+    //     }
+    // }
 
-    //     let aggregated_tx = aggregator.aggregated_tx.aggregate_pvss_share(&other_share.clone()).unwrap();
-
-    //     let aggregator: PVSSAggregator<Bls12_381,
-    //         SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
-    //         config: aggregator.config,
-    //         scheme_sig: aggregator.scheme_sig,
-    //         participants: aggregator.participants,
-    //         aggregated_tx: aggregated_tx.clone(),
-    //     };
-
-    //     // create the node instance
-    //     let mut node = Node {
-    //         aggregator,
-    //         dealer: dealer,
-    //     };
-
-    //     let share = node.share(&mut rng).unwrap();
-
-    //     share.serialize(&mut flattened_vec).unwrap();
-        
-    //     // return (flattened_vec, aggregated_tx.clone());
+    // if min==0
+    // {
+    //     share.push(share1);
+    //     share.push(share2);
     // }
     // else 
     // {
-    //     let other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-    //         PVSSAggregatedShare::deserialize(&other_share2[..]).unwrap();
-
-    //     let aggregated_tx = aggregator.aggregated_tx.aggregate(&other_share.clone()).unwrap();
-
-    //     let aggregator: PVSSAggregator<Bls12_381,
-    //         SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
-    //         config: aggregator.config,
-    //         scheme_sig: aggregator.scheme_sig,
-    //         participants: aggregator.participants,
-    //         aggregated_tx: aggregated_tx.clone(),
-    //     };
-
-
-    //     // create the node instance
-    //     let mut node = Node {
-    //         aggregator,
-    //         dealer: dealer,
-    //     };
-
-    //     let share = node.share(&mut rng).unwrap();
-
-    //     share.serialize(&mut flattened_vec).unwrap();
-
-    //     // return (flattened_vec, aggregated_tx.clone());
+    //     share.push(share2);
+    //     share.push(share1);
     // }
-    let aggregated_tx= PVSSAggregatedShare::empty(2, 4);
-    return (flattened_vec, aggregated_tx.clone());
+
+    // for i in share
+    // {
+    //     for j in i{
+    //         flattened_vec.push(j);
+    //     }
+    // }
+
+    
+
+    if level==1
+    {
+        let other_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSShare::deserialize(&other_share2[..]).unwrap();
+
+        let aggregated_tx_new = aggregator_tx.aggregate_pvss_share(&other_share.clone()).unwrap();
+
+        
+        aggregated_tx_new.serialize(&mut flattened_vec).unwrap();
+        
+        return flattened_vec;
+    }
+    else 
+    {
+        let other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSAggregatedShare::deserialize(&other_share2[..]).unwrap();
+
+        let aggregated_tx_new = aggregator_tx.aggregate(&other_share.clone()).unwrap();
+
+        // let aggregator: PVSSAggregator<Bls12_381,
+        //     SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
+        //     config: aggregator.config,
+        //     scheme_sig: aggregator.scheme_sig,
+        //     participants: aggregator.participants,
+        //     aggregated_tx: aggregated_tx.clone(),
+        // };
+
+
+        // // create the node instance
+        // let mut node = Node {
+        //     aggregator,
+        //     dealer: dealer,
+        // };
+
+        // let share = node.share(&mut rng).unwrap();
+
+        aggregated_tx_new.serialize(&mut flattened_vec).unwrap();
+
+        // return (flattened_vec, aggregated_tx.clone());
+    }
+
+    return flattened_vec;
 
 }
 
@@ -1433,8 +1415,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 participants: init_participants.clone().into_iter().enumerate().collect(),
                                 aggregated_tx: init_aggregated_tx.clone(),
                             };
+
+                            let deserialized_data: PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+                                PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
     
-                            (pvss_data, init_aggregated_tx) = aggregate(temp.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone(), rng.clone());
+                            pvss_data = aggregate(temp.clone(), args.clone(), deserialized_data, level);
     
                             println!("retrieve   {:?}", pvss_data.len());
 
@@ -1495,14 +1480,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             if updated_pvss.len()==ip_address.clone().len()
                             {                      
 
-                                let init_aggregator = PVSSAggregator {
-                                    config: config.clone(),
-                                    scheme_sig: schnorr_sig.clone(),
-                                    participants: init_participants.clone().into_iter().enumerate().collect(),
-                                    aggregated_tx: init_aggregated_tx.clone(),
-                                };
+                                // let init_aggregator = PVSSAggregator {
+                                //     config: config.clone(),
+                                //     scheme_sig: schnorr_sig.clone(),
+                                //     participants: init_participants.clone().into_iter().enumerate().collect(),
+                                //     aggregated_tx: init_aggregated_tx.clone(),
+                                // };
 
-                                (pvss_data, init_aggregated_tx) = aggregate(updated_pvss.clone(), args.clone(), init_aggregator, dealer.clone(), level.clone(), rng.clone());
+                                
+
+                                pvss_data = aggregate(updated_pvss.clone(), args.clone(), init_aggregated_tx.clone(), level.clone());
 
                                 updated_pvss = Vec::new();
                             
