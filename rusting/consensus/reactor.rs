@@ -1027,10 +1027,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         , dealer, mut rng) = 
             pvss_generation::pvss_gen(args.clone());
 
-    let mut init_participants: Vec<Participant<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>, 
-        SchnorrSignature<ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>>>> = Vec::new();
+  
 
-    let init_num_participants = args[3].parse::<usize>().unwrap();
+    let init_num_participants = config.num_participants;
     let init_degree = config.degree;
 
     let mut init_aggregated_tx = PVSSAggregatedShare::empty(init_degree, init_num_participants);
@@ -1091,8 +1090,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let num_participants = ip_address.len();
                         let degree = config.degree;
 
-                        init_participants = participants.clone();
-
                         // create the aggregator instance
                             let aggregator: PVSSAggregator<Bls12_381,
                             SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
@@ -1102,7 +1099,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
                         };
 
-                        init_aggregated_tx = PVSSAggregatedShare::empty(degree, num_participants);
 
                         // create the node instance
                         let mut node = Node {
@@ -1409,12 +1405,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 temp.push(map);
                             }
 
-                            let init_aggregator = PVSSAggregator {
-                                config: config.clone(),
-                                scheme_sig: schnorr_sig.clone(),
-                                participants: init_participants.clone().into_iter().enumerate().collect(),
-                                aggregated_tx: init_aggregated_tx.clone(),
-                            };
+                            // let init_aggregator = PVSSAggregator {
+                            //     config: config.clone(),
+                            //     scheme_sig: schnorr_sig.clone(),
+                            //     participants: init_participants.clone().into_iter().enumerate().collect(),
+                            //     aggregated_tx: init_aggregated_tx.clone(),
+                            // };
 
                             let deserialized_data: PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
                                 PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
