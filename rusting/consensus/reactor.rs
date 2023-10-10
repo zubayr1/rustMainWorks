@@ -1493,7 +1493,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 updated_pvss = Vec::new();
                             
-                                println!("AT LEVEL 1  {:?}", pvss_data.len());        
+                                println!("AT LEVEL 1  {:?}", pvss_data);        
                                 
                                 level+=1;
 
