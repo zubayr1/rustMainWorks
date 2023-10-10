@@ -36,6 +36,9 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
     
     let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(&mut rng1).unwrap(); //seedable
 
+    println!("{:?}", srs.g1);
+
+    println!("{:?}", srs.g2);
 
     let schnorr_srs = 
         optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(&mut rng1).unwrap(); //seedable
