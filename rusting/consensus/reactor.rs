@@ -1186,7 +1186,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {   
                         if !store_messages.contains(&value)
                         {   
-                            // store_messages.push(value.clone());
+                            store_messages.push(value.clone());
                             echo_value.push(value);
                         }
                         
@@ -1222,7 +1222,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         forward_value.push(value);
                     }
 
-                    if forward_value.len()==2_usize.pow(level as u32)
+                    if forward_value.len()==2_usize.pow(level as u32)/2
                     {      println!("FORWARD  {:?}", forward_value);                 
                         let forward_value_copy = forward_value.clone();
 
