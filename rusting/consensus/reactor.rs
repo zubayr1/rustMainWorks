@@ -1807,7 +1807,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     
-                    if propose_value.len() == ip_address.clone().len() && message.level == level
+                    if propose_value.len() == 2_usize.pow(level as u32) && message.level == level
                     {    println!("PROPOSE {:?}", propose_value);
                         if g==0
                         {
