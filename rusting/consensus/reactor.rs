@@ -1795,8 +1795,19 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
 
+                    let mut size = 0;
+
+                    if propose_reached==false
+                    {
+                        size = 2_usize.pow(level as u32)/2 ;
+                    }
+                    else 
+                    {
+                        size = 2_usize.pow(level as u32)/4 ;
+                    }
+
                     
-                    if propose_value.len() == 2_usize.pow(level as u32)/2 && message.level == level
+                    if propose_value.len() == size && message.level == level
                     {    println!("PROPOSE {:?}", propose_value);
                         if g==0
                         {
