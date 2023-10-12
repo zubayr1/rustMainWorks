@@ -1263,8 +1263,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         
                     }
-                    else if message.level==level
+                    else if vote.no==2 && message.level==level
                     {
+
                         vote2_value.push(value);
                     }                    
 
