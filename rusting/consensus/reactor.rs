@@ -1248,7 +1248,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", vote.value,  message.sender);
                    
-                    println!("{}", value);
                     if vote.no==1
                     {
                         vote1_value.push(value);
@@ -1781,7 +1780,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
 
                         }
-                        propose_value = Vec::new();
+                        
+                        echo_value = Vec::new();
+                        forward_value = Vec::new();
                         vote1_value = Vec::new();
                         vote2_value = Vec::new();
                         //run BA
@@ -1815,7 +1816,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            
+                            propose_value = Vec::new();
                             for val in qual.clone()
                             {   
                                 if val==1 && V1==acc_value_zl
