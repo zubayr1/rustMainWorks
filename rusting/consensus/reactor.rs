@@ -1058,6 +1058,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut store_messages: Vec<String> = Vec::new();
     let mut store_vote_messages: Vec<String> = Vec::new();
     let mut store_vote2_messages: Vec<String> = Vec::new();
+    let mut store_propose_messages: Vec<String> = Vec::new();
 
     let start_time = Utc::now().time();
 
@@ -1779,9 +1780,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     let values: Vec<String> = inner_map.values().cloned().collect();
 
                                     for value in values
-                                    {
-                                        propose_value.push(value);
+                                    {                                        
+                                        if !store_propose_messages.contains(&value)
+                                        {   
+                                            store_propose_messages.push(value.clone());
+                                            propose_value.push(value);
+                                        }
                                     }
+                                    
                                 }
                                 None => {
                                     println!("Key 'key1' not found in the original HashMap.");
