@@ -1055,10 +1055,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String = "bot".to_string();
 
-    let mut store_messages: Vec<String> = Vec::new();
-    let mut store_vote_messages: Vec<String> = Vec::new();
-    let mut store_vote2_messages: Vec<String> = Vec::new();
-    let mut store_propose_messages: Vec<String> = Vec::new();
+    // let mut store_messages: Vec<String> = Vec::new();
+    // let mut store_vote_messages: Vec<String> = Vec::new();
+    // let mut store_vote2_messages: Vec<String> = Vec::new();
+    // let mut store_propose_messages: Vec<String> = Vec::new();
 
     let start_time = Utc::now().time();
 
@@ -1185,11 +1185,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     if message.level == level
                     {   
-                        if !store_messages.contains(&value)
-                        {   
-                            store_messages.push(value.clone());
-                            echo_value.push(value);
-                        }
+                        echo_value.push(value);
                         
                     }   
 
@@ -1258,20 +1254,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if vote.no==1 && message.level==level
                     {   let val_split: Vec<&str> = value.split(" ").collect();
 
-                        if !store_vote_messages.contains(&val_split[0].to_string())
-                        {   
-                            vote1_value.push(value);
-                        }
+                        vote1_value.push(value);
                         
                     }
                     else if vote.no==2 && message.level==level
                     {
                         let val_split: Vec<&str> = value.split(" ").collect();
 
-                        if !store_vote2_messages.contains(&val_split[0].to_string())
-                        {   
-                            vote2_value.push(value);
-                        }
+                        vote2_value.push(value);
 
                         
                     }                    
@@ -1279,15 +1269,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
                     {  
-                        for val in  vote1_value.clone()
-                        {
-                            let val_split: Vec<&str> = val.split(" ").collect();
-                            if !store_vote_messages.contains(&val_split[0].to_string())
-                            {
-                                store_vote_messages.push(val_split[0].to_string());
-                            }
-                            
-                        }       
+                             
                         
                         println!("vote1_value {} {:?}", level, vote1_value);            
                         for output in vote1_value
@@ -1311,15 +1293,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
                     {   println!("vote2_value {} {:?}", level, vote2_value);
 
-                        for val in  vote2_value.clone()
-                        {
-                            let val_split: Vec<&str> = val.split(" ").collect();
-                            if !store_vote2_messages.contains(&val_split[0].to_string())
-                            {
-                                store_vote2_messages.push(val_split[0].to_string());
-                            }
-                            
-                        } 
+                        
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1779,14 +1753,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     // Inner HashMap was removed, you can access its values
                                     let values: Vec<String> = inner_map.values().cloned().collect();
 
-                                    for value in values
-                                    {                                        
-                                        if !store_propose_messages.contains(&value)
-                                        {   
-                                            store_propose_messages.push(value.clone());
-                                            propose_value.push(value);
-                                        }
-                                    }
+                                    propose_value.push(value);
                                     
                                 }
                                 None => {
