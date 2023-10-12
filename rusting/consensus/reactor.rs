@@ -1183,7 +1183,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", echo.value, message.sender);
                     
                     if message.level == level
-                    {   println!("{:?}", echo_value);
+                    {   
                         echo_value.push(value);
                     }   
 
@@ -1280,7 +1280,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
-                    {   
+                    {   println!("vote2_value  {:?}", vote2_value); 
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
