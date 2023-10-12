@@ -1465,7 +1465,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
     
-                            println!("retrieve   {:?}", pvss_data.len());
+                            println!("retrieve   {:?}", pvss_data);
 
                             
                             if sorted.clone().len()>level+1
