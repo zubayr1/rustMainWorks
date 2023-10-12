@@ -1469,8 +1469,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             println!("retrieve   {:?}", pvss_data);
 
                             echo_value = Vec::new();
+                            forward_value = Vec::new();
+                            vote1_value = Vec::new();
+                            vote2_value = Vec::new();
+                            propose_value = Vec::new();
 
-                            
                             if sorted.clone().len()>level+1
                             {   
                                 level+=1;
@@ -1766,7 +1769,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     
                     if propose_value.len() == 2_usize.pow(level as u32)/2 && message.level == level
-                    {    println!("{:?}", propose_value);
+                    {    println!("PROPOSE {:?}", propose_value);
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
