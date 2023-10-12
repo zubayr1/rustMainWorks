@@ -91,7 +91,7 @@ pub async fn forward_phase(tx_sender: Sender<NetworkMessage>, count: usize, pi: 
 pub async fn gba_setup(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, 
     args: Vec<String>, V: String, level: usize) 
     
-{    println!("       LEVEL {}", level);
+{    println!("       LEVEL {}, V {}", level, V);
     let echo = Echo::create_echo("".to_string(), V.to_string());
     
     let echo_consensus_message: ConsensusMessage = ConsensusMessage::EchoMessage(echo);
