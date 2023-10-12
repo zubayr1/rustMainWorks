@@ -1276,8 +1276,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         vote2_value.push(value);
                     }                    
 
+                    let mut size = 0;
 
-                    if vote1_value.len()==2_usize.pow(level as u32)/2 + 1 //vote phase
+                    if propose_reached==false
+                    {
+                        size = 2_usize.pow(level as u32)/2 + 1;
+                    }
+                    else 
+                    {
+                        size = 2_usize.pow(level as u32)/4 + 1;
+                    }
+
+                    if vote1_value.len()==size //vote phase
                     {               println!("vote1_value  {:?}", vote1_value);            
                         for output in vote1_value
                         {
@@ -1297,7 +1307,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==2_usize.pow(level as u32)/2 + 1 //second vote phase    
+                    if vote2_value.len()==size //second vote phase    
                     {   println!("vote2_value  {:?}", vote2_value); 
                         for output in vote2_value
                         {
