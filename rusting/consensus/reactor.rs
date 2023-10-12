@@ -1217,7 +1217,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         forward_value.push(value);
                     }
 
-                    if forward_value.len()==2_usize.pow(level as u32)/2
+                    if forward_value.len()==2_usize.pow(level as u32)
                     {      println!("FORWARD  {:?}", forward_value);                 
                         let forward_value_copy = forward_value.clone();
 
@@ -1259,7 +1259,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }                    
 
 
-                    if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
+                    if vote1_value.len()==2_usize.pow(level as u32)/2 + 1 //vote phase
                     {               println!("vote1_value  {:?}", vote1_value);            
                         for output in vote1_value
                         {
@@ -1279,7 +1279,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
+                    if vote2_value.len()==2_usize.pow(level as u32)/2 + 1 //second vote phase    
                     {   println!("vote2_value  {:?}", vote2_value); 
                         for output in vote2_value
                         {
