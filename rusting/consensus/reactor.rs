@@ -1248,7 +1248,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let value = format!("{} {}", vote.value,  message.sender);
                    
-
+                    println!("{}", value);
                     if vote.no==1
                     {
                         vote1_value.push(value);
