@@ -1188,7 +1188,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if propose_reached==false
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)    
+                        if echo_value.len()==2_usize.pow(level as u32)/2   
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1203,7 +1203,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/2   
+                        if echo_value.len()==2_usize.pow(level as u32)/3   
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1231,6 +1231,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if message.level == level
                     {
                         forward_value.push(value);
+                    }
+
+                    let mut size = 0;
+
+                    if propose_reached==false
+                    {
+                        size = 2_usize.pow(level as u32)/2;
+                    }
+                    else 
+                    {
+                        size = 2_usize.pow(level as u32)/4;
                     }
 
                     if forward_value.len()==2_usize.pow(level as u32)/2
