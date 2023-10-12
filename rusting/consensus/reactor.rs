@@ -1055,7 +1055,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String = "bot".to_string();
 
-    
+    let mut propose_reached=false;
 
     let start_time = Utc::now().time();
 
@@ -1189,18 +1189,37 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let (count, pi): (usize, Vec<String>);
 
-                    if echo_value.len()==2_usize.pow(level as u32)    
-                    {   println!("ECHO  {:?}", echo_value);
-                        let V = format!("{}-{}", V1.clone(), V2.clone());
-                        (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
-                        
-                        
-                        echo_value = Vec::new(); 
-                                                
-                        forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
-                            ip_address.clone(), args.clone(), level).await;
-                        
+                    if propose_reached==false
+                    {
+                        if echo_value.len()==2_usize.pow(level as u32)    
+                        {   println!("ECHO  {:?}", echo_value);
+                            let V = format!("{}-{}", V1.clone(), V2.clone());
+                            (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
+                            
+                            
+                            echo_value = Vec::new(); 
+                                                    
+                            forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
+                                ip_address.clone(), args.clone(), level).await;
+                            
+                        }
                     }
+                    else 
+                    {
+                        if echo_value.len()==2_usize.pow(level as u32)    
+                        {   println!("ECHO  {:?}", echo_value);
+                            let V = format!("{}-{}", V1.clone(), V2.clone());
+                            (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
+                            
+                            
+                            echo_value = Vec::new(); 
+                                                    
+                            forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
+                                ip_address.clone(), args.clone(), level).await;
+                            
+                        }
+                    }
+                    
 
 
                 }
@@ -1472,7 +1491,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             vote1_value = Vec::new();
                             vote2_value = Vec::new();
                             propose_value = Vec::new();
-
+                            propose_reached = false;
                             if sorted.clone().len()>level+1
                             {   
                                 level+=1;
@@ -1780,7 +1799,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
 
                         }
-                        
+                        propose_reached = true;
                         echo_value = Vec::new();
                         forward_value = Vec::new();
                         vote1_value = Vec::new();
