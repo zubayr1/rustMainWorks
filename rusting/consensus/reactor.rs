@@ -1055,10 +1055,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String = "bot".to_string();
 
-    // let mut store_messages: Vec<String> = Vec::new();
-    // let mut store_vote_messages: Vec<String> = Vec::new();
-    // let mut store_vote2_messages: Vec<String> = Vec::new();
-    // let mut store_propose_messages: Vec<String> = Vec::new();
+    
 
     let start_time = Utc::now().time();
 
@@ -1099,6 +1096,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         
     }
 
+
+    
 
     loop 
     {
@@ -1184,9 +1183,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", echo.value, message.sender);
                     
                     if message.level == level
-                    {   
+                    {   println!("{}", level);
                         echo_value.push(value);
-                        
                     }   
 
                     let (count, pi): (usize, Vec<String>);
@@ -1251,27 +1249,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", vote.value,  message.sender);
                    
 
-                    if vote.no==1 && message.level==level
-                    {   let val_split: Vec<&str> = value.split(" ").collect();
-
-                        vote1_value.push(value);
-                        
-                    }
-                    else if vote.no==2 && message.level==level
+                    if vote.no==1
                     {
-                        let val_split: Vec<&str> = value.split(" ").collect();
-
+                        vote1_value.push(value);
+                    }
+                    else
+                    {
                         vote2_value.push(value);
-
-                        
                     }                    
 
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    {  
-                             
-                        
-                        println!("vote1_value {} {:?}", level, vote1_value);            
+                    {               println!("vote1_value  {:?}", vote1_value);            
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1291,9 +1280,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
-                    {   println!("vote2_value {} {:?}", level, vote2_value);
-
-                        
+                    {   
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1479,7 +1466,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
     
-                            println!("retrieve   {:?}", pvss_data.len());
+                            println!("retrieve   {:?}", pvss_data);
 
                             
                             if sorted.clone().len()>level+1
@@ -1493,7 +1480,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                         
                                 (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
-                                println!("acc_value_zl {:?}", acc_value_zl);
+                                
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
                                     args.clone(), level.clone());
@@ -1526,7 +1513,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     // Handle Codeword message
                     let mut data: Vec<u8> = Vec::new();
                     if message.level == level
-                    {   println!("CODEWORD {}", level);
+                    {   
                         (data, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "codewords".to_string(),
                         ip_address.clone(), codeword.codewords, codeword.witness, 
                            codeword.value, codeword.index, codeword.leaves_len, codeword.part, args.clone(), 
@@ -1649,7 +1636,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let V = format!("{}-{}", V1, V2);
 
-                        println!("ACCUM {:?}", V);
+                        
 
                         if level!=1 && message.level == level
                         {                                  
@@ -1753,8 +1740,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     // Inner HashMap was removed, you can access its values
                                     let values: Vec<String> = inner_map.values().cloned().collect();
 
-                                    propose_value.push(value);
-                                    
+                                    for value in values
+                                    {
+                                        propose_value.push(value);
+                                    }
                                 }
                                 None => {
                                     println!("Key 'key1' not found in the original HashMap.");
@@ -1775,7 +1764,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     
                     if propose_value.len() == 2_usize.pow(level as u32)/2 && message.level == level
-                    {    println!("PROPOSE {:?}", propose_value);
+                    {    println!("{:?}", propose_value);
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
