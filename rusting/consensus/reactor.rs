@@ -1055,6 +1055,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut acc_value_zl: String = "bot".to_string();
 
+    let mut store_messages: Vec<String> = Vec::new();
 
     let start_time = Utc::now().time();
 
@@ -1182,8 +1183,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", echo.value, message.sender);
                     
                     if message.level == level
-                    {   println!("{}", level);
-                        echo_value.push(value);
+                    {   
+                        if !store_messages.contains(&value)
+                        {   
+                            echo_value.push(value);
+                        }
+                        
                     }   
 
                     let (count, pi): (usize, Vec<String>);
@@ -1193,7 +1198,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                         
-                        
+                        store_messages.push(echo_value.get(0).unwrap().to_string());
                         echo_value = Vec::new(); 
                                                 
                         forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
