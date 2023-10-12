@@ -1057,6 +1057,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut store_messages: Vec<String> = Vec::new();
 
+    let mut store_vote_messages: Vec<String> = Vec::new();
+
     let start_time = Utc::now().time();
 
 
@@ -1255,7 +1257,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if vote.no==1 && message.level==level
                     {
-                        vote1_value.push(value);
+                        if !store_vote_messages.contains(&value)
+                        {   store_vote_messages.push(value.clone());
+                            vote1_value.push(value);
+                        }
+                        
                     }
                     else if message.level==level
                     {
