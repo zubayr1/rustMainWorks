@@ -1258,7 +1258,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }                    
 
 
-                    if vote1_value.len()==ip_address.clone().len() //vote phase
+                    if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
                     {                          
                         for output in vote1_value
                         {
@@ -1278,8 +1278,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==ip_address.clone().len() //second vote phase    
-                    {   println!("{:?}", vote2_value);
+                    if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
+                    {   
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1763,7 +1763,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     
                     if propose_value.len() == ip_address.clone().len()/2 && message.level == level
-                    {    
+                    {    println!("{:?}", propose_value);
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
