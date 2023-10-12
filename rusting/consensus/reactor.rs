@@ -1803,6 +1803,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     else 
                     {
                         size = 2_usize.pow(level as u32)/4 ;
+                        println!("SIZE:{}", size);
                     }
 
                     
