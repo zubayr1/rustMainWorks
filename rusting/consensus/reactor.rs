@@ -536,10 +536,7 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
 
             codeword_vec.push(codeword);
         }
-        for i in codeword_vec.clone()
-        {
-            println!("LEN: {}", i.len());
-        }
+        
         let pvss = pvss_agreement::decode(codeword_vec, committee_length);
         
         pvss_hashmap.insert(i, pvss);    
@@ -1110,7 +1107,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_time;
                     
-                    println!("Delta calculation:  End by {}. time taken {} miliseconds", message.sender, diff.num_milliseconds());
+                    // println!("Delta calculation:  End by {}. time taken {} miliseconds", message.sender, diff.num_milliseconds());
 
                     // Handle PVSSGen message
                     let port = message.sender.port() as usize;
@@ -1162,7 +1159,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         pvss_data = serialized_data;
                         
-                        println!("AT LEVEL 0: {:?}", pvss_data.len());
+                        // println!("AT LEVEL 0: {:?}", pvss_data.len());
 
                         (_, ip_addresses_comb) = sorted[level];
 
@@ -1192,7 +1189,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if propose_reached==false
                     {
                         if echo_value.len()==2_usize.pow(level as u32)    
-                        {   println!("ECHO  {:?},", echo_value);
+                        {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
@@ -1207,7 +1204,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     else 
                     {
                         if echo_value.len()==2_usize.pow(level as u32)/2   
-                        {   println!("ECHO  {:?}", echo_value);
+                        {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
@@ -1237,7 +1234,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if forward_value.len()==2_usize.pow(level as u32)/2
-                    {      println!("FORWARD  {:?}", forward_value);                 
+                    {                      
                         let forward_value_copy = forward_value.clone();
 
                         let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
@@ -1288,7 +1285,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if vote1_value.len()==size //vote phase
-                    {               println!("vote1_value  {:?}", vote1_value);            
+                    {                          
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1308,7 +1305,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if vote2_value.len()==size //second vote phase    
-                    {   println!("vote2_value  {:?}", vote2_value); 
+                    {    
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1494,7 +1491,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     
                             pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
     
-                            println!("retrieve   {:?}", pvss_data);
+                            // println!("retrieve   {:?}", pvss_data);
 
                             echo_value = Vec::new();
                             forward_value = Vec::new();
@@ -1509,7 +1506,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             if sorted.clone().len()>level+1
                             {   
                                 level+=1;
-                                println!("NEW LEVEL : {}", level);
+                                // println!("NEW LEVEL : {}", level);
                                 (_, ip_addresses_comb) = sorted[level];
 
                                 ip_address = ip_addresses_comb.split(" ").collect();
@@ -1528,6 +1525,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             else 
                             {
                             //    return;
+                                // println!("retrieve   {:?}", pvss_data);
 
                                 let end_time = Utc::now().time();
                                 let diff = end_time - start_time;
@@ -1577,7 +1575,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 updated_pvss = Vec::new();
                             
-                                println!("AT LEVEL 1  {:?}", pvss_data.len());        
+                                // println!("AT LEVEL 1  {:?}", pvss_data.len());        
                                 
                                 level+=1;
 
@@ -1801,7 +1799,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     
                     if propose_value.len() >= 2_usize.pow(level as u32)/2 && message.level == level
-                    {    println!("PROPOSE {:?}", propose_value);
+                    {    
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
