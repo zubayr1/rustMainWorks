@@ -1189,7 +1189,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let (count, pi): (usize, Vec<String>);
 
                     if echo_value.len()==2_usize.pow(level as u32)    
-                    {   
+                    {   println!("ECHO  {:?}", echo_value);
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                         
@@ -1217,7 +1217,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if forward_value.len()==2_usize.pow(level as u32)/2
-                    {                       
+                    {      println!("FORWARD  {:?}", forward_value);                 
                         let forward_value_copy = forward_value.clone();
 
                         let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
@@ -1259,7 +1259,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    {                          
+                    {               println!("vote1_value  {:?}", forward_value);            
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
