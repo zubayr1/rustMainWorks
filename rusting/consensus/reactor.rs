@@ -1185,7 +1185,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if message.level == level
                     {   
                         if !store_messages.contains(&value)
-                        {   
+                        {   store_messages.push(value.clone());
                             echo_value.push(value);
                         }
                         
@@ -1198,7 +1198,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let V = format!("{}-{}", V1.clone(), V2.clone());
                         (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                         
-                        store_messages.push(echo_value.get(0).unwrap().to_string());
+                        
                         echo_value = Vec::new(); 
                                                 
                         forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
