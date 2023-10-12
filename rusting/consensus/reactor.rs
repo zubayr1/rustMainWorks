@@ -1056,8 +1056,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut acc_value_zl: String = "bot".to_string();
 
     let mut store_messages: Vec<String> = Vec::new();
-
     let mut store_vote_messages: Vec<String> = Vec::new();
+    let mut store_vote2_messages: Vec<String> = Vec::new();
 
     let start_time = Utc::now().time();
 
@@ -1098,8 +1098,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         
     }
 
-
-    
 
     loop 
     {
@@ -1187,7 +1185,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if message.level == level
                     {   
                         if !store_messages.contains(&value)
-                        {   store_messages.push(value.clone());
+                        {   
+                            // store_messages.push(value.clone());
                             echo_value.push(value);
                         }
                         
