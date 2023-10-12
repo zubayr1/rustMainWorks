@@ -1259,7 +1259,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    {               println!("vote1_value  {:?}", forward_value);            
+                    {               println!("vote1_value  {:?}", vote1_value);            
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
