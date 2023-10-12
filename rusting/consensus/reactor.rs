@@ -1782,6 +1782,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
                         propose_value = Vec::new();
+                        vote1_value = Vec::new();
+                        vote2_value = Vec::new();
                         //run BA
                         if ip_address_left.len()>0 && message.level == level
                         {   
