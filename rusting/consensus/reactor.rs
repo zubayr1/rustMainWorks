@@ -1774,7 +1774,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     
                     if propose_value.len() == ip_address.clone().len()/2 && message.level == level
-                    {    println!("{:?}", propose_value);
+                    {    println!("PROPOSE {:?}", propose_value);
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
