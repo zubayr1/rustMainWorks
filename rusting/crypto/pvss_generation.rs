@@ -43,7 +43,6 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
 
     let schnorr_sig = optrand_pvss::signature::schnorr::SchnorrSignature { srs: schnorr_srs };
 
-    
     // generate key pairs
     let dealer_keypair_sig  = schnorr_sig.generate_keypair(rng2).unwrap(); //osrng/threadrng/cryp secure rand
 
@@ -76,7 +75,7 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
     dealer.clone().participant.serialize(&mut serialized_data).unwrap();
 
 
-    let deserialized_data: Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = Participant::deserialize(&serialized_data[..]).unwrap();
+    // let deserialized_data: Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = Participant::deserialize(&serialized_data[..]).unwrap();
 
         
 

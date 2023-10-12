@@ -393,9 +393,9 @@ async fn codeword_helper(tx_sender: Sender<NetworkMessage>, communication_type: 
     
             if proof==true
             {              
-    
+                
                 // send witness to nodes if have received the first valid code word
-                           
+                          
     
                 let codeword_retrieve = CodewordRetrieve::create_codeword_retrieve("sign".to_string(), 
                     codeword, part, communication_type.clone()); 
@@ -525,7 +525,7 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
         let mut codeword_vec: Vec<Vec<u8>> = Vec::new();
 
         for (_, val) in sorted_pairs
-        {
+        {   
             let codeword_str = val.trim_start_matches('[').trim_end_matches(']');
     
             // Split the string by commas, and then parse each part into u8.
@@ -536,7 +536,10 @@ fn codeword_retrieve(retrieved_hashmap: HashMap<usize, HashMap<SocketAddr, Strin
 
             codeword_vec.push(codeword);
         }
-
+        for i in codeword_vec.clone()
+        {
+            println!("LEN: {}", i.len());
+        }
         let pvss = pvss_agreement::decode(codeword_vec, committee_length);
         
         pvss_hashmap.insert(i, pvss);    
@@ -840,73 +843,99 @@ fn find_most_frequent_propose_value(strings: Vec<String>) -> (String, bool) {
 
 
 
-fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
+fn aggregate(pvss_data: Vec<u8>, mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
     aggregator: &mut PVSSAggregator<Bls12_381,
     SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>,
-     level: usize
+     level: usize, mut rng: StdRng
     ) -> Vec<u8>
 {
-    let share1 = updated_pvss[0].clone();
-    let share2 = updated_pvss[1].clone();
-
-    let other_share2 = updated_pvss[1].clone();
+    let mut other_share_vec: Vec<u8> = Vec::new();
+    if updated_pvss[0]==pvss_data
+    {
+        other_share_vec = updated_pvss[1].clone();
+    }
+    else 
+    {
+        other_share_vec = updated_pvss[0].clone();
+    }
    
     // Flatten the sorted inner vectors into a single Vec<u8>
     let mut flattened_vec: Vec<u8> = Vec::new();
 
-    // let mut share: Vec<Vec<u8>> = Vec::new();
-
-    // let mut min=0;
-
-    // for i in 0..share1.len()
-    // {
-    //     if share1[i]<share2[i]
-    //     {
-    //         break;
-    //     }
-    //     else 
-    //     {
-    //         min=1;
-    //         break;
-    //     }
-    // }
-
-    // if min==0
-    // {
-    //     share.push(share1);
-    //     share.push(share2);
-    // }
-    // else 
-    // {
-    //     share.push(share2);
-    //     share.push(share1);
-    // }
-
-    // for i in share
-    // {
-    //     for j in i{
-    //         flattened_vec.push(j);
-    //     }
-    // }
-
-    
+   
 
     if level==1
     {
-        let other_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-            PVSSShare::deserialize(&other_share2[..]).unwrap();
+        let mut other_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSShare::deserialize(&other_share_vec[..]).unwrap();
 
-        aggregator.aggregated_tx.aggregate_pvss_share(&other_share);
+        let mut my_share : optrand_pvss::modified_scrape::share::PVSSShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSShare::deserialize(&pvss_data[..]).unwrap();
+       
+                        
+        let share1 = aggregator.receive_share(&mut rng, &mut other_share).unwrap();
+        let share2 = aggregator.receive_share(&mut rng, &mut my_share).unwrap();
+
+        aggregator.aggregated_tx.serialize(&mut flattened_vec).unwrap();
+
+        // let sub_vec1 = pvss_data[pvss_data.len() - 64..].to_vec();
+
+        // let sub_vec2 = other_share_vec[other_share_vec.len() - 64..].to_vec();
         
-        
+        // let mut min = 0;
+
+        // for i in 0..64
+        // {
+        //     if sub_vec1[i]>sub_vec2[i]
+        //     {
+        //         break;
+        //     }
+        //     else if sub_vec1[i]<sub_vec2[i] 
+        //     {
+        //         min = 1;
+        //         break;
+        //     }
+        // }
+
+        // let mut flattened_vec_sub: Vec<u8> = Vec::new(); 
+
+        // for i in 0..flattened_vec.len() - 64
+        // {
+        //     if i==616
+        //     {
+        //         flattened_vec_sub.push(1);
+        //     }
+        //     else {
+        //         flattened_vec_sub.push(flattened_vec[i]);
+        //     }
+            
+        // }
+
+        // if min==0
+        // {
+        //     for i in 0..sub_vec1.len()
+        //     {
+        //         flattened_vec_sub.push(sub_vec1[i]);
+        //     }            
+        // }
+        // else {
+        //     for i in 0..sub_vec2.len()
+        //     {
+        //         flattened_vec_sub.push(sub_vec2[i]);
+        //     }
+            
+        // }
+       
         
         return flattened_vec;
     }
     else 
-    {
-        let other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-            PVSSAggregatedShare::deserialize(&other_share2[..]).unwrap();
+    {   
+        let mut other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSAggregatedShare::deserialize(&other_share_vec[..]).unwrap();
 
+        let mut my_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+            PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
 
         // let aggregator: PVSSAggregator<Bls12_381,
         //     SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
@@ -926,16 +955,19 @@ fn aggregate(mut updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
         // let share = node.share(&mut rng).unwrap();
 
 
-        aggregator.aggregated_tx.aggregate(&other_share);
+        // let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
+
+        let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
+
+        let share2 = share1.aggregate(&mut other_share).unwrap();
+
+        share2.serialize(&mut flattened_vec).unwrap();
         
-        aggregator.
         return flattened_vec;
 
 
         // return (flattened_vec, aggregated_tx.clone());
     }
-
-    return flattened_vec;
 
 }
 
@@ -1037,12 +1069,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let init_num_participants = config.num_participants;
     let init_degree = config.degree;
 
-    let mut init_aggregated_tx = PVSSAggregatedShare::empty(init_degree, init_num_participants);
+    let init_aggregated_tx = PVSSAggregatedShare::empty(init_degree, init_num_participants);
 
-    let init_participants: Vec<Participant<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>, 
-                            SchnorrSignature<ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>>>> = Vec::new();
+    let mut init_participants: Vec<Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>> = Vec::new();
 
-    let mut init_aggregator: PVSSAggregator<Bls12_381,
+    let init_aggregator: PVSSAggregator<Bls12_381,
         SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
         config: config.clone(),
         scheme_sig: schnorr_sig.clone(),
@@ -1059,7 +1090,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         (_, ip_addresses_comb) = sorted[sorted.len() - 1];
 
         ip_address = ip_addresses_comb.split(" ").collect();
-
         
         pvss_gen_init(tx_sender.clone(), ip_address.clone(), participant_data, args.clone()).await;
         
@@ -1086,10 +1116,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     pvss_value_hashmap.insert(port, pvssgen.value);
 
                     if pvss_value_hashmap.len() == ip_address.len()
-                    {
+                    {   
                         let dealer_clone = dealer.clone();
-                        let mut participants: Vec<Participant<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>, 
-                            SchnorrSignature<ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>>>> = Vec::new();
+                        let mut participants: Vec<Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>> = Vec::new();
 
                         for port_end in 1..ip_address.len()+1
                         {
@@ -1104,7 +1133,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         }
 
-                        let num_participants = ip_address.len();
+                        init_participants = participants.clone();
+
+                        let num_participants = config.num_participants;
                         let degree = config.degree;
 
                         // create the aggregator instance
@@ -1116,14 +1147,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
                         };
 
-                        init_aggregator = PVSSAggregator {
-                            config: config.clone(),
-                            scheme_sig: schnorr_sig.clone(),
-                            participants: participants.clone().into_iter().enumerate().collect(),
-                            aggregated_tx: PVSSAggregatedShare::empty(degree, num_participants),
-                        };
-
-
+                        
                         // create the node instance
                         let mut node = Node {
                             aggregator,
@@ -1235,7 +1259,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    {                         
+                    {                          
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1333,7 +1357,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         } 
 
                         if check == 0 && message.level==level
-                        {
+                        {   
                             retrieved_hashmap_codeword
                             .entry(retrieve.part)
                             .or_insert_with(HashMap::new)
@@ -1439,7 +1463,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let deserialized_data: PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
                                 PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
     
-                            pvss_data = aggregate(temp.clone(), args.clone(), &mut init_aggregator, level);
+                            pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
     
                             println!("retrieve   {:?}", pvss_data.len());
 
@@ -1471,6 +1495,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let diff = end_time - start_time;
                                 
                                 println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
+
+                                return ;
                             }
 
                             
@@ -1500,7 +1526,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             if updated_pvss.len()==ip_address.clone().len()
                             {                      
 
-                                let mut init_aggregator = PVSSAggregator {
+                                let mut init_aggregator = PVSSAggregator 
+                                {
                                     config: config.clone(),
                                     scheme_sig: schnorr_sig.clone(),
                                     participants: init_participants.clone().into_iter().enumerate().collect(),
@@ -1508,12 +1535,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 };
 
                                 
-
-                                pvss_data = aggregate(updated_pvss.clone(), args.clone(), &mut init_aggregator, level.clone());
+                                pvss_data = aggregate(pvss_data.clone(), updated_pvss.clone(), args.clone(), &mut init_aggregator, level.clone(), rng.clone());
 
                                 updated_pvss = Vec::new();
                             
-                                println!("AT LEVEL 1  {:?}", pvss_data);        
+                                println!("AT LEVEL 1  {:?}", pvss_data.len());        
                                 
                                 level+=1;
 
