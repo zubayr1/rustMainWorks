@@ -1265,8 +1265,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else if vote.no==2 && message.level==level
                     {
+                        let val_split: Vec<&str> = value.split(" ").collect();
 
-                        vote2_value.push(value);
+                        if !store_vote2_messages.contains(&val_split[0].to_string())
+                        {   
+                            vote2_value.push(value);
+                        }
+
+                        
                     }                    
 
 
@@ -1275,7 +1281,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         for val in  vote1_value.clone()
                         {
                             let val_split: Vec<&str> = val.split(" ").collect();
-                            store_vote_messages.push(val_split[0].to_string());
+                            if !store_vote_messages.contains(&val_split[0].to_string())
+                            {
+                                store_vote_messages.push(val_split[0].to_string());
+                            }
+                            
                         }       
                         
                         println!("vote1_value {} {:?}", level, vote1_value);            
@@ -1299,6 +1309,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if vote2_value.len()==ip_address.clone().len()/2 + 1 //second vote phase    
                     {   println!("vote2_value {} {:?}", level, vote2_value);
+
+                        for val in  vote2_value.clone()
+                        {
+                            let val_split: Vec<&str> = val.split(" ").collect();
+                            if !store_vote2_messages.contains(&val_split[0].to_string())
+                            {
+                                store_vote2_messages.push(val_split[0].to_string());
+                            }
+                            
+                        } 
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
