@@ -1191,11 +1191,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if echo_value.len()==2_usize.pow(level as u32)    
                     {   println!("ECHO  {:?}", echo_value);
+                        let echo_val_clone = echo_value.clone();
+                        echo_value = Vec::new();
                         let V = format!("{}-{}", V1.clone(), V2.clone());
-                        (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
+                        (count, pi) = gba::check_echo_major_v(echo_val_clone.clone(), V.clone());
                         
                         
-                        echo_value = Vec::new(); 
+                         
                                                 
                         forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
                             ip_address.clone(), args.clone(), level).await;
