@@ -1256,9 +1256,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                    
 
                     if vote.no==1 && message.level==level
-                    {
-                        if !store_vote_messages.contains(&value)
-                        {   store_vote_messages.push(value.clone());
+                    {   let val_split: Vec<&str> = value.split(" ").collect();
+
+                        if !store_vote_messages.contains(&val_split[0].to_string())
+                        {   
                             vote1_value.push(value);
                         }
                         
@@ -1270,7 +1271,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                     if vote1_value.len()==ip_address.clone().len()/2 + 1 //vote phase
-                    {               println!("vote1_value {} {:?}", level, vote1_value);            
+                    {               
+                        let val_split: Vec<&str> = vote1_value[0].split(" ").collect();
+                        store_vote_messages.push(val_split[0].to_string());
+                        println!("vote1_value {} {:?}", level, vote1_value);            
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
