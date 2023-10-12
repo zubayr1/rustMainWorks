@@ -1183,7 +1183,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let value = format!("{} {}", echo.value, message.sender);
                     
                     if message.level == level
-                    {   println!("{}", level);
+                    {   println!("{:?}", echo_value);
                         echo_value.push(value);
                     }   
 
