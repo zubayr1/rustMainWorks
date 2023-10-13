@@ -1040,7 +1040,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "optrand_pvss"
 version = "0.1.0"
-source = "git+https://github.com/DimitrisPapac/Optrand-PVSS.git#e09bbf3f7b90529fe1a9c258631406b2f5a9e9a8"
+source = "git+https://github.com/DimitrisPapac/Optrand-PVSS.git#c937de9c374c4f2493bca2b25b997ac9eadd98d4"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
