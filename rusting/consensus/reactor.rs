@@ -954,15 +954,15 @@ fn aggregate(pvss_data: Vec<u8>, mut updated_pvss: Vec<Vec<u8>>, args: Vec<Strin
 
         // let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
 
-        let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
+        
+        let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
-        // let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
+        let share2 = share1.aggregate(&mut other_share).unwrap();
 
-        // let share2 = share1.aggregate(&mut other_share).unwrap();
-
-        aggregator.aggregated_tx.serialize(&mut flattened_vec).unwrap();
+        share2.serialize(&mut flattened_vec).unwrap();
         
         return flattened_vec;
+        
 
 
         // return (flattened_vec, aggregated_tx.clone());
