@@ -952,7 +952,7 @@ fn aggregate(pvss_data: Vec<u8>, mut updated_pvss: Vec<Vec<u8>>, args: Vec<Strin
         // let share = node.share(&mut rng).unwrap();
 
 
-        let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
+        // let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
 
         
         let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
@@ -1109,9 +1109,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_time;
                     
-                    println!("Delta calculation:  End by {}. time taken {:?} microseconds", message.sender, diff.num_microseconds());
+                    // println!("Delta calculation:  End by {}. time taken {:?} microseconds", message.sender, diff.num_microseconds());
 
-                    let milliseconds_diff = diff.num_milliseconds() as usize;
+                    let milliseconds_diff = diff.num_microseconds().unwrap() as usize;
 
 
                     delta+=milliseconds_diff;
@@ -1123,7 +1123,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if pvss_value_hashmap.len() == ip_address.len()
                     {   
                         
-                        delta = delta/(ip_address.len()*2);
+                        delta = delta/(ip_address.len());
 
                         println!("{}", delta);
 
