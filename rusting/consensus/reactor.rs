@@ -311,7 +311,7 @@ fn codeword_init(
                 let original_leaf_value = leaf_values_to_prove.clone();
                 leaf_values_to_prove = create_adv_prob::shuffle_codewords(leaf_values_to_prove);
 
-                println!("Codeword init: {:?}, {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
+                println!("Codeword init: {:?},           {:?},     {}", original_leaf_value, leaf_values_to_prove, value.to_string());
             }
         }
 
