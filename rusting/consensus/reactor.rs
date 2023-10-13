@@ -954,11 +954,13 @@ fn aggregate(pvss_data: Vec<u8>, mut updated_pvss: Vec<Vec<u8>>, args: Vec<Strin
 
         // let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
 
-        let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
+        let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
 
-        let share2 = share1.aggregate(&mut other_share).unwrap();
+        // let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
-        share2.serialize(&mut flattened_vec).unwrap();
+        // let share2 = share1.aggregate(&mut other_share).unwrap();
+
+        aggregator.aggregated_tx.serialize(&mut flattened_vec).unwrap();
         
         return flattened_vec;
 
@@ -1054,9 +1056,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut propose_reached=false;
 
-    let start_time = Utc::now().time();
+    let mut delta: usize = 0;
 
-
+    
     //store aggregator globally
     let (participant_data, config, schnorr_sig
         , dealer, mut rng) = 
@@ -1093,7 +1095,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         
     }
 
-
+    let mut start_time = Utc::now().time();
     
 
     loop 
@@ -1107,7 +1109,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_time;
                     
-                    // println!("Delta calculation:  End by {}. time taken {} miliseconds", message.sender, diff.num_milliseconds());
+                    println!("Delta calculation:  End by {}. time taken {} miliseconds", message.sender, diff.num_milliseconds());
+
+                    let milliseconds_diff = diff.num_milliseconds() as usize;
+
+
+                    delta+=milliseconds_diff;
 
                     // Handle PVSSGen message
                     let port = message.sender.port() as usize;
@@ -1115,6 +1122,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if pvss_value_hashmap.len() == ip_address.len()
                     {   
+                        
+                        delta = delta/(ip_address.len()*2);
+
+                        println!("{}", delta);
+
                         let dealer_clone = dealer.clone();
                         let mut participants: Vec<Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>> = Vec::new();
 
@@ -1162,6 +1174,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         // println!("AT LEVEL 0: {:?}", pvss_data.len());
 
                         (_, ip_addresses_comb) = sorted[level];
+
+                        start_time = Utc::now().time();
 
                         ip_address = ip_addresses_comb.split(" ").collect();                       
                                 
