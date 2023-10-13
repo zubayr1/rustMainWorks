@@ -1058,7 +1058,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut delta: usize = 0;
 
-    
+    let mut start_time = Utc::now().time();
     //store aggregator globally
     let (participant_data, config, schnorr_sig
         , dealer, mut rng) = 
@@ -1095,7 +1095,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         
     }
 
-    let mut start_time = Utc::now().time();
+    
     
 
     loop 
@@ -1109,7 +1109,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_time;
                     
-                    // println!("Delta calculation:  End by {}. time taken {:?} microseconds", message.sender, diff.num_microseconds());
+                    println!("Delta calculation:  End by {}. time taken {:?} miliseconds", message.sender, diff.num_milliseconds());
 
                     // let microseconds_diff = diff.num_microseconds().unwrap() as usize;
 
