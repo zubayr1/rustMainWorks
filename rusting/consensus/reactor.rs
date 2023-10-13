@@ -875,53 +875,6 @@ fn aggregate(pvss_data: Vec<u8>, mut updated_pvss: Vec<Vec<u8>>, args: Vec<Strin
 
         aggregator.aggregated_tx.serialize(&mut flattened_vec).unwrap();
 
-        // let sub_vec1 = pvss_data[pvss_data.len() - 64..].to_vec();
-
-        // let sub_vec2 = other_share_vec[other_share_vec.len() - 64..].to_vec();
-        
-        // let mut min = 0;
-
-        // for i in 0..64
-        // {
-        //     if sub_vec1[i]>sub_vec2[i]
-        //     {
-        //         break;
-        //     }
-        //     else if sub_vec1[i]<sub_vec2[i] 
-        //     {
-        //         min = 1;
-        //         break;
-        //     }
-        // }
-
-        // let mut flattened_vec_sub: Vec<u8> = Vec::new(); 
-
-        // for i in 0..flattened_vec.len() - 64
-        // {
-        //     if i==616
-        //     {
-        //         flattened_vec_sub.push(1);
-        //     }
-        //     else {
-        //         flattened_vec_sub.push(flattened_vec[i]);
-        //     }
-            
-        // }
-
-        // if min==0
-        // {
-        //     for i in 0..sub_vec1.len()
-        //     {
-        //         flattened_vec_sub.push(sub_vec1[i]);
-        //     }            
-        // }
-        // else {
-        //     for i in 0..sub_vec2.len()
-        //     {
-        //         flattened_vec_sub.push(sub_vec2[i]);
-        //     }
-            
-        // }
        
         
         return flattened_vec;
@@ -934,24 +887,7 @@ fn aggregate(pvss_data: Vec<u8>, mut updated_pvss: Vec<Vec<u8>>, args: Vec<Strin
         let mut my_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
             PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
 
-        // let aggregator: PVSSAggregator<Bls12_381,
-        //     SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
-        //     config: aggregator.config,
-        //     scheme_sig: aggregator.scheme_sig,
-        //     participants: aggregator.participants,
-        //     aggregated_tx: aggregated_tx.clone(),
-        // };
-
-
-        // // create the node instance
-        // let mut node = Node {
-        //     aggregator,
-        //     dealer: dealer,
-        // };
-
-        // let share = node.share(&mut rng).unwrap();
-
-
+       
         // let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
 
         
@@ -963,9 +899,6 @@ fn aggregate(pvss_data: Vec<u8>, mut updated_pvss: Vec<Vec<u8>>, args: Vec<Strin
         
         return flattened_vec;
         
-
-
-        // return (flattened_vec, aggregated_tx.clone());
     }
 
 }
