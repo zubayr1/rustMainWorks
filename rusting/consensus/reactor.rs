@@ -1109,12 +1109,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_time;
                     
-                    // println!("Delta calculation:  End by {}. time taken {:?} microseconds", message.sender, diff.num_microseconds());
+                    println!("Delta calculation:  End by {}. time taken {:?} microseconds", message.sender, diff.num_microseconds());
 
-                    let milliseconds_diff = diff.num_microseconds().unwrap() as usize;
+                    let microseconds_diff = diff.num_microseconds().unwrap() as usize;
 
 
-                    delta+=milliseconds_diff;
+                    delta+=microseconds_diff;
 
                     // Handle PVSSGen message
                     let port = message.sender.port() as usize;
@@ -1125,7 +1125,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                         delta = delta/(ip_address.len());
 
-                        println!("{}", delta);
+                        println!("Delta {}", delta);
 
                         let dealer_clone = dealer.clone();
                         let mut participants: Vec<Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>> = Vec::new();
