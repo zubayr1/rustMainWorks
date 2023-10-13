@@ -1118,6 +1118,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
 
+                        
+
                         let _ = tx_sender.send(accum_network_message).await;
 
                         start_local_time = Utc::now().time();
@@ -1149,9 +1151,28 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             
                             
                             echo_value = Vec::new(); 
+
+
+                            if args[8]=="1"
+                            {
+                                if create_adv_prob::create_prob(ip_address.len())
+                                {
+                                    println!("SKIP ECHO MESSAGE");
+                                }
+                                else 
+                                {
+                                    forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
+                                        ip_address.clone(), args.clone(), level).await;
+                                }
+                                
+                            }
+                            else 
+                            {
+                                forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
+                                    ip_address.clone(), args.clone(), level).await;
+                            }
                                                     
-                            forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
-                                ip_address.clone(), args.clone(), level).await;
+                            
                             
                         }
                     }
@@ -1218,8 +1239,28 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         forward_value = Vec::new(); 
                         
-                        if all_parts_match && forward_check{ 
-                            forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), first_part_to_compare.to_string(), 1, level.clone()).await;
+                        if all_parts_match && forward_check
+                        { 
+
+                            if args[8]=="1"
+                            {
+                                if create_adv_prob::create_prob(ip_address.len())
+                                {
+                                    println!("SKIP FORWARD MESSAGE");
+                                }
+                                else 
+                                {
+                                    forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), 
+                                        first_part_to_compare.to_string(), 1, level.clone()).await;
+                                }
+                                
+                            }
+                            else 
+                            {
+                                forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), 
+                                    first_part_to_compare.to_string(), 1, level.clone()).await;
+
+                            }
                         }
                     }
 
@@ -1304,7 +1345,26 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
 
-                        let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone(), level.clone()).await;
+                        if args[8]=="1"
+                        {
+                            if create_adv_prob::create_prob(ip_address.len())
+                            {
+                                println!("SKIP PROPOSE MESSAGE");
+                            }
+                            else 
+                            {
+                                let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone(), level.clone()).await;
+
+                            }
+                            
+                        }
+                        else 
+                        {
+                            let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone(), level.clone()).await;
+
+
+                        }
+
 
                         start_local_time = Utc::now().time();                        
                     }   
