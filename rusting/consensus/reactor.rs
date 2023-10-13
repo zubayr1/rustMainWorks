@@ -21,7 +21,7 @@ use optrand_pvss::modified_scrape::aggregator::PVSSAggregator;
 use optrand_pvss::modified_scrape::share::PVSSAggregatedShare;
 use optrand_pvss::modified_scrape::node::Node;
 use optrand_pvss::modified_scrape::share::PVSSShare;
-use optrand_pvss::modified_scrape::dealer::Dealer;
+use chrono::Duration;
 use ark_bls12_381::Bls12_381;
 
 use ark_ec::PairingEngine;
@@ -1059,6 +1059,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut delta: usize = 0;
 
     let mut start_time = Utc::now().time();
+
+    let mut start_local_time = Utc::now().time();
+
+
     //store aggregator globally
     let (participant_data, config, schnorr_sig
         , dealer, mut rng) = 
@@ -1111,18 +1115,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     println!("Delta calculation:  End by {}. time taken {:?} miliseconds", message.sender, diff.num_milliseconds());
 
-                    // let microseconds_diff = diff.num_microseconds().unwrap() as usize;
+                    let microseconds_diff = diff.num_milliseconds() as usize;
 
 
-                    // delta+=microseconds_diff;
+                    delta+=microseconds_diff;
 
                     // Handle PVSSGen message
                     let port = message.sender.port() as usize;
                     pvss_value_hashmap.insert(port, pvssgen.value);
 
                     if pvss_value_hashmap.len() == ip_address.len()
-                    {   
-                        
+                    {                           
                         delta = delta/(ip_address.len());
 
                         println!("Delta {}", delta);
@@ -1184,6 +1187,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), args.clone(), level.clone());
 
                         let _ = tx_sender.send(accum_network_message).await;
+
+                        start_local_time = Utc::now().time();
                     }
                     
                 }           
@@ -1200,9 +1205,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let (count, pi): (usize, Vec<String>);
 
+                    let end_time = Utc::now().time();
+                    let diff = end_time - start_local_time;
+
                     if propose_reached==false
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/2   
+                        if echo_value.len()==2_usize.pow(level as u32)/2   || diff>=Duration::milliseconds(delta as i64)
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1217,7 +1225,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/3   
+                        if echo_value.len()==2_usize.pow(level as u32)/3    || diff>=Duration::milliseconds(delta as i64)
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1231,12 +1239,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
                     
-
+                    start_local_time = Utc::now().time();
 
                 }
 
                 // Match the Forward message type
-                ConsensusMessage::ForwardMessage(forward) => {
+                ConsensusMessage::ForwardMessage(forward) => 
+                {
                     // Handle Forward message
 
                     let value = format!("{} {}", forward.value,  message.sender);
@@ -1258,7 +1267,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         size = 2_usize.pow(level as u32)/4;
                     }
 
-                    if forward_value.len()==2_usize.pow(level as u32)/2
+                    let end_time = Utc::now().time();
+                    let diff = end_time - start_local_time;
+
+                    if forward_value.len()==2_usize.pow(level as u32)/2 || diff>=Duration::milliseconds(delta as i64)
                     {                      
                         let forward_value_copy = forward_value.clone();
 
@@ -1279,12 +1291,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
+                    start_local_time = Utc::now().time();
 
                     
                 }
 
                 // Match the Vote message type
-                ConsensusMessage::VoteMessage(vote) => {
+                ConsensusMessage::VoteMessage(vote) => 
+                {
                     // Handle Vote message
 
                     let value = format!("{} {}", vote.value,  message.sender);
@@ -1309,7 +1323,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         size = 2_usize.pow(level as u32)/4 + 1;
                     }
 
-                    if vote1_value.len()==size //vote phase
+                    let end_time = Utc::now().time();
+                    let diff = end_time - start_local_time;
+
+                    if vote1_value.len()==size || diff>=Duration::milliseconds(delta as i64) //vote phase 
                     {                          
                         for output in vote1_value
                         {
@@ -1329,7 +1346,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==size //second vote phase    
+                    if vote2_value.len()==size || diff>=Duration::milliseconds(delta as i64) //second vote phase    
                     {    
                         for output in vote2_value
                         {
@@ -1357,7 +1374,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone(), level.clone()).await;
 
-                                                
+                        start_local_time = Utc::now().time();                        
                     }   
                         
                     
@@ -1821,9 +1838,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     
-
+                    let end_time = Utc::now().time();
+                    let diff = end_time - start_local_time;
                     
-                    if propose_value.len() >= 2_usize.pow(level as u32)/2 && message.level == level
+                    if (propose_value.len() >= 2_usize.pow(level as u32)/2 && message.level == level) || diff>=Duration::milliseconds(delta as i64) 
                     {    
                         if g==0
                         {
@@ -1908,6 +1926,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     for network_msg in network_vec
                                     {   
                                         let _  = tx_sender.send(network_msg).await;
+
+                                        start_local_time = Utc::now().time();
                                     }
                                 }
                             }
