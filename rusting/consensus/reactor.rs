@@ -1061,7 +1061,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {                           
                         delta = delta/(ip_address.len());
 
-                        println!("Delta {}", delta);
 
                         let dealer_clone = dealer.clone();
                         let mut participants: Vec<Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>> = Vec::new();
@@ -1143,7 +1142,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if propose_reached==false
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/2   || diff>=Duration::milliseconds(delta as i64)
+                        if echo_value.len()==2_usize.pow(level as u32)/2   || 
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1158,7 +1157,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/3    || diff>=Duration::milliseconds(delta as i64)
+                        if echo_value.len()==2_usize.pow(level as u32)/3    || 
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1203,7 +1202,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
 
-                    if forward_value.len()==2_usize.pow(level as u32)/2 || diff>=Duration::milliseconds(delta as i64)
+                    if forward_value.len()==2_usize.pow(level as u32)/2 || 
                     {                      
                         let forward_value_copy = forward_value.clone();
 
@@ -1259,7 +1258,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
 
-                    if vote1_value.len()==size || diff>=Duration::milliseconds(delta as i64) //vote phase 
+                    if vote1_value.len()==size ||  //vote phase 
                     {                          
                         for output in vote1_value
                         {
@@ -1279,7 +1278,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==size || diff>=Duration::milliseconds(delta as i64) //second vote phase    
+                    if vote2_value.len()==size ||  //second vote phase    
                     {    
                         for output in vote2_value
                         {
@@ -1774,7 +1773,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
                     
-                    if (propose_value.len() >= 2_usize.pow(level as u32)/2 && message.level == level) || diff>=Duration::milliseconds(delta as i64) 
+                    if (propose_value.len() >= 2_usize.pow(level as u32)/2 && message.level == level) ||  
                     {    
                         if g==0
                         {
