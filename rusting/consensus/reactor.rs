@@ -21,6 +21,8 @@ use chrono::Utc;
 
 use rand::rngs::StdRng;
 
+extern crate hex;
+
 use optrand_pvss::signature::schnorr::SchnorrSignature;
 use optrand_pvss::modified_scrape::participant::Participant;
 use optrand_pvss::modified_scrape::aggregator::PVSSAggregator;
@@ -1211,29 +1213,29 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {   
                         for (i, cm_i) in grand_value.clone()
                         {   
-                            let pairs = [(
-                                config.srs.g1.neg().into(), final_deserialized_data.pvss_core.comms[i].into()), 
-                                (config.srs.g1.into(), cm_i.0.into()),
-                                (cm_i.1.into(), config.srs.g2.into())
-                                ];
+                            // let pairs = [(
+                            //     config.srs.g1.neg().into(), final_deserialized_data.pvss_core.comms[i].into()), 
+                            //     (config.srs.g1.into(), cm_i.0.into()),
+                            //     (cm_i.1.into(), config.srs.g2.into())
+                            //     ];
 
                             qualified.insert(i ,cm_i);
 
-                            let prod = <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter());
+                            // let prod = <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter());
 
                            
-                            if prod.is_one()
-                            {   
-                                println!("true1");
-                                // qualified.insert(i ,cm_i);
-                            }
+                            // if prod.is_one()
+                            // {   
+                            //     println!("true1");
+                            //     // qualified.insert(i ,cm_i);
+                            // }
 
 
-                            decrypted_share = DecryptedShare::<Bls12_381>::
-                            generate(&final_deserialized_data.pvss_core.encs,
-                            &dealer.private_key_sig,
-                            userid
-                            );
+                            // decrypted_share = DecryptedShare::<Bls12_381>::
+                            // generate(&final_deserialized_data.pvss_core.encs,
+                            // &dealer.private_key_sig,
+                            // userid
+                            // );
                             
                             let dec = decrypted_share.dec;
 
@@ -1375,11 +1377,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let mut arr = [0_u8; LAMBDA>>3];
 
                         XofReader::read(&mut reader, &mut arr);
-
-                        println!("Beacon Value:{:?}", arr);
+                       
 
                         let end_beacon_time = Utc::now().time();
                         let diff_beacon = end_beacon_time - start_beacon_time;
+
+                        let hex_string = hex::encode(arr);
+
+                        println!("Beacon Value:{}, {:?}", hex_string, arr);
 
                         println!("Beacon End by {}. time taken {} miliseconds", args[6], diff_beacon.num_milliseconds());
 
