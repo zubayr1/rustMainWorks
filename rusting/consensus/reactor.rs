@@ -1410,7 +1410,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let dec: GroupAffine<ark_bls12_381::g1::Parameters> = decrypted_share.dec;
 
-                        grand(ai, dec, config, tx_sender, ip_address.clone(), args.clone(), level).await;
+                        epoch+=1;
+
+                        grand(ai.clone(), dec, config.clone(), tx_sender.clone(), ip_address.clone(), args.clone(), level).await;
+
 
                     }
 
@@ -2025,7 +2028,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 
                                 //loop
 
-                                grand(ai, dec, config, tx_sender, ip_address.clone(), args.clone(), level).await;
+                                grand(ai.clone(), dec, config.clone(), tx_sender.clone(), ip_address.clone(), args.clone(), level).await;
 
                                 
                                 // return ;
