@@ -1344,7 +1344,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     }
 
-                    if reconstruction_value_hashmap.len() >= 2_usize.pow(level as u32)/2 + 1 && !beacon_epochs.contains(&epoch)
+                    if (reconstruction_value_hashmap.len() == 2_usize.pow(level as u32)/2 + 1) && !beacon_epochs.contains(&epoch)
                     {             
                         beacon_epochs.push(epoch);           
                         let mut evals: Vec<QuadExtField<Fp12ParamsWrapper<Fq12Parameters>>> = Vec::new();
@@ -1357,10 +1357,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             evals.push(val.1);
                         }
 
+                        reconstruction_value_hashmap = HashMap::new();
+
                         let sigma = optrand_pvss::modified_scrape::poly::lagrange_interpolation_gt
                         ::<Bls12_381>(&evals, &points, config.degree as u64).unwrap();
 
-                        reconstruction_value_hashmap = HashMap::new();
+                        
                                                
                         let mut hasher = Shake256::default();
 
@@ -1377,6 +1379,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         println!("Beacon Value:{:?}", arr);
 
+                        reconstruction_value_hashmap = HashMap::new();
 
                         let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
@@ -1976,7 +1979,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 
                                 println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
 
-                                println!("Retrieve final share: {:?}", pvss_data);
+                                // println!("Retrieve final share: {:?}", pvss_data);
 
                                 retrieved_hashmap_committee = HashMap::new();
                                 retrieved_hashmap_codeword = HashMap::new();
