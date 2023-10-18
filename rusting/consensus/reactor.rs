@@ -1841,7 +1841,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length >= 2_usize.pow(level as u32)  
+                        if total_length == 2_usize.pow(level as u32)*2  
                         {           
                             flag = 1;
                             total_length=0;
@@ -1874,7 +1874,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length >= 2_usize.pow(level as u32) 
+                        if total_length == 2_usize.pow(level as u32)*2 
                         {   
                             total_length = 0;
                             if sorted.clone().len()==level+1
