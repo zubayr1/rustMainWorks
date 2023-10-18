@@ -1193,7 +1193,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let sender_port = message.sender.port() as usize;
 
                     let id = sender_port - 7001;
-                    println!("grand");
                     
                     let deserialized_data1: ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g2::Parameters> = 
                         GroupAffine::deserialize(&grand.value1[..]).unwrap();
@@ -1206,7 +1205,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     grand_count+=1;
 
                     if grand_count== 2_usize.pow(level as u32)>>1
-                    {   println!("reached");
+                    {   
                         for (i, cm_i) in grand_value.clone()
                         {   
                             let pairs = [(
@@ -1336,8 +1335,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         if sigma_i_2.mul(prod).is_one()
                         {
-                            println!("true");                      
-
+                            println!("true");
                             reconstruction_value_hashmap.insert(id, (sigma_i, pi_i));
                         }
                         
@@ -1408,8 +1406,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let mut serialized_data2 = Vec::new();
                         cm_2.serialize(&mut serialized_data2).unwrap();
                         
-                        println!("{}", serialized_data1.len());
-                        
+                       
                         grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
                             serialized_data1, serialized_data2, level).await;
 
