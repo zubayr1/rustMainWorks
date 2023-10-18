@@ -903,25 +903,17 @@ fn aggregate(pvss_data: Vec<u8>, updated_pvss: Vec<Vec<u8>>, args: Vec<String>,
        
         // let share = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
 
-        let _ = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
-        let _ = aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
+        // let _ = aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
+        // let _ = aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
 
-        aggregator.aggregated_tx.serialize(&mut flattened_vec).unwrap();
+        
                 
-        // let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
+        let share1 = aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
-        // let share2 = share1.aggregate(&mut other_share).unwrap();
+        let share2 = share1.aggregate(&mut other_share).unwrap();
 
-        if aggregator.aggregation_verify(&mut rng, &mut my_share).is_ok()
-        {
-            println!("MY SHARE");
-        }
-        if aggregator.aggregation_verify(&mut rng, &mut other_share).is_ok()
-        {
-            println!("OTHER SHARE");
-        }
-
-
+        share2.serialize(&mut flattened_vec).unwrap();
+       
         // println!("PK of userid  {}\n  {:?}", args[2].parse::<usize>().unwrap() - 1, aggregator.aggregated_tx.pvss_core.comms[args[2].parse::<usize>().unwrap() - 1]);
        
         return flattened_vec;
