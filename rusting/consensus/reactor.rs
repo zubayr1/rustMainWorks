@@ -1,5 +1,5 @@
 
-use ark_ff::PrimeField;
+use ark_ff::{PrimeField, Fp12ParamsWrapper};
 use optrand_pvss::modified_scrape::decryption::DecryptedShare;
 use optrand_pvss::nizk::dleq::DLEQProof;
 use optrand_pvss::nizk::scheme::NIZKProof;
@@ -28,7 +28,7 @@ use optrand_pvss::modified_scrape::share::PVSSAggregatedShare;
 use optrand_pvss::modified_scrape::node::Node;
 use optrand_pvss::modified_scrape::share::PVSSShare;
 use chrono::Duration;
-use ark_bls12_381::{Bls12_381, G1Affine, G2Affine};
+use ark_bls12_381::{Bls12_381, G1Affine, G2Affine, Fq12Parameters};
 use rand::thread_rng;
 use ark_std::UniformRand;
 use ark_ec::{PairingEngine, AffineCurve};
@@ -1069,6 +1069,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let (mut V1, mut V2): (String, String) = ("".to_string(), "".to_string());
 
+    let mut recursion_finish = false;
+
 
     let mut accum_value: Vec<String> = Vec::new();
 
@@ -1124,6 +1126,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut qualified: BTreeMap<usize, (ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g2::Parameters>, 
         ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>)> = BTreeMap::new();
+
+    let mut beacon_epochs: Vec<u128> = Vec::new();
 
     let mut start_time = Utc::now().time();
 
@@ -1212,7 +1216,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if grand_count>= 2_usize.pow(level as u32)>>1
                     {
                         for (i, cm_i) in grand_value.clone()
-                        {
+                        {   
                             let pairs = [(
                                 config.srs.g1.neg().into(), final_deserialized_data.pvss_core.comms[i].into()), 
                                 (config.srs.g1.into(), cm_i.0.into()),
@@ -1332,7 +1336,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let id = port - 7001;
 
-                    if dleq.verify(&stmnt, &pi_i).is_ok() && qualified.clone().contains_key(&id) // add pairing check for sigma_i_2
+                    if dleq.verify(&stmnt, &pi_i).is_ok() && qualified.clone().contains_key(&id) 
                     {
                         let pairs = [(cm_i.1.neg().into(), epoch_generator.into_affine().into()),
                             (config.srs.g1.neg().into(), sigma_i_1.into())];
@@ -1349,21 +1353,24 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     }
 
-                    if reconstruction_value_hashmap.len() >= config.degree + 1
-                    {
-                        let mut evals: Vec<<Bls12_381 as PairingEngine>::G1Affine> = Vec::new();
+                    if reconstruction_value_hashmap.len() >= 2_usize.pow(level as u32)/2 + 1 && !beacon_epochs.contains(&epoch)
+                    {             
+                        beacon_epochs.push(epoch);           
+                        let mut evals: Vec<QuadExtField<Fp12ParamsWrapper<Fq12Parameters>>> = Vec::new();
 
                         let mut points: Vec<_> = Vec::new();
 
                         for (id, (val, _)) in reconstruction_value_hashmap.clone()
                         {               
-                            points.push(optrand_pvss::Scalar::<Bls12_381>::from(id as u64));             
-                            // evals.push(val.1);
+                            points.push(id as u64);             
+                            evals.push(val.1);
                         }
 
-                        let sigma = optrand_pvss::modified_scrape::poly
-                            ::lagrange_interpolation_g1::<Bls12_381>(&evals, &points, config.degree as u64).unwrap();
+                        let sigma = optrand_pvss::modified_scrape::poly::lagrange_interpolation_gt
+                        ::<Bls12_381>(&evals, &points, config.degree as u64).unwrap();
 
+                        reconstruction_value_hashmap = HashMap::new();
+                                               
                         let mut hasher = Shake256::default();
 
                         let mut sigma_bytes = Vec::new();
@@ -1377,7 +1384,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         XofReader::read(&mut reader, &mut arr);
 
-                        // println!("Beacon Value:{:?}", arr);
+                        println!("Beacon Value:{:?}", arr);
 
                     }
 
@@ -1797,7 +1804,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     
 
-                    if flag==0
+                    if flag==0 && !recursion_finish
                     {                        
                         for (_, inner_map) in &retrieved_hashmap_codeword {
                             for _ in inner_map.values() {
@@ -1830,7 +1837,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             
                         }
                     }
-                    if flag == 1
+                    if flag == 1 && !recursion_finish
                     {      
                         for (_, inner_map) in &retrieved_hashmap_committee {
                             for _ in inner_map.values() {
@@ -1840,6 +1847,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                         if total_length == 2*ip_address.clone().len() 
                         {   
+                            if sorted.clone().len()==level+1
+                            {
+                                recursion_finish = true;
+                            }
                             flag = 0;
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
@@ -1888,7 +1899,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
 
-                             let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
+                            let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
                             let share2 = share1.aggregate(&mut other_share).unwrap();
 
@@ -1901,35 +1912,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             pvss_data = flattened_vec;
 
-                            // pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
-
                             
-                                init_aggregator = PVSSAggregator {
+                            init_aggregator = PVSSAggregator {
                                 config: config.clone(),
                                 scheme_sig: schnorr_sig.clone(),
                                 participants: init_participants.clone().into_iter().enumerate().collect(),
                                 aggregated_tx: init_aggregated_tx.clone(),
                             }; 
-                              
-                            if init_aggregator.aggregation_verify(&mut rng, &mut share1).is_ok()
-                            {
-                                println!("SHARE");
-                            }
-
-                            if init_aggregator.aggregation_verify(&mut rng, &mut my_share).is_ok()
-                            {
-                                println!("MY SHARE");
-                            }
-
-                            if init_aggregator.aggregation_verify(&mut rng, &mut other_share).is_ok()
-                            {
-                                println!("OTHER SHARE");
-                            }    
-
-                            if init_aggregator.aggregation_verify(&mut rng, &mut init_aggregated_tx).is_ok()
-                            {
-                                println!("INTERMEDIATE");
-                            }
+                           
+                           
     
                             // println!("retrieve at level {}:  {:?}", level, pvss_data);
 
@@ -1971,7 +1962,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 
                                 println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
 
-                                // println!("Retrieve final share: {:?}", pvss_data);
+                                println!("Retrieve final share: {:?}", pvss_data);
+
+                                retrieved_hashmap_committee = HashMap::new();
+                                retrieved_hashmap_codeword = HashMap::new();
 
                                 //GRand
 
@@ -1992,11 +1986,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         aggregated_tx: final_deserialized_data.clone(),
                                     };       
 
-                                    if aggregator.aggregation_verify(&mut rng, &mut final_deserialized_data).is_ok()
-                                    {
-                                        println!("OOOOKKKKK");
-                                    }
-
+                                    
                                 let userid = args[2].parse::<usize>().unwrap() - 1;
 
                                 decrypted_share = DecryptedShare::<Bls12_381>::
@@ -2014,14 +2004,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
 
-                                let pairs = [(config.srs.g1.into(), 
-                                    final_deserialized_data.pvss_core.comms[userid].into()), 
-                                    (dec.into(), config.srs.g2.into())];
+                                // let pairs = [(config.srs.g1.into(), 
+                                //     final_deserialized_data.pvss_core.comms[userid].into()), 
+                                //     (dec.into(), config.srs.g2.into())];
 
-                                if <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter()).is_one()
-                                {
-                                    println!("condition is true");
-                                }
+                                // if <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter()).is_one()
+                                // {
+                                //     println!("condition is true");
+                                // }
+
+                                //loop
 
                                 let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
@@ -2116,23 +2108,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 pvss_data = flattened_vec;
                                 
-                                // pvss_data = aggregate(pvss_data.clone(), updated_pvss.clone(), args.clone(), &mut init_aggregator, level.clone(), rng.clone());
-
-                                // init_aggregated_tx = 
-                                //     PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
-
-                                // init_aggregator = PVSSAggregator 
-                                // {
-                                //     config: config.clone(),
-                                //     scheme_sig: schnorr_sig.clone(),
-                                //     participants: init_participants.clone().into_iter().enumerate().collect(),
-                                //     aggregated_tx: init_aggregated_tx.clone(),
-                                // };
-
-                                if init_aggregator.aggregation_verify(&mut rng, &mut init_aggregated_tx).is_ok()
-                                {
-                                    println!("LOWEST");
-                                }
+                               
                                 
                                 updated_pvss = Vec::new();
                             
