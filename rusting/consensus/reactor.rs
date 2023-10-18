@@ -1126,6 +1126,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let mut start_local_time = Utc::now().time();
 
 
+    let mut start_beacon_time = Utc::now().time();
+
+
     //store aggregator globally
     let (participant_data, config, schnorr_sig, 
             dealer, mut rng) = 
@@ -1375,6 +1378,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         println!("Beacon Value:{:?}", arr);
 
+                        let end_beacon_time = Utc::now().time();
+                        let diff_beacon = end_beacon_time - start_beacon_time;
+
+                        println!("Beacon End by {}. time taken {} miliseconds", args[6], diff_beacon.num_milliseconds());
+
                         qualified = BTreeMap::new();
                         reconstruction_value_hashmap = HashMap::new();
                         grand_value = HashMap::new();
@@ -1405,7 +1413,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         let mut serialized_data2 = Vec::new();
                         cm_2.serialize(&mut serialized_data2).unwrap();
-                        
+
+                        start_beacon_time = Utc::now().time();                        
                        
                         grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
                             serialized_data1, serialized_data2, level).await;
@@ -2023,6 +2032,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                 
                                 //loop
+
+                                start_beacon_time = Utc::now().time();
                                 
                                 let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
