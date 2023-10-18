@@ -1,5 +1,7 @@
 
+use ark_ec::bls12::Bls12;
 use ark_ff::{PrimeField, Fp12ParamsWrapper};
+use optrand_pvss::modified_scrape::config::Config;
 use optrand_pvss::modified_scrape::decryption::DecryptedShare;
 use optrand_pvss::nizk::dleq::DLEQProof;
 use optrand_pvss::nizk::scheme::NIZKProof;
@@ -998,6 +1000,34 @@ async fn beaconepoch_init(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&st
     let _ = tx_sender.send(beaconepoch_network_message).await;
 }
 
+async fn grand(mut ai: <Bls12_381 as PairingEngine>::Fr, dec: GroupAffine<ark_bls12_381::g1::Parameters>,
+    config: Config<Bls12<ark_bls12_381::Parameters>>,tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, level: usize
+)
+{
+    let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
+
+    //grandline                               
+
+    ai = <Bls12_381 as PairingEngine>::Fr::rand(rng);                                 
+    
+    // comm_ai = epoch_generator.mul(ai.into_repr()).into_affine();
+   
+    
+    let cm_1 =   config.srs.g2.mul(ai.into_repr()).into_affine();
+    let cm_2 = config.srs.g1.mul(ai.neg().into_repr()).into_affine() + dec;
+       
+    let mut serialized_data1 = Vec::new();
+    cm_1.serialize(&mut serialized_data1).unwrap();
+
+    let mut serialized_data2 = Vec::new();
+    cm_2.serialize(&mut serialized_data2).unwrap();
+    
+   
+    grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
+        serialized_data1, serialized_data2, level).await;
+        
+}
+
 #[allow(non_snake_case)]
 pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
 {  
@@ -1377,6 +1407,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         XofReader::read(&mut reader, &mut arr);
 
                         println!("Beacon Value:{:?}", arr);
+
+                        let dec: GroupAffine<ark_bls12_381::g1::Parameters> = decrypted_share.dec;
+
+                        grand(ai, dec, config, tx_sender, ip_address.clone(), args.clone(), level).await;
 
                     }
 
@@ -1947,9 +1981,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
                             else 
-                            {                            
-                                
-
+                            {    
                                 let end_time = Utc::now().time();
                                 let diff = end_time - start_time;
                                 
@@ -1988,52 +2020,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     userid
                                     );
                                     
-                                let dec = decrypted_share.dec;
+                                let dec: GroupAffine<ark_bls12_381::g1::Parameters> = decrypted_share.dec;
 
-                                // println!("g1 before pairing: {:?}", config.srs.g1);
-                                // println!("g2 before pairing: {:?}", config.srs.g2);
-                                // println!("comms of userid: {}\n {:?}", userid, final_deserialized_data.pvss_core.comms[userid]);
-                                // println!("dec share: {:?}", dec);
-
-
-
-                                // let pairs = [(config.srs.g1.into(), 
-                                //     final_deserialized_data.pvss_core.comms[userid].into()), 
-                                //     (dec.into(), config.srs.g2.into())];
-
-                                // if <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter()).is_one()
-                                // {
-                                //     println!("condition is true");
-                                // }
-
+                                
                                 //loop
 
-                                let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
-
-
-
-                                //grandline                               
-
-                                ai = <Bls12_381 as PairingEngine>::Fr::rand(rng);                                 
-                                
-                                // comm_ai = epoch_generator.mul(ai.into_repr()).into_affine();
-                               
-                                
-                                let cm_1 =   config.srs.g2.mul(ai.into_repr()).into_affine();
-                                let cm_2 = config.srs.g1.mul(ai.neg().into_repr()).into_affine() + dec;
-                                   
-                                let mut serialized_data1 = Vec::new();
-                                cm_1.serialize(&mut serialized_data1).unwrap();
-
-                                let mut serialized_data2 = Vec::new();
-                                cm_2.serialize(&mut serialized_data2).unwrap();
-                                
-                               
-                                grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
-                                    serialized_data1, serialized_data2, level).await;
+                                grand(ai, dec, config, tx_sender, ip_address.clone(), args.clone(), level).await;
 
                                 
-
                                 // return ;
                             }
 
