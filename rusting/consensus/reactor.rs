@@ -1357,6 +1357,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             evals.push(val.1);
                         }
 
+                        qualified = BTreeMap::new();
                         reconstruction_value_hashmap = HashMap::new();
                         grand_value = HashMap::new();
                         grand_count = 0;
