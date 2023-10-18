@@ -1040,7 +1040,7 @@ checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 [[package]]
 name = "optrand_pvss"
 version = "0.1.0"
-source = "git+https://github.com/DimitrisPapac/Optrand-PVSS.git#c937de9c374c4f2493bca2b25b997ac9eadd98d4"
+source = "git+https://github.com/DimitrisPapac/Optrand-PVSS.git#aa4aaaf85ea8820a2d66427200d54a708a5bdac6"
 dependencies = [
  "ark-bls12-381",
  "ark-ec",
@@ -1055,6 +1055,7 @@ dependencies = [
  "rand",
  "rand_chacha",
  "serde",
+ "sha3",
  "thiserror",
  "threshold_crypto",
  "tokio 1.33.0",
@@ -1330,6 +1331,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-serialize",
+ "ark-std",
  "async-recursion",
  "bincode",
  "bytes 1.5.0",
@@ -1345,6 +1347,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.8",
+ "sha3",
  "tokio 1.33.0",
  "tokio-core",
  "tokio-util",
@@ -1480,6 +1483,16 @@ dependencies = [
  "cfg-if 1.0.0",
  "cpufeatures",
  "digest 0.10.7",
+]
+
+[[package]]
+name = "sha3"
+version = "0.10.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75872d278a8f37ef87fa0ddbda7802605cb18344497949862c0d4dcb291eba60"
+dependencies = [
+ "digest 0.10.7",
+ "keccak",
 ]
 
 [[package]]

@@ -42,6 +42,8 @@ pub struct NetworkMessage {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ConsensusMessage {
     PVSSGenMessage(PVSSGen),
+    GRandLineMessage(GRandLine),
+    BeaconEpochMessage(BeaconEpoch),
     EchoMessage(Echo),
     ForwardMessage(Forward),
     VoteMessage(Vote),
@@ -67,6 +69,48 @@ impl PVSSGen
     pub fn create_pvssgen(sign: String, value: Vec<u8>) -> Self
     {
         PVSSGen{sign:sign, value: value, types: "pvss_gen".to_string()}
+    }    
+}
+
+
+#[allow(unused)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct GRandLine
+{
+    pub sign: String,
+    pub value1: Vec<u8>,
+    pub value2: Vec<u8>,
+    pub types: String
+}
+
+#[allow(unused)]
+impl GRandLine
+{
+    pub fn create_grandline(sign: String, value1: Vec<u8>, value2: Vec<u8>) -> Self
+    {
+        GRandLine{sign:sign, value1: value1, value2: value2, types: "grandline".to_string()}
+    }    
+}
+
+
+#[allow(unused)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct BeaconEpoch
+{
+    pub sign: String,
+    pub value1: Vec<u8>,
+    pub value2: Vec<u8>,
+    pub value3: Vec<u8>,
+    pub value4: Vec<u8>,
+    pub types: String
+}
+
+#[allow(unused)]
+impl BeaconEpoch
+{
+    pub fn create_beacon_epoch(sign: String, value1: Vec<u8>, value2: Vec<u8>, value3: Vec<u8>, value4: Vec<u8>) -> Self
+    {
+        BeaconEpoch{sign:sign, value1: value1, value2: value2, value3, value4, types: "beaconepoch".to_string()}
     }    
 }
 
