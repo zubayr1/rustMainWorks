@@ -1,7 +1,5 @@
 
-use ark_ec::bls12::Bls12;
 use ark_ff::{PrimeField, Fp12ParamsWrapper};
-use optrand_pvss::modified_scrape::config::Config;
 use optrand_pvss::modified_scrape::decryption::DecryptedShare;
 use optrand_pvss::nizk::dleq::DLEQProof;
 use optrand_pvss::nizk::scheme::NIZKProof;
@@ -1000,34 +998,6 @@ async fn beaconepoch_init(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&st
     let _ = tx_sender.send(beaconepoch_network_message).await;
 }
 
-async fn grand(mut ai: <Bls12_381 as PairingEngine>::Fr, dec: GroupAffine<ark_bls12_381::g1::Parameters>,
-    config: Config<Bls12<ark_bls12_381::Parameters>>,tx_sender: Sender<NetworkMessage>, ip_address: Vec<&str>, args: Vec<String>, level: usize
-)
-{
-    let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
-
-    //grandline                               
-
-    ai = <Bls12_381 as PairingEngine>::Fr::rand(rng);                                 
-    
-    // comm_ai = epoch_generator.mul(ai.into_repr()).into_affine();
-   
-    
-    let cm_1 =   config.srs.g2.mul(ai.into_repr()).into_affine();
-    let cm_2 = config.srs.g1.mul(ai.neg().into_repr()).into_affine() + dec;
-       
-    let mut serialized_data1 = Vec::new();
-    cm_1.serialize(&mut serialized_data1).unwrap();
-
-    let mut serialized_data2 = Vec::new();
-    cm_2.serialize(&mut serialized_data2).unwrap();
-    
-   
-    grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
-        serialized_data1, serialized_data2, level).await;
-        
-}
-
 #[allow(non_snake_case)]
 pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
 {  
@@ -1316,7 +1286,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 // Match the BeaconEpoch message type
                 ConsensusMessage::BeaconEpochMessage(beaconepoch) =>
                 {
-
                     let sigma_i_1: GroupAffine<ark_bls12_381::g2::Parameters> = GroupAffine::deserialize(&beaconepoch.value1[..]).unwrap();
 
                     let sigma_i_2: ark_ff::QuadExtField<ark_ff::Fp12ParamsWrapper<ark_bls12_381::Fq12Parameters>> = 
@@ -1408,12 +1377,28 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         println!("Beacon Value:{:?}", arr);
 
-                        let dec: GroupAffine<ark_bls12_381::g1::Parameters> = decrypted_share.dec;
 
-                        epoch+=1;
+                        let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
-                        grand(ai.clone(), dec, config.clone(), tx_sender.clone(), ip_address.clone(), args.clone(), level).await;
+                        //grandline                               
 
+                        ai = <Bls12_381 as PairingEngine>::Fr::rand(rng);                                 
+                        
+                        // comm_ai = epoch_generator.mul(ai.into_repr()).into_affine();
+                        let dec = decrypted_share.dec;
+                        
+                        let cm_1 =   config.srs.g2.mul(ai.into_repr()).into_affine();
+                        let cm_2 = config.srs.g1.mul(ai.neg().into_repr()).into_affine() + dec;
+                            
+                        let mut serialized_data1 = Vec::new();
+                        cm_1.serialize(&mut serialized_data1).unwrap();
+
+                        let mut serialized_data2 = Vec::new();
+                        cm_2.serialize(&mut serialized_data2).unwrap();
+                        
+                        
+                        grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
+                            serialized_data1, serialized_data2, level).await;
 
                     }
 
@@ -1841,7 +1826,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length == 2_usize.pow(level as u32)*2  
+                        if total_length == 2*ip_address.clone().len() 
                         {           
                             flag = 1;
                             total_length=0;
@@ -1874,9 +1859,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length == 2_usize.pow(level as u32)*2 
+                        if total_length == 2*ip_address.clone().len() 
                         {   
-                            total_length = 0;
+                            total_length=0;
                             if sorted.clone().len()==level+1
                             {
                                 recursion_finish = true;
@@ -1991,7 +1976,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 
                                 println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
 
-                                // println!("Retrieve final share: {:?}", pvss_data);
+                                println!("Retrieve final share: {:?}", pvss_data);
 
                                 retrieved_hashmap_committee = HashMap::new();
                                 retrieved_hashmap_codeword = HashMap::new();
@@ -2024,14 +2009,35 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     userid
                                     );
                                     
-                                let dec: GroupAffine<ark_bls12_381::g1::Parameters> = decrypted_share.dec;
+                                let dec = decrypted_share.dec;
 
                                 
                                 //loop
+                                
+                                let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
-                                grand(ai.clone(), dec, config.clone(), tx_sender.clone(), ip_address.clone(), args.clone(), level).await;
+                                //grandline                               
+
+                                ai = <Bls12_381 as PairingEngine>::Fr::rand(rng);                                 
+                                
+                                // comm_ai = epoch_generator.mul(ai.into_repr()).into_affine();
+                               
+                                
+                                let cm_1 =   config.srs.g2.mul(ai.into_repr()).into_affine();
+                                let cm_2 = config.srs.g1.mul(ai.neg().into_repr()).into_affine() + dec;
+                                   
+                                let mut serialized_data1 = Vec::new();
+                                cm_1.serialize(&mut serialized_data1).unwrap();
+
+                                let mut serialized_data2 = Vec::new();
+                                cm_2.serialize(&mut serialized_data2).unwrap();
+                                
+                               
+                                grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
+                                    serialized_data1, serialized_data2, level).await;
 
                                 
+
                                 // return ;
                             }
 
