@@ -1358,6 +1358,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
 
                         reconstruction_value_hashmap = HashMap::new();
+                        grand_value = HashMap::new();
+                        grand_count = 0;
 
                         let sigma = optrand_pvss::modified_scrape::poly::lagrange_interpolation_gt
                         ::<Bls12_381>(&evals, &points, config.degree as u64).unwrap();
