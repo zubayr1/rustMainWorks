@@ -1885,25 +1885,25 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let mut my_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
                                 PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
                             
-                            // let mut flattened_vec: Vec<u8> = Vec::new();                        
+                            let mut flattened_vec: Vec<u8> = Vec::new();                        
 
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
 
-                            // let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
+                            let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
-                            // let share2 = share1.aggregate(&mut other_share).unwrap();
+                            let share2 = share1.aggregate(&mut other_share).unwrap();
 
-                            pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
+                            // pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
                            
         
-                            init_aggregated_tx =  PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
+                            // init_aggregated_tx =  PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
 
-                            // init_aggregated_tx = init_aggregator.aggregated_tx.clone();
+                            init_aggregated_tx = init_aggregator.aggregated_tx.clone();
 
-                            // share2.clone().serialize(&mut flattened_vec).unwrap();
+                            share2.clone().serialize(&mut flattened_vec).unwrap();
 
-                            // pvss_data = flattened_vec;
+                            pvss_data = flattened_vec;
 
                             
                             init_aggregator = PVSSAggregator {
