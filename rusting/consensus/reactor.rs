@@ -1336,7 +1336,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     let id = port - 7001;
 
-                    if dleq.verify(&stmnt, &pi_i).is_ok() && qualified.clone().contains_key(&id) 
+                    if dleq.verify(&stmnt, &pi_i).is_ok() && qualified.clone().contains_key(&id) && !beacon_epochs.contains(&epoch)
                     {
                         let pairs = [(cm_i.1.neg().into(), epoch_generator.into_affine().into()),
                             (config.srs.g1.neg().into(), sigma_i_1.into())];
