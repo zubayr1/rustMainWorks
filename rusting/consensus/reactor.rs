@@ -1205,7 +1205,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     grand_count+=1;
 
-                    if grand_count>= 2_usize.pow(level as u32)>>1
+                    if grand_count== 2_usize.pow(level as u32)>>1
                     {   println!("reached");
                         for (i, cm_i) in grand_value.clone()
                         {   
@@ -1356,15 +1356,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             points.push(id as u64);             
                             evals.push(val.1);
                         }
-
-                        qualified = BTreeMap::new();
-                        reconstruction_value_hashmap = HashMap::new();
-                        grand_value = HashMap::new();
-                        grand_count = 0;
+                       
 
                         let sigma = optrand_pvss::modified_scrape::poly::lagrange_interpolation_gt
                         ::<Bls12_381>(&evals, &points, config.degree as u64).unwrap();
-
                         
                                                
                         let mut hasher = Shake256::default();
@@ -1382,7 +1377,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         println!("Beacon Value:{:?}", arr);
 
+                        qualified = BTreeMap::new();
                         reconstruction_value_hashmap = HashMap::new();
+                        grand_value = HashMap::new();
+                        grand_count = 0;
+
 
                         let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
@@ -1402,6 +1401,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         let mut serialized_data2 = Vec::new();
                         cm_2.serialize(&mut serialized_data2).unwrap();
                         
+                        println!("{}", serialized_data1.len());
                         
                         grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
                             serialized_data1, serialized_data2, level).await;
