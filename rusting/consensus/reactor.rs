@@ -1383,6 +1383,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         grand_count = 0;
 
 
+                        epoch+=1;
+
+                        epoch_generator = 
+                            hash_to_group::
+                            <<Bls12_381 as PairingEngine>::G2Affine>(personalization, &epoch.to_le_bytes()).unwrap();
+
+
                         let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
                         //grandline                               
