@@ -1841,7 +1841,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length == 2*ip_address.clone().len() 
+                        if total_length >= 2_usize.pow(level as u32)  
                         {           
                             flag = 1;
                             total_length=0;
@@ -1874,8 +1874,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length == 2*ip_address.clone().len() 
+                        if total_length >= 2_usize.pow(level as u32) 
                         {   
+                            total_length = 0;
                             if sorted.clone().len()==level+1
                             {
                                 recursion_finish = true;
