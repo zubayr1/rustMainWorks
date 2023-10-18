@@ -1924,8 +1924,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             propose_value = Vec::new();
                             propose_reached = false;
 
-                            // retrieved_hashmap_codeword = HashMap::new();
-                            // retrieved_hashmap_committee = HashMap::new();
+                            retrieved_hashmap_codeword = HashMap::new();
+                            retrieved_hashmap_committee = HashMap::new();
 
                             if sorted.clone().len()>level+1
                             {   
