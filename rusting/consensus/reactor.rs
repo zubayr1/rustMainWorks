@@ -1896,10 +1896,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let share2 = init_aggregator.aggregated_tx.aggregate(&mut share1).unwrap();
                             
         
-                            init_aggregated_tx = share2.clone();
+                            init_aggregated_tx = share1.clone();
                             // init_aggregated_tx = init_aggregator.aggregated_tx.clone();
 
-                            share2.clone().serialize(&mut flattened_vec).unwrap();
+                            share1.clone().serialize(&mut flattened_vec).unwrap();
 
                             pvss_data = flattened_vec;
 
