@@ -1990,7 +1990,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 
                                 println!("Setup End by {}. time taken {} miliseconds", args[6], diff.num_milliseconds());
 
-                                println!("Retrieve final share: {:?}", pvss_data);
+                                // println!("Retrieve final share: {:?}", pvss_data);
 
                                 retrieved_hashmap_committee = HashMap::new();
                                 retrieved_hashmap_codeword = HashMap::new();
