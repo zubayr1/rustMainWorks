@@ -1344,7 +1344,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     }
 
-                    if (reconstruction_value_hashmap.len() == 2_usize.pow(level as u32)/2 + 1) && !beacon_epochs.contains(&epoch)
+                    if (reconstruction_value_hashmap.len() == 2_usize.pow(level as u32)/2) && !beacon_epochs.contains(&epoch)
                     {             
                         beacon_epochs.push(epoch);           
                         let mut evals: Vec<QuadExtField<Fp12ParamsWrapper<Fq12Parameters>>> = Vec::new();
