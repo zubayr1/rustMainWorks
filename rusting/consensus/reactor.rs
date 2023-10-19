@@ -2410,6 +2410,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
+                            println!("go to codeword, {}", level);
                             propose_value = Vec::new();
                             for val in qual.clone()
                             {   
