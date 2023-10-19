@@ -2165,7 +2165,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     // Handle Accum message
                     let value = format!("{} {:?}", accum.value, message.sender);
-
+                    println!("{}, {:?}", message.level, message.sender);
                    
                     
                     if level == message.level
