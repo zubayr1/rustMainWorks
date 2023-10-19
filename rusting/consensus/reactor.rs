@@ -1533,7 +1533,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if propose_reached==false
                     {
                         if echo_value.len()==2_usize.pow(level as u32)/2   
-                        {   println!("Echo done, {}", level);
+                        {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
@@ -1567,7 +1567,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     else 
                     {
                         if echo_value.len()==2_usize.pow(level as u32)/3    
-                        {   println!("Echo done, {}", level);
+                        {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
@@ -1612,7 +1612,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let diff = end_time - start_local_time;
 
                     if forward_value.len()==size 
-                    {                      println!("Forward done, {}", level);
+                    {                      
                         let forward_value_copy = forward_value.clone();
 
                         let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
@@ -1688,7 +1688,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let diff = end_time - start_local_time;
 
                     if vote1_value.len()==size  //vote phase 
-                    {                          println!("Vote1 done, {}", level);
+                    {                          
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1708,7 +1708,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if vote2_value.len()==size  //second vote phase    
-                    {    println!("Vote2 done, {}", level);
+                    {    
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -2166,13 +2166,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     // Handle Accum message
                     let value = format!("{} {:?}", accum.value, message.sender);
-                    println!("{},  {}, {:?}", level, message.level, message.sender);
                    
                     
                     if level == message.level
                     {
                         qual = Vec::new();
-                        println!("{}", value);
+                        
                         accum_value.push(value);
                         
 
@@ -2186,7 +2185,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     let values: Vec<String> = inner_map.values().cloned().collect();
 
                                     for value in values
-                                    {   println!("         {}", value);
+                                    {   
                                         accum_value.push(value);
                                     }
                                 }
@@ -2362,7 +2361,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let diff = end_time - start_local_time;
                     
                     if propose_value.len() >= 2_usize.pow(level as u32)/2 
-                    {    println!("Propose done, {}", level);
+                    {    
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
@@ -2410,7 +2409,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             {
                                 qual.push(2);
                             }
-                            println!("go to codeword, {}", level);
+                            
                             propose_value = Vec::new();
                             for val in qual.clone()
                             {   
