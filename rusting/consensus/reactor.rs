@@ -1532,7 +1532,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if propose_reached==false
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/2   || diff>=Duration::milliseconds(delta as i64)
+                        if echo_value.len()==2_usize.pow(level as u32)/2   
                         {   println!("Echo done, {}", level);
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1566,7 +1566,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/3    || diff>=Duration::milliseconds(delta as i64)
+                        if echo_value.len()==2_usize.pow(level as u32)/3    
                         {   println!("Echo done, {}", level);
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1611,7 +1611,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
 
-                    if forward_value.len()==size || diff>=Duration::milliseconds(delta as i64)
+                    if forward_value.len()==size 
                     {                      println!("Forward done, {}", level);
                         let forward_value_copy = forward_value.clone();
 
@@ -1687,7 +1687,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
 
-                    if vote1_value.len()==size || diff>=Duration::milliseconds(delta as i64) //vote phase 
+                    if vote1_value.len()==size  //vote phase 
                     {                          println!("Vote1 done, {}", level);
                         for output in vote1_value
                         {
@@ -1707,7 +1707,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==size || diff>=Duration::milliseconds(delta as i64) //second vote phase    
+                    if vote2_value.len()==size  //second vote phase    
                     {    println!("Vote2 done, {}", level);
                         for output in vote2_value
                         {
@@ -2361,7 +2361,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
                     
-                    if (propose_value.len() >= 2_usize.pow(level as u32)/2) || diff>=Duration::milliseconds(delta as i64) 
+                    if (propose_value.len() >= 2_usize.pow(level as u32)/2)  
                     {    println!("Propose done, {}", level);
                         if g==0
                         {
