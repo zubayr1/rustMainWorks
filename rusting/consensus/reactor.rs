@@ -2168,7 +2168,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                    
                     
-                    if state.get_level() == message.level
+                    if level == message.level
                     {
                         qual = Vec::new();
                         accum_value.push(value);
