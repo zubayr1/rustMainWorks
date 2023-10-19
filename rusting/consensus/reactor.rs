@@ -1937,7 +1937,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
 
-                            println!("SHARES at level {}:  {:?}, {:?}, {}", level, my_share.len(), other_share.len(), args[6]);
+                            println!("SHARES at level {}:  {:?}, {:?}, {}", level, pvss_data.len(), other_share_vec.len(), args[6]);
 
                             let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
