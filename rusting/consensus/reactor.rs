@@ -2361,7 +2361,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
                     
-                    if (propose_value.len() >= 2_usize.pow(level as u32)/2)  
+                    if propose_value.len() >= 2_usize.pow(level as u32)/2 
                     {    println!("Propose done, {}", level);
                         if g==0
                         {
