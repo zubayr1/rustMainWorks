@@ -1962,7 +1962,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                            
                            
     
-                            println!("retrieve at level {}:  {:?}", level, pvss_data.len());
+                            println!("retrieve at level {}:  {:?}, {}", level, pvss_data.len(), args[6]);
 
                             accum_value = Vec::new();
                             echo_value = Vec::new();
