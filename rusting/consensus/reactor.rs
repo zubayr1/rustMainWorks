@@ -1209,7 +1209,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     grand_count+=1;
 
-                    if grand_count== 2_usize.pow(level as u32)>>1
+                    if grand_count== config.num_participants/2
                     {   
                         for (i, cm_i) in grand_value.clone()
                         {   
@@ -1347,7 +1347,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     }
 
-                    if (reconstruction_value_hashmap.len() == 2_usize.pow(level as u32)/2) && !beacon_epochs.contains(&epoch)
+                    if (reconstruction_value_hashmap.len() == config.num_participants/2) && !beacon_epochs.contains(&epoch)
                     {             
                         beacon_epochs.push(epoch);           
                         let mut evals: Vec<QuadExtField<Fp12ParamsWrapper<Fq12Parameters>>> = Vec::new();
