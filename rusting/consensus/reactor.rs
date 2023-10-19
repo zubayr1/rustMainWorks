@@ -1688,7 +1688,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let diff = end_time - start_local_time;
 
                     if vote1_value.len()==size || diff>=Duration::milliseconds(delta as i64) //vote phase 
-                    {                          
+                    {                          println!("Vote1 done, {}", level);
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1708,7 +1708,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
 
                     if vote2_value.len()==size || diff>=Duration::milliseconds(delta as i64) //second vote phase    
-                    {    
+                    {    println!("Vote2 done, {}", level);
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -2361,8 +2361,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
                     
-                    if (propose_value.len() >= 2_usize.pow(level as u32)/2 && message.level == level) || diff>=Duration::milliseconds(delta as i64) 
-                    {    
+                    if (propose_value.len() >= 2_usize.pow(level as u32)/2) || diff>=Duration::milliseconds(delta as i64) 
+                    {    println!("Propose done, {}", level);
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
