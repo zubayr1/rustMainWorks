@@ -2205,7 +2205,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
 
-                    if accum_value.len()==2_usize.pow(level as u32)/2 
+                    if accum_value.len()==2_usize.pow(level as u32) 
                     {   
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
 
