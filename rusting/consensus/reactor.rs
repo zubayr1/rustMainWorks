@@ -2172,6 +2172,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if level == message.level
                     {
                         qual = Vec::new();
+                        println!("{}", value);
                         accum_value.push(value);
                         
 
@@ -2185,7 +2186,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     let values: Vec<String> = inner_map.values().cloned().collect();
 
                                     for value in values
-                                    {
+                                    {   println!("         {}", value);
                                         accum_value.push(value);
                                     }
                                 }
