@@ -1979,10 +1979,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address_right = Vec::new();
                             ip_address_backup = Vec::new();
 
-                            forward_check = false;
-
-                            two_BA_check = false;
-
                             if sorted.clone().len()>level+1
                             {   
                                 level+=1;
