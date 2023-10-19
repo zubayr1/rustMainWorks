@@ -1888,7 +1888,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             total_length=0;
                             if sorted.clone().len()==level+1
                             {
-                                recursion_finish = true;
+                               // recursion_finish = true;
                             }
                             flag = 0;
 
