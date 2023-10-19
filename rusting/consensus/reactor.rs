@@ -1533,7 +1533,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     if propose_reached==false
                     {
                         if echo_value.len()==2_usize.pow(level as u32)/2   || diff>=Duration::milliseconds(delta as i64)
-                        {   
+                        {   println!("Echo done, {}", level);
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
@@ -1567,7 +1567,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     else 
                     {
                         if echo_value.len()==2_usize.pow(level as u32)/3    || diff>=Duration::milliseconds(delta as i64)
-                        {   
+                        {   println!("Echo done, {}", level);
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
@@ -1612,7 +1612,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let diff = end_time - start_local_time;
 
                     if forward_value.len()==size || diff>=Duration::milliseconds(delta as i64)
-                    {                      
+                    {                      println!("Forward done, {}", level);
                         let forward_value_copy = forward_value.clone();
 
                         let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
