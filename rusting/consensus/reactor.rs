@@ -283,7 +283,6 @@ async fn accum_helper(accum_value: Vec<String>, level: usize, committee_length: 
     let V2 = accum::accum_check(V2_vec.clone(), committee_length.clone());
 
     
-
     (V1, V2)
 
 
@@ -659,6 +658,9 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
     let mut v1 = "bot".to_string().as_bytes().to_vec();
     let mut v2 = "bot".to_string().as_bytes().to_vec();
 
+    let mut v1_1 = "".to_string();
+    let mut v2_1 = "".to_string();
+
 
     if ip_address.len() == 2_usize.pow(level as u32)
     {   
@@ -669,12 +671,16 @@ async fn committee_selection(tx_sender: Sender<NetworkMessage>, qual: Vec<u32>,
     {
         // //2BA for W1
         v1 = pvss_data.get(&1).unwrap().to_vec();
+
+        v1_1 = "1".to_string();
         
     }
     if qual.contains(&2)
     {
         // //2BA for W2
         v2 = pvss_data.get(&2).unwrap().to_vec();
+
+        v2_1 = "2".to_string();
         
     }
     let v1_str = String::from_utf8_lossy(&v1).to_string();
@@ -1447,7 +1453,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if pvss_value_hashmap.len() == ip_address.len()
                     {                           
-                        delta = delta/(ip_address.len());
+                        // delta = delta/(ip_address.len());
 
 
                         let dealer_clone = dealer.clone();
@@ -1532,7 +1538,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if propose_reached==false
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/2   
+                        if echo_value.len()==2_usize.pow(level as u32)/2   || diff>Duration::milliseconds(delta as i64)
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1566,7 +1572,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     }
                     else 
                     {
-                        if echo_value.len()==2_usize.pow(level as u32)/3    
+                        if echo_value.len()==2_usize.pow(level as u32)/3    || diff>Duration::milliseconds(delta as i64)
                         {   
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
@@ -1611,7 +1617,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
 
-                    if forward_value.len()==size 
+                    if forward_value.len()==size || diff>Duration::milliseconds(delta as i64)
                     {                      
                         let forward_value_copy = forward_value.clone();
 
@@ -1687,7 +1693,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
 
-                    if vote1_value.len()==size  //vote phase 
+                    if vote1_value.len()==size  || diff>Duration::milliseconds(delta as i64) //vote phase 
                     {                          
                         for output in vote1_value
                         {
@@ -1707,7 +1713,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                     }
 
-                    if vote2_value.len()==size  //second vote phase    
+                    if vote2_value.len()==size  || diff>Duration::milliseconds(delta as i64) //second vote phase    
                     {    
                         for output in vote2_value
                         {
@@ -1937,11 +1943,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
 
-                            println!("SHARES at level {}:  {:?}, {:?}, {}", level, pvss_data.len(), other_share_vec.len(), args[6]);
+                            println!("SHARES at level {}:  {:?}, \n{:?}, {}", level, pvss_data, other_share_vec, args[6]);
 
-                            let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
+                            // let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
-                            let share2 = share1.aggregate(&mut other_share).unwrap();
+                            // let share2 = share1.aggregate(&mut other_share).unwrap();
+
+
+                            let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
+                            // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap(); //ASK RENAS
 
                             // pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
                            
@@ -1950,7 +1960,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             init_aggregated_tx = init_aggregator.aggregated_tx.clone();
 
-                            share2.clone().serialize(&mut flattened_vec).unwrap();
+                            init_aggregated_tx.clone().serialize(&mut flattened_vec).unwrap();
 
                             pvss_data = flattened_vec;
 
@@ -1964,7 +1974,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                            
                            
     
-                            println!("retrieve at level {}:  {:?}, {}", level, pvss_data.len(), args[6]);
+                            println!("retrieve at level {}:  {:?}, {:?}", level, pvss_data, args[6]);
 
                             accum_value = Vec::new();
                             echo_value = Vec::new();
@@ -1992,7 +2002,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                                         
                                 (acc_value_zl, state) = reactor_init(pvss_data.clone(), ip_address.clone(), level.clone());
-                                
+                                println!("{}", acc_value_zl);
                                 
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
                                     args.clone(), level.clone());
@@ -2233,12 +2243,15 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         C1 = Vec::new();
                         C2 = Vec::new();
 
+                        println!("{:?}", accum_value);
+
                         (V1, V2) = accum_helper(accum_value.clone(), level.clone(), 
                             ip_address.clone().len()).await;
 
                         let V = format!("{}-{}", V1, V2);
 
-                        
+                        // accum_value = Vec::new();
+
 
                         if level!=1 && message.level == level
                         {                                  
@@ -2366,7 +2379,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let end_time = Utc::now().time();
                     let diff = end_time - start_local_time;
                     
-                    if propose_value.len() >= 2_usize.pow(level as u32)/2 
+                    if propose_value.len() >= 2_usize.pow(level as u32)/2 || diff>Duration::milliseconds(delta as i64)
                     {    
                         if g==0
                         {

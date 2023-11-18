@@ -25,14 +25,17 @@ pub fn accum_check(received_texts: Vec<String>, committee_length: usize) -> Stri
         
     } 
 
+    
     // Count occurrences of each string
     for accum_string in accum_values {
         let count = count_map.entry(accum_string).or_insert(0);
         *count += 1;
     }
 
+    
     for (accum_string, count) in count_map 
     {
+        
         if count>=committee_length/2
         {
             return accum_string;
