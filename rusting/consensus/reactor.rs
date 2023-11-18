@@ -1006,6 +1006,8 @@ async fn beaconepoch_init(tx_sender: Sender<NetworkMessage>, ip_address: Vec<&st
     let _ = tx_sender.send(beaconepoch_network_message).await;
 }
 
+
+
 #[allow(non_snake_case)]
 pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<NetworkMessage>, sorted: Vec<(&u32, &String)>, args: Vec<String>)
 {  
@@ -1128,6 +1130,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         ark_ec::short_weierstrass_jacobian::GroupAffine<ark_bls12_381::g1::Parameters>)> = BTreeMap::new();
 
     let mut beacon_epochs: Vec<u128> = Vec::new();
+
+    let mut serialized_sigma1 = Vec::new();
+    let mut serialized_sigma2 = Vec::new();
+    let mut serialized_pi = Vec::new();
+    let mut serialized_cm_i = Vec::new();
+
 
     let mut start_time = Utc::now().time();
 
@@ -1268,22 +1276,23 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let pi_i = dleq.prove(rng, &ai).unwrap();
 
                             
-                            let mut serialized_sigma1 = Vec::new();
+                            serialized_sigma1 = Vec::new();
                             sigma_i_1.serialize(&mut serialized_sigma1).unwrap();
 
-                            let mut serialized_sigma2 = Vec::new();
+                            serialized_sigma2 = Vec::new();
                             sigma_i_2.serialize(&mut serialized_sigma2).unwrap();
 
 
-                            let mut serialized_pi = Vec::new();
+                            serialized_pi = Vec::new();
                             pi_i.serialize(&mut serialized_pi).unwrap();
 
                             
-                            let mut serialized_cm_i = Vec::new();
+                            serialized_cm_i = Vec::new();
                             cm_i.serialize(&mut serialized_cm_i).unwrap();
 
                             beaconepoch_init(tx_sender.clone(), ip_address.clone(), args.clone(),
-                            serialized_sigma1, serialized_sigma2, serialized_pi, serialized_cm_i, level
+                            serialized_sigma1.clone(), serialized_sigma2.clone(), 
+                            serialized_pi.clone(), serialized_cm_i.clone(), level
                             ).await;
                         }
 
@@ -1295,7 +1304,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 // Match the BeaconEpoch message type
                 ConsensusMessage::BeaconEpochMessage(beaconepoch) =>
-                {
+                {   
                     let sigma_i_1: GroupAffine<ark_bls12_381::g2::Parameters> = GroupAffine::deserialize(&beaconepoch.value1[..]).unwrap();
 
                     let sigma_i_2: ark_ff::QuadExtField<ark_ff::Fp12ParamsWrapper<ark_bls12_381::Fq12Parameters>> = 
@@ -1338,7 +1347,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let id = port - 7001;
 
                     if dleq.verify(&stmnt, &pi_i).is_ok() && qualified.clone().contains_key(&id) && !beacon_epochs.contains(&epoch)
-                    {
+                    {println!("yes, {}", epoch);
                         let pairs = [(cm_i.1.neg().into(), epoch_generator.into_affine().into()),
                             (config.srs.g1.neg().into(), sigma_i_1.into())];
 
@@ -1429,6 +1438,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                        
                         grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
                             serialized_data1, serialized_data2, level).await;
+
+
+                        // beaconepoch_init(tx_sender.clone(), ip_address.clone(), args.clone(),
+                        //     serialized_sigma1.clone(), serialized_sigma2.clone(), 
+                        //     serialized_pi.clone(), serialized_cm_i.clone(), level
+                        //     ).await;
 
                     }
 
@@ -1943,7 +1958,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
                             // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
 
-                            println!("SHARES at level {}:  {:?}, \n{:?}, {}", level, pvss_data, other_share_vec, args[6]);
+                            println!("SHARES at level {}:  {:?}, {:?}, {}", level, pvss_data.len(), other_share_vec.len(), args[6]);
 
                             // let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
 
@@ -1974,7 +1989,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                            
                            
     
-                            println!("retrieve at level {}:  {:?}, {:?}", level, pvss_data, args[6]);
+                            println!("retrieve at level {}:  {:?}, {:?}", level, pvss_data.len(), args[6]);
 
                             accum_value = Vec::new();
                             echo_value = Vec::new();
