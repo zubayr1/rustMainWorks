@@ -1118,7 +1118,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut propose_reached=false;
 
-    let mut delta: usize = 0;
+    let delta: usize = 1000;
 
     let mut epoch: u128 = 0;
 
@@ -1156,11 +1156,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     let init_num_participants = config.num_participants;
     let init_degree = config.degree;
 
-    let mut init_aggregated_tx = PVSSAggregatedShare::empty(init_degree, init_num_participants);
+    let init_aggregated_tx = PVSSAggregatedShare::empty(init_degree, init_num_participants);
 
     let mut init_participants: Vec<Participant<Bls12_381, SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>>> = Vec::new();
 
-    let mut init_aggregator: PVSSAggregator<Bls12_381,
+    let init_aggregator: PVSSAggregator<Bls12_381,
         SchnorrSignature<<Bls12_381 as PairingEngine>::G1Affine>> = PVSSAggregator {
         config: config.clone(),
         scheme_sig: schnorr_sig.clone(),
@@ -1173,7 +1173,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         dealer: dealer.clone(),
     };
 
-    let mut final_deserialized_data: PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
+    let final_deserialized_data: PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
         init_aggregated_tx.clone();
 
     let userid = args[2].parse::<usize>().unwrap() - 1;
@@ -1198,7 +1198,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
     }
 
     
-    
+    // tokio::spawn(async move {
 
     loop 
     {
@@ -1223,26 +1223,26 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     grand_count+=1;
 
-                    if grand_count== config.num_participants/2
+                    if grand_count== config.num_participants>>1
                     {   
                         for (i, cm_i) in grand_value.clone()
                         {   
-                            // let pairs = [(
-                            //     config.srs.g1.neg().into(), final_deserialized_data.pvss_core.comms[i].into()), 
-                            //     (config.srs.g1.into(), cm_i.0.into()),
-                            //     (cm_i.1.into(), config.srs.g2.into())
-                            //     ];
+                            let pairs = [(
+                                config.srs.g1.neg().into(), final_deserialized_data.pvss_core.comms[i].into()), 
+                                (config.srs.g1.into(), cm_i.0.into()),
+                                (cm_i.1.into(), config.srs.g2.into())
+                                ];
 
                             qualified.insert(i ,cm_i);
 
-                            // let prod = <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter());
+                            let prod = <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter());
 
                            
-                            // if prod.is_one()
-                            // {   
-                            //     println!("true1");
-                            //     // qualified.insert(i ,cm_i);
-                            // }
+                            if prod.is_one()
+                            {   
+                                println!("true1");
+                                // qualified.insert(i ,cm_i);
+                            }
 
 
                             // decrypted_share = DecryptedShare::<Bls12_381>::
@@ -1295,8 +1295,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             serialized_pi.clone(), serialized_cm_i.clone(), level
                             ).await;
                         }
-
-                        
+                       
 
                     }
 
@@ -1304,7 +1303,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                 // Match the BeaconEpoch message type
                 ConsensusMessage::BeaconEpochMessage(beaconepoch) =>
-                {   
+                {
+                    
                     let sigma_i_1: GroupAffine<ark_bls12_381::g2::Parameters> = GroupAffine::deserialize(&beaconepoch.value1[..]).unwrap();
 
                     let sigma_i_2: ark_ff::QuadExtField<ark_ff::Fp12ParamsWrapper<ark_bls12_381::Fq12Parameters>> = 
@@ -1329,7 +1329,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     let stmnt: (<Bls12_381 as PairingEngine>::G2Affine, <Bls12_381 as PairingEngine>::G2Affine) = (sigma_i_1, cm_i.0);
                     
-
+                    
                         
                     let srs = 
                         optrand_pvss::nizk::dleq::srs::SRS::<G2Affine, G2Affine>
@@ -1338,16 +1338,20 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             h_public_key: config.srs.g2
                         };
 
-                    
+                                        
                     let dleq = optrand_pvss::nizk::dleq::DLEQProof::from_srs(srs).unwrap();
                     
 
                     let port = message.sender.port() as usize;
 
                     let id = port - 7001;
-
+                    
+                    let end_beacon_time = Utc::now().time();
+                    let diff_beacon = end_beacon_time - start_beacon_time;
+                    println!("{}, {} milisec, {}", epoch, diff_beacon.num_milliseconds(), message.sender);
+                
                     if dleq.verify(&stmnt, &pi_i).is_ok() && qualified.clone().contains_key(&id) && !beacon_epochs.contains(&epoch)
-                    {println!("yes, {}", epoch);
+                    {                      
                         let pairs = [(cm_i.1.neg().into(), epoch_generator.into_affine().into()),
                             (config.srs.g1.neg().into(), sigma_i_1.into())];
 
@@ -1403,9 +1407,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                         println!("Beacon End by {}. time taken {} miliseconds", args[6], diff_beacon.num_milliseconds());
 
-                        qualified = BTreeMap::new();
+                        // qualified = BTreeMap::new();
                         reconstruction_value_hashmap = HashMap::new();
-                        grand_value = HashMap::new();
+                        // grand_value = HashMap::new();
                         grand_count = 0;
 
 
@@ -1414,36 +1418,59 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         epoch_generator = 
                             hash_to_group::
                             <<Bls12_381 as PairingEngine>::G2Affine>(personalization, &epoch.to_le_bytes()).unwrap();
-
-
-                        let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
-
-                        //grandline                               
-
-                        ai = <Bls12_381 as PairingEngine>::Fr::rand(rng);                                 
-                        
-                        // comm_ai = epoch_generator.mul(ai.into_repr()).into_affine();
-                        let dec = decrypted_share.dec;
-                        
-                        let cm_1 =   config.srs.g2.mul(ai.into_repr()).into_affine();
-                        let cm_2 = config.srs.g1.mul(ai.neg().into_repr()).into_affine() + dec;
-                            
-                        let mut serialized_data1 = Vec::new();
-                        cm_1.serialize(&mut serialized_data1).unwrap();
-
-                        let mut serialized_data2 = Vec::new();
-                        cm_2.serialize(&mut serialized_data2).unwrap();
+                   
 
                         start_beacon_time = Utc::now().time();                        
-                       
-                        grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
-                            serialized_data1, serialized_data2, level).await;
+                                               
+
+                        for (i, cm_i) in grand_value.clone()
+                        {                              
+                            
+                            let dec = decrypted_share.dec;
+
+                            comm_ai = epoch_generator.mul(ai.into_repr()).into_affine();
+
+                            
+                            let sigma_i_1 = comm_ai;
+                            let sigma_i_2 = <Bls12_381 as PairingEngine>::pairing::<<Bls12_381 as PairingEngine>::G1Affine, <Bls12_381 as PairingEngine>::G2Affine>
+                            (dec.into(), epoch_generator.into());
+
+                            
+                            let rng = &mut thread_rng();
+
+                            let srs = 
+                            optrand_pvss::nizk::dleq::srs::SRS::<G2Affine, G2Affine>
+                            {
+                                g_public_key: epoch_generator.into_affine(),
+                                h_public_key: config.srs.g2
+                            };
+
+                            let dleq = DLEQProof{srs};
 
 
-                        // beaconepoch_init(tx_sender.clone(), ip_address.clone(), args.clone(),
-                        //     serialized_sigma1.clone(), serialized_sigma2.clone(), 
-                        //     serialized_pi.clone(), serialized_cm_i.clone(), level
-                        //     ).await;
+                            let pi_i = dleq.prove(rng, &ai).unwrap();
+
+                            
+                            serialized_sigma1 = Vec::new();
+                            sigma_i_1.serialize(&mut serialized_sigma1).unwrap();
+
+                            serialized_sigma2 = Vec::new();
+                            sigma_i_2.serialize(&mut serialized_sigma2).unwrap();
+
+
+                            serialized_pi = Vec::new();
+                            pi_i.serialize(&mut serialized_pi).unwrap();
+
+                            
+                            serialized_cm_i = Vec::new();
+                            cm_i.serialize(&mut serialized_cm_i).unwrap();
+
+                            beaconepoch_init(tx_sender.clone(), ip_address.clone(), args.clone(),
+                            serialized_sigma1.clone(), serialized_sigma2.clone(), 
+                            serialized_pi.clone(), serialized_cm_i.clone(), level
+                            ).await;
+                        }
+
 
                     }
 
@@ -1457,10 +1484,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     // println!("Delta calculation:  End by {}. time taken {:?} miliseconds", message.sender, diff.num_milliseconds());
 
-                    let microseconds_diff = diff.num_milliseconds() as usize;
+                    // let microseconds_diff = diff.num_milliseconds() as usize;
 
 
-                    delta+=microseconds_diff;
+                    // delta+=microseconds_diff;
 
                     // Handle PVSSGen message
                     let port = message.sender.port() as usize;
@@ -1555,6 +1582,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         if echo_value.len()==2_usize.pow(level as u32)/2   || diff>Duration::milliseconds(delta as i64)
                         {   
+                            start_local_time = Utc::now().time();
+
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
@@ -1570,6 +1599,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
                                 else 
                                 {
+
+                                    // loop 
+                                    // {
+                                    //     let end_time = Utc::now().time();
+                                    //     let diff = end_time - start_local_time;
+
+                                    //     if diff>Duration::milliseconds(delta as i64)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    // }
+
                                     forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
                                         ip_address.clone(), args.clone(), level).await;
                                 }
@@ -1577,6 +1618,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                             else 
                             {
+                                // loop 
+                                // {
+                                //     let end_time = Utc::now().time();
+                                //     let diff = end_time - start_local_time;
+
+                                //     if diff>Duration::milliseconds(delta as i64)
+                                //     {
+                                //         break;
+                                //     }
+                                // }
+
                                 forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
                                     ip_address.clone(), args.clone(), level).await;
                             }
@@ -1589,11 +1641,24 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     {
                         if echo_value.len()==2_usize.pow(level as u32)/3    || diff>Duration::milliseconds(delta as i64)
                         {   
+                            start_local_time = Utc::now().time();
+
                             let V = format!("{}-{}", V1.clone(), V2.clone());
                             (count, pi) = gba::check_echo_major_v(echo_value.clone(), V.clone());
                             
                             
                             echo_value = Vec::new(); 
+
+                           // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
                                                     
                             forward_check = gba::forward_phase(tx_sender.clone(), count, pi, 
                                 ip_address.clone(), args.clone(), level).await;
@@ -1604,7 +1669,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     start_local_time = Utc::now().time();
 
                 }
-
+                
                 // Match the Forward message type
                 ConsensusMessage::ForwardMessage(forward) => 
                 {
@@ -1634,6 +1699,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if forward_value.len()==size || diff>Duration::milliseconds(delta as i64)
                     {                      
+                        start_local_time = Utc::now().time();
+
                         let forward_value_copy = forward_value.clone();
 
                         let first_string_parts: Vec<&str> = forward_value_copy[0].split(' ').collect();
@@ -1659,6 +1726,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 }
                                 else 
                                 {
+                                    // loop 
+                                    // {
+                                    //     let end_time = Utc::now().time();
+                                    //     let diff = end_time - start_local_time;
+
+                                    //     if diff>Duration::milliseconds(delta as i64)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    // }
+
                                     forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), 
                                         first_part_to_compare.to_string(), 1, level.clone()).await;
                                 }
@@ -1666,6 +1744,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                             else 
                             {
+                                // loop 
+                                // {
+                                //     let end_time = Utc::now().time();
+                                //     let diff = end_time - start_local_time;
+
+                                //     if diff>Duration::milliseconds(delta as i64)
+                                //     {
+                                //         break;
+                                //     }
+                                // }
                                 forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), 
                                     first_part_to_compare.to_string(), 1, level.clone()).await;
 
@@ -1709,7 +1797,9 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     let diff = end_time - start_local_time;
 
                     if vote1_value.len()==size  || diff>Duration::milliseconds(delta as i64) //vote phase 
-                    {                          
+                    {             
+                        start_local_time = Utc::now().time();   
+
                         for output in vote1_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1723,6 +1813,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if C1.len() >0 //second vote phase
                         {   
                             let (v, _) = &C1[0];
+
+                           // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
+
                             forward_helper(tx_sender.clone(), ip_address.clone(), args.clone(), v.to_string(), 2, level.clone()).await;
 
                         }
@@ -1730,6 +1832,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                     if vote2_value.len()==size  || diff>Duration::milliseconds(delta as i64) //second vote phase    
                     {    
+                        start_local_time = Utc::now().time();
+
                         for output in vote2_value
                         {
                             let split_output: Vec<&str> = output.split(" ").collect();
@@ -1762,6 +1866,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                             else 
                             {
+                                // loop 
+                                // {
+                                //     let end_time = Utc::now().time();
+                                //     let diff = end_time - start_local_time;
+
+                                //     if diff>Duration::milliseconds(delta as i64)
+                                //     {
+                                //         break;
+                                //     }
+                                // }
+
                                 let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone(), level.clone()).await;
 
                             }
@@ -1769,6 +1884,17 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         }
                         else 
                         {
+                            // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
+
                             let _ = propose_helper(tx_sender.clone(), ip_address.clone(), args.clone(), BA_V.clone(), level.clone()).await;
 
 
@@ -1785,6 +1911,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                 ConsensusMessage::CommitteeMessage(committee) => 
                 {   
                     // Handle Committee message
+                    
                     if message.level == level
                     {   
                         (_, check_first_codeword_list, check_first_committee_list) = codeword_helper(tx_sender.clone(), "committee".to_string(),
@@ -1870,9 +1997,14 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 total_length += 1
                             }
                         }
+
+                        let end_time = Utc::now().time();
+                        let diff = end_time - start_local_time;
                         
-                        if total_length == 2_usize.pow(level as u32)*2 
+                        if total_length == 2_usize.pow(level as u32)*2  || diff>Duration::milliseconds(delta as i64)
                         {           
+                            start_local_time = Utc::now().time();
+
                             flag = 1;
                             total_length=0;
                             // sleep(Duration::from_millis(20)).await;
@@ -1887,11 +2019,23 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             check_first_codeword_list = Vec::new();
                             
                           
+                           // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
 
                             committee_selection(tx_sender.clone(), qual.clone(), pvss_vec.clone(), 
                                 ip_address.clone(), args.clone(), two_BA_check.clone(), level.clone()).await;
 
                             two_BA_check =true;
+
+                            start_local_time = Utc::now().time();
                             
                             
                         }
@@ -1904,14 +2048,30 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             }
                         }
                         
-                        if total_length == 2_usize.pow(level as u32)*2
+                        let end_time = Utc::now().time();
+                        let diff = end_time - start_local_time;
+
+                        if total_length == 2_usize.pow(level as u32)*2 || diff>Duration::milliseconds(delta as i64)
                         {   
+                            start_local_time = Utc::now().time();
+
                             total_length=0;
                             if sorted.clone().len()==level+1
                             {
                                recursion_finish = true;
                             }
                             flag = 0;
+
+                           // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
 
                             let pvss_vec = codeword_retrieve(retrieved_hashmap_committee.clone(), 
                                 ip_address.clone().len());
@@ -1929,13 +2089,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             
 
-                            init_aggregator = PVSSAggregator {
-                                config: config.clone(),
-                                scheme_sig: schnorr_sig.clone(),
-                                participants: init_participants.clone().into_iter().enumerate().collect(),
-                                aggregated_tx: init_aggregated_tx.clone(),
-                            };
-
 
                             let other_share_vec: Vec<u8>;
                             if temp[0]==pvss_data
@@ -1949,44 +2102,29 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
                             let mut other_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
                                 PVSSAggregatedShare::deserialize(&other_share_vec[..]).unwrap();
-
-                            let mut my_share : optrand_pvss::modified_scrape::share::PVSSAggregatedShare<ark_ec::bls12::Bls12<ark_bls12_381::Parameters>> = 
-                                PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
-                            
-                            let mut flattened_vec: Vec<u8> = Vec::new();                        
-
-                            // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
-                            // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap();
-
-                            println!("SHARES at level {}:  {:?}, {:?}, {}", level, pvss_data.len(), other_share_vec.len(), args[6]);
-
-                            // let mut share1 = init_aggregator.aggregated_tx.aggregate(&mut my_share).unwrap();
-
-                            // let share2 = share1.aggregate(&mut other_share).unwrap();
-
-
-                            let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
-                            // let _ = init_aggregator.receive_aggregated_share(&mut rng, &mut my_share).unwrap(); //ASK RENAS
-
-                            // pvss_data = aggregate(pvss_data.clone(),temp.clone(), args.clone(), &mut init_aggregator, level, rng.clone());
                            
-        
-                            // init_aggregated_tx =  PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
+                            
+                            let mut flattened_vec: Vec<u8> = Vec::new();  
 
-                            init_aggregated_tx = init_aggregator.aggregated_tx.clone();
 
-                            init_aggregated_tx.clone().serialize(&mut flattened_vec).unwrap();
+                            let end_time = Utc::now().time();
+                            let diff = end_time - start_time;                     
+                       
+
+                            println!("SHARES at level {}:  {:?}, {:?}, {},   {}", 
+                                level, pvss_data.len(), other_share_vec.len(), args[6], diff.num_milliseconds());
+
+                           
+                            let _ = node.aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
+                            
+
+
+                            node.aggregator.aggregated_tx.clone().serialize(&mut flattened_vec).unwrap();
 
                             pvss_data = flattened_vec;
 
                             
-                            init_aggregator = PVSSAggregator {
-                                config: config.clone(),
-                                scheme_sig: schnorr_sig.clone(),
-                                participants: init_participants.clone().into_iter().enumerate().collect(),
-                                aggregated_tx: init_aggregated_tx.clone(),
-                            }; 
-                           
+                                                      
                            
     
                             println!("retrieve at level {}:  {:?}, {:?}", level, pvss_data.len(), args[6]);
@@ -2022,6 +2160,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let accum_network_message = accum_init(acc_value_zl.clone(), ip_address.clone(), 
                                     args.clone(), level.clone());
 
+                                start_local_time = Utc::now().time();
 
                                 let _ = tx_sender.send(accum_network_message).await;
                             }
@@ -2045,22 +2184,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                     hash_to_group::
                                     <<Bls12_381 as PairingEngine>::G2Affine>(personalization, &epoch.to_le_bytes()).unwrap();
 
-                                
-                                final_deserialized_data = init_aggregated_tx.clone();
-                                    // PVSSAggregatedShare::deserialize(&pvss_data[..]).unwrap();
-
-                                    let mut aggregator = PVSSAggregator {
-                                        config: config.clone(),
-                                        scheme_sig: schnorr_sig.clone(),
-                                        participants: init_participants.clone().into_iter().enumerate().collect(),
-                                        aggregated_tx: final_deserialized_data.clone(),
-                                    };       
-
+                                                               
                                     
                                 let userid = args[2].parse::<usize>().unwrap() - 1;
 
                                 decrypted_share = DecryptedShare::<Bls12_381>::
-                                    generate(&final_deserialized_data.pvss_core.encs,
+                                    generate(&node.aggregator.aggregated_tx.pvss_core.encs,
                                     &dealer.private_key_sig,
                                     userid
                                     );
@@ -2068,7 +2197,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let dec = decrypted_share.dec;
 
                                 
-                                //loop
 
                                 start_beacon_time = Utc::now().time();
                                 
@@ -2090,7 +2218,12 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let mut serialized_data2 = Vec::new();
                                 cm_2.serialize(&mut serialized_data2).unwrap();
                                 
-                               
+
+                                // println!("COMS  {:?}", node.aggregator.aggregated_tx.pvss_core.comms);
+
+                                // println!("ENCS  {:?}", node.aggregator.aggregated_tx.pvss_core.encs);
+
+                                
                                 grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
                                     serialized_data1, serialized_data2, level).await;
 
@@ -2126,13 +2259,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             if updated_pvss.len()==ip_address.clone().len()
                             {                      
 
-                                init_aggregator = PVSSAggregator 
-                                {
-                                    config: config.clone(),
-                                    scheme_sig: schnorr_sig.clone(),
-                                    participants: init_participants.clone().into_iter().enumerate().collect(),
-                                    aggregated_tx: init_aggregated_tx.clone(),
-                                };
+                              
 
 
                                 let other_share_vec: Vec<u8>;
@@ -2154,12 +2281,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             
                                 let mut flattened_vec: Vec<u8> = Vec::new();
                                                 
-                                let _ = init_aggregator.receive_share(&mut rng, &mut other_share).unwrap();
-                                let _ = init_aggregator.receive_share(&mut rng, &mut my_share).unwrap();
+                                let _ = node.aggregator.receive_share(&mut rng, &mut other_share).unwrap();
+                                let _ = node.aggregator.receive_share(&mut rng, &mut my_share).unwrap();
 
-                                init_aggregated_tx = init_aggregator.aggregated_tx.clone();
-
-                                init_aggregated_tx.clone().serialize(&mut flattened_vec).unwrap();
+                                
+                                node.aggregator.aggregated_tx.clone().serialize(&mut flattened_vec).unwrap();
 
                                 pvss_data = flattened_vec;
                                 
@@ -2237,8 +2363,13 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         
                     }
 
-                    if accum_value.len()>=2_usize.pow(level as u32) 
+                    let end_time = Utc::now().time();
+                    let diff = end_time - start_local_time;
+
+                    if accum_value.len()>=2_usize.pow(level as u32) || diff>Duration::milliseconds(delta as i64)
                     {   
+                        start_local_time = Utc::now().time();
+
                         split_vec_recursively(&ip_address, &mut ip_address_left, &mut ip_address_right);
 
                         let own_ip = format!("{}-{}", args[2].clone(), args[6].clone());
@@ -2271,6 +2402,18 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         if level!=1 && message.level == level
                         {                                  
                             println!("NEW LEVEL : {}", level);
+
+                           // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
+
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 V.clone(), level.clone()).await;
                         }
@@ -2307,9 +2450,22 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_accum".to_string());
 
 
+                                    // loop 
+                                    // {
+                                    //     let end_time = Utc::now().time();
+                                    //     let diff = end_time - start_local_time;
+
+                                    //     if diff>Duration::milliseconds(delta as i64)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    // }
+
                                     for network_msg in network_vec
                                     {   
                                         let _  = tx_sender.send(network_msg).await;
+
+                                        start_local_time = Utc::now().time();
                                     }
 
                                 }
@@ -2333,9 +2489,23 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         ip_address.clone(), level, args.clone(), 
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_accum".to_string());
 
+
+                                    // loop 
+                                    // {
+                                    //     let end_time = Utc::now().time();
+                                    //     let diff = end_time - start_local_time;
+
+                                    //     if diff>Duration::milliseconds(delta as i64)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    // }
+
                                     for network_msg in network_vec
                                     {   
                                         let _  = tx_sender.send(network_msg).await;
+
+                                        start_local_time = Utc::now().time();
                                     }
                                 }
                             }
@@ -2396,6 +2566,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                     
                     if propose_value.len() >= 2_usize.pow(level as u32)/2 || diff>Duration::milliseconds(delta as i64)
                     {    
+                        start_local_time = Utc::now().time();
+
                         if g==0
                         {
                             let (most_frequent, is_majority) = find_most_frequent_propose_value(
@@ -2418,18 +2590,46 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             ip_address = ip_address_left[0].clone();
 
                             ip_address_left.remove(0);
+
+                           // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 BA_V.clone(), level.clone()).await;
+
+                            start_local_time = Utc::now().time();
+
                         }
                         else if ip_address_right.len()>0 && message.level == level
                         {   
                             ip_address = ip_address_right[0].clone();
 
                             ip_address_right.remove(0);
+
+                           // loop 
+                            // {
+                            //     let end_time = Utc::now().time();
+                            //     let diff = end_time - start_local_time;
+
+                            //     if diff>Duration::milliseconds(delta as i64)
+                            //     {
+                            //         break;
+                            //     }
+                            // }
                             
                             byzar::BA_setup(tx_sender.clone(), ip_address.clone(),  args.clone(),
                                 BA_V.clone(), level.clone()).await;
+
+                            start_local_time = Utc::now().time();
+
                         }                        
                         else 
                         {
@@ -2458,9 +2658,24 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         ip_address.clone(), level, args.clone(), 
                                         V1.clone(), merkle_len, codeword_vec, witnesses_vec, 1, "codeword_propose".to_string());
 
+
+                                    // loop 
+                                    // {
+                                    //     let end_time = Utc::now().time();
+                                    //     let diff = end_time - start_local_time;
+
+                                    //     if diff>Duration::milliseconds(delta as i64)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    // }
+
                                     for network_msg in network_vec
                                     {   
                                         let _  = tx_sender.send(network_msg).await;
+
+                                        start_local_time = Utc::now().time();
+
                                     }
 
                                 }
@@ -2477,8 +2692,20 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                         V2.clone(), merkle_len, codeword_vec, witnesses_vec, 2, "codeword_propose".to_string());
 
                                     
+                                    // loop 
+                                    // {
+                                    //     let end_time = Utc::now().time();
+                                    //     let diff = end_time - start_local_time;
+
+                                    //     if diff>Duration::milliseconds(delta as i64)
+                                    //     {
+                                    //         break;
+                                    //     }
+                                    // }
+
                                     for network_msg in network_vec
                                     {   
+                                       
                                         let _  = tx_sender.send(network_msg).await;
 
                                         start_local_time = Utc::now().time();
@@ -2497,6 +2724,10 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
         }    
         
     }
+
+// });
+
+// Wait for the task to finish (in this case, it will run indefinitely)
 
 }
 
