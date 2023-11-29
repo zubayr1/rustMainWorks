@@ -8,7 +8,7 @@ use optrand_pvss::signature::scheme::SignatureScheme;
 use optrand_pvss::modified_scrape::dealer::Dealer;
 use optrand_pvss::modified_scrape::participant::Participant;
 use optrand_pvss::modified_scrape::config::Config;
-
+use optrand_pvss::EncGroup;
 use ark_ec::bls12::Bls12;
 use std::marker::PhantomData;
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
@@ -37,8 +37,12 @@ pub fn pvss_gen(args: Vec<String>) -> (Vec<u8>,
     let srs = optrand_pvss::modified_scrape::srs::SRS::<Bls12_381>::setup(&mut rng1).unwrap(); //seedable
     
 
+    // let schnorr_srs = 
+    //     optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(&mut rng1).unwrap(); //seedable
+
+
     let schnorr_srs = 
-        optrand_pvss::signature::schnorr::srs::SRS::<<Bls12_381 as PairingEngine>::G1Affine>::setup(&mut rng1).unwrap(); //seedable
+        optrand_pvss::signature::schnorr::srs::SRS::<EncGroup::<Bls12_381>>::from_generator(srs.g1).unwrap(); // SCHSRS::<EncGroup::<Bls12_381>>::setup(rng).unwrap();
 
 
     let schnorr_sig = optrand_pvss::signature::schnorr::SchnorrSignature { srs: schnorr_srs };

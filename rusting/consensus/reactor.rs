@@ -23,6 +23,8 @@ use rand::rngs::StdRng;
 
 extern crate hex;
 
+use optrand_pvss::EncGroup;
+use optrand_pvss::ComGroup;
 use optrand_pvss::signature::schnorr::SchnorrSignature;
 use optrand_pvss::modified_scrape::participant::Participant;
 use optrand_pvss::modified_scrape::aggregator::PVSSAggregator;
@@ -1118,7 +1120,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut propose_reached=false;
 
-    let delta: usize = 1000;
+    let delta: usize = 3000;
 
     let mut epoch: u128 = 0;
 
@@ -1228,7 +1230,7 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                         for (i, cm_i) in grand_value.clone()
                         {   
                             let pairs = [(
-                                config.srs.g1.neg().into(), final_deserialized_data.pvss_core.comms[i].into()), 
+                                config.srs.g1.neg().into(), node.aggregator.aggregated_tx.pvss_core.comms[i].into()), 
                                 (config.srs.g1.into(), cm_i.0.into()),
                                 (cm_i.1.into(), config.srs.g2.into())
                                 ];
@@ -1414,6 +1416,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
 
                         epoch+=1;
+
+                        if epoch==4
+                        {
+                            return;
+                        }
 
                         epoch_generator = 
                             hash_to_group::
@@ -2107,12 +2114,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             let mut flattened_vec: Vec<u8> = Vec::new();  
 
 
-                            let end_time = Utc::now().time();
-                            let diff = end_time - start_time;                     
-                       
-
-                            println!("SHARES at level {}:  {:?}, {:?}, {},   {}", 
-                                level, pvss_data.len(), other_share_vec.len(), args[6], diff.num_milliseconds());
+                            println!("SHARES at level {}:  {:?}, {:?}, {}", 
+                                level, pvss_data.len(), other_share_vec.len(), args[6]);
 
                            
                             let _ = node.aggregator.receive_aggregated_share(&mut rng, &mut other_share).unwrap();
@@ -2124,10 +2127,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             pvss_data = flattened_vec;
 
                             
-                                                      
+                            let end_time = Utc::now().time();
+                            let diff = end_time - start_time;                
                            
     
-                            println!("retrieve at level {}:  {:?}, {:?}", level, pvss_data.len(), args[6]);
+                            println!("retrieve at level {}:  {:?}, {:?},     {}", level, pvss_data.len(), args[6], diff.num_milliseconds());
 
                             accum_value = Vec::new();
                             echo_value = Vec::new();
@@ -2191,16 +2195,35 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 decrypted_share = DecryptedShare::<Bls12_381>::
                                     generate(&node.aggregator.aggregated_tx.pvss_core.encs,
                                     &dealer.private_key_sig,
-                                    userid
+                                    node.dealer.participant.id
                                     );
                                     
                                 let dec = decrypted_share.dec;
 
+                                let comm = node.aggregator.aggregated_tx.pvss_core.comms.clone();
+
+                                // println!("COMS: {:?}", node.aggregator.aggregated_tx.pvss_core.comms);
+                                // println!("ENCS: {:?}", node.aggregator.aggregated_tx.pvss_core.encs);
+
+                                // println!("G1: {:?}", config.srs.g1);
+                                // println!("G2: {:?}", config.srs.g2);
+
+                                let pairs: [(ark_ec::bls12::G1Prepared<ark_bls12_381::Parameters>, ark_ec::bls12::G2Prepared<ark_bls12_381::Parameters>); 2]
+                                 = [(config.srs.g1.neg().into(), comm[userid].into()),
+                                    (dec.into(), config.srs.g2.into())];
+
+                                let prod = <Bls12_381 as PairingEngine>::product_of_pairings(pairs.iter());
+
                                 
+                                if prod.is_one()
+                                {
+                                    println!("TRUE");
+                                }
+
 
                                 start_beacon_time = Utc::now().time();
                                 
-                                let rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
+                                let mut rng: &mut rand::rngs::ThreadRng = &mut thread_rng();
 
                                 //grandline                               
 
@@ -2211,6 +2234,16 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 
                                 let cm_1 =   config.srs.g2.mul(ai.into_repr()).into_affine();
                                 let cm_2 = config.srs.g1.mul(ai.neg().into_repr()).into_affine() + dec;
+
+
+                                let r_a = <Bls12_381 as PairingEngine>::Fr::rand(&mut rng);
+
+
+                                let cm_a: (ComGroup<Bls12_381>, EncGroup<Bls12_381>) = 
+                                    (node.aggregator.config.srs.g2.mul(r_a.into_repr()).into_affine(),
+			                        dec + node.aggregator.config.srs.g1.mul(r_a.into_repr()).neg().into_affine());
+
+
                                    
                                 let mut serialized_data1 = Vec::new();
                                 cm_1.serialize(&mut serialized_data1).unwrap();
@@ -2219,11 +2252,6 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 cm_2.serialize(&mut serialized_data2).unwrap();
                                 
 
-                                // println!("COMS  {:?}", node.aggregator.aggregated_tx.pvss_core.comms);
-
-                                // println!("ENCS  {:?}", node.aggregator.aggregated_tx.pvss_core.encs);
-
-                                
                                 grandmulticast(tx_sender.clone(), ip_address.clone(), args.clone(), 
                                     serialized_data1, serialized_data2, level).await;
 
@@ -2284,7 +2312,8 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                                 let _ = node.aggregator.receive_share(&mut rng, &mut other_share).unwrap();
                                 let _ = node.aggregator.receive_share(&mut rng, &mut my_share).unwrap();
 
-                                
+                               
+
                                 node.aggregator.aggregated_tx.clone().serialize(&mut flattened_vec).unwrap();
 
                                 pvss_data = flattened_vec;
