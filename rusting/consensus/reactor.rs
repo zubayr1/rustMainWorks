@@ -1120,7 +1120,11 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
 
     let mut propose_reached=false;
 
-    let delta: usize = 3000;
+    let delta: usize = 500;
+
+    let mut big_delta: Vec<usize> = Vec::new();
+    big_delta.push(400);
+    big_delta.push(700);
 
     let mut epoch: u128 = 0;
 
@@ -2127,8 +2131,22 @@ pub async fn reactor(tx_sender: Sender<NetworkMessage>, mut rx: Receiver<Network
                             pvss_data = flattened_vec;
 
                             
-                            let end_time = Utc::now().time();
-                            let diff = end_time - start_time;                
+                            let mut end_time = Utc::now().time();
+                            let mut diff = end_time - start_time;       
+
+
+                            let time = big_delta.remove(0);
+
+                            loop 
+                            {
+                                end_time = Utc::now().time();
+                                diff = end_time - start_time; 
+                                if diff>=Duration::milliseconds(time as i64)
+                                {
+                                    break;
+                                } 
+                                
+                            }        
                            
     
                             println!("retrieve at level {}:  {:?}, {:?},     {}", level, pvss_data.len(), args[6], diff.num_milliseconds());
